@@ -19,11 +19,14 @@ namespace HA4IoT.Hardware.I2CHardwareBridge
             _i2CBus = i2cBus;
 
             DHT22Accessor = new DHT22Accessor(this, schedulerService);
+            LDP433Accessor = new LDP433Accessor(this, schedulerService);
         }
 
         public DeviceId Id { get; } = new DeviceId("I2CHardwareBridge");
 
         public DHT22Accessor DHT22Accessor { get; }
+
+        public LDP433Accessor LDP433Accessor { get; }
 
         public void HandleApiCommand(IApiContext apiContext)
         {

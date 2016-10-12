@@ -128,6 +128,7 @@
     <Compile Include="LPD433MHzSignalSender.cs" />
     <Compile Include="LPD433MHzCode.cs" />
     <Compile Include="RemoteSocketCommand.cs" />
+    <Compile Include="RemotePilotController.cs" />
     <Compile Include="RemoteSocketController.cs" />
     <Compile Include="RemoteSocketOutputPort.cs" />
     <EmbeddedResource Include="Properties\HA4IoT.Hardware.RemoteSwitch.rd.xml" />

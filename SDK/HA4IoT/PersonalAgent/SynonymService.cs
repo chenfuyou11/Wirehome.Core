@@ -8,7 +8,6 @@ using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Sensors;
 using HA4IoT.Contracts.Services;
-using Newtonsoft.Json.Linq;
 
 namespace HA4IoT.PersonalAgent
 {
@@ -53,7 +52,7 @@ namespace HA4IoT.PersonalAgent
         {
             if (synonyms == null) throw new ArgumentNullException(nameof(synonyms));
             
-            AddSynonymsForComponent(AreaIdFactory.Create(areaId), componentId, synonyms);
+            AddSynonymsForComponent(AreaIdGenerator.Generate(areaId), componentId, synonyms);
         }
 
         public void AddSynonymsForComponent(AreaId areaId, Enum componentId, params string[] synonyms)
@@ -61,7 +60,7 @@ namespace HA4IoT.PersonalAgent
             if (componentId == null) throw new ArgumentNullException(nameof(componentId));
             if (synonyms == null) throw new ArgumentNullException(nameof(synonyms));
 
-            AddSynonymsForComponent(ComponentIdFactory.Create(areaId, componentId), synonyms);
+            AddSynonymsForComponent(ComponentIdGenerator.Generate(areaId, componentId), synonyms);
         }
 
         public void AddSynonymsForComponent(ComponentId componentId, params string[] synonyms)
@@ -87,7 +86,7 @@ namespace HA4IoT.PersonalAgent
             if (areaId == null) throw new ArgumentNullException(nameof(areaId));
             if (synonyms == null) throw new ArgumentNullException(nameof(synonyms));
 
-            AddSynonyms(_areaSynonyms, AreaIdFactory.Create(areaId), synonyms);
+            AddSynonyms(_areaSynonyms, AreaIdGenerator.Generate(areaId), synonyms);
             _storage.PersistAreaSynonyms(_areaSynonyms);
         }
 

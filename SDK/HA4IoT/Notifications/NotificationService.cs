@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Core;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Services;
 using HA4IoT.Contracts.Services.Notifications;
+using HA4IoT.Contracts.Services.Resources;
 using HA4IoT.Contracts.Services.Settings;
+using HA4IoT.Contracts.Services.Storage;
 using HA4IoT.Contracts.Services.System;
 using HA4IoT.Networking.Http;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HA4IoT.Notifications
@@ -17,22 +16,36 @@ namespace HA4IoT.Notifications
     [ApiServiceClass(typeof(INotificationService))]
     public class NotificationService : ServiceBase, INotificationService
     {
+        private const string StorageFilename = "NotificationService.json";
+
         private readonly object _syncRoot = new object();
         private readonly List<Notification> _notifications = new List<Notification>();
         private readonly IDateTimeService _dateTimeService;
+        private readonly IStorageService _storageService;
+        private readonly IResourceService _resourceService;
 
-        public NotificationService(IDateTimeService dateTimeService, IApiService apiService, ISchedulerService schedulerService, ISystemEventsService systemEventsService, ISettingsService settingsService)
+        public NotificationService(
+            IDateTimeService dateTimeService, 
+            IApiService apiService, 
+            ISchedulerService schedulerService, 
+            ISettingsService settingsService,
+            IStorageService storageService,
+            IResourceService resourceService)
         {
             if (dateTimeService == null) throw new ArgumentNullException(nameof(dateTimeService));
             if (apiService == null) throw new ArgumentNullException(nameof(apiService));
             if (schedulerService == null) throw new ArgumentNullException(nameof(schedulerService));
             if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
+            if (storageService == null) throw new ArgumentNullException(nameof(storageService));
+            if (resourceService == null) throw new ArgumentNullException(nameof(resourceService));
 
             _dateTimeService = dateTimeService;
+            _storageService = storageService;
+            _resourceService = resourceService;
+
             settingsService.CreateSettingsMonitor<NotificationServiceSettings>(s => Settings = s);
 
             apiService.StatusRequested += HandleApiStatusRequest;
-            systemEventsService.StartupCompleted += (s, e) => CreateInformation("System started.");
 
             schedulerService.RegisterSchedule("NotificationCleanup", TimeSpan.FromMinutes(15), Cleanup);
         }
@@ -63,6 +76,11 @@ namespace HA4IoT.Notifications
         public void CreateInformation(string text)
         {
             Create(NotificationType.Information, text, Settings.InformationTimeToLive);
+        }
+
+        public void CreateInformation(Enum resourceId, params object[] formatParameterObjects)
+        {
+            CreateInformation(_resourceService.GetText(resourceId, formatParameterObjects));
         }
 
         public void CreateWarning(string text)
@@ -124,34 +142,15 @@ namespace HA4IoT.Notifications
 
         private void SaveNotifications()
         {
-            var filename = StoragePath.WithFilename("NotificationService.json");
-            var content = JsonConvert.SerializeObject(_notifications);
-
-            File.WriteAllText(filename, content);
+            _storageService.Write(StorageFilename, _notifications);
         }
         
         private void TryLoadNotifications()
         {
-            try
+            List<Notification> persistedNotifications;
+            if (_storageService.TryRead(StorageFilename, out persistedNotifications))
             {
-                var filename = StoragePath.WithFilename("NotificationService.json");
-                if (!File.Exists(filename))
-                {
-                    return;
-                }
-
-                var fileContent = File.ReadAllText(filename);
-                if (string.IsNullOrEmpty(fileContent))
-                {
-                    return;
-                }
-
-                var notifications = JsonConvert.DeserializeObject<List<Notification>>(fileContent);
-                _notifications.AddRange(notifications);
-            }
-            catch (Exception exception)
-            {
-                Log.Warning(exception, "Unable to load notifications.");
+                _notifications.AddRange(persistedNotifications);
             }
         }
     }

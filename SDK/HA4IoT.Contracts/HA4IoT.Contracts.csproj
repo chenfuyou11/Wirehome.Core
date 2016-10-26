@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\IAction.cs" />
+    <Compile Include="Actuators\IMonostableLamp.cs" />
     <Compile Include="Api\ApiClassAttribute.cs" />
     <Compile Include="Api\ApiContext.cs" />
     <Compile Include="Api\ApiMethodAttribute.cs" />

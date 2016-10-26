@@ -125,6 +125,8 @@
     <Compile Include="Actuators\Connectors\StateMachineWithButtonConnector.cs" />
     <Compile Include="Actuators\Lamps\Lamp.cs" />
     <Compile Include="Actuators\Lamps\LampExtensions.cs" />
+    <Compile Include="Actuators\MonostableLamps\MonostableLampExtensions.cs" />
+    <Compile Include="Actuators\MonostableLamps\MonostableLamp.cs" />
     <Compile Include="Actuators\PendingActuatorState.cs" />
     <Compile Include="Actuators\PortBasedBinaryStateEndpoint.cs" />
     <Compile Include="Actuators\RollerShutters\PortBasedRollerShutterEndpoint.cs" />
@@ -274,6 +276,7 @@
       <Name>HA4IoT.Networking</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

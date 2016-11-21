@@ -2,7 +2,7 @@
 #include "InfraredController.h"
 #include "Dht22Controller.h"
 #include "LPD433MhzController.h"
-
+#include "CurrentController.h"
 
 #define IS_HIGH(pin) (PIND & (1<<pin))
 #define IS_LOW(pin) ((PIND & (1<<pin))==0)
@@ -18,10 +18,9 @@
 #define I2C_ACTION_433MHz 2
 #define I2C_ACTION_Infrared 3
 #define I2C_ACTION_433MHz_Read 4
-
+#define I2C_ACTION_Current 5
 
 uint8_t _lastAction = 0;
-
 
 void setup() 
 {
@@ -63,6 +62,11 @@ void handleI2CRead()
 		case I2C_ACTION_433MHz_Read:
 		{
 			responseLength = LPD433MhzController_handleI2CRead(response);
+			break;
+		}
+		case I2C_ACTION_Current:
+		{
+			responseLength = CurrentController_handleI2CRead(response);
 			break;
 		}
 	}
@@ -107,7 +111,6 @@ void handleI2CWrite(int dataLength)
 		}
 		case I2C_ACTION_433MHz:
 		{
-		
 			LPD433MhzController_handleI2CWrite(package, packageLength);
 			break;
 		}
@@ -121,6 +124,12 @@ void handleI2CWrite(int dataLength)
 			LPD433MhzController_SetReadMode(package, packageLength);
 			break;
 		}
+		case I2C_ACTION_Current:
+		{
+			CurrentController_handleI2CWrite(package, packageLength);
+			break;
+		}
+
 	}
 
 	digitalWrite(LED, LOW);
@@ -131,4 +140,6 @@ void loop()
 	DHT22Controller_loop();
 
 	LPD433MhzController_loop();
+
+	CurrentController_loop();
 }

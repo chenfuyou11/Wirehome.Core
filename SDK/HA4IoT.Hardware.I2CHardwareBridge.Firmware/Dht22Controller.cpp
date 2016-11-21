@@ -50,27 +50,27 @@ void DHT22Controller_handleI2CWrite(uint8_t package[], uint8_t packageLength)
 
 	switch (action)
 	{
-	case ACTION_REGISTER_SENSOR:
-	{
-		uint8_t pin = package[1];
-
-		if (getPinIndex(pin) == -1)
+		case ACTION_REGISTER_SENSOR:
 		{
-			_pins[_pinsIndex] = pin;
-			_cache[_pinsIndex][0] = 0; // Set default to "no success".
+			uint8_t pin = package[1];
 
-			_pinsIndex++;		
-		}
+			if (getPinIndex(pin) == -1)
+			{
+				_pins[_pinsIndex] = pin;
+				_cache[_pinsIndex][0] = 0; // Set default to "no success".
+
+				_pinsIndex++;		
+			}
 		
-		_pinForRead = pin;
+			_pinForRead = pin;
 
-		break;
-	}
+			break;
+		}
 	}
 
-#if (DEBUG)
-	Serial.println("Set sensor PIN to " + String(_pinForRead));
-#endif
+	#if (DEBUG)
+		Serial.println("Set sensor PIN to " + String(_pinForRead));
+	#endif
 }
 
 uint8_t DHT22Controller_handleI2CRead(uint8_t response[])
@@ -78,15 +78,15 @@ uint8_t DHT22Controller_handleI2CRead(uint8_t response[])
 	int pinIndex = getPinIndex(_pinForRead);
 	if (pinIndex == -1)
 	{
-#if (DEBUG)
-		Serial.println("Cache value for " + String(_pinForRead) + " not found");
-#endif
+		#if (DEBUG)
+			Serial.println("Cache value for " + String(_pinForRead) + " not found");
+		#endif
 		return 0;
 	}
 
-#if (DEBUG)
-	Serial.println("Fetching cache value from index " + String(pinIndex));
-#endif
+	#if (DEBUG)
+		Serial.println("Fetching cache value from index " + String(pinIndex));
+	#endif
 
 	for (int i = 0; i < RESPONSE_SIZE; i++)
 	{
@@ -140,14 +140,14 @@ void pollSensors()
 		_cache[i][7] = converter.bytes.b2;
 		_cache[i][8] = converter.bytes.b3;
 
-#if(DEBUG)
-		Serial.print("Read DHT22 sensor SUCCESS:");
-		Serial.print(success);
-		Serial.print(",TEMP:");
-		Serial.print(temperature);
-		Serial.print(",HUM:");
-		Serial.println(humidity);
-#endif
+		#if(DEBUG)
+			Serial.print("Read DHT22 sensor SUCCESS:");
+			Serial.print(success);
+			Serial.print(",TEMP:");
+			Serial.print(temperature);
+			Serial.print(",HUM:");
+			Serial.println(humidity);
+		#endif
 	}
 }
 

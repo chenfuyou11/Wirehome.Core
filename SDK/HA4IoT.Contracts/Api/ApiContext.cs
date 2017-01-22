@@ -5,22 +5,22 @@ namespace HA4IoT.Contracts.Api
 {
     public class ApiContext : IApiContext
     {
-        public ApiContext(string uri, JObject request, JObject response)
+        public ApiContext(string action, JObject request, JObject response)
         {
-            if (uri == null) throw new ArgumentNullException(nameof(uri));
+            if (action == null) throw new ArgumentNullException(nameof(action));
             if (request == null) throw new ArgumentNullException(nameof(request));
             if (response == null) throw new ArgumentNullException(nameof(response));
 
             ResultCode = ApiResultCode.Success;
 
-            Uri = uri;
-            Request = request;
+            Action = action;
+            Parameter = request;
             Response = response;
         }
 
-        public string Uri { get; }
+        public string Action { get; }
         public ApiResultCode ResultCode { get; set; }
-        public JObject Request { get; }
+        public JObject Parameter { get; }
         public JObject Response { get; set; }
         public bool UseHash { get; set; }
     }

@@ -31,7 +31,7 @@ function Deploy
 function SelectIP
 {   
 	Write-Host "Select IP of controller:";
-	Write-Host "0 - 192.168.1.15";
+	Write-Host "0 - 192.168.0.106";
 	Write-Host "1 - 192.168.1.16";
     Write-Host "2 - minwinpc";
     Write-Host "----------------";
@@ -41,7 +41,7 @@ function SelectIP
 
 	switch($choice)
 	{
-		0 { return "192.168.1.15" }
+		0 { return "192.168.0.106" }
 		1 { return "192.168.1.16" }
         2 { return "minwinpc" }
 		"x" 

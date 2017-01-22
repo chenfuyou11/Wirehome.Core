@@ -1,5 +1,7 @@
 ﻿using System;
 using HA4IoT.Contracts.Core;
+using HA4IoT.Contracts;
+using System.Collections.Generic;
 
 namespace HA4IoT.Core
 {

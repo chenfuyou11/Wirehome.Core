@@ -1,60 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.PersonalAgent;
 
 namespace HA4IoT.PersonalAgent
 {
     public class MessageContext
     {
-        public MessageContext(IInboundMessage originalMessage)
-        {
-            if (originalMessage == null) throw new ArgumentNullException(nameof(originalMessage));
+        public MessageContextKind Kind { get; set; }
 
-            OriginalMessage = originalMessage;
+        public string Intent { get; set; } // TODO: To Enum
 
-            Words = new HashSet<string>();
+        public string Text { get; set; }
 
-            IdentifiedAreaIds = new HashSet<AreaId>();
-            IdentifiedComponentIds = new HashSet<ComponentId>();
-            FilteredComponentIds = new HashSet<ComponentId>();
-            IdentifiedComponentStates = new HashSet<ComponentState>();
-        }
+        public Dictionary<string, string> Slots { get; } = new Dictionary<string, string>();
 
-        public IInboundMessage OriginalMessage { get; }
+        public HashSet<ComponentId> IdentifiedComponentIds { get; } = new HashSet<ComponentId>();
 
-        public HashSet<string> Words { get; }
+        public HashSet<ComponentState> IdentifiedComponentStates { get; } = new HashSet<ComponentState>();
 
-        public HashSet<ComponentId> IdentifiedComponentIds { get; } 
+        public HashSet<ComponentId> AffectedComponentIds { get; } = new HashSet<ComponentId>();
 
-        public HashSet<ComponentState> IdentifiedComponentStates { get; }
+        public HashSet<AreaId> IdentifiedAreaIds { get; } = new HashSet<AreaId>();
 
-        public HashSet<ComponentId> FilteredComponentIds { get; } 
-
-        public HashSet<AreaId> IdentifiedAreaIds { get; }
-
-        public bool GetContainsWord(string word)
-        {
-            if (word == null) throw new ArgumentNullException(nameof(word));
-
-            return Words.Any(w => string.Equals(w, word, StringComparison.CurrentCultureIgnoreCase));
-        }
-
-        public bool GetContainsPattern(string pattern)
-        {
-            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
-
-            return GetPatternMatch(pattern).Success;
-        }
+        public string Answer { get; set; }
 
         public Match GetPatternMatch(string pattern)
         {
             if (pattern == null) throw new ArgumentNullException(nameof(pattern));
 
-            return Regex.Match(OriginalMessage.Text, pattern, RegexOptions.IgnoreCase);
+            return Regex.Match(Text ?? string.Empty, pattern, RegexOptions.IgnoreCase);
         }
     }
 }

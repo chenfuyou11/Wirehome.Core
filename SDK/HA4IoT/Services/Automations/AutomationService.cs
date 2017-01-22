@@ -14,8 +14,8 @@ namespace HA4IoT.Services.Automations
 
         public AutomationService(
             ISystemEventsService systemEventsService,
-            ISystemInformationService systemInformationService, 
-            IApiService apiService)
+            ISystemInformationService systemInformationService,
+            IApiDispatcherService apiService)
         {
             if (systemEventsService == null) throw new ArgumentNullException(nameof(systemEventsService));
             if (systemInformationService == null) throw new ArgumentNullException(nameof(systemInformationService));

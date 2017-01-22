@@ -74,21 +74,6 @@ namespace HA4IoT.Actuators
             return socket;
         }
 
-        public IMonostableLamp RegisterMonostableLamp(IArea area, Enum id, IBinaryOutput output, IBinaryInput input)
-        {
-            if (area == null) throw new ArgumentNullException(nameof(area));
-            if (output == null) throw new ArgumentNullException(nameof(output));
-        
-            var lamp = new MonostableLamp(ComponentIdGenerator.Generate(area.Id, id), 
-                                          new PortBasedBinaryStateEndpoint(output),
-                                          input,
-                                          _schedulerService
-                                          );
-            area.AddComponent(lamp);
-
-            return lamp;
-        }
-
         public ILamp RegisterLamp(IArea area, Enum id, IBinaryOutput output)
         {
             if (area == null) throw new ArgumentNullException(nameof(area));
@@ -98,6 +83,20 @@ namespace HA4IoT.Actuators
             area.AddComponent(lamp);
 
             return lamp;
+        }
+
+        public IMonostableLamp RegisterMonostableLamp(IArea area, Enum id, IBinaryOutput output, IBinaryInput input)
+        {
+            if (area == null) throw new ArgumentNullException(nameof(area));
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            if (output == null) throw new ArgumentNullException(nameof(output));
+
+       
+            var motionDetector = new MonostableLamp(ComponentIdGenerator.Generate(area.Id, id), new PortBasedBinaryStateEndpoint(output), input, _schedulerService);
+
+            area.AddComponent(motionDetector);
+
+            return motionDetector;
         }
 
         public LogicalBinaryStateActuator RegisterLogicalActuator(IArea area, Enum id)

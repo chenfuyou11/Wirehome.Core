@@ -135,10 +135,6 @@
       <Project>{551337E7-D1EF-4145-92B4-F7086F7665A6}</Project>
       <Name>HA4IoT.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SDK\HA4IoT.ExternalServices\HA4IoT.ExternalServices.csproj">
-      <Project>{1792CCEF-9F6C-4535-BE20-BAA777243980}</Project>
-      <Name>HA4IoT.ExternalServices</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

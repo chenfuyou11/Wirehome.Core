@@ -67,14 +67,14 @@ function AppController($scope, $http) {
                         return;
                     }
 
-                    if (component.type === "TemperatureSensor" ||
-                        component.type === "HumiditySensor") {
+                    if (component.Type === "TemperatureSensor" ||
+                        component.Type === "HumiditySensor") {
                         c.sensors.push(component);
-                    } else if (component.type === "RollerShutter") {
+                    } else if (component.Type === "RollerShutter") {
                         c.rollerShutters.push(component);
-                    } else if (component.type === "MotionDetector") {
+                    } else if (component.Type === "MotionDetector") {
                         c.motionDetectors.push(component);
-                    } else if (component.type === "Window") {
+                    } else if (component.Type === "Window") {
                         c.windows.push(component);
                     }
 
@@ -204,7 +204,7 @@ function configureComponent(area, component) {
     component.OverviewCaption = getAppSetting(component, "OverviewCaption", component.id);
 
     component.SortValue = getAppSetting(component, "SortValue", 0);
-    component.IsVisible = getAppSetting(component, "IsVisible", false);
+    component.IsVisible = getAppSetting(component, "IsVisible", true);
 
     component.DisplayVertical = getAppSetting(component, "DisplayVertical", false);
     component.IsPartOfOnStateCounter = getAppSetting(component, "IsPartOfOnStateCounter", false);

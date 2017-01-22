@@ -10,8 +10,8 @@ namespace HA4IoT.Actuators.StateMachines
 {
     public class StateMachine : ActuatorBase, IStateMachine
     {
-        private readonly Dictionary<ComponentState, ComponentState> _stateAlias = new Dictionary<ComponentState, ComponentState>(); 
-        private readonly List<IStateMachineState> _states = new List<IStateMachineState>(); 
+        private readonly Dictionary<ComponentState, ComponentState> _stateAlias = new Dictionary<ComponentState, ComponentState>();
+        private readonly List<IStateMachineState> _states = new List<IStateMachineState>();
 
         private IStateMachineState _activeState;
         private bool _turnOffIfStateIsAppliedTwice;
@@ -20,7 +20,7 @@ namespace HA4IoT.Actuators.StateMachines
             : base(id)
         {
         }
-        
+
         public bool SupportsState(ComponentState stateId)
         {
             if (stateId == null) throw new ArgumentNullException(nameof(stateId));
@@ -142,7 +142,7 @@ namespace HA4IoT.Actuators.StateMachines
 
         public override void HandleApiCall(IApiContext apiContext)
         {
-            var request = apiContext.Request.ToObject<ApiCallRequest>();
+            var request = apiContext.Parameter.ToObject<ApiCallRequest>();
 
             if (!string.IsNullOrEmpty(request.Action))
             {
@@ -159,7 +159,7 @@ namespace HA4IoT.Actuators.StateMachines
                 var stateId = new ComponentState(request.State);
                 if (!SupportsState(stateId))
                 {
-                    apiContext.ResultCode = ApiResultCode.InvalidBody;
+                    apiContext.ResultCode = ApiResultCode.InvalidParameter;
                     apiContext.Response["Message"] = "State ID not supported.";
                 }
 

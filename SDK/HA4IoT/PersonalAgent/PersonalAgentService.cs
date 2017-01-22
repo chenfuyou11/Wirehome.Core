@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HA4IoT.Components;
@@ -9,40 +8,45 @@ using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.PersonalAgent;
+using HA4IoT.Contracts.PersonalAgent.AmazonEcho;
 using HA4IoT.Contracts.Sensors;
 using HA4IoT.Contracts.Services;
 using HA4IoT.Contracts.Services.OutdoorHumidity;
 using HA4IoT.Contracts.Services.OutdoorTemperature;
+using HA4IoT.Contracts.Services.Settings;
 using HA4IoT.Contracts.Services.Weather;
+using Newtonsoft.Json.Linq;
 
 namespace HA4IoT.PersonalAgent
 {
-    [ApiServiceClass(typeof(PersonalAgentService))]
+    [ApiServiceClass(typeof(IPersonalAgentService))]
     public class PersonalAgentService : ServiceBase, IPersonalAgentService
     {
-        private readonly SynonymService _synonymService;
+        private readonly ISettingsService _settingsService;
         private readonly IComponentService _componentService;
         private readonly IAreaService _areaService;
         private readonly IWeatherService _weatherService;
         private readonly IOutdoorTemperatureService _outdoorTemperatureService;
         private readonly IOutdoorHumidityService _outdoorHumidityService;
 
+        private MessageContext _latestMessageContext;
+
         public PersonalAgentService(
-            SynonymService synonymService,
+            ISettingsService settingsService,
             IComponentService componentService,
             IAreaService areaService,
             IWeatherService weatherService,
             IOutdoorTemperatureService outdoorTemperatureService,
             IOutdoorHumidityService outdoorHumidityService)
         {
-            if (synonymService == null) throw new ArgumentNullException(nameof(synonymService));
+            if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
             if (componentService == null) throw new ArgumentNullException(nameof(componentService));
             if (areaService == null) throw new ArgumentNullException(nameof(areaService));
             if (weatherService == null) throw new ArgumentNullException(nameof(weatherService));
             if (outdoorTemperatureService == null) throw new ArgumentNullException(nameof(outdoorTemperatureService));
             if (outdoorHumidityService == null) throw new ArgumentNullException(nameof(outdoorHumidityService));
 
-            _synonymService = synonymService;
+            _settingsService = settingsService;
             _componentService = componentService;
             _areaService = areaService;
             _weatherService = weatherService;
@@ -50,93 +54,72 @@ namespace HA4IoT.PersonalAgent
             _outdoorHumidityService = outdoorHumidityService;
         }
 
-        public string ProcessMessage(IInboundMessage message)
+        [ApiMethod]
+        public void ProcessSkillServiceRequest(IApiContext apiContext)
         {
-            if (message == null) throw new ArgumentNullException(nameof(message));
+            var request = apiContext.Parameter.ToObject<SkillServiceRequest>();
 
-            var messageContextFactory = new MessageContextFactory(_synonymService, _areaService);
-            var messageContext = messageContextFactory.Create(message);
+            var messageContextFactory = new MessageContextFactory(_areaService, _componentService, _settingsService);
+            var messageContext = messageContextFactory.Create(request);
 
-            string answer;
-            try
-            {
-                answer = ProcessMessage(messageContext);
+            ProcessMessage(messageContext);
 
-                if (messageContext.GetContainsWord("debug"))
-                {
-                     answer += Environment.NewLine + Environment.NewLine + GenerateDebugOutput(messageContext);
-                }
-            }
-            catch (Exception exception)
-            {
-                answer = $"{Emoji.Scream} Mist! Da ist etwas total schief gelaufen! Bitte stelle mir nie wieder solche Fragen!";
-                Log.Error(exception, $"Error while processing message '{message.Text}'.");
-            }
+            var response = new SkillServiceResponse();
+            response.Response.OutputSpeech.Text = messageContext.Answer;
 
-            return answer;
+            apiContext.Response = JObject.FromObject(response);
         }
 
         [ApiMethod]
         public void Ask(IApiContext apiContext)
         {
-            var message = (string)apiContext.Request["Message"];
-            if (string.IsNullOrEmpty(message))
+            var text = (string)apiContext.Parameter["Message"];
+            if (string.IsNullOrEmpty(text))
             {
-                apiContext.ResultCode = ApiResultCode.InvalidBody;
+                apiContext.ResultCode = ApiResultCode.InvalidParameter;
                 return;
             }
 
-            var inboundMessage = new ApiInboundMessage(DateTime.Now, message);
-            var answer = ProcessMessage(inboundMessage);
-
-            apiContext.Response["Answer"] = answer;
+            apiContext.Response["Answer"] = ProcessTextMessage(text); ;
         }
 
-        private string GenerateDebugOutput(MessageContext messageContext)
+        public string ProcessTextMessage(string text)
         {
-            var debugOutput = new StringBuilder();
+            if (text == null) throw new ArgumentNullException(nameof(text));
 
-            debugOutput.AppendLine("<b>DEBUG:</b>");
+            var messageContextFactory = new MessageContextFactory(_areaService, _componentService, _settingsService);
+            var messageContext = messageContextFactory.Create(text);
 
-            debugOutput.AppendLine("<b>[Original message]</b>");
-            debugOutput.AppendLine(messageContext.OriginalMessage.Text);
-
-            int counter = 1;
-            debugOutput.AppendLine("<b>[Identified components]</b>");
-            foreach (var componentId in messageContext.IdentifiedComponentIds)
-            {
-                debugOutput.AppendLine($"{counter} - {componentId}");
-                counter++;
-            }
-
-            counter = 1;
-            debugOutput.AppendLine("<b>[Identified areas]</b>");
-            foreach (var areaId in messageContext.IdentifiedAreaIds)
-            {
-                debugOutput.AppendLine($"{counter} - {areaId}");
-                counter++;
-            }
-
-            counter = 1;
-            debugOutput.AppendLine("<b>[Filtered components]</b>");
-            foreach (var componentId in messageContext.FilteredComponentIds)
-            {
-                debugOutput.AppendLine($"{counter} - {componentId}");
-                counter++;
-            }
-
-            counter = 1;
-            debugOutput.AppendLine("<b>[Identified component states]</b>");
-            foreach (var componentState in messageContext.IdentifiedComponentStates)
-            {
-                debugOutput.AppendLine($"{counter} - {componentState}");
-                counter++;
-            }
-
-            return debugOutput.ToString();
+            ProcessMessage(messageContext);
+            return messageContext.Answer;
         }
 
-        private string ProcessMessage(MessageContext messageContext)
+        [ApiMethod]
+        public void GetLatestMessageContext(IApiContext apiContext)
+        {
+            if (_latestMessageContext == null)
+            {
+                return;
+            }
+
+            apiContext.Response = JObject.FromObject(_latestMessageContext);
+        }
+
+        private void ProcessMessage(MessageContext messageContext)
+        { 
+            try
+            {
+                _latestMessageContext = messageContext;
+                messageContext.Answer = ProcessMessageInternal(messageContext);
+            }
+            catch (Exception exception)
+            {
+                messageContext.Answer = $"{Emoji.Scream} Mist! Da ist etwas total schief gelaufen! Bitte stelle mir nie wieder solche Fragen!";
+                Log.Error(exception, $"Error while processing message '{messageContext.Text}'.");
+            }
+        }
+
+        private string ProcessMessageInternal(MessageContext messageContext)
         {
             if (messageContext.GetPatternMatch("Hi").Success)
             {
@@ -158,7 +141,7 @@ namespace HA4IoT.PersonalAgent
                 return GetWindowStatus();
             }
 
-            if (!messageContext.FilteredComponentIds.Any())
+            if (!messageContext.AffectedComponentIds.Any())
             {
                 if (messageContext.IdentifiedComponentIds.Count > 0)
                 {
@@ -168,22 +151,22 @@ namespace HA4IoT.PersonalAgent
                 return $"{Emoji.Confused} Du musst mir schon einen Sensor oder Aktor nennen.";
             }
 
-            if (messageContext.FilteredComponentIds.Count > 1)
+            if (messageContext.AffectedComponentIds.Count > 1)
             {
                 return $"{Emoji.Flushed} Bitte nicht mehrere Komponenten auf einmal.";
             }
 
-            if (messageContext.FilteredComponentIds.Count == 1)
+            if (messageContext.AffectedComponentIds.Count == 1)
             {
-                var component = _componentService.GetComponent<IComponent>(messageContext.IdentifiedComponentIds.First());
+                var component = _componentService.GetComponent<IComponent>(messageContext.AffectedComponentIds.First());
 
-                IActuator actuator = component as IActuator;
+                var actuator = component as IActuator;
                 if (actuator != null)
                 {
                     return UpdateActuatorState(actuator, messageContext);
                 }
 
-                ISensor sensor = component as ISensor;
+                var sensor = component as ISensor;
                 if (sensor != null)
                 {
                     return GetSensorStatus(sensor);
@@ -211,7 +194,7 @@ namespace HA4IoT.PersonalAgent
             }
 
             actuator.SetState(messageContext.IdentifiedComponentStates.First());
-            return $"{Emoji.ThumbsUp} Habe ich erledigt. Kann ich noch etwas für dich tun?";
+            return $"{Emoji.ThumbsUp} Habe ich erledigt.";
         }
 
         private string GetWeatherStatus()
@@ -228,7 +211,7 @@ namespace HA4IoT.PersonalAgent
         private string GetWindowStatus()
         {
             var allWindows = _componentService.GetComponents<IWindow>();
-            List<IWindow> openWindows = allWindows.Where(w => w.Casements.Any(c => !c.GetState().Equals(CasementStateId.Closed))).ToList();
+            var openWindows = allWindows.Where(w => w.Casements.Any(c => !c.GetState().Equals(CasementStateId.Closed))).ToList();
 
             string response;
             if (!openWindows.Any())

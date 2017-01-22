@@ -38,7 +38,7 @@ namespace HA4IoT.Contracts.Services.Settings
         public static TSettings GetSettings<TSettings>(this ISettingsService settingsService)
         {
             if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
-            
+
             var uri = SettingsUriGenerator.From(typeof(TSettings));
             return settingsService.GetSettings<TSettings>(uri);
         }
@@ -73,15 +73,23 @@ namespace HA4IoT.Contracts.Services.Settings
         public static void CreateSettingsMonitor<TSettings>(this ISettingsService settingsService, Action<TSettings> callback)
         {
             if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
-            
+
             var uri = SettingsUriGenerator.From(typeof(TSettings));
+            settingsService.CreateSettingsMonitor(uri, callback);
+        }
+
+        public static void CreateSettingsMonitor(this ISettingsService settingsService, AreaId areaId, Action<AreaSettings> callback)
+        {
+            if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
+
+            var uri = SettingsUriGenerator.From(areaId);
             settingsService.CreateSettingsMonitor(uri, callback);
         }
 
         public static void CreateSettingsMonitor<TSettings>(this ISettingsService settingsService, ComponentId componentId, Action<TSettings> callback) where TSettings : IComponentSettings
         {
             if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
-            
+
             var uri = SettingsUriGenerator.From(componentId);
             settingsService.CreateSettingsMonitor(uri, callback);
         }
@@ -89,7 +97,7 @@ namespace HA4IoT.Contracts.Services.Settings
         public static void CreateSettingsMonitor<TSettings>(this ISettingsService settingsService, AutomationId automationId, Action<TSettings> callback) where TSettings : IAutomationSettings
         {
             if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
-            
+
             var uri = SettingsUriGenerator.From(automationId);
             settingsService.CreateSettingsMonitor(uri, callback);
         }

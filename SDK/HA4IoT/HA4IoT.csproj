@@ -61,7 +61,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\ARM\</OutputPath>
+    <OutputPath>..\..\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
@@ -144,8 +144,22 @@
     <Compile Include="Actuators\Triggers\Trigger.cs" />
     <Compile Include="Actuators\Triggers\TriggerBase.cs" />
     <Compile Include="Actuators\Triggers\TriggerExtensions.cs" />
-    <Compile Include="Api\ApiService.cs" />
-    <Compile Include="Api\LocalHttpServerApiDispatcherEndpointService.cs" />
+    <Compile Include="Api\ApiDispatcherService.cs" />
+    <Compile Include="Api\AzureCloud\AzureCloudService.cs" />
+    <Compile Include="Api\AzureCloud\AzureCloudServiceSettings.cs" />
+    <Compile Include="Api\AzureCloud\EventHubSender.cs" />
+    <Compile Include="Api\AzureCloud\MessageReceivedEventArgs.cs" />
+    <Compile Include="Api\AzureCloud\QueueBasedApiContext.cs" />
+    <Compile Include="Api\AzureCloud\QueueReceiver.cs" />
+    <Compile Include="Api\AzureCloud\QueueReceiverOptions.cs" />
+    <Compile Include="Api\AzureCloud\QueueSender.cs" />
+    <Compile Include="Api\AzureCloud\QueueSenderOptions.cs" />
+    <Compile Include="Api\CloudConnector\CloudConnectorApiContext.cs" />
+    <Compile Include="Api\CloudConnector\CloudConnectorService.cs" />
+    <Compile Include="Api\CloudConnector\CloudConnectorServiceSettings.cs" />
+    <Compile Include="Api\CloudConnector\ReceivePendingMessagesAsyncResult.cs" />
+    <Compile Include="Api\CloudConnector\TaskExtensions.cs" />
+    <Compile Include="Api\LocalHttpServerService.cs" />
     <Compile Include="Automations\Automation.cs" />
     <Compile Include="Automations\AutomationBase.cs" />
     <Compile Include="Automations\AutomationFactory.cs" />
@@ -160,8 +174,11 @@
     <Compile Include="Automations\TurnOnAndOffAutomation.cs" />
     <Compile Include="Automations\TurnOnAndOffAutomationExtensions.cs" />
     <Compile Include="Automations\TurnOnAndOffAutomationSettings.cs" />
+    <Compile Include="Components\Component.cs" />
     <Compile Include="Components\ComponentBase.cs" />
+    <Compile Include="Components\ComponentClass.cs" />
     <Compile Include="Components\ComponentExtensions.cs" />
+    <Compile Include="Components\ComponentSettings.cs" />
     <Compile Include="Conditions\ActionExtensions.cs" />
     <Compile Include="Conditions\Condition.cs" />
     <Compile Include="Conditions\ConditionalAction.cs" />
@@ -180,17 +197,33 @@
     <Compile Include="Core\ContainerExtensions.cs" />
     <Compile Include="Core\Controller.cs" />
     <Compile Include="Core\ControllerOptions.cs" />
+    <Compile Include="ExternalServices\OpenWeatherMap\OpenWeatherMapResponseParser.cs" />
+    <Compile Include="ExternalServices\OpenWeatherMap\OpenWeatherMapService.cs" />
+    <Compile Include="ExternalServices\OpenWeatherMap\OpenWeatherMapServiceSettings.cs" />
+    <Compile Include="ExternalServices\OpenWeatherMap\OpenWeatherMapWeatherSituationParser.cs" />
+    <Compile Include="ExternalServices\TelegramBot\TelegramBotExtensions.cs" />
+    <Compile Include="ExternalServices\TelegramBot\TelegramBotMessageReceivedEventArgs.cs" />
+    <Compile Include="ExternalServices\TelegramBot\TelegramBotService.cs" />
+    <Compile Include="ExternalServices\TelegramBot\TelegramBotServiceSettings.cs" />
+    <Compile Include="ExternalServices\Twitter\TweetAction.cs" />
+    <Compile Include="ExternalServices\Twitter\TwitterClientService.cs" />
+    <Compile Include="ExternalServices\Twitter\TwitterClientServiceExtensions.cs" />
+    <Compile Include="ExternalServices\Twitter\TwitterClientServiceSettings.cs" />
+    <Compile Include="Features\FeatureCollection.cs" />
+    <Compile Include="Features\IFeature.cs" />
+    <Compile Include="Features\Proxies\ITurnOffFeatureProxy.cs" />
+    <Compile Include="Features\Proxies\ITurnOnFeatureProxy.cs" />
+    <Compile Include="Features\TurnOffFeature.cs" />
+    <Compile Include="Features\TurnOnFeature.cs" />
     <Compile Include="Logger\LogEntry.cs" />
     <Compile Include="Logger\LogEntrySeverity.cs" />
     <Compile Include="Logger\UdpLogger.cs" />
     <Compile Include="Notifications\NotificationService.cs" />
     <Compile Include="Notifications\NotificationServiceSettings.cs" />
-    <Compile Include="PersonalAgent\ApiInboundMessage.cs" />
     <Compile Include="PersonalAgent\MessageContext.cs" />
     <Compile Include="PersonalAgent\MessageContextFactory.cs" />
+    <Compile Include="PersonalAgent\MessageContextKind.cs" />
     <Compile Include="PersonalAgent\PersonalAgentService.cs" />
-    <Compile Include="PersonalAgent\SynonymService.cs" />
-    <Compile Include="PersonalAgent\SynonymServiceStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sensors\Buttons\Button.cs" />
     <Compile Include="Sensors\Buttons\ButtonExtensions.cs" />
@@ -262,10 +295,6 @@
     <ProjectReference Include="..\HA4IoT.Contracts\HA4IoT.Contracts.csproj">
       <Project>{e1edac4b-83b9-46f4-9f6a-3bae97d79f29}</Project>
       <Name>HA4IoT.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HA4IoT.ExternalServices\HA4IoT.ExternalServices.csproj">
-      <Project>{1792ccef-9f6c-4535-be20-baa777243980}</Project>
-      <Name>HA4IoT.ExternalServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\HA4IoT.Hardware\HA4IoT.Hardware.csproj">
       <Project>{287a9bd0-4037-4add-986f-54056f059eae}</Project>

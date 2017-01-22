@@ -18,13 +18,13 @@ namespace HA4IoT.Services.Components
         private readonly ComponentCollection _components = new ComponentCollection();
 
         private readonly ISystemInformationService _systemInformationService;
-        private readonly IApiService _apiService;
+        private readonly IApiDispatcherService _apiService;
         private readonly ISettingsService _settingsService;
 
         public ComponentService(
             ISystemEventsService systemEventsService,
             ISystemInformationService systemInformationService,
-            IApiService apiService,
+            IApiDispatcherService apiService,
             ISettingsService settingsService)
         {
             if (systemEventsService == null) throw new ArgumentNullException(nameof(systemEventsService));
@@ -65,6 +65,11 @@ namespace HA4IoT.Services.Components
             component.StateChanged += (s, e) => _apiService.NotifyStateChanged(component);
         }
 
+        public IComponent GetComponent(ComponentId id)
+        {
+            return _components.Get(id);
+        }
+
         public TComponent GetComponent<TComponent>() where TComponent : IComponent
         {
             return _components.Get<TComponent>();
@@ -98,7 +103,7 @@ namespace HA4IoT.Services.Components
         public void Invoke(IApiContext apiContext)
         {
             // TODO: Consider creating classes as optional method parameters which are filled via reflection from Request JSON.
-            var componentId = (string)apiContext.Request["ComponentId"];
+            var componentId = (string)apiContext.Parameter["ComponentId"];
             if (string.IsNullOrEmpty(componentId))
             {
                 throw new BadRequestException("Property 'ComponentId' is missing.");
@@ -111,13 +116,13 @@ namespace HA4IoT.Services.Components
         [ApiMethod]
         public void Status(IApiContext apiContext)
         {
-            
+
         }
 
         [ApiMethod]
         public void Reset(IApiContext apiContext)
         {
-            var componentId = (string)apiContext.Request["ComponentId"];
+            var componentId = (string)apiContext.Parameter["ComponentId"];
             if (string.IsNullOrEmpty(componentId))
             {
                 throw new BadRequestException("Property 'ComponentId' is missing.");

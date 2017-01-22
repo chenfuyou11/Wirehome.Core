@@ -20,7 +20,7 @@ namespace HA4IoT.Sensors.MotionDetectors
 
         private TimedAction _autoEnableAction;
 
-        public MotionDetector(ComponentId id, IMotionDetectorEndpoint endpoint, ISchedulerService schedulerService, ISettingsService settingsService)
+        public MotionDetector(ComponentId id, IMotionDetectorAdapter endpoint, ISchedulerService schedulerService, ISettingsService settingsService)
             : base(id)
         {
             if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
@@ -64,7 +64,7 @@ namespace HA4IoT.Sensors.MotionDetectors
 
         public override void HandleApiCall(IApiContext apiContext)
         {
-            var action = (string)apiContext.Request["Action"];
+            var action = (string)apiContext.Parameter["Action"];
 
             if (action.Equals("detected", StringComparison.OrdinalIgnoreCase))
             {

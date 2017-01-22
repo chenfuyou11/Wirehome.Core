@@ -17,10 +17,10 @@ namespace HA4IoT.Actuators.RollerShutters
     public class RollerShutter : ActuatorBase, IRollerShutter
     {
         private readonly Stopwatch _movingDuration = new Stopwatch();
-        private readonly IRollerShutterEndpoint _endpoint;
+        private readonly IRollerShutterAdapter _endpoint;
 
         private readonly ISchedulerService _schedulerService;
-        
+
         private readonly IAction _startMoveUpAction;
         private readonly IAction _turnOffAction;
         private readonly IAction _startMoveDownAction;
@@ -31,8 +31,8 @@ namespace HA4IoT.Actuators.RollerShutters
         private int _position;
 
         public RollerShutter(
-            ComponentId id, 
-            IRollerShutterEndpoint endpoint,
+            ComponentId id,
+            IRollerShutterAdapter endpoint,
             ITimerService timerService,
             ISchedulerService schedulerService,
             ISettingsService settingsService)
@@ -60,7 +60,7 @@ namespace HA4IoT.Actuators.RollerShutters
         public RollerShutterSettings Settings { get; private set; }
 
         public bool IsClosed => _position == Settings.MaxPosition;
-        
+
         public IAction GetTurnOffAction()
         {
             return _turnOffAction;
@@ -121,13 +121,13 @@ namespace HA4IoT.Actuators.RollerShutters
 
         public override void HandleApiCall(IApiContext apiContext)
         {
-            if (apiContext.Request.Property("State") == null)
+            if (apiContext.Parameter.Property("State") == null)
             {
-                apiContext.ResultCode = ApiResultCode.InvalidBody;
+                apiContext.ResultCode = ApiResultCode.InvalidParameter;
                 return;
             }
 
-            var newState = new ComponentState((string) apiContext.Request["State"]);
+            var newState = new ComponentState((string)apiContext.Parameter["State"]);
             SetState(newState);
         }
 
@@ -166,7 +166,7 @@ namespace HA4IoT.Actuators.RollerShutters
             {
                 _position = 0;
             }
-            
+
             if (_position > Settings.MaxPosition)
             {
                 _position = Settings.MaxPosition;

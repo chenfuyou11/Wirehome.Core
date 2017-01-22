@@ -39,7 +39,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\ARM\</OutputPath>
+    <OutputPath>..\..\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
@@ -109,23 +109,37 @@
   <ItemGroup>
     <Compile Include="Actions\IAction.cs" />
     <Compile Include="Actuators\IMonostableLamp.cs" />
+    <Compile Include="Actuators\IRollerShutterAdapter.cs" />
     <Compile Include="Api\ApiClassAttribute.cs" />
     <Compile Include="Api\ApiContext.cs" />
     <Compile Include="Api\ApiMethodAttribute.cs" />
+    <Compile Include="Api\ApiRequestReceivedEventArgs.cs" />
+    <Compile Include="Api\ApiResultCode.cs" />
+    <Compile Include="Api\Cloud\ApiRequest.cs" />
+    <Compile Include="Api\Cloud\ApiResponse.cs" />
+    <Compile Include="Api\Cloud\CloudConnectorHeaders.cs" />
+    <Compile Include="Api\Cloud\CloudMessageHeader.cs" />
+    <Compile Include="Api\Cloud\CloudRequestMessage.cs" />
+    <Compile Include="Api\Cloud\CloudResponseMessage.cs" />
+    <Compile Include="Api\IApiAdapter.cs" />
+    <Compile Include="Api\IApiContext.cs" />
+    <Compile Include="Api\IApiDispatcherService.cs" />
     <Compile Include="Areas\AreaIdGenerator.cs" />
+    <Compile Include="Areas\AreaSettings.cs" />
     <Compile Include="Automations\AutomationIdGenerator.cs" />
-    <Compile Include="Components\ComponentIdExtensions.cs" />
-    <Compile Include="Components\ComponentSettings.cs" />
     <Compile Include="Actuators\BinaryStateId.cs" />
-    <Compile Include="Components\ComponentId.cs" />
     <Compile Include="Actuators\StateChangedEventArgs.cs" />
     <Compile Include="Actuators\RollerShutterStateId.cs" />
     <Compile Include="Automations\IAutomationSettings.cs" />
+    <Compile Include="Components\ComponentId.cs" />
+    <Compile Include="Components\ComponentIdExtensions.cs" />
     <Compile Include="Components\ComponentIdGenerator.cs" />
+    <Compile Include="Components\ComponentSettings.cs" />
     <Compile Include="Components\ComponentState.cs" />
     <Compile Include="Components\ComponentStateChangedEventArgs.cs" />
-    <Compile Include="Components\IComponentSettings.cs" />
     <Compile Include="Components\IComponent.cs" />
+    <Compile Include="Components\IComponentService.cs" />
+    <Compile Include="Components\IComponentSettings.cs" />
     <Compile Include="Components\StateNotSupportedException.cs" />
     <Compile Include="Conditions\ConditionState.cs" />
     <Compile Include="Conditions\ICondition.cs" />
@@ -138,8 +152,39 @@
     <Compile Include="Networking\WebSockets\WebSocketMessage.cs" />
     <Compile Include="Networking\WebSockets\WebSocketMessageReceivedEventArgs.cs" />
     <Compile Include="Networking\WebSockets\WebSocketTextMessage.cs" />
+    <Compile Include="PersonalAgent\AmazonEcho\SkillServiceRequest.cs" />
+    <Compile Include="PersonalAgent\AmazonEcho\SkillServiceRequestRequest.cs" />
+    <Compile Include="PersonalAgent\AmazonEcho\SkillServiceRequestRequestIntent.cs" />
+    <Compile Include="PersonalAgent\AmazonEcho\SkillServiceRequestRequestIntentSlot.cs" />
+    <Compile Include="PersonalAgent\AmazonEcho\SkillServiceRequestSession.cs" />
+    <Compile Include="PersonalAgent\AmazonEcho\SkillServiceRequestSessionApplication.cs" />
+    <Compile Include="PersonalAgent\AmazonEcho\SkillServiceRequestSessionUser.cs" />
+    <Compile Include="PersonalAgent\AmazonEcho\SkillServiceResponse.cs" />
+    <Compile Include="PersonalAgent\AmazonEcho\SkillServiceResponseResponse.cs" />
+    <Compile Include="PersonalAgent\AmazonEcho\SkillServiceResponseResponseOutputSpeech.cs" />
+    <Compile Include="PersonalAgent\Emoji.cs" />
+    <Compile Include="PersonalAgent\IInboundTextMessage.cs" />
+    <Compile Include="PersonalAgent\IOutboundTextMessage.cs" />
+    <Compile Include="Sensors\ButtonPressedDuration.cs" />
+    <Compile Include="Sensors\ButtonStateID.cs" />
+    <Compile Include="Sensors\CasementStateID.cs" />
+    <Compile Include="Sensors\IButton.cs" />
+    <Compile Include="Sensors\IButtonAdapter.cs" />
     <Compile Include="Sensors\IButtonSettings.cs" />
+    <Compile Include="Sensors\ICasement.cs" />
+    <Compile Include="Sensors\IHumiditySensor.cs" />
+    <Compile Include="Sensors\IMotionDetector.cs" />
+    <Compile Include="Sensors\IMotionDetectorAdapter.cs" />
     <Compile Include="Sensors\IMotionDetectorSettings.cs" />
+    <Compile Include="Sensors\INumericValueSensor.cs" />
+    <Compile Include="Sensors\INumericValueSensorAdapter.cs" />
+    <Compile Include="Sensors\ISensor.cs" />
+    <Compile Include="Sensors\ISwitch.cs" />
+    <Compile Include="Sensors\ITemperatureSensor.cs" />
+    <Compile Include="Sensors\IWindow.cs" />
+    <Compile Include="Sensors\MotionDetectorStateID.cs" />
+    <Compile Include="Sensors\NumericValueSensorEndpointValueChangedEventArgs.cs" />
+    <Compile Include="Sensors\SwitchStateID.cs" />
     <Compile Include="Services\ApiServiceClassAttribute.cs" />
     <Compile Include="Services\Backup\BackupEventArgs.cs" />
     <Compile Include="Services\Backup\IBackupService.cs" />
@@ -170,45 +215,20 @@
     <Compile Include="Hardware\Services\IPi2GpioService.cs" />
     <Compile Include="Logging\MessageWithExceptionLoggedEventArgs.cs" />
     <Compile Include="Logging\MessageLoggedEventArgs.cs" />
-    <Compile Include="PersonalAgent\Emoji.cs" />
-    <Compile Include="PersonalAgent\IInboundMessage.cs" />
-    <Compile Include="PersonalAgent\IOutboundMessage.cs" />
-    <Compile Include="Sensors\ButtonPressedDuration.cs" />
-    <Compile Include="Sensors\CasementStateID.cs" />
     <Compile Include="Actuators\LevelStateId.cs" />
-    <Compile Include="Sensors\NumericValueSensorEndpointValueChangedEventArgs.cs" />
-    <Compile Include="Sensors\IButtonEndpoint.cs" />
-    <Compile Include="Sensors\ICasement.cs" />
-    <Compile Include="Sensors\INumericValueSensorEndpoint.cs" />
-    <Compile Include="Sensors\IMotionDetectorEndpoint.cs" />
     <Compile Include="Actuators\IRollerShutterEndpoint.cs" />
     <Compile Include="Actuators\ISocket.cs" />
     <Compile Include="Actuators\ILamp.cs" />
     <Compile Include="Actuators\IBinaryStateEndpoint.cs" />
     <Compile Include="Actuators\IStateMachineState.cs" />
     <Compile Include="Actuators\IStateMachineStateEndpoint.cs" />
-    <Compile Include="Sensors\ISensor.cs" />
-    <Compile Include="Sensors\IWindow.cs" />
-    <Compile Include="Api\ApiRequestReceivedEventArgs.cs" />
-    <Compile Include="Api\ApiResultCode.cs" />
-    <Compile Include="Api\IApiContext.cs" />
-    <Compile Include="Api\IApiService.cs" />
-    <Compile Include="Api\IApiDispatcherEndpoint.cs" />
     <Compile Include="Automations\AutomationId.cs" />
-    <Compile Include="Sensors\ButtonStateID.cs" />
     <Compile Include="Actuators\IStateMachine.cs" />
     <Compile Include="Actuators\IActuator.cs" />
-    <Compile Include="Sensors\IButton.cs" />
-    <Compile Include="Sensors\IHumiditySensor.cs" />
-    <Compile Include="Sensors\IMotionDetector.cs" />
     <Compile Include="Hardware\IHardwareParameter.cs" />
     <Compile Include="Actuators\IRollerShutter.cs" />
-    <Compile Include="Sensors\INumericValueSensor.cs" />
-    <Compile Include="Sensors\ITemperatureSensor.cs" />
-    <Compile Include="Sensors\SwitchStateID.cs" />
     <Compile Include="Automations\IAutomation.cs" />
     <Compile Include="Automations\IAutomationService.cs" />
-    <Compile Include="Components\IComponentService.cs" />
     <Compile Include="Core\Discovery\DiscoveryResponse.cs" />
     <Compile Include="Areas\IAreaService.cs" />
     <Compile Include="Areas\IArea.cs" />
@@ -225,7 +245,6 @@
     <Compile Include="Hardware\II2CDevice.cs" />
     <Compile Include="Hardware\IDevice.cs" />
     <Compile Include="Hardware\DeviceId.cs" />
-    <Compile Include="Sensors\ISwitch.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Networking\Http\HttpContext.cs" />
     <Compile Include="Networking\Http\HttpHeaderCollection.cs" />
@@ -247,7 +266,6 @@
     <Compile Include="Services\ServiceBase.cs" />
     <Compile Include="Triggers\ITrigger.cs" />
     <Compile Include="Triggers\TriggeredEventArgs.cs" />
-    <Compile Include="Sensors\MotionDetectorStateID.cs" />
     <Compile Include="Daylight.cs" />
     <Compile Include="Hardware\BinaryState.cs" />
     <Compile Include="Hardware\BinaryStateChangedEventArgs.cs" />

@@ -10,12 +10,12 @@ namespace HA4IoT.Contracts.Services
         {
             if (interfaceType == null) throw new ArgumentNullException(nameof(interfaceType));
 
-            if (!typeof(IService).IsAssignableFrom(interfaceType))
+            if (!typeof(IService).GetTypeInfo().IsAssignableFrom(interfaceType.GetTypeInfo()))
             {
                 throw new ArgumentException($"Type {interfaceType.FullName} is not implementing IService.");
             }
-            
-            Uri = "Service/" + interfaceType.Name;
+
+            Namespace = "Service/" + interfaceType.Name;
         }
     }
 }

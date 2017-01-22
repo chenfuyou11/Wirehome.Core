@@ -8,13 +8,10 @@ namespace HA4IoT.Hardware.CCTools
     public class CurrentPort : IBinaryInput
     {
         public const float LOW_STATE_VALUE = 0.20f;
-
         public event EventHandler<BinaryStateChangedEventArgs> StateChanged;
-
         public byte Number { get; }
         public CurrentAccessor CurrentAccessor { get; }
         private bool InvertValue;
-
         private BinaryState _LastState = BinaryState.Low;
 
         public CurrentPort(byte number, CurrentAccessor currentAccessor)
@@ -50,7 +47,7 @@ namespace HA4IoT.Hardware.CCTools
         {
             var state = BinaryState.Low;
 
-            Debug.WriteLine($"CURRENT: {value}");
+            Debug.WriteLine($"CURRENT: {value} on port {Number}");
 
             if (value > LOW_STATE_VALUE)
             {

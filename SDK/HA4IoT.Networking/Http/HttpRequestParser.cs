@@ -8,12 +8,14 @@ namespace HA4IoT.Networking.Http
     public class HttpRequestParser
     {
         private const string MethodPattern = @"(?'method'GET|POST|PATCH|PUT|DELETE|TRACE)";
-        private const string UriPattern = @"(?'uri'/\S+?)";
+        private const string UriPattern = @"(?'uri'/\S*?)";
         private const string VersionPattern = @"HTTP/(?'version'1.1)";
         private const string HeadersPattern = @"(?'headers'[\w\W]*?)";
         private const string BodyPattern = @"(?'body'.*?)";
+        private const string JsonPattern = @"^[\d\n\r]*(?<json>\{.*\})[\d\n\r]*";
 
         private readonly Regex _regex;
+        private readonly Regex _regexJson;
 
         private readonly HttpHeaderCollection _headers = new HttpHeaderCollection();
         
@@ -26,7 +28,8 @@ namespace HA4IoT.Networking.Http
         public HttpRequestParser()
         {
             var pattern = $@"^{MethodPattern} {UriPattern} {VersionPattern}((\r\n){HeadersPattern})?((\r\n\r\n){BodyPattern})?$";
-            _regex = new Regex(pattern, RegexOptions.Compiled);
+            _regex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.Singleline);
+            _regexJson = new Regex(JsonPattern, RegexOptions.Compiled);
         }
 
         public bool TryParse(byte[] buffer, int bufferLength, out HttpRequest request)
@@ -45,6 +48,9 @@ namespace HA4IoT.Networking.Http
                 _body = groups["body"].Value;
                 
                 ParseQuery();
+
+                var jsonGroup = _regexJson.Match(_body).Groups;
+                _body = jsonGroup["json"].Value;
 
                 var binaryBodyLength = 0;
                 if (!string.IsNullOrEmpty(_body))

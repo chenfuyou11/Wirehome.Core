@@ -25,7 +25,7 @@ namespace HA4IoT.Services.Resources
         private readonly ISettingsService _settingsService;
 
         private ControllerSettings _controllerSettings;
-        
+
         public ResourceService(IBackupService backupService, IStorageService storageService, ISettingsService settingsService)
         {
             if (backupService == null) throw new ArgumentNullException(nameof(backupService));
@@ -63,7 +63,7 @@ namespace HA4IoT.Services.Resources
 
                 resource = new Resource(uri, value);
                 _resources.Add(resource);
-                
+
                 SaveResources();
             }
         }
@@ -124,10 +124,10 @@ namespace HA4IoT.Services.Resources
         {
             lock (_syncRoot)
             {
-                var request = apiContext.Request.ToObject<SetTextsRequest>();
+                var request = apiContext.Parameter.ToObject<SetTextsRequest>();
                 if (request?.Resources == null || !request.Resources.Any())
                 {
-                    apiContext.ResultCode = ApiResultCode.InvalidBody;
+                    apiContext.ResultCode = ApiResultCode.InvalidParameter;
                     return;
                 }
 
@@ -141,7 +141,7 @@ namespace HA4IoT.Services.Resources
 
                     _resources.Add(updatedResource);
                 }
-                
+
                 SaveResources();
             }
         }
@@ -151,7 +151,7 @@ namespace HA4IoT.Services.Resources
         {
             lock (_syncRoot)
             {
-                var request = apiContext.Request.ToObject<GetTextsRequest>();
+                var request = apiContext.Parameter.ToObject<GetTextsRequest>();
 
                 var matchingResources = _resources;
                 if (!string.IsNullOrEmpty(request.Category))

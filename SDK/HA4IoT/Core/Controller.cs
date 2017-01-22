@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
+using Windows.Storage;
 using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Core;
 using HA4IoT.Contracts.Logging;
@@ -23,12 +24,14 @@ namespace HA4IoT.Core
         private readonly ControllerOptions _options;
 
         private BackgroundTaskDeferral _deferral;
-        
+
         public Controller(ControllerOptions options)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
 
             _options = options;
+
+            StoragePath.Initialize(ApplicationData.Current.LocalFolder.Path, ApplicationData.Current.LocalFolder.Path);
         }
 
         public Task RunAsync(IBackgroundTaskInstance taskInstance)
@@ -53,7 +56,7 @@ namespace HA4IoT.Core
 
         public event EventHandler StartupCompleted;
         public event EventHandler StartupFailed;
-        public event EventHandler Shutdown; 
+        public event EventHandler Shutdown;
 
         private void Startup()
         {
@@ -97,7 +100,7 @@ namespace HA4IoT.Core
         private void StartHttpServer()
         {
             var httpServer = _container.GetInstance<HttpServer>();
-            
+
             new MappedFolderController("App", StoragePath.AppRoot, httpServer).Enable();
             new MappedFolderController("ManagementApp", StoragePath.ManagementAppRoot, httpServer).Enable();
 
@@ -113,7 +116,7 @@ namespace HA4IoT.Core
 
             var udpLogger = new UdpLogger();
             udpLogger.Start();
-            
+
             Log.Instance = udpLogger;
         }
 
@@ -127,7 +130,7 @@ namespace HA4IoT.Core
 
         private void ExposeRegistrationsToApi()
         {
-            var apiService = _container.GetInstance<IApiService>();
+            var apiService = _container.GetInstance<IApiDispatcherService>();
             var settingsService = _container.GetInstance<ISettingsService>();
 
             foreach (var registration in _container.GetCurrentRegistrations())
@@ -146,14 +149,14 @@ namespace HA4IoT.Core
         {
             _container.RegisterSingleton<IController>(() => this);
             _container.RegisterSingleton(() => _options);
-            
+
 
             _container.RegisterServices();
             _options.ContainerConfigurator?.ConfigureContainer(_container);
 
             _container.Verify();
         }
-        
+
         private void TryConfigure()
         {
             try
@@ -170,7 +173,7 @@ namespace HA4IoT.Core
                     Log.Warning("Configuration is set but does not implement 'IConfiguration'.");
                     return;
                 }
-                
+
                 Log.Info("Applying configuration");
                 configuration.ApplyAsync().Wait();
             }

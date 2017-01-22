@@ -30,18 +30,18 @@ namespace HA4IoT.Sensors
             _settingsService = settingsService;
         }
 
-        public ITemperatureSensor RegisterTemperatureSensor(IArea area, Enum id, INumericValueSensorEndpoint endpoint)
+        public ITemperatureSensor RegisterTemperatureSensor(IArea area, Enum id, INumericValueSensorAdapter endpoint)
         {
             if (area == null) throw new ArgumentNullException(nameof(area));
             if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
 
             var temperatureSensor = new TemperatureSensor(ComponentIdGenerator.Generate(area.Id, id), _settingsService, endpoint);
             area.AddComponent(temperatureSensor);
-            
+
             return temperatureSensor;
         }
 
-        public IHumiditySensor RegisterHumiditySensor(IArea area, Enum id, INumericValueSensorEndpoint endpoint)
+        public IHumiditySensor RegisterHumiditySensor(IArea area, Enum id, INumericValueSensorAdapter endpoint)
         {
             if (area == null) throw new ArgumentNullException(nameof(area));
             if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
@@ -123,6 +123,9 @@ namespace HA4IoT.Sensors
 
             return motionDetector;
         }
+
+
+        
 
         public IWindow RegisterWindow(IArea area, Enum id, Action<Window> initializer)
         {

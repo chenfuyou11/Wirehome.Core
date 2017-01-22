@@ -2,9 +2,9 @@
 
 namespace HA4IoT.Contracts.Services.ExternalServices.TelegramBot
 {
-    public class TelegramOutboundMessage : MessageBase, IOutboundMessage
+    public class TelegramOutboundMessage : MessageBase, IOutboundTextMessage
     {
-        public TelegramOutboundMessage(int chatId, string text, TelegramMessageFormat format) 
+        public TelegramOutboundMessage(int chatId, string text, TelegramMessageFormat format)
             : base(chatId, text)
         {
             Format = format;

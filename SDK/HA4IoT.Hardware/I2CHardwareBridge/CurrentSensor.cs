@@ -3,7 +3,7 @@ using System;
 
 namespace HA4IoT.Hardware.I2CHardwareBridge
 {
-    public class CurrentSensor : INumericValueSensorEndpoint
+    public class CurrentSensor : INumericValueSensorAdapter
     {
         private readonly int _id;
         private readonly CurrentAccessor _CurrentAccessor;

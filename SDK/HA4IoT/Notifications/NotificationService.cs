@@ -25,9 +25,9 @@ namespace HA4IoT.Notifications
         private readonly IResourceService _resourceService;
 
         public NotificationService(
-            IDateTimeService dateTimeService, 
-            IApiService apiService, 
-            ISchedulerService schedulerService, 
+            IDateTimeService dateTimeService,
+            IApiDispatcherService apiService,
+            ISchedulerService schedulerService,
             ISettingsService settingsService,
             IStorageService storageService,
             IResourceService resourceService)
@@ -96,7 +96,7 @@ namespace HA4IoT.Notifications
         [ApiMethod]
         public void Delete(IApiContext apiContext)
         {
-            var notificationUid = (string)apiContext.Request["Uid"];
+            var notificationUid = (string)apiContext.Parameter["Uid"];
             if (string.IsNullOrEmpty(notificationUid))
             {
                 throw new BadRequestException("Parameter 'Uid' is not specified.");
@@ -144,7 +144,7 @@ namespace HA4IoT.Notifications
         {
             _storageService.Write(StorageFilename, _notifications);
         }
-        
+
         private void TryLoadNotifications()
         {
             List<Notification> persistedNotifications;

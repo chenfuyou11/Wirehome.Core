@@ -147,10 +147,6 @@
       <Project>{c034ec4d-46cc-490a-a045-e4d4d1f49c31}</Project>
       <Name>HA4IoT</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HA4IoT.Tests.Mockups\HA4IoT.Tests.Mockups.csproj">
-      <Project>{238AD610-4F9B-4652-81DB-A8FC215F61A5}</Project>
-      <Name>HA4IoT.Tests.Mockups</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

@@ -104,6 +104,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="Lambda\discover_test.json" />
+    <None Include="Lambda\turn_on_test.json" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +115,8 @@
     <Compile Include="MessagesModel\Discoveredappliance.cs" />
     <Compile Include="MessagesModel\Header.cs" />
     <Compile Include="MessagesModel\Payload.cs" />
+    <Compile Include="MessagesModel\TurnConfirmation.cs" />
+    <Compile Include="MessagesModel\TurnRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\HA4IoT.Extensions.rd.xml" />
   </ItemGroup>
@@ -130,7 +134,10 @@
       <HintPath>..\Debug\HA4IoT.Networking.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Lambda\configuration.txt" />
+    <None Include="Lambda\home_automation_handler.js" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

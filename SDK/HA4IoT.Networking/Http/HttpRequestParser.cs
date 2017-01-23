@@ -12,7 +12,7 @@ namespace HA4IoT.Networking.Http
         private const string VersionPattern = @"HTTP/(?'version'1.1)";
         private const string HeadersPattern = @"(?'headers'[\w\W]*?)";
         private const string BodyPattern = @"(?'body'.*?)";
-        private const string JsonPattern = @"^[\d\n\r]*(?<json>\{.*\})[\d\n\r]*";
+        private const string JsonPattern = @"^[\w\n\r]*(?<json>\{.*\})[\w\n\r]*";
 
         private readonly Regex _regex;
         private readonly Regex _regexJson;

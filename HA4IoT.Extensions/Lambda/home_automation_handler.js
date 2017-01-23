@@ -1,5 +1,4 @@
 ﻿var https = require('http');
-
 var particleServer = "217.113.232.240";
 var port = 9091
 
@@ -22,9 +21,6 @@ exports.handler = function (event, context) {
 
 
 function handleDiscovery(accessToken, context) {
-    log('dnf');
-    log(JSON.stringify(context, null, 3));
-
     var options =
     {
         "hostname": particleServer,
@@ -34,12 +30,7 @@ function handleDiscovery(accessToken, context) {
         "headers": { "Content-Type": "application/json" }
     };
 
-    var post_data = JSON.stringify
-    (
-        {
-            "Test": "OK",
-        }
-    );
+    var post_data = JSON.stringify({});
 
     var serverError = function (e) {
         log('Error', e.message);
@@ -54,8 +45,6 @@ function handleDiscovery(accessToken, context) {
         });
 
         response.on('end', function () {
-            log(result);
-
             context.succeed(JSON.parse(result));
         });
 
@@ -124,7 +113,7 @@ function handleControl(event, context) {
             });
 
             response.on('end', function () {
-                context.succeed(result);
+                context.succeed(JSON.parse(result));
             });
 
             response.on('error', serverError);

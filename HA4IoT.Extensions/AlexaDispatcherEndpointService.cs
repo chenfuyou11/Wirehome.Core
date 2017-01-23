@@ -129,8 +129,9 @@ namespace HA4IoT.Extensions
                     }
 
                     var componentSetting = _settingService.GetSettings<ComponentSettings>(compoment.Id);
+                    var componentId = compoment.Id.Value.Replace(".", "_");
 
-                    if(componentSetting != null)
+                    if (componentSetting != null)
                     {
                         var componentName = componentSetting.Caption;
                         if(string.IsNullOrWhiteSpace(componentName) || string.IsNullOrWhiteSpace(areaName))
@@ -151,7 +152,7 @@ namespace HA4IoT.Extensions
                     devices.Add(new Discoveredappliance()
                     {
                         actions = actions.ToArray(),
-                        applianceId = compoment.Id.Value,
+                        applianceId = componentId,
                         manufacturerName = "HA4IoT",
                         version = API_VERSION,
                         modelName = compoment.GetType().ToString(),
@@ -160,9 +161,9 @@ namespace HA4IoT.Extensions
                         friendlyDescription = friendlyName,
                         additionalApplianceDetails = new Additionalappliancedetails
                         {
-                            extraDetail1 = "Test"
+                            extendedInfo = "Test"
                         }
-                    });  
+                    });
                 }
             }
 

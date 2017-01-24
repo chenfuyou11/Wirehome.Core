@@ -15,6 +15,7 @@ using System.Linq;
 using System.Collections.Generic;
 using HA4IoT.Extensions.MessagesModel;
 using HA4IoT.Contracts.Actuators;
+using HA4IoT.Extensions.Exceptions;
 
 namespace HA4IoT.Extensions
 {
@@ -23,6 +24,7 @@ namespace HA4IoT.Extensions
         private const string API_VERSION = "HA4IoT 1.0";
         private const string PAYLOAD_VERSION = "2";
         private const string MANUFACTURE = "HA4IoT";
+        private const string NAMESPACE = "Alexa.ConnectedHome.Control";
 
         private readonly HttpServer _httpServer;
         private readonly IAreaService _areService;
@@ -47,8 +49,8 @@ namespace HA4IoT.Extensions
             {"TurnOffRequest", "TurnOffConfirmation" }
         };
 
-        private Dictionary<string, IList<IComponent>> _connectedDevices = new Dictionary<string, IList<IComponent>>();
-        
+        private Dictionary<string, IEnumerable<IComponent>> _connectedDevices = new Dictionary<string, IEnumerable<IComponent>>();
+
 
         public AlexaDispatcherEndpointService(HttpServer httpServer, IAreaService areService, ISettingsService settingService, IComponentService componentService)
         {
@@ -68,9 +70,9 @@ namespace HA4IoT.Extensions
             _httpServer.RequestReceived += DispatchHttpRequest;
         }
 
-        public void AddConnectedVivices(string friendlyName, IList<IComponent> devices)
+        public void AddConnectedVivices(string friendlyName, IEnumerable<IComponent> devices)
         {
-            if(_connectedDevices.ContainsKey(friendlyName))
+            if (_connectedDevices.ContainsKey(friendlyName))
             {
                 throw new Exception($"Friendly name '{friendlyName}' is already in use");
             }
@@ -84,7 +86,7 @@ namespace HA4IoT.Extensions
             {
                 return;
             }
-      
+
             HandleHttpRequest(eventArgs.Context);
             eventArgs.IsHandled = true;
         }
@@ -246,7 +248,7 @@ namespace HA4IoT.Extensions
             return devices;
         }
 
-   
+
 
         private string GetFriendlyName(string areaName, IComponent compoment)
         {
@@ -290,62 +292,108 @@ namespace HA4IoT.Extensions
 
         private object PrepareInvokeMessage(ApiContext context)
         {
-            var request = context.Parameter.ToObject<TurnRequest>();
-            var componentID = request?.ComponentID;
+            TurnRequest request = null;
 
-            if (string.IsNullOrWhiteSpace(componentID))
+            try
             {
-                throw new Exception("Empty component ID");
-            }
+                request = context.Parameter.ToObject<TurnRequest>();
 
-            if (componentID.IndexOf("Composite") > -1)
-            {
-                // Cut component prefix
-                componentID = componentID.Substring(10, componentID.Length - 10);
-                componentID = componentID.Replace("_", " ");
+                var componentID = request?.ComponentID;
 
-                if (!_connectedDevices.ContainsKey(componentID))
+                if (string.IsNullOrWhiteSpace(componentID))
                 {
-                    throw new Exception($"Composite component {componentID} was not found");
+                    throw new NotFoundException();
                 }
 
-                foreach(var device in _connectedDevices[componentID])
+                if (componentID.IndexOf("Composite") > -1)
                 {
-                    RunComponentCommand(request.Command, device.Id.Value);
+                    // Cut component prefix
+                    componentID = componentID.Substring(10, componentID.Length - 10);
+                    componentID = componentID.Replace("_", " ");
+
+                    if (!_connectedDevices.ContainsKey(componentID))
+                    {
+                        throw new NotFoundException();
+                    }
+
+                    foreach (var device in _connectedDevices[componentID])
+                    {
+                        RunComponentCommand(request.Command, device.Id.Value, true);
+                    }
                 }
-            }
-            else
-            {
-                componentID = request?.ComponentID?.Replace("_", ".");
-
-                RunComponentCommand(request.Command, componentID);
-            }
-            
-            var confirmation_name = _invokeConfirmationMap[request.Command];
-
-            var result = new TurnConfirmation
-            {
-                header = new Header
+                else
                 {
-                    messageId = request.MessageID,
-                    name = confirmation_name,
-                    payloadVersion = PAYLOAD_VERSION,
-                    _namespace = "Alexa.ConnectedHome.Control"
-                },
-                payload = new Payload()
-            };
+                    componentID = request?.ComponentID?.Replace("_", ".");
 
-            return result;
+                    RunComponentCommand(request.Command, componentID);
+                }
+
+                var confirmation_name = _invokeConfirmationMap[request.Command];
+
+                return new TurnConfirmation
+                {
+                    header = new Header
+                    {
+                        messageId = request.MessageID,
+                        name = confirmation_name,
+                        payloadVersion = PAYLOAD_VERSION,
+                        _namespace = NAMESPACE
+                    },
+                    payload = new Payload()
+                };
+            }
+            catch (NotFoundException)
+            {
+                return new TurnConfirmation
+                {
+                    header = new Header
+                    {
+                        messageId = request.MessageID,
+                        name = "NoSuchTargetError",
+                        payloadVersion = PAYLOAD_VERSION,
+                        _namespace = NAMESPACE
+                    },
+                    payload = new Payload()
+                };
+            }
+            catch (StateAlreadySetException)
+            {
+                return new NotSupportedInCurrentModeError 
+                {
+                    header = new Header
+                    {
+                        messageId = request.MessageID,
+                        name = "NotSupportedInCurrentModeError",
+                        payloadVersion = PAYLOAD_VERSION,
+                        _namespace = NAMESPACE
+                    },
+                    payload = new ErrorPayload
+                    {
+                        currentDeviceMode = "OTHER"
+                    }
+                };
+            }
         }
 
-        private void RunComponentCommand(string command, string componentID)
+        private void RunComponentCommand(string command, string componentID, bool ignoreCurrentStateCheck = false)
         {
             var component = _componentService.GetComponent(new ComponentId(componentID)) as IActuator;
 
             if (component != null && _invokeCommandMap.ContainsKey(command))
             {
-                var requested_state = _invokeCommandMap[command];
-                component.SetState(new ComponentState(requested_state));
+                var requested_state = new ComponentState(_invokeCommandMap[command]);
+
+                if (!ignoreCurrentStateCheck)
+                {
+                    var currentState = component.GetState();
+
+                    if (currentState.Equals(requested_state))
+                    {
+                        throw new StateAlreadySetException();
+                    }
+                }
+
+                component.SetState(requested_state);
             }
         }
     }
@@ -353,7 +401,11 @@ namespace HA4IoT.Extensions
 
 
 
+
+
    
+   
+
 
 
 

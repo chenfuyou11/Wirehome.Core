@@ -118,7 +118,10 @@
     <Compile Include="MessagesModel\Payload.cs" />
     <Compile Include="MessagesModel\TurnConfirmation.cs" />
     <Compile Include="MessagesModel\TurnRequest.cs" />
+    <Compile Include="Exceptions\NotFoundException.cs" />
+    <Compile Include="MessagesModel\UnwillingToSetValueError.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Exceptions\StateAlreadySetException.cs" />
     <EmbeddedResource Include="Properties\HA4IoT.Extensions.rd.xml" />
   </ItemGroup>
   <ItemGroup>

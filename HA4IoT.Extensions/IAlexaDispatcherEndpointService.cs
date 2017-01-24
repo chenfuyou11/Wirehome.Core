@@ -6,6 +6,6 @@ namespace HA4IoT.Extensions
 {
     public interface IAlexaDispatcherEndpointService : IService
     {
-        void AddConnectedVivices(string friendlyName, IList<IComponent> devices);
+        void AddConnectedVivices(string friendlyName, IEnumerable<IComponent> devices);
     }
 }

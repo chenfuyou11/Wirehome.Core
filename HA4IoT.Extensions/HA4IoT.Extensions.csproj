@@ -109,6 +109,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAlexaDispatcherEndpointService.cs" />
     <Compile Include="MessagesModel\Additionalappliancedetails.cs" />
     <Compile Include="AlexaDispatcherEndpointService.cs" />
     <Compile Include="MessagesModel\DiscoverAppliancesResponse.cs" />

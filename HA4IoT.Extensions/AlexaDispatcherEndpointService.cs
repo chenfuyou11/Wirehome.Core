@@ -18,10 +18,12 @@ using HA4IoT.Contracts.Actuators;
 
 namespace HA4IoT.Extensions
 {
-    public class AlexaDispatcherEndpointService : IService
+    public class AlexaDispatcherEndpointService : IAlexaDispatcherEndpointService
     {
         private const string API_VERSION = "HA4IoT 1.0";
         private const string PAYLOAD_VERSION = "2";
+        private const string MANUFACTURE = "HA4IoT";
+
         private readonly HttpServer _httpServer;
         private readonly IAreaService _areService;
         private readonly ISettingsService _settingService;
@@ -45,6 +47,9 @@ namespace HA4IoT.Extensions
             {"TurnOffRequest", "TurnOffConfirmation" }
         };
 
+        private Dictionary<string, IList<IComponent>> _connectedDevices = new Dictionary<string, IList<IComponent>>();
+        
+
         public AlexaDispatcherEndpointService(HttpServer httpServer, IAreaService areService, ISettingsService settingService, IComponentService componentService)
         {
             if (httpServer == null) throw new ArgumentNullException(nameof(httpServer));
@@ -63,13 +68,23 @@ namespace HA4IoT.Extensions
             _httpServer.RequestReceived += DispatchHttpRequest;
         }
 
+        public void AddConnectedVivices(string friendlyName, IList<IComponent> devices)
+        {
+            if(_connectedDevices.ContainsKey(friendlyName))
+            {
+                throw new Exception($"Friendly name '{friendlyName}' is already in use");
+            }
+
+            _connectedDevices.Add(friendlyName, devices);
+        }
+
         private void DispatchHttpRequest(object sender, HttpRequestReceivedEventArgs eventArgs)
         {
             if (!eventArgs.Context.Request.Uri.StartsWith("/alexa/"))
             {
                 return;
             }
-
+      
             HandleHttpRequest(eventArgs.Context);
             eventArgs.IsHandled = true;
         }
@@ -121,74 +136,19 @@ namespace HA4IoT.Extensions
 
         private object PrepareDicsoverMessage(ApiContext context)
         {
-            var response = new DiscoverAppliancesResponse
-            {
-                header = new Header
-                {
-                    messageId = Guid.NewGuid().ToString(),
-                    name = "DiscoverAppliancesResponse",
-                    payloadVersion = PAYLOAD_VERSION,
-                    _namespace = "Alexa.ConnectedHome.Discovery"
-                },
-                payload = new Payload()
-            };
+            var response = GenerateDiscoveredHeader();
 
             var devices = new List<Discoveredappliance>();
 
             foreach (var area in _areService.GetAreas())
             {
                 var areaName = area.Settings?.Caption;
-                var friendlyName = string.Empty;
+                var areaComponents = area.GetComponents<StateMachine>();
 
-                foreach (var compoment in area.GetComponents<StateMachine>())
-                {
-                    var actions = new List<string>();
-                    foreach (var supportedState in compoment.GetSupportedStates().Select(x => x.ToString()))
-                    {
-                        if (_supportedStatesMap.ContainsKey(supportedState))
-                        {
-                            actions.Add(_supportedStatesMap[supportedState]);
-                        }
-                    }
-
-                    var componentSetting = _settingService.GetSettings<ComponentSettings>(compoment.Id);
-                    var componentId = compoment.Id.Value.Replace(".", "_");
-
-                    if (componentSetting != null)
-                    {
-                        var componentName = componentSetting.Caption;
-                        if (string.IsNullOrWhiteSpace(componentName) || string.IsNullOrWhiteSpace(areaName))
-                        {
-                            friendlyName = compoment.Id.Value.Replace(".", " ");
-                        }
-                        else
-                        {
-                            friendlyName = $"{areaName} {componentName}";
-                        }
-                    }
-
-                    if (actions.Count == 0 || string.IsNullOrWhiteSpace(friendlyName))
-                    {
-                        continue;
-                    }
-
-                    devices.Add(new Discoveredappliance()
-                    {
-                        actions = actions.ToArray(),
-                        applianceId = componentId,
-                        manufacturerName = "HA4IoT",
-                        version = API_VERSION,
-                        modelName = compoment.GetType().ToString(),
-                        isReachable = true,
-                        friendlyName = friendlyName,
-                        friendlyDescription = friendlyName,
-                        additionalApplianceDetails = new Additionalappliancedetails
-                        {
-                            extendedInfo = "Test"
-                        }
-                    });
-                }
+                devices.AddRange(GenerateDiscoveredApplianceFromArea(areaName, areaComponents));
             }
+
+            devices.AddRange(GenerateDiscoveredApplianceFromConnectedDevices());
 
             if (devices.Count == 0)
             {
@@ -200,20 +160,167 @@ namespace HA4IoT.Extensions
             return response;
         }
 
+        private static DiscoverAppliancesResponse GenerateDiscoveredHeader()
+        {
+            return new DiscoverAppliancesResponse
+            {
+                header = new Header
+                {
+                    messageId = Guid.NewGuid().ToString(),
+                    name = "DiscoverAppliancesResponse",
+                    payloadVersion = PAYLOAD_VERSION,
+                    _namespace = "Alexa.ConnectedHome.Discovery"
+                },
+                payload = new Payload()
+            };
+        }
+
+        private List<Discoveredappliance> GenerateDiscoveredApplianceFromConnectedDevices()
+        {
+            var devices = new List<Discoveredappliance>();
+
+            foreach (var friendlyName in _connectedDevices.Keys)
+            {
+                var connectedDevices = _connectedDevices[friendlyName];
+
+                var actions = GetSupportedStates(connectedDevices.Cast<StateMachine>().FirstOrDefault());
+                var componentId = $"Composite_{friendlyName.Replace(" ", "_")}";
+
+                if (actions.Count == 0 || string.IsNullOrWhiteSpace(friendlyName))
+                {
+                    continue;
+                }
+
+                devices.Add(new Discoveredappliance()
+                {
+                    actions = actions.ToArray(),
+                    applianceId = componentId,
+                    manufacturerName = MANUFACTURE,
+                    version = API_VERSION,
+                    modelName = "Composite HA4IoT",
+                    isReachable = true,
+                    friendlyName = friendlyName,
+                    friendlyDescription = friendlyName,
+                    additionalApplianceDetails = new Additionalappliancedetails
+                    {
+                        areaName = "None"
+                    }
+                });
+            }
+
+            return devices;
+        }
+
+        private List<Discoveredappliance> GenerateDiscoveredApplianceFromArea(string areaName, IList<StateMachine> areaComponents)
+        {
+            var devices = new List<Discoveredappliance>();
+
+            foreach (var compoment in areaComponents)
+            {
+                var actions = GetSupportedStates(compoment);
+                var componentId = GetCompatibileComponentID(compoment);
+                var friendlyName = GetFriendlyName(areaName, compoment);
+
+                if (actions.Count == 0 || string.IsNullOrWhiteSpace(friendlyName))
+                {
+                    continue;
+                }
+
+                devices.Add(new Discoveredappliance()
+                {
+                    actions = actions.ToArray(),
+                    applianceId = componentId,
+                    manufacturerName = MANUFACTURE,
+                    version = API_VERSION,
+                    modelName = compoment.GetType().ToString(),
+                    isReachable = true,
+                    friendlyName = friendlyName,
+                    friendlyDescription = friendlyName,
+                    additionalApplianceDetails = new Additionalappliancedetails
+                    {
+                        areaName = areaName
+                    }
+                });
+            }
+
+            return devices;
+        }
+
+   
+
+        private string GetFriendlyName(string areaName, IComponent compoment)
+        {
+            string friendlyName = string.Empty;
+
+            var componentSetting = _settingService.GetSettings<ComponentSettings>(compoment.Id);
+
+            if (componentSetting != null)
+            {
+                var componentName = componentSetting.Caption;
+                if (string.IsNullOrWhiteSpace(componentName) || string.IsNullOrWhiteSpace(areaName))
+                {
+                    friendlyName = compoment.Id.Value.Replace(".", " ");
+                }
+                else
+                {
+                    friendlyName = $"{areaName} {componentName}";
+                }
+            }
+
+            return friendlyName;
+        }
+
+        private static string GetCompatibileComponentID(StateMachine compoment)
+        {
+            return compoment.Id.Value.Replace(".", "_");
+        }
+
+        private List<string> GetSupportedStates(StateMachine compoment)
+        {
+            var actions = new List<string>();
+            foreach (var supportedState in compoment.GetSupportedStates().Select(x => x.ToString()))
+            {
+                if (_supportedStatesMap.ContainsKey(supportedState))
+                {
+                    actions.Add(_supportedStatesMap[supportedState]);
+                }
+            }
+            return actions;
+        }
+
         private object PrepareInvokeMessage(ApiContext context)
         {
             var request = context.Parameter.ToObject<TurnRequest>();
+            var componentID = request?.ComponentID;
 
-            var componentID = request?.ComponentID?.Replace("_", ".");
-
-            var component =_componentService.GetComponent(new ComponentId(componentID)) as IActuator; 
-
-            if (component != null && _invokeCommandMap.ContainsKey(request.Command))
+            if (string.IsNullOrWhiteSpace(componentID))
             {
-                var requested_state = _invokeCommandMap[request.Command];
-                component.SetState(new ComponentState(requested_state));
+                throw new Exception("Empty component ID");
             }
 
+            if (componentID.IndexOf("Composite") > -1)
+            {
+                // Cut component prefix
+                componentID = componentID.Substring(10, componentID.Length - 10);
+                componentID = componentID.Replace("_", " ");
+
+                if (!_connectedDevices.ContainsKey(componentID))
+                {
+                    throw new Exception($"Composite component {componentID} was not found");
+                }
+
+                foreach(var device in _connectedDevices[componentID])
+                {
+                    RunComponentCommand(request.Command, device.Id.Value);
+                }
+            }
+            else
+            {
+                componentID = request?.ComponentID?.Replace("_", ".");
+
+                RunComponentCommand(request.Command, componentID);
+            }
+            
             var confirmation_name = _invokeConfirmationMap[request.Command];
 
             var result = new TurnConfirmation
@@ -229,6 +336,17 @@ namespace HA4IoT.Extensions
             };
 
             return result;
+        }
+
+        private void RunComponentCommand(string command, string componentID)
+        {
+            var component = _componentService.GetComponent(new ComponentId(componentID)) as IActuator;
+
+            if (component != null && _invokeCommandMap.ContainsKey(command))
+            {
+                var requested_state = _invokeCommandMap[command];
+                component.SetState(new ComponentState(requested_state));
+            }
         }
     }
 

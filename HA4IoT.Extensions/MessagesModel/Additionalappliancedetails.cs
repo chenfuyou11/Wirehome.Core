@@ -3,7 +3,7 @@
 
     public class Additionalappliancedetails
     {
-        public string extendedInfo { get; set; }
+        public string areaName { get; set; }
     }
 
 }

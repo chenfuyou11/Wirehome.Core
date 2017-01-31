@@ -13,6 +13,7 @@ using HA4IoT.Contracts.Services.Daylight;
 using HA4IoT.Contracts.Services.Settings;
 using HA4IoT.Contracts.Services.System;
 using HA4IoT.Contracts.Triggers;
+using HA4IoT.Contracts.Hardware;
 
 namespace HA4IoT.Automations
 {
@@ -21,6 +22,7 @@ namespace HA4IoT.Automations
         private readonly object _syncRoot = new object();
         private readonly ConditionsValidator _enablingConditionsValidator = new ConditionsValidator().WithDefaultState(ConditionState.NotFulfilled);
         private readonly ConditionsValidator _disablingConditionsValidator = new ConditionsValidator().WithDefaultState(ConditionState.NotFulfilled);
+        private readonly ConditionsValidator _turnOffConditionsValidator= new ConditionsValidator().WithDefaultState(ConditionState.NotFulfilled);
 
         private readonly IDateTimeService _dateTimeService;
         private readonly ISchedulerService _schedulerService;
@@ -114,6 +116,19 @@ namespace HA4IoT.Automations
 
             _enablingConditionsValidator.WithCondition(relation, condition);
             return this;
+        }
+
+        public TurnOnAndOffAutomation WithTurnOffCondition(ConditionRelation relation, ICondition condition)
+        {
+            if (condition == null) throw new ArgumentNullException(nameof(condition));
+
+            _turnOffConditionsValidator.WithCondition(relation, condition);
+            return this;
+        }
+
+        public TurnOnAndOffAutomation WithDisableTurnOffWhenBinaryStateEnabled(IBinaryInput input)
+        {
+            return WithTurnOffCondition(ConditionRelation.Or, new BinaryInputStateCondition(input, BinaryState.High));
         }
 
         public TurnOnAndOffAutomation WithEnabledAtDay()
@@ -262,13 +277,16 @@ namespace HA4IoT.Automations
         {
             _turnOffTimeout?.Cancel();
 
-            foreach (var action in _turnOffActions)
+            if (GetTurnOffConditionsAreFulfilled())
             {
-                action();
-            }
+                foreach (var action in _turnOffActions)
+                {
+                    action();
+                }
 
-            _isOn = false;
-            _lastTurnedOn.Stop();
+                _isOn = false;
+                _lastTurnedOn.Stop();
+            }
         }
 
         private bool GetConditionsAreFulfilled()
@@ -283,6 +301,16 @@ namespace HA4IoT.Automations
                 return false;
             }
 
+            return true;
+        }
+
+        private bool GetTurnOffConditionsAreFulfilled()
+        {
+            if (_turnOffConditionsValidator.Conditions.Any() && _turnOffConditionsValidator.Validate() == ConditionState.Fulfilled)
+            {
+                return false;
+            }
+            
             return true;
         }
     }

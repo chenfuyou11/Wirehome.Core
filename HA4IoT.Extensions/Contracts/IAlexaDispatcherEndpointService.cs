@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Services;
 
 namespace HA4IoT.Extensions
 {
-    public interface IAlexaDispatcherEndpointService : IService
+    public interface IAlexaDispatcherEndpointService
     {
         void AddConnectedVivices(string friendlyName, IEnumerable<IComponent> devices);
     }

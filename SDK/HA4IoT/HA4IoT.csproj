@@ -186,6 +186,7 @@
     <Compile Include="Conditions\ConditionRelation.cs" />
     <Compile Include="Conditions\ConditionsValidator.cs" />
     <Compile Include="Conditions\RelatedCondition.cs" />
+    <Compile Include="Conditions\Specialized\BinaryInputStateCondition.cs" />
     <Compile Include="Conditions\Specialized\ComponentIsInStateCondition.cs" />
     <Compile Include="Conditions\Specialized\IsDayCondition.cs" />
     <Compile Include="Conditions\Specialized\IsNightCondition.cs" />

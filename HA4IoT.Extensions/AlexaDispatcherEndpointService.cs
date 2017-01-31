@@ -10,7 +10,6 @@ using HA4IoT.Networking.Json;
 using Newtonsoft.Json.Linq;
 using HA4IoT.Actuators.StateMachines;
 using System;
-using Newtonsoft.Json;
 using System.Linq;
 using System.Collections.Generic;
 using HA4IoT.Extensions.MessagesModel;
@@ -19,7 +18,7 @@ using HA4IoT.Extensions.Exceptions;
 
 namespace HA4IoT.Extensions
 {
-    public class AlexaDispatcherEndpointService : IAlexaDispatcherEndpointService
+    public class AlexaDispatcherEndpointService : IAlexaDispatcherEndpointService, IService
     {
         private const string API_VERSION = "HA4IoT 1.0";
         private const string PAYLOAD_VERSION = "2";

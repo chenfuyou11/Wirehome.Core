@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26206.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers", "{CD5D2CCD-44D0-46E5-BE14-3B377048E0A2}"
 	ProjectSection(SolutionItems) = preProject
@@ -63,7 +63,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Tests", "Tests\HA4Io
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Controller.Dnf", "..\DNF_HA4IoT\HA4IoT.Controller.Dnf\HA4IoT.Controller.Dnf\HA4IoT.Controller.Dnf.csproj", "{7AB8593B-A23C-467A-B8FB-09C9F32ABF54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Extensions", "HA4IoT.Extensions\HA4IoT.Extensions.csproj", "{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Extensions", "DNF\HA4IoT.Extensions\HA4IoT.Extensions.csproj", "{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HA4Iot.Movement.Test", "DNF\HA4Iot.Movement.Test\HA4Iot.Movement.Test.csproj", "{1F0A2F82-3E4D-4D59-9A85-0432587057B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -593,8 +595,8 @@ Global
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|ARM.ActiveCfg = Debug|ARM
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|ARM.Build.0 = Debug|ARM
-		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|ARM
-		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|ARM
+		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|Any CPU
+		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|Any CPU
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|x64.ActiveCfg = Debug|x64
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|x64.Build.0 = Debug|x64
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|x86.ActiveCfg = Debug|x86
@@ -613,6 +615,30 @@ Global
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Release|x86.Build.0 = Release|x86
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Release|x86 (For local).ActiveCfg = Release|Any CPU
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Release|x86 (For local).Build.0 = Release|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|ARM.Build.0 = Debug|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|x64.ActiveCfg = Debug|x64
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|x64.Build.0 = Debug|x64
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|x86.ActiveCfg = Debug|x86
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|x86.Build.0 = Debug|x86
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|x86 (For local).ActiveCfg = Debug|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Debug|x86 (For local).Build.0 = Debug|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|ARM.ActiveCfg = Release|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|ARM.Build.0 = Release|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|ARM (For Raspberry Pi).ActiveCfg = Release|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|ARM (For Raspberry Pi).Build.0 = Release|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|x64.ActiveCfg = Release|x64
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|x64.Build.0 = Release|x64
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|x86.ActiveCfg = Release|x86
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|x86.Build.0 = Release|x86
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|x86 (For local).ActiveCfg = Release|Any CPU
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5}.Release|x86 (For local).Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -640,5 +666,6 @@ Global
 		{1D5441C2-B934-4563-A11C-A617475564AE} = {C66A0C8B-0AAA-40C0-8D27-BD5B7BF1EF46}
 		{7AB8593B-A23C-467A-B8FB-09C9F32ABF54} = {CD5D2CCD-44D0-46E5-BE14-3B377048E0A2}
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E} = {982ABB4E-A5DC-4C78-87A3-30BF49DD5764}
+		{1F0A2F82-3E4D-4D59-9A85-0432587057B5} = {C66A0C8B-0AAA-40C0-8D27-BD5B7BF1EF46}
 	EndGlobalSection
 EndGlobal

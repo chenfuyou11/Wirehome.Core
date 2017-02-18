@@ -1,7 +1,0 @@
-﻿CONFIGURE HOME AUTOMATION:
-
-https://developer.amazon.com/blogs/post/Tx34M7F8Z8U7U8B/creating-your-first-alexa-smart-home-skill
-
-USING AMAZON OAUTH:
-
-http://www.whizzy.org/2016/12/howto-add-oauth-to-your-alexa-smart-home-skill-in-10-minutes/

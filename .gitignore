@@ -17,3 +17,4 @@ HA4IoT.VC.db
 Homepage/Properties/PublishProfiles/HA4IoTHomepage - Web Deploy.pubxml
 Controllers/HA4IoT.Controller.Default/AppPackages/
 *.sqlite
+.vs/

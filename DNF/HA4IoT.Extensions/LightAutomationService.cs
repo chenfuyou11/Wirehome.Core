@@ -7,14 +7,20 @@ using HA4IoT.Contracts.Actuators;
 using HA4IoT.Contracts.Triggers;
 using System.Reactive.Linq;
 using System.Linq;
-using System.Diagnostics;
+using HA4IoT.Extensions.MotionModel;
 
 namespace HA4IoT.Extensions
 {
-    public class LightAutomationService : ILightAutomationService, IService
+    public class LightAutomationService : IService, IDisposable
     {
-        private readonly Dictionary<IMotionDetector, MotionDetectorDescriptor> _motionDetectors = new Dictionary<IMotionDetector, MotionDetectorDescriptor>();
+        //Add observable with motion vectors detected
+        //Add property with number of persons
+        private const int MOTION_TIME_WINDOW = 3000;
+        private const int MOTION_TIME_SHIFT = 200;
+
+        private readonly Dictionary<IMotionDetector, MotionDescriptor> _motionDetectors = new Dictionary<IMotionDetector, MotionDescriptor>();
         private readonly IAreaService _areaService;
+        private readonly List<IDisposable> _resources = new List<IDisposable>();
 
         public LightAutomationService(IAreaService areaService)
         {
@@ -26,51 +32,13 @@ namespace HA4IoT.Extensions
             FindRegistredMotionDetectors();
         }
 
-        public void MonitorArea(IArea area, TimeSpan timeOn)
+        private void FindRegistredMotionDetectors()
         {
-            throw new NotImplementedException();
-        }
-
-        public void ConfigureMotionDetector(IMotionDetector motionDetector, IMotionDetector neighbor, IActuator acutatot)
-        {
-             if(!_motionDetectors.ContainsKey(motionDetector))
-             {
-                throw new Exception("This motion detector was not register in any area");
-             }
-
-            var descriptor = _motionDetectors[motionDetector];
-            descriptor.Neighbor = neighbor;
-            descriptor.Acutator = acutatot;
-
-            var trigger = motionDetector.GetMotionDetectedTrigger();
-
-            descriptor.MotionSource = Observable.FromEventPattern<TriggeredEventArgs>(
-                                    h => trigger.Triggered += h,
-                                    h => trigger.Triggered -= h).Select(x => new MotionDetectorEventArgs { Descriptor = descriptor });
-        }
-        
-
-        public IDisposable StartWatchForMove()
-        {
-            return Observable.Merge(_motionDetectors.Values.Select(x => x.MotionSource)).Select(messages => messages).Subscribe(x =>
+            foreach (var area in _areaService.GetAreas())
             {
-                Debug.WriteLine(x.Descriptor.MotionDetector.Id);
-            });
-
-        }
-    
-        private void LightAutomationService_Triggered(object sender, Contracts.Triggers.TriggeredEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void FindRegistredMotionDetectors()
-        {
-            foreach(var area in _areaService.GetAreas())
-            {
-                foreach(var motionDetector in area.GetComponents<IMotionDetector>())
+                foreach (var motionDetector in area.GetComponents<IMotionDetector>())
                 {
-                    _motionDetectors[motionDetector] = new MotionDetectorDescriptor
+                    _motionDetectors[motionDetector] = new MotionDescriptor
                     {
                         Area = area
                     };
@@ -78,24 +46,89 @@ namespace HA4IoT.Extensions
             }
         }
 
+        public MotionDescriptor ConfigureMotionDetector(IMotionDetector motionDetector, IMotionDetector neighbor, IActuator acutatot)
+        {
+             if(!_motionDetectors.ContainsKey(motionDetector))
+             {
+                throw new Exception("This motion detector was not register in any area");
+             }
+
+            var descriptor = _motionDetectors[motionDetector];
+            descriptor.MotionDetector = motionDetector;
+            descriptor.Neighbor = neighbor;
+            descriptor.Acutator = acutatot;
+
+            var trigger = motionDetector.GetMotionDetectedTrigger();
+
+            descriptor.MotionSource = Observable.FromEventPattern<TriggeredEventArgs>
+            (
+                h => trigger.Triggered += h,
+                h => trigger.Triggered -= h).Select(x => descriptor
+            );
+
+            return descriptor;
+        }
         
-    }
 
-    public class MotionDetectorDescriptor
-    {
-        public IMotionDetector MotionDetector { get; set; }
+        public void StartWatchForMove()
+        {
+            if (_motionDetectors.All(x => x.Value.MotionSource == null))
+            {
+                throw new Exception("First you have to add motion detectors with ConfigureMotionDetector");
+            }
 
-        public IArea Area { get; set; }
+            var detectors = _motionDetectors.Values
+                                            .Where(s => s.MotionSource != null)
+                                            .Select(x => x.MotionSource)
+                                            .Merge()
+                                            .Select(messages => messages);
 
-        public IMotionDetector Neighbor { get; set; }
+            var motion = detectors.Timestamp()
+                                  .Buffer(TimeSpan.FromMilliseconds(MOTION_TIME_WINDOW), TimeSpan.FromMilliseconds(MOTION_TIME_SHIFT))
+                                  .Select(x =>
+                                  {
+                                      var vector = new MotionVector();
+                                      
+                                      foreach (var ev in x)
+                                      {
+                                          if(vector.Path.Count == 0)
+                                          {
+                                              vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
+                                              continue;
+                                          }
+                                          
+                                          if (ev.Value.MotionDetector == _motionDetectors[vector.End.MotionDetector].Neighbor)
+                                          {
+                                              vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
+                                          }
+                                      }
 
-        public IActuator Acutator { get; set; }
+                                      return vector;
+                                  })
+                                  .Where(y => y.Path.Count > 2)
+                                  .DistinctUntilChanged();
 
-        public IObservable<MotionDetectorEventArgs> MotionSource { get; set; }
-    }
+            var resource = motion.Subscribe(x =>
+            {
+                var time = DateTime.Now;
+               Console.WriteLine($"[{time.Minute}:{time.Second}:{time.Millisecond}] {x}");
+                
+            });
 
-    public class MotionDetectorEventArgs
-    {
-        public MotionDetectorDescriptor Descriptor;
+            AddResourceToDisposeList(resource);
+        }
+    
+        private void AddResourceToDisposeList(IDisposable resource)
+        {
+            _resources.Add(resource);
+        }
+
+        public void Dispose()
+        {
+            foreach(var resource in _resources)
+            {
+                resource.Dispose();
+            }
+        }
     }
 }

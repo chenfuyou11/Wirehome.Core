@@ -112,6 +112,9 @@
     <Compile Include="Contracts\ILightAutomationService.cs" />
     <Compile Include="Contracts\IAlexaDispatcherEndpointService.cs" />
     <Compile Include="Extensions\DeviceServiceExtensions.cs" />
+    <Compile Include="Extensions\CollectionsExtensions.cs" />
+    <Compile Include="Extensions\EqualityDecorator.cs" />
+    <Compile Include="Extensions\ReactiveExtensions.cs" />
     <Compile Include="LightAutomationService.cs" />
     <Compile Include="MessagesModel\Additionalappliancedetails.cs" />
     <Compile Include="AlexaDispatcherEndpointService.cs" />
@@ -123,6 +126,9 @@
     <Compile Include="MessagesModel\TurnRequest.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="MessagesModel\UnwillingToSetValueError.cs" />
+    <Compile Include="MotionModel\MotionDescriptor.cs" />
+    <Compile Include="MotionModel\MotionPoint.cs" />
+    <Compile Include="MotionModel\MotionVector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Exceptions\StateAlreadySetException.cs" />
     <EmbeddedResource Include="Properties\HA4IoT.Extensions.rd.xml" />

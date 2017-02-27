@@ -66,6 +66,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Extensions", "DNF\HA4IoT.Extensions\HA4IoT.Extensions.csproj", "{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HA4Iot.Movement.Test", "DNF\HA4Iot.Movement.Test\HA4Iot.Movement.Test.csproj", "{1F0A2F82-3E4D-4D59-9A85-0432587057B5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E1EDAC4B-83B9-46F4-9F6A-3BAE97D79F29} = {E1EDAC4B-83B9-46F4-9F6A-3BAE97D79F29}
+		{C034EC4D-46CC-490A-A045-E4D4D1F49C31} = {C034EC4D-46CC-490A-A045-E4D4D1F49C31}
+		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E} = {4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

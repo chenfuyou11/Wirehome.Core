@@ -4,7 +4,7 @@ using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Services.System;
 using HA4IoT.Contracts.Services.Settings;
 
-namespace UnitTestProject1
+namespace HA4Iot.Movement.Test
 {
     public class TestMotionDetector : MotionDetector
     {

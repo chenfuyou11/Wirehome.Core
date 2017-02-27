@@ -3,7 +3,7 @@ using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Services.System;
 using HA4IoT.Contracts.Services.Settings;
 
-namespace UnitTestProject1
+namespace HA4Iot.Movement.Test
 {
     public class TestMotionDetectorFactory
     {
@@ -19,9 +19,9 @@ namespace UnitTestProject1
             _settingsService = settingsService;
         }
 
-        public TestMotionDetector CreateTestMotionDetector()
+        public TestMotionDetector CreateTestMotionDetector(string name)
         {
-            return new TestMotionDetector(ComponentIdGenerator.EmptyId, new TestMotionDetectorEndpoint(),
+            return new TestMotionDetector(new ComponentId(name), new TestMotionDetectorEndpoint(),
                 _schedulerService, _settingsService);
         }
     }

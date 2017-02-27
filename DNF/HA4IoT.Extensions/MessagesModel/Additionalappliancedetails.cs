@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Extensions
+﻿namespace HA4IoT.Extensions.MessagesModel
 {
 
     public class Additionalappliancedetails

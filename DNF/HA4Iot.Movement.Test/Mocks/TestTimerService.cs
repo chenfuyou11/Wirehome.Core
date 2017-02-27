@@ -2,7 +2,7 @@
 using HA4IoT.Contracts.Services.System;
 using HA4IoT.Contracts.Core;
 
-namespace UnitTestProject1
+namespace HA4Iot.Movement.Test
 {
     public class TestTimerService : ITimerService
     {

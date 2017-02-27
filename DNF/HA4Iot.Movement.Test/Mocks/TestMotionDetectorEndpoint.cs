@@ -1,7 +1,7 @@
 ﻿using System;
 using HA4IoT.Contracts.Sensors;
 
-namespace UnitTestProject1
+namespace HA4Iot.Movement.Test
 {
     public class TestMotionDetectorEndpoint : IMotionDetectorAdapter
     {

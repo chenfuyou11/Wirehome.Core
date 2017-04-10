@@ -1,20 +1,19 @@
-﻿using HA4IoT.Contracts.Api;
+﻿using HA4IoT.Actuators.StateMachines;
+using HA4IoT.Contracts.Actuators;
+using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Networking.Http;
-using HA4IoT.Contracts.Services;
 using HA4IoT.Contracts.Services.Settings;
+using HA4IoT.Extensions.Exceptions;
+using HA4IoT.Extensions.MessagesModel;
 using HA4IoT.Networking.Http;
 using HA4IoT.Networking.Json;
 using Newtonsoft.Json.Linq;
-using HA4IoT.Actuators.StateMachines;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using HA4IoT.Extensions.MessagesModel;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Extensions.Exceptions;
+using System.Linq;
 
 namespace HA4IoT.Extensions
 {
@@ -396,17 +395,5 @@ namespace HA4IoT.Extensions
             }
         }
     }
-
-
-
-
-
-
-   
-   
-
-
-
-
 
 }

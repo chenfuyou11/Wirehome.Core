@@ -18,8 +18,8 @@ namespace HA4IoT.Extensions.MotionModel
 
         private bool IsEqual(MotionPoint other)
         {
-            return Equals(MotionDetector.Id, other.MotionDetector.Id) 
-                && TimeStamp.Equals(other.TimeStamp);
+            return Equals(MotionDetector.Id, other.MotionDetector.Id);
+                //&& TimeStamp.Equals(other.TimeStamp);
         }
 
         public bool Equals(MotionPoint other)

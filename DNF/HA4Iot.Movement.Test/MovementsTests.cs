@@ -13,6 +13,11 @@ using HA4IoT.Contracts.Sensors;
 using System.Threading.Tasks;
 using Microsoft.Reactive.Testing;
 using System.Linq;
+using System.Reactive;
+using HA4IoT.Extensions.Extensions;
+using System;
+using System.Reactive.Linq;
+using System.Reactive.Disposables;
 
 namespace HA4Iot.Movement.Test
 {
@@ -31,25 +36,23 @@ namespace HA4Iot.Movement.Test
             var hallwayLivingRoomDetector = automationService.ConfigureMotionDetector(setupResult.hallwayDetectorLivingRoom, setupResult.livingRoomDetector, null);
             var livingRoomDetector = automationService.ConfigureMotionDetector(setupResult.livingRoomDetector, setupResult.balconyDetector, null);
             var balconyDetector = automationService.ConfigureMotionDetector(setupResult.balconyDetector, setupResult.livingRoomDetector, null);
-            
+            var kitchenDetector = automationService.ConfigureMotionDetector(setupResult.kitchenDetector, setupResult.hallwayDetectorToilet, null);
+
             automationService.StartWatchForMove();
 
             Task.WaitAll(FakeMovments(new FakeMove[]
             {
                 new FakeMove{MotionDetector = setupResult.toiletDetector, Time = 500},
-                new FakeMove{MotionDetector = setupResult.hallwayDetectorToilet, Time = 1000},
-                new FakeMove{MotionDetector = setupResult.hallwayDetectorLivingRoom, Time = 1500},
+                new FakeMove{MotionDetector = setupResult.toiletDetector, Time = 1000},
+                new FakeMove{MotionDetector = setupResult.toiletDetector, Time = 1500},
+                new FakeMove{MotionDetector = setupResult.hallwayDetectorToilet, Time = 2000},
+              
 
                // new FakeMove{MotionDetector = setupResult.balconyDetector, Time = 1500},
                // new FakeMove{MotionDetector = setupResult.livingRoomDetector, Time = 2500},
             }, 5000));
 
-            //Enumerable.Range(1, 10000)
-            //           .Select(i => 1)
-            //           .ToObservable()
-            //           .Pace(TimeSpan.FromMilliseconds(500)) //drip feeds the observable
-            //           .DistinctFor(TimeSpan.FromSeconds(5))
-            //           .Subscribe(x => Console.WriteLine(x));
+
 
             Assert.AreEqual(1, 1);
         }
@@ -77,8 +80,6 @@ namespace HA4Iot.Movement.Test
                     await Task.Delay(diff);
 
                     ((TestMotionDetector)m.MotionDetector).DetectMotion();
-
-                    
                 }
 
                 await Task.Delay(waitAfter);

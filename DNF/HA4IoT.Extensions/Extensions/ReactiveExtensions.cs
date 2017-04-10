@@ -1,40 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
 
 namespace HA4IoT.Extensions.Extensions
 {
+
     public static class ReactiveExtensions
     {
-        public static IObservable<T> DistinctFor<T>(this IObservable<T> src, TimeSpan validityPeriod)
+        public static IObservable<TSource> DistinctForTime<TSource>(this IObservable<TSource> source, TimeSpan expirationTime)
         {
-            var hs = new Dictionary<EqualityDecorator<T>, EqualityDecorator<T>>();
+            return DistinctForTime(source, expirationTime, Scheduler.Default);
+        }
 
-            return src.Select(item => new EqualityDecorator<T>(item)).Where(df =>
-            {
-                if (hs.TryGetValue(df, out EqualityDecorator<T> hsVal))
+        public static IObservable<TSource> DistinctForTime<TSource>(this IObservable<TSource> source, TimeSpan expirationTime, IScheduler scheduler)
+        {
+            return DistinctForTime<TSource>(source, expirationTime, EqualityComparer<TSource>.Default, scheduler);
+        }
+
+        public static IObservable<TSource> DistinctForTime<TSource>(this IObservable<TSource> source, TimeSpan expirationTime, IEqualityComparer<TSource> comparer)
+        {
+            return DistinctForTime(source, expirationTime, comparer, Scheduler.Default);
+        }
+
+        public static IObservable<TSource> DistinctForTime<TSource>(this IObservable<TSource> source, TimeSpan expirationTime, 
+                                                                    IEqualityComparer<TSource> comparer, IScheduler scheduler)
+        {
+            return source
+                .Timestamp(scheduler)
+                .Scan
+                (new
                 {
-                    var age = DateTime.UtcNow - hsVal.Created;
-                    if (age < validityPeriod)
-                    {
-                        return false;
-                    }
+                    Acumulator = new Dictionary<TSource, DateTimeOffset>(comparer),
+                    Next = Observable.Empty<TSource>()
+                }, (state, item) => new
+                {
+                    Acumulator = state.Acumulator.Where(kvp => item.Timestamp - kvp.Value < expirationTime)
+                                .Concat(CheckForValueOrTimeout(expirationTime, state.Acumulator, item)
+                                        ? Enumerable.Repeat(new KeyValuePair<TSource, DateTimeOffset>(item.Value, item.Timestamp), 1)
+                                        : Enumerable.Empty<KeyValuePair<TSource, DateTimeOffset>>()
+                                        )
+                                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value, comparer),
+                    Next = CheckForValueOrTimeout(expirationTime, state.Acumulator, item) ? Observable.Return(item.Value) : Observable.Empty(item.Value)
                 }
-                hs[df] = df;
-                return true;
-
-            }).Select(df => df.Item);
+                )
+                .SelectMany(t => t.Next);
         }
 
-        public static IObservable<T> Pace<T>(this IObservable<T> src, TimeSpan delay)
+        private static bool CheckForValueOrTimeout<TSource>(TimeSpan expirationTime, Dictionary<TSource, DateTimeOffset> state, Timestamped<TSource> item)
         {
-            var timer = Observable.Timer(TimeSpan.FromSeconds(0), delay);
-
-            return src.Zip(timer, (s, t) => s);
+            return !state.ContainsKey(item.Value) || item.Timestamp - state[item.Value] >= expirationTime;
         }
+
+        public static long MilisecondsToTicks(this int ms)
+        {
+            return TimeSpan.FromMilliseconds(ms).Ticks;
+        }
+
     }
 
-   
+
 }

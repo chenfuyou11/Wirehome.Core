@@ -8,6 +8,7 @@ using HA4IoT.Contracts.Triggers;
 using System.Reactive.Linq;
 using System.Linq;
 using HA4IoT.Extensions.MotionModel;
+using HA4IoT.Extensions.Extensions;
 
 namespace HA4IoT.Extensions
 {
@@ -83,35 +84,60 @@ namespace HA4IoT.Extensions
                                             .Merge()
                                             .Select(messages => messages);
 
-            var motion = detectors.Timestamp()
-                                  .Buffer(TimeSpan.FromMilliseconds(MOTION_TIME_WINDOW), TimeSpan.FromMilliseconds(MOTION_TIME_SHIFT))
-                                  .Select(x =>
-                                  {
-                                      var vector = new MotionVector();
-                                      
-                                      foreach (var ev in x)
-                                      {
-                                          if(vector.Path.Count == 0)
-                                          {
-                                              vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
-                                              continue;
-                                          }
-                                          
-                                          if (ev.Value.MotionDetector == _motionDetectors[vector.End.MotionDetector].Neighbor)
-                                          {
-                                              vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
-                                          }
-                                      }
+            var motion = detectors.DistinctForTime(TimeSpan.FromMilliseconds(1100));
 
-                                      return vector;
-                                  })
-                                  .Where(y => y.Path.Count > 2)
-                                  .DistinctUntilChanged();
+            //var motion = detectors.Timestamp().Buffer(detectors, (x) => { return Observable.Timer(TimeSpan.FromSeconds(3)); }).Select(x =>
+            //                    {
+            //                        var vector = new MotionVector();
+
+            //                        foreach (var ev in x)
+            //                        {
+            //                            if (vector.Path.Count == 0)
+            //                            {
+            //                                vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
+            //                                continue;
+            //                            }
+
+            //                            if (ev.Value.MotionDetector == _motionDetectors[vector.End.MotionDetector].Neighbor)
+            //                            {
+            //                                vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
+            //                            }
+            //                        }
+
+            //                        return vector;
+            //                    })
+            //                    .Where(y => y.Path.Count > 1)
+            //                    .DistinctUntilChanged();
+
+            //var motion = detectors.Timestamp()
+            //                      .Buffer(TimeSpan.FromMilliseconds(MOTION_TIME_WINDOW), TimeSpan.FromMilliseconds(MOTION_TIME_SHIFT))
+            //                      .Select(x =>
+            //                      {
+            //                          var vector = new MotionVector();
+
+            //                          foreach (var ev in x)
+            //                          {
+            //                              if(vector.Path.Count == 0)
+            //                              {
+            //                                  vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
+            //                                  continue;
+            //                              }
+
+            //                              if (ev.Value.MotionDetector == _motionDetectors[vector.End.MotionDetector].Neighbor)
+            //                              {
+            //                                  vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
+            //                              }
+            //                          }
+
+            //                          return vector;
+            //                      })
+            //                      .Where(y => y.Path.Count > 1)
+            //                      .DistinctFor(TimeSpan.FromSeconds(3));
 
             var resource = motion.Subscribe(x =>
             {
                 var time = DateTime.Now;
-               Console.WriteLine($"[{time.Minute}:{time.Second}:{time.Millisecond}] {x}");
+               Console.WriteLine($"[{time.Minute}:{time.Second}:{time.Millisecond}] {x.MotionDetector.Id}");
                 
             });
 

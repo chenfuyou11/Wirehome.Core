@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>    
-    <TargetFramework>netcoreapp1.0</TargetFramework>    
+    <TargetFramework>netcoreapp1.1</TargetFramework>    
     <ApplicationIcon />    
     <OutputTypeEx>exe</OutputTypeEx>
     <StartupObject>HA4Iot.Movement.Test.TestRunner</StartupObject>
@@ -15,9 +15,9 @@
     <PackageReference Include="Colorful.Console" Version="1.0.7" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="microsoft.Reactive.Testing" Version="3.1.1" />
-    <PackageReference Include="Moq" Version="4.7.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.1.12" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.1.11" />
+    <PackageReference Include="Moq" Version="4.7.8" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.1.14" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.1.14" />
     <PackageReference Include="System.Reactive" Version="3.1.1" />
     <PackageReference Include="System.ValueTuple" Version="4.3.0" />
   </ItemGroup>

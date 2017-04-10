@@ -11,10 +11,11 @@ project.lock.json
 __vm/
 HA4IoT.opensdf
 HA4IoT.sdf
+
 *.VC.opendb
-HA4IoT.VC.db
+*.VC.db
+
 *.user
-Homepage/Properties/PublishProfiles/HA4IoTHomepage - Web Deploy.pubxml
-Controllers/HA4IoT.Controller.Default/AppPackages/
-*.sqlite
+*.pubxml
 .vs/
+Controllers/HA4IoT.Controller.Default/AppPackages/

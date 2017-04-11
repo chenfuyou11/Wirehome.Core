@@ -1,19 +1,21 @@
 ﻿using HA4IoT.Actuators.StateMachines;
-using HA4IoT.Contracts.Actuators;
 using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Networking.Http;
 using HA4IoT.Contracts.Services.Settings;
 using HA4IoT.Extensions.Exceptions;
 using HA4IoT.Extensions.MessagesModel;
 using HA4IoT.Networking.Http;
-using HA4IoT.Networking.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HA4IoT.Contracts.Commands;
+using Windows.Web.Http;
+using System.Text;
+using Newtonsoft.Json;
+using HA4IoT.Contracts.Components.Features;
 
 namespace HA4IoT.Extensions
 {
@@ -25,20 +27,15 @@ namespace HA4IoT.Extensions
         private const string NAMESPACE = "Alexa.ConnectedHome.Control";
 
         private readonly HttpServer _httpServer;
-        private readonly IAreaService _areService;
+        private readonly IAreaRegistryService _areService;
         private readonly ISettingsService _settingService;
-        private readonly IComponentService _componentService;
+        private readonly IComponentRegistryService _componentService;
+        private readonly ILogger _log;
 
-        private Dictionary<string, string> _supportedStatesMap = new Dictionary<string, string>
+        private readonly Dictionary<string, ICommand> _invokeCommandMap = new Dictionary<string, ICommand>
         {
-            { "On", "turnOn" },
-            {"Off", "turnOff" }
-        };
-
-        private Dictionary<string, string> _invokeCommandMap = new Dictionary<string, string>
-        {
-            { "TurnOnRequest", "On" },
-            {"TurnOffRequest", "Off" }
+            { "TurnOnRequest", new TurnOnCommand() },
+            {"TurnOffRequest", new TurnOffCommand() }
         };
 
         private Dictionary<string, string> _invokeConfirmationMap = new Dictionary<string, string>
@@ -50,22 +47,19 @@ namespace HA4IoT.Extensions
         private Dictionary<string, IEnumerable<IComponent>> _connectedDevices = new Dictionary<string, IEnumerable<IComponent>>();
         private Dictionary<string, IEnumerable<string>> _aliases = new Dictionary<string, IEnumerable<string>>();
 
-        public AlexaDispatcherEndpointService(HttpServer httpServer, IAreaService areService, ISettingsService settingService, IComponentService componentService)
+        public AlexaDispatcherEndpointService(HttpServer httpServer, IAreaRegistryService areService, ISettingsService settingService, IComponentRegistryService componentService, ILogService logService)
         {
-            if (httpServer == null) throw new ArgumentNullException(nameof(httpServer));
-            if (areService == null) throw new ArgumentNullException(nameof(areService));
-            if (settingService == null) throw new ArgumentNullException(nameof(settingService));
-            if (componentService == null) throw new ArgumentNullException(nameof(componentService));
+            _httpServer = httpServer ?? throw new ArgumentNullException(nameof(httpServer));
+            _areService = areService ?? throw new ArgumentNullException(nameof(areService));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
+            _componentService = componentService ?? throw new ArgumentNullException(nameof(componentService));
 
-            _httpServer = httpServer;
-            _areService = areService;
-            _settingService = settingService;
-            _componentService = componentService;
+            _log = logService.CreatePublisher(nameof(AlexaDispatcherEndpointService));
         }
 
         public void Startup()
         {
-            _httpServer.RequestReceived += DispatchHttpRequest;
+            _httpServer.HttpRequestReceived += DispatchHttpRequest;
         }
 
         public void AddConnectedVivices(string friendlyName, IEnumerable<IComponent> devices)
@@ -99,22 +93,45 @@ namespace HA4IoT.Extensions
             }
 
             var response = DispatchHttpRequest(apiContext);
-            apiContext.Response = response != null ? JObject.FromObject(response) : new JObject();
+            apiContext.Result = response != null ? JObject.FromObject(response) : new JObject();
 
-            httpContext.Response.StatusCode = response != null ? HttpStatusCode.OK : HttpStatusCode.NotFound;
-            httpContext.Response.Body = new JsonBody(apiContext.Response);
+            var apiResponse = new ApiResponse
+            {
+                ResultCode = apiContext.ResultCode,
+                Result = apiContext.Result,
+                ResultHash = apiContext.ResultHash
+            };
+
+            var json = JsonConvert.SerializeObject(apiResponse);
+            httpContext.Response.Body = Encoding.UTF8.GetBytes(json);
+            httpContext.Response.MimeType = MimeTypeProvider.Json;
         }
 
         private ApiContext CreateApiContext(HttpContext httpContext)
         {
             try
             {
-                var request = string.IsNullOrEmpty(httpContext.Request.Body) ? new JObject() : JObject.Parse(httpContext.Request.Body);
-                return new ApiContext(httpContext.Request.Uri, request, new JObject());
+                string bodyText;
+
+                //TODO CHECK
+                // Parse a special query parameter.
+                if (!string.IsNullOrEmpty(httpContext.Request.Query) && httpContext.Request.Query.StartsWith("body=", StringComparison.OrdinalIgnoreCase))
+                {
+                    bodyText = httpContext.Request.Query.Substring("body=".Length);
+                }
+                else
+                {
+                    bodyText = Encoding.UTF8.GetString(httpContext.Request.Body ?? new byte[0]);
+                }
+
+                var action = httpContext.Request.Uri.Substring("/api/".Length);
+                var parameter = string.IsNullOrEmpty(bodyText) ? new JObject() : JObject.Parse(bodyText);
+
+                return new ApiContext(action, parameter, null);
             }
             catch (Exception)
             {
-                Log.Verbose("Received a request with no valid JSON request.");
+                _log.Verbose("Received a request with no valid JSON request.");
 
                 return null;
             }
@@ -259,7 +276,7 @@ namespace HA4IoT.Extensions
                 var componentName = componentSetting.Caption;
                 if (string.IsNullOrWhiteSpace(componentName) || string.IsNullOrWhiteSpace(areaName))
                 {
-                    friendlyName = compoment.Id.Value.Replace(".", " ");
+                    friendlyName = compoment.Id.Replace(".", " ");
                 }
                 else
                 {
@@ -272,19 +289,19 @@ namespace HA4IoT.Extensions
 
         private static string GetCompatibileComponentID(StateMachine compoment)
         {
-            return compoment.Id.Value.Replace(".", "_");
+            return compoment.Id.Replace(".", "_");
         }
 
-        private List<string> GetSupportedStates(StateMachine compoment)
+        private List<string> GetSupportedStates(IComponent component)
         {
             var actions = new List<string>();
-            foreach (var supportedState in compoment.GetSupportedStates().Select(x => x.ToString()))
+
+            if(component.GetFeatures().Supports<PowerStateFeature>())
             {
-                if (_supportedStatesMap.ContainsKey(supportedState))
-                {
-                    actions.Add(_supportedStatesMap[supportedState]);
-                }
+                actions.Add("turnOn");
+                actions.Add("turnOff");
             }
+
             return actions;
         }
 
@@ -316,7 +333,7 @@ namespace HA4IoT.Extensions
 
                     foreach (var device in _connectedDevices[componentID])
                     {
-                        RunComponentCommand(request.Command, device.Id.Value, true);
+                        RunComponentCommand(request.Command, device.Id, true);
                     }
                 }
                 else
@@ -375,25 +392,31 @@ namespace HA4IoT.Extensions
 
         private void RunComponentCommand(string command, string componentID, bool ignoreCurrentStateCheck = false)
         {
-            var component = _componentService.GetComponent(new ComponentId(componentID)) as IActuator;
+            
+
+            var component = _componentService.GetComponent(componentID);
 
             if (component != null && _invokeCommandMap.ContainsKey(command))
             {
-                var requested_state = new ComponentState(_invokeCommandMap[command]);
+                var requested_state = _invokeCommandMap[command];
 
                 if (!ignoreCurrentStateCheck)
                 {
                     var currentState = component.GetState();
 
+                    //TODO Fix
                     if (currentState.Equals(requested_state))
                     {
                         throw new StateAlreadySetException();
                     }
                 }
 
-                component.SetState(requested_state);
+               
+                component.ExecuteCommand(requested_state);
             }
         }
+
+        
     }
 
 }

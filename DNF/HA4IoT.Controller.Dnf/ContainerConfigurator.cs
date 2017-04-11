@@ -16,6 +16,7 @@ namespace HA4IoT.Controller.Dnf
         {
             if (containerService == null) throw new ArgumentNullException(nameof(containerService));
 
+            
             containerService.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
         }
     }

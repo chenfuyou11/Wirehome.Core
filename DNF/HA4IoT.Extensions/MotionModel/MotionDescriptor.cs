@@ -2,7 +2,7 @@
 using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Sensors;
 using HA4IoT.Contracts.Actuators;
-
+using HA4IoT.Contracts.Components;
 
 namespace HA4IoT.Extensions.MotionModel
 {
@@ -14,7 +14,7 @@ namespace HA4IoT.Extensions.MotionModel
 
         public IMotionDetector Neighbor { get; set; }
 
-        public IActuator Acutator { get; set; }
+        public IComponent Acutator { get; set; }
 
         public IObservable<MotionDescriptor> MotionSource { get; set; }
     }

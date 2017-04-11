@@ -2,30 +2,26 @@
 using HA4IoT.Automations;
 using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Services.System;
-using HA4IoT.Hardware.CCTools;
-using HA4IoT.Hardware.I2CHardwareBridge;
 using HA4IoT.Sensors;
-using HA4IoT.Services.Areas;
-using HA4IoT.Services.Devices;
-using System.Diagnostics;
 using HA4IoT.Controller.Dnf.Enums;
 using HA4IoT.Sensors.MotionDetectors;
 using HA4IoT.Actuators.Lamps;
-using HA4IoT.Extensions.Extensions;
+using HA4IoT.Hardware.CCTools.Devices;
+using HA4IoT.Services.Areas;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
 
     internal partial class StaircaseConfiguration
     {
-        private readonly IDeviceService _deviceService;
-        private readonly IAreaService _areaService;
+        private readonly IDeviceRegistryService _deviceService;
+        private readonly IAreaRegistryService _areaService;
         private readonly SensorFactory _sensorFactory;
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
 
-        public StaircaseConfiguration(IDeviceService deviceService,
-                                    IAreaService areaService,
+        public StaircaseConfiguration(IDeviceRegistryService deviceService,
+                                    IAreaRegistryService areaService,
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
                                     AutomationFactory automationFactory)  
@@ -39,10 +35,10 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
         public void Apply()
         {
-            var input = _deviceService.GetDevice<HSPE16InputOnly>(CCToolsDevices.HSPE16_88);
-            var relays = _deviceService.GetDevice<HSREL8>(CCToolsDevices.HSRel8_24);
+            var input = _deviceService.GetDevice<HSPE16InputOnly>(CCToolsDevices.HSPE16_88.ToString());
+            var relays = _deviceService.GetDevice<HSREL8>(CCToolsDevices.HSRel8_24.ToString());
 
-            var room = _areaService.CreateArea(Room.StairCase);
+            var room = _areaService.RegisterArea(Room.StairCase);
 
             _sensorFactory.RegisterMotionDetector(room, StaircaseElements.MotionDetector, input[HSPE16Pin.GPIO0].WithInvertedState(true));
 

@@ -9,6 +9,7 @@ using System.Reactive.Linq;
 using System.Linq;
 using HA4IoT.Extensions.MotionModel;
 using HA4IoT.Extensions.Extensions;
+using HA4IoT.Contracts.Components;
 
 namespace HA4IoT.Extensions
 {
@@ -20,10 +21,10 @@ namespace HA4IoT.Extensions
         private const int MOTION_TIME_SHIFT = 200;
 
         private readonly Dictionary<IMotionDetector, MotionDescriptor> _motionDetectors = new Dictionary<IMotionDetector, MotionDescriptor>();
-        private readonly IAreaService _areaService;
+        private readonly IAreaRegistryService _areaService;
         private readonly List<IDisposable> _resources = new List<IDisposable>();
 
-        public LightAutomationService(IAreaService areaService)
+        public LightAutomationService(IAreaRegistryService areaService)
         {
             _areaService = areaService;
         }
@@ -47,7 +48,7 @@ namespace HA4IoT.Extensions
             }
         }
 
-        public MotionDescriptor ConfigureMotionDetector(IMotionDetector motionDetector, IMotionDetector neighbor, IActuator acutatot)
+        public MotionDescriptor ConfigureMotionDetector(IMotionDetector motionDetector, IMotionDetector neighbor,  IComponent acutatot)
         {
              if(!_motionDetectors.ContainsKey(motionDetector))
              {
@@ -59,7 +60,7 @@ namespace HA4IoT.Extensions
             descriptor.Neighbor = neighbor;
             descriptor.Acutator = acutatot;
 
-            var trigger = motionDetector.GetMotionDetectedTrigger();
+            var trigger = motionDetector.MotionDetectedTrigger;
 
             descriptor.MotionSource = Observable.FromEventPattern<TriggeredEventArgs>
             (

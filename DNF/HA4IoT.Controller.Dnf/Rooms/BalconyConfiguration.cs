@@ -1,50 +1,53 @@
 ﻿using HA4IoT.Actuators;
 using HA4IoT.Automations;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Services.System;
-using HA4IoT.Hardware.CCTools;
-using HA4IoT.Hardware.I2CHardwareBridge;
 using HA4IoT.Sensors;
-using HA4IoT.Services.Areas;
-using HA4IoT.Services.Devices;
 using HA4IoT.Controller.Dnf.Enums;
 using HA4IoT.Extensions.Extensions;
+using HA4IoT.Contracts.Services.System;
+using HA4IoT.Contracts.Areas;
+using HA4IoT.Hardware.CCTools;
+using System;
+using HA4IoT.Hardware.CCTools.Devices;
+using HA4IoT.Services.Areas;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
     internal partial class BalconyConfiguration
     {
-        private readonly IDeviceService _deviceService;
-        private readonly IAreaService _areaService;
+        private readonly IDeviceRegistryService _deviceService;
+        private readonly IAreaRegistryService _areaService;
         private readonly SensorFactory _sensorFactory;
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
-   
+        private readonly CCToolsDeviceService _ccToolsBoardService;
+
         private const int TIME_TO_ON = 30;
         private const int TIME_WHILE_ON = 5;
 
       
-        public BalconyConfiguration(IDeviceService deviceService, 
-                                    IAreaService areaService,
+        public BalconyConfiguration(IDeviceRegistryService deviceService, 
+                                    IAreaRegistryService areaService,
+                                    CCToolsDeviceService ccToolsBoardService,
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
                                     AutomationFactory automationFactory) 
         {
-            _deviceService = deviceService;
-            _areaService = areaService;
-            _sensorFactory = sensorFactory;
-            _actuatorFactory = actuatorFactory;
-            _automationFactory = automationFactory;
+            _deviceService = deviceService ?? throw new ArgumentNullException(nameof(deviceService));
+            _areaService = areaService ?? throw new ArgumentNullException(nameof(areaService));
+            _ccToolsBoardService = ccToolsBoardService ?? throw new ArgumentNullException(nameof(ccToolsBoardService));
+            _actuatorFactory = actuatorFactory ?? throw new ArgumentNullException(nameof(actuatorFactory));
+            _sensorFactory = sensorFactory ?? throw new ArgumentNullException(nameof(sensorFactory));
+            _automationFactory = automationFactory ?? throw new ArgumentNullException(nameof(automationFactory));
         }
 
         public void Apply()
         {
-            var input = _deviceService.GetDevice<HSPE16InputOnly>(CCToolsDevices.HSPE16_16);
-            var relays = _deviceService.GetDevice<HSREL8>(CCToolsDevices.HSRel8_24);
+            var input = _deviceService.GetDevice<HSPE16InputOnly>(CCToolsDevices.HSPE16_16.ToString());
+            var relays = _deviceService.GetDevice<HSREL8>(CCToolsDevices.HSRel8_24.ToString());
             var tempSensor = _deviceService.GetTempSensor((int)BalconyElements.TempSensor);
             var humiditySensor = _deviceService.GetHumiditySensor((int)BalconyElements.TempSensor);
 
-            var room = _areaService.CreateArea(Room.Balcony);
+            var room = _areaService.RegisterArea(Room.Balcony);
             
             _sensorFactory.RegisterTemperatureSensor(room, BalconyElements.TempSensor, tempSensor);
             _sensorFactory.RegisterHumiditySensor(room, BalconyElements.HumiditySensor, humiditySensor);

@@ -111,10 +111,15 @@
   <ItemGroup>
     <Compile Include="Contracts\ILightAutomationService.cs" />
     <Compile Include="Contracts\IAlexaDispatcherEndpointService.cs" />
+    <Compile Include="Contracts\IMonostableLampAdapter.cs" />
+    <Compile Include="Core\MonostableBinaryOutputAdapter.cs" />
+    <Compile Include="Core\MonostableLamp.cs" />
+    <Compile Include="Extensions\ActuatorFactoryExtensions.cs" />
     <Compile Include="Extensions\DeviceServiceExtensions.cs" />
     <Compile Include="Extensions\CollectionsExtensions.cs" />
     <Compile Include="Extensions\EqualityDecorator.cs" />
     <Compile Include="Extensions\ReactiveExtensions.cs" />
+    <Compile Include="Core\TurnOnAndOffAutomationEx.cs" />
     <Compile Include="LightAutomationService.cs" />
     <Compile Include="MessagesModel\Additionalappliancedetails.cs" />
     <Compile Include="AlexaDispatcherEndpointService.cs" />
@@ -138,13 +143,9 @@
     <None Include="Lambda\home_automation_handler.js" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SDK\HA4IoT.Contracts\HA4IoT.Contracts.csproj">
-      <Project>{e1edac4b-83b9-46f4-9f6a-3bae97d79f29}</Project>
+    <ProjectReference Include="..\..\Core\HA4IoT.Contracts\HA4IoT.Contracts.csproj">
+      <Project>{b10b2e2a-85cd-4289-8649-fc0c1c98921d}</Project>
       <Name>HA4IoT.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SDK\HA4IoT.Hardware\HA4IoT.Hardware.csproj">
-      <Project>{287a9bd0-4037-4add-986f-54056f059eae}</Project>
-      <Name>HA4IoT.Hardware</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\HA4IoT.Networking\HA4IoT.Networking.csproj">
       <Project>{d4e0a3f9-6521-4aee-815a-e2a60323fb63}</Project>

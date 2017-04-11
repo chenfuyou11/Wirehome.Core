@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>    
-    <TargetFramework>netcoreapp1.1</TargetFramework>    
+    <TargetFramework>netcoreapp1.0</TargetFramework>    
     <ApplicationIcon />    
     <OutputTypeEx>exe</OutputTypeEx>
     <StartupObject>HA4Iot.Movement.Test.TestRunner</StartupObject>
@@ -23,19 +23,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="HA4IoT">
-      <HintPath>D:\Projects\HA4IoT\SDK\HA4IoT\bin\Debug\HA4IoT.dll</HintPath>
-    </Reference>
-    <Reference Include="HA4IoT.Contracts">
-      <HintPath>D:\Projects\HA4IoT\SDK\HA4IoT.Contracts\bin\Debug\HA4IoT.Contracts.dll</HintPath>
-    </Reference>
-    <Reference Include="HA4IoT.Extensions">
-      <HintPath>..\HA4IoT.Extensions\bin\Debug\HA4IoT.Extensions.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\Core\HA4IoT.Contracts\HA4IoT.Contracts.csproj" />
+    <ProjectReference Include="..\..\Core\HA4IoT.Networking\HA4IoT.Networking.csproj" />
+    <ProjectReference Include="..\..\Core\HA4IoT\HA4IoT.csproj" />
+    <ProjectReference Include="..\HA4IoT.Extensions\HA4IoT.Extensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mocks\" />
   </ItemGroup>
 
 </Project>

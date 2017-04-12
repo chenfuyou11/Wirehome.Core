@@ -1,5 +1,4 @@
-﻿using HA4IoT.Actuators.StateMachines;
-using HA4IoT.Contracts.Api;
+﻿using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Logging;
@@ -16,6 +15,7 @@ using Windows.Web.Http;
 using System.Text;
 using Newtonsoft.Json;
 using HA4IoT.Contracts.Components.Features;
+using HA4IoT.Components;
 
 namespace HA4IoT.Extensions
 {
@@ -111,20 +111,20 @@ namespace HA4IoT.Extensions
         {
             try
             {
-                string bodyText;
+                string bodyText = Encoding.UTF8.GetString(httpContext.Request.Body ?? new byte[0]);
 
-                //TODO CHECK
-                // Parse a special query parameter.
-                if (!string.IsNullOrEmpty(httpContext.Request.Query) && httpContext.Request.Query.StartsWith("body=", StringComparison.OrdinalIgnoreCase))
+                int bodyStart = bodyText.IndexOf("{");
+                int bodyEnd = bodyText.LastIndexOf("}");
+
+                if(bodyStart == -1 || bodyEnd == -1)
                 {
-                    bodyText = httpContext.Request.Query.Substring("body=".Length);
-                }
-                else
-                {
-                    bodyText = Encoding.UTF8.GetString(httpContext.Request.Body ?? new byte[0]);
+                    throw new Exception("JSON body is not correctly formmated");
                 }
 
-                var action = httpContext.Request.Uri.Substring("/api/".Length);
+                bodyText = bodyText.Substring(bodyStart, bodyEnd - bodyStart + 1)?.Trim();
+
+
+                var action = httpContext.Request.Uri.Substring("/alexa/".Length);
                 var parameter = string.IsNullOrEmpty(bodyText) ? new JObject() : JObject.Parse(bodyText);
 
                 return new ApiContext(action, parameter, null);
@@ -160,7 +160,7 @@ namespace HA4IoT.Extensions
             foreach (var area in _areService.GetAreas())
             {
                 var areaName = area.Settings?.Caption;
-                var areaComponents = area.GetComponents<StateMachine>();
+                var areaComponents = area.GetComponents();
 
                 devices.AddRange(GenerateDiscoveredApplianceFromArea(areaName, areaComponents));
             }
@@ -200,7 +200,7 @@ namespace HA4IoT.Extensions
             {
                 var connectedDevices = _connectedDevices[friendlyName];
 
-                var actions = GetSupportedStates(connectedDevices.Cast<StateMachine>().FirstOrDefault());
+                var actions = GetSupportedStates(connectedDevices.Cast<IComponent>().FirstOrDefault());
                 var componentId = $"Composite_{friendlyName.Replace(" ", "_")}";
 
                 if (actions.Count == 0 || string.IsNullOrWhiteSpace(friendlyName))
@@ -228,7 +228,7 @@ namespace HA4IoT.Extensions
             return devices;
         }
 
-        private List<Discoveredappliance> GenerateDiscoveredApplianceFromArea(string areaName, IList<StateMachine> areaComponents)
+        private List<Discoveredappliance> GenerateDiscoveredApplianceFromArea(string areaName, IList<IComponent> areaComponents)
         {
             var devices = new List<Discoveredappliance>();
 
@@ -287,7 +287,7 @@ namespace HA4IoT.Extensions
             return friendlyName;
         }
 
-        private static string GetCompatibileComponentID(StateMachine compoment)
+        private static string GetCompatibileComponentID(IComponent compoment)
         {
             return compoment.Id.Replace(".", "_");
         }

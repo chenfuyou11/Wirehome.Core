@@ -4,7 +4,9 @@ using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Services.System;
 using HA4IoT.Sensors;
 using HA4IoT.Extensions;
-
+using HA4IoT.Contracts.Components;
+using HA4IoT.Contracts.Actuators;
+using HA4IoT.Extensions.Core;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -17,13 +19,16 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
         private readonly IAlexaDispatcherEndpointService _alexaService;
+        private readonly IComponentRegistryService _componentService;
 
         public HouseConfiguration(IDeviceRegistryService deviceService,
                                     IAreaRegistryService areaService,
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
                                     AutomationFactory automationFactory,
-                                    IAlexaDispatcherEndpointService alexaService)  
+                                    IAlexaDispatcherEndpointService alexaService,
+                                    IComponentRegistryService componentService
+        )  
         {
             _deviceService = deviceService;
             _areaService = areaService;
@@ -31,14 +36,15 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _actuatorFactory = actuatorFactory;
             _automationFactory = automationFactory;
             _alexaService = alexaService;
+            _componentService = componentService;
         }
 
         public void Apply()
         {
-            //TODO
-            //var all_lamps = _componentService.GetComponents<IMonostableLamp>();
 
-            //_alexaService.AddConnectedVivices("All lights", all_lamps);
+            var all_lamps = _componentService.GetComponents<MonostableLamp>();
+
+            _alexaService.AddConnectedVivices("All lights", all_lamps);
         }
     }
 }

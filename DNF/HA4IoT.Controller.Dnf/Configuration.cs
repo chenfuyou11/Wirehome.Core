@@ -70,7 +70,7 @@ namespace HA4IoT.Controller.Dnf
             var i2CHardwareBridge = new I2CHardwareBridge(new I2CSlaveAddress(I2C_ADDRESS_ARDUINO), _i2CBusService, _schedulerService);
             _deviceService.AddDevice(i2CHardwareBridge);
 
-            // TODO
+ 
             //var currentController = new CurrentController(i2CHardwareBridge.CurrentAccessor);
             //_deviceService.AddDevice(currentController);
 

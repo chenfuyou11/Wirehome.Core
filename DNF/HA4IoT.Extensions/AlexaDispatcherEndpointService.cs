@@ -45,6 +45,7 @@ namespace HA4IoT.Extensions
             {"TurnOffRequest", "TurnOffConfirmation" }
         };
 
+   
         private Dictionary<string, IEnumerable<IComponent>> _connectedDevices = new Dictionary<string, IEnumerable<IComponent>>();
         private Dictionary<string, IEnumerable<string>> _aliases = new Dictionary<string, IEnumerable<string>>();
 
@@ -95,13 +96,6 @@ namespace HA4IoT.Extensions
 
             var response = DispatchHttpRequest(apiContext);
             apiContext.Result = response != null ? JObject.FromObject(response) : new JObject();
-
-            //var apiResponse = new ApiResponse
-            //{
-            //    ResultCode = apiContext.ResultCode,
-            //    Result = apiContext.Result,
-            //    ResultHash = apiContext.ResultHash
-            //};
 
             var json = JsonConvert.SerializeObject(apiContext.Result);
             httpContext.Response.Body = Encoding.UTF8.GetBytes(json);
@@ -296,6 +290,8 @@ namespace HA4IoT.Extensions
         private List<string> GetSupportedStates(IComponent component)
         {
             var actions = new List<string>();
+
+            var features = component.GetFeatures();
 
             if(component.GetFeatures().Supports<PowerStateFeature>())
             {

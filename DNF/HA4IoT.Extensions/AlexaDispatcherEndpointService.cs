@@ -16,6 +16,7 @@ using System.Text;
 using Newtonsoft.Json;
 using HA4IoT.Contracts.Components.Features;
 using HA4IoT.Components;
+using HA4IoT.Contracts.Components.States;
 
 namespace HA4IoT.Extensions
 {
@@ -95,14 +96,14 @@ namespace HA4IoT.Extensions
             var response = DispatchHttpRequest(apiContext);
             apiContext.Result = response != null ? JObject.FromObject(response) : new JObject();
 
-            var apiResponse = new ApiResponse
-            {
-                ResultCode = apiContext.ResultCode,
-                Result = apiContext.Result,
-                ResultHash = apiContext.ResultHash
-            };
+            //var apiResponse = new ApiResponse
+            //{
+            //    ResultCode = apiContext.ResultCode,
+            //    Result = apiContext.Result,
+            //    ResultHash = apiContext.ResultHash
+            //};
 
-            var json = JsonConvert.SerializeObject(apiResponse);
+            var json = JsonConvert.SerializeObject(apiContext.Result);
             httpContext.Response.Body = Encoding.UTF8.GetBytes(json);
             httpContext.Response.MimeType = MimeTypeProvider.Json;
         }
@@ -392,26 +393,12 @@ namespace HA4IoT.Extensions
 
         private void RunComponentCommand(string command, string componentID, bool ignoreCurrentStateCheck = false)
         {
-            
-
             var component = _componentService.GetComponent(componentID);
 
             if (component != null && _invokeCommandMap.ContainsKey(command))
             {
                 var requested_state = _invokeCommandMap[command];
-
-                if (!ignoreCurrentStateCheck)
-                {
-                    var currentState = component.GetState();
-
-                    //TODO Fix
-                    if (currentState.Equals(requested_state))
-                    {
-                        throw new StateAlreadySetException();
-                    }
-                }
-
-               
+                
                 component.ExecuteCommand(requested_state);
             }
         }

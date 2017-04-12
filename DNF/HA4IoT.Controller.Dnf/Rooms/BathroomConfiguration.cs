@@ -77,7 +77,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
                   _settingsService,
                   _daylightService);
 
-            room.AddAutomation(automation);
+            room.RegisterAutomation(automation);
 
               automation
              .WithTrigger(room.GetMotionDetector(BathroomElements.MotionDetector))

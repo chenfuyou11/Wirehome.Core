@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using HA4IoT.Components;
 using HA4IoT.Contracts.Commands;
+using System.Linq;
 
 namespace HA4IoT.Commands
 {

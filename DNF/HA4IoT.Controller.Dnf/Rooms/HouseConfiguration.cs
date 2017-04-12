@@ -42,7 +42,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
         public void Apply()
         {
 
-            var all_lamps = _componentService.GetComponents<MonostableLamp>();
+            var all_lamps = _componentService.GetComponents<ILamp>();
 
             _alexaService.AddConnectedVivices("All lights", all_lamps);
         }

@@ -8,6 +8,7 @@ using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Components.Features;
 using HA4IoT.Contracts.Components.States;
 using HA4IoT.Contracts.Hardware;
+using System.Collections.Generic;
 
 namespace HA4IoT.Extensions.Core
 {
@@ -16,13 +17,20 @@ namespace HA4IoT.Extensions.Core
         private readonly IMonostableLampAdapter _adapter;
 
         private PowerStateValue _powerState = PowerStateValue.Off;
-        
+        private CommandExecutor _commandExecutor;
+
         public MonostableLamp(string id, IMonostableLampAdapter adapter)
             : base(id)
         {
             _adapter = adapter ?? throw new ArgumentNullException(nameof(adapter));
 
             adapter.StateChanged += Adapter_StateChanged;
+
+            _commandExecutor = new CommandExecutor();
+            _commandExecutor.Register<ResetCommand>(c => ResetState());
+            _commandExecutor.Register<TurnOnCommand>(c => SetStateInternal(PowerStateValue.On));
+            _commandExecutor.Register<TurnOffCommand>(c => SetStateInternal(PowerStateValue.Off));
+            _commandExecutor.Register<TogglePowerStateCommand>(c => TogglePowerState());
         }
 
         private void Adapter_StateChanged(PowerStateValue value)
@@ -38,6 +46,7 @@ namespace HA4IoT.Extensions.Core
             return state;
         }
 
+      
         public override IComponentFeatureCollection GetFeatures()
         {
             var features = new ComponentFeatureCollection()
@@ -49,14 +58,8 @@ namespace HA4IoT.Extensions.Core
         public override void ExecuteCommand(ICommand command)
         {
             if (command == null) throw new ArgumentNullException(nameof(command));
-
-            var commandExecutor = new CommandExecutor();
-            commandExecutor.Register<ResetCommand>(c => ResetState());
-            commandExecutor.Register<TurnOnCommand>(c => SetStateInternal(PowerStateValue.On));
-            commandExecutor.Register<TurnOffCommand>(c => SetStateInternal(PowerStateValue.Off));
-            commandExecutor.Register<TogglePowerStateCommand>(c => TogglePowerState());
             
-            commandExecutor.Execute(command);
+            _commandExecutor.Execute(command);
         }
 
         public void ResetState()

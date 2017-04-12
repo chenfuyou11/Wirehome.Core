@@ -291,8 +291,6 @@ namespace HA4IoT.Extensions
         {
             var actions = new List<string>();
 
-            var features = component.GetFeatures();
-
             if(component.GetFeatures().Supports<PowerStateFeature>())
             {
                 actions.Add("turnOn");

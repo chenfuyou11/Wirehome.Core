@@ -119,7 +119,6 @@
     <Compile Include="Extensions\CollectionsExtensions.cs" />
     <Compile Include="Extensions\EqualityDecorator.cs" />
     <Compile Include="Extensions\ReactiveExtensions.cs" />
-    <Compile Include="Core\TurnOnAndOffAutomationEx.cs" />
     <Compile Include="LightAutomationService.cs" />
     <Compile Include="MessagesModel\Additionalappliancedetails.cs" />
     <Compile Include="AlexaDispatcherEndpointService.cs" />

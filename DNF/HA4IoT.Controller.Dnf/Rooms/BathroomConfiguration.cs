@@ -67,23 +67,11 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _sensorFactory.RegisterMotionDetector(room, BathroomElements.MotionDetector, input[HSPE16Pin.GPIO2]);
             
             _actuatorFactory.RegisterMonostableLamp(room, BathroomElements.Light, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay0], input_88[HSPE16Pin.GPIO11], _schedulerService));
-
-
-            var automation =
-              new TurnOnAndOffAutomationEx(
-                  $"{room.Id}.{BathroomElements.LightAutomation}",
-                  _dateTimeService,
-                  _schedulerService,
-                  _settingsService,
-                  _daylightService);
-
-            room.RegisterAutomation(automation);
-
-              automation
-             .WithTrigger(room.GetMotionDetector(BathroomElements.MotionDetector))
-             .WithTarget(room.GetLamp(BathroomElements.Light))
-             .WithDisableTurnOffWhenBinaryStateEnabled(input_88[HSPE16Pin.GPIO1]);
             
+            _automationFactory.RegisterTurnOnAndOffAutomation(room, BathroomElements.LightAutomation)
+           .WithTrigger(room.GetMotionDetector(BathroomElements.MotionDetector))
+           .WithTarget(room.GetLamp(BathroomElements.Light))
+            .WithDisableTurnOffWhenBinaryStateEnabled(input_88[HSPE16Pin.GPIO1]);
         }
 
     }

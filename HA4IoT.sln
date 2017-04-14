@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.0
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers", "{CD5D2CCD-44D0-46E5-BE14-3B377048E0A2}"
 EndProject
@@ -46,6 +46,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Extensions", "DNF\HA4IoT.Extensions\HA4IoT.Extensions.csproj", "{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HA4Iot.Movement.Test", "DNF\HA4Iot.Movement.Test\HA4Iot.Movement.Test.csproj", "{604637EF-EDCE-4E4C-9453-443BBC5F6551}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Extensions.Tests", "DNF\HA4IoT.Extensions.Tests\HA4IoT.Extensions.Tests.csproj", "{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -407,8 +409,8 @@ Global
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|x64.Build.0 = Debug|x64
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|x86.ActiveCfg = Debug|x86
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|x86.Build.0 = Debug|x86
-		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|x86 (For local).ActiveCfg = Debug|Any CPU
-		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|x86 (For local).Build.0 = Debug|Any CPU
+		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|x86 (For local).ActiveCfg = Debug|x86
+		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Debug|x86 (For local).Build.0 = Debug|x86
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}.Release|Any CPU (For Cloud Components).ActiveCfg = Release|Any CPU
@@ -451,6 +453,32 @@ Global
 		{604637EF-EDCE-4E4C-9453-443BBC5F6551}.Release|x86.Build.0 = Release|Any CPU
 		{604637EF-EDCE-4E4C-9453-443BBC5F6551}.Release|x86 (For local).ActiveCfg = Release|Any CPU
 		{604637EF-EDCE-4E4C-9453-443BBC5F6551}.Release|x86 (For local).Build.0 = Release|Any CPU
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|Any CPU (For Cloud Components).ActiveCfg = Debug|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|ARM.ActiveCfg = Debug|ARM
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|ARM.Build.0 = Debug|ARM
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|ARM.Deploy.0 = Debug|ARM
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|x64.ActiveCfg = Debug|x64
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|x64.Build.0 = Debug|x64
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|x64.Deploy.0 = Debug|x64
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|x86.ActiveCfg = Debug|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|x86.Build.0 = Debug|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|x86.Deploy.0 = Debug|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Debug|x86 (For local).ActiveCfg = Debug|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|Any CPU.ActiveCfg = Release|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|Any CPU (For Cloud Components).ActiveCfg = Release|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|ARM.ActiveCfg = Release|ARM
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|ARM.Build.0 = Release|ARM
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|ARM.Deploy.0 = Release|ARM
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|ARM (For Raspberry Pi).ActiveCfg = Release|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|x64.ActiveCfg = Release|x64
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|x64.Build.0 = Release|x64
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|x64.Deploy.0 = Release|x64
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|x86.ActiveCfg = Release|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|x86.Build.0 = Release|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|x86.Deploy.0 = Release|x86
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|x86 (For local).ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -470,5 +498,6 @@ Global
 		{7AB8593B-A23C-467A-B8FB-09C9F32ABF54} = {24BAFA1E-F491-4B6C-AB67-CA31D8206896}
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E} = {24BAFA1E-F491-4B6C-AB67-CA31D8206896}
 		{604637EF-EDCE-4E4C-9453-443BBC5F6551} = {24BAFA1E-F491-4B6C-AB67-CA31D8206896}
+		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69} = {24BAFA1E-F491-4B6C-AB67-CA31D8206896}
 	EndGlobalSection
 EndGlobal

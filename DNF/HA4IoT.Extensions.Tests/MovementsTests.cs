@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HA4IoT.Settings;
 using HA4IoT.Services.Backup;
 using HA4IoT.Services.Scheduling;
@@ -19,13 +19,11 @@ using System;
 using System.Reactive.Linq;
 using System.Reactive.Disposables;
 using HA4IoT.Sensors.MotionDetectors;
-using HA4IoT.Tests.Mockups.Adapters;
 using HA4IoT.Contracts.Services.System;
 using HA4IoT.Contracts.Services.Settings;
-using HA4IoT.Tests.Mockups;
 using HA4IoT.Triggers;
 
-namespace HA4Iot.Movement.Test
+namespace HA4IoT.Extensions.Tests
 {
     [TestClass]
     public class MovementsTests : ReactiveTest
@@ -119,7 +117,7 @@ namespace HA4Iot.Movement.Test
             Mock.Get(storageService).Setup(x => x.Write(It.IsAny<string>(), It.IsAny<Dictionary<string, JObject>>()));
 
             var testController = new TestController();
-           
+
 
             var areas = new List<IArea>();
 
@@ -191,7 +189,7 @@ namespace HA4Iot.Movement.Test
         }
     }
 
-    
+
 
     //var scheduler = new TestScheduler();
     //var xs = scheduler.CreateHotObservable

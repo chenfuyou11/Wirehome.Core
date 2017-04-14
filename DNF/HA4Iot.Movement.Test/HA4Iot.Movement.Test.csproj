@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>    
-    <TargetFramework>netcoreapp1.0</TargetFramework>    
+    <TargetFramework>netcoreapp1.1</TargetFramework>    
     <ApplicationIcon />    
     <OutputTypeEx>exe</OutputTypeEx>
     <StartupObject>HA4Iot.Movement.Test.TestRunner</StartupObject>
@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\HA4IoT.Contracts\HA4IoT.Contracts.csproj" />
     <ProjectReference Include="..\..\Core\HA4IoT.Networking\HA4IoT.Networking.csproj" />
+    <ProjectReference Include="..\..\Core\HA4IoT.Tests\HA4IoT.Tests.csproj" />
     <ProjectReference Include="..\..\Core\HA4IoT\HA4IoT.csproj" />
     <ProjectReference Include="..\HA4IoT.Extensions\HA4IoT.Extensions.csproj" />
   </ItemGroup>

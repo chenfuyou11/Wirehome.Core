@@ -5,7 +5,6 @@ using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Services.Settings;
 using HA4IoT.Extensions.Exceptions;
 using HA4IoT.Extensions.MessagesModel;
-using HA4IoT.Networking.Http;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -15,8 +14,7 @@ using Windows.Web.Http;
 using System.Text;
 using Newtonsoft.Json;
 using HA4IoT.Contracts.Components.Features;
-using HA4IoT.Components;
-using HA4IoT.Contracts.Components.States;
+using HA4IoT.Net.Http;
 
 namespace HA4IoT.Extensions
 {

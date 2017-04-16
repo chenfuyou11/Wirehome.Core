@@ -64,11 +64,11 @@ namespace HA4IoT.Extensions.Core
 
                 _ControledStateChange = true;
 
-                _output.Write(BinaryState.High, commit);
+                _output.Write(BinaryState.High, commit ? WriteBinaryStateMode.Commit : WriteBinaryStateMode.NoCommit);
 
                 _schedulerService.In(TimeSpan.FromMilliseconds(ON_TIME),() =>
                 {
-                    _output.Write(BinaryState.Low, commit);
+                    _output.Write(BinaryState.Low, commit ? WriteBinaryStateMode.Commit : WriteBinaryStateMode.NoCommit);
 
                     _ControledStateChange = false;
                 });

@@ -1,9 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HA4IoT.Settings;
-using HA4IoT.Services.Backup;
-using HA4IoT.Services.Scheduling;
-using HA4IoT.Services.System;
-using HA4IoT.Extensions;
 using HA4IoT.Contracts.Services.Storage;
 using Moq;
 using System.Collections.Generic;
@@ -13,15 +8,12 @@ using HA4IoT.Contracts.Sensors;
 using System.Threading.Tasks;
 using Microsoft.Reactive.Testing;
 using System.Linq;
-using System.Reactive;
-using HA4IoT.Extensions.Extensions;
-using System;
-using System.Reactive.Linq;
-using System.Reactive.Disposables;
 using HA4IoT.Sensors.MotionDetectors;
 using HA4IoT.Contracts.Services.System;
 using HA4IoT.Contracts.Services.Settings;
 using HA4IoT.Triggers;
+using HA4IoT.Contracts.Services.Daylight;
+using HA4IoT.Extensions.MotionModel;
 
 namespace HA4IoT.Extensions.Tests
 {
@@ -35,12 +27,13 @@ namespace HA4IoT.Extensions.Tests
             var automationService = setupResult.automationService;
 
             automationService.Startup();
-            var toiletDescriptor = automationService.ConfigureMotionDetector(setupResult.toiletDetector, setupResult.hallwayDetectorToilet, null);
-            var hallwayToiletDetector = automationService.ConfigureMotionDetector(setupResult.hallwayDetectorToilet, setupResult.hallwayDetectorLivingRoom, null);
-            var hallwayLivingRoomDetector = automationService.ConfigureMotionDetector(setupResult.hallwayDetectorLivingRoom, setupResult.livingRoomDetector, null);
-            var livingRoomDetector = automationService.ConfigureMotionDetector(setupResult.livingRoomDetector, setupResult.balconyDetector, null);
-            var balconyDetector = automationService.ConfigureMotionDetector(setupResult.balconyDetector, setupResult.livingRoomDetector, null);
-            var kitchenDetector = automationService.ConfigureMotionDetector(setupResult.kitchenDetector, setupResult.hallwayDetectorToilet, null);
+
+            var toiletDescriptor = automationService.RegisterMotionDescriptor(new MotionDescriptor(setupResult.toiletDetector, new[] { setupResult.hallwayDetectorToilet }, null));
+            var hallwayToiletDetector = automationService.RegisterMotionDescriptor(new MotionDescriptor(setupResult.hallwayDetectorToilet, new[] { setupResult.hallwayDetectorLivingRoom }, null));
+            var hallwayLivingRoomDetector = automationService.RegisterMotionDescriptor(new MotionDescriptor(setupResult.hallwayDetectorLivingRoom, new[] { setupResult.livingRoomDetector }, null));
+            var livingRoomDetector = automationService.RegisterMotionDescriptor(new MotionDescriptor(setupResult.livingRoomDetector, new[] { setupResult.balconyDetector }, null));
+            var balconyDetector = automationService.RegisterMotionDescriptor(new MotionDescriptor(setupResult.balconyDetector, new[] { setupResult.livingRoomDetector }, null));
+            var kitchenDetector = automationService.RegisterMotionDescriptor(new MotionDescriptor(setupResult.kitchenDetector, new[] { setupResult.hallwayDetectorToilet }, null));
 
             automationService.StartWatchForMove();
 
@@ -113,6 +106,9 @@ namespace HA4IoT.Extensions.Tests
         {
             Dictionary<string, JObject> output;
             var storageService = Mock.Of<IStorageService>();
+
+
+
             Mock.Get(storageService).Setup(x => x.TryRead(It.IsAny<string>(), out output)).Returns(false);
             Mock.Get(storageService).Setup(x => x.Write(It.IsAny<string>(), It.IsAny<Dictionary<string, JObject>>()));
 
@@ -165,7 +161,11 @@ namespace HA4IoT.Extensions.Tests
             var areaService = Mock.Of<IAreaRegistryService>();
             Mock.Get(areaService).Setup(c => c.GetAreas()).Returns(areas);
 
-            var lightAutomation = new LightAutomationService(areaService);
+            var schedulerService = Mock.Of<ISchedulerService>();
+            var daylightService = Mock.Of<IDaylightService>();
+
+
+            var lightAutomation = new LightAutomationService(areaService, schedulerService, daylightService);
 
             return
             (

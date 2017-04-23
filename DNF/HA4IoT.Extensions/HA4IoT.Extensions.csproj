@@ -114,10 +114,12 @@
     <Compile Include="Contracts\IMonostableLampAdapter.cs" />
     <Compile Include="Core\MonostableBinaryOutputAdapter.cs" />
     <Compile Include="Core\MonostableLamp.cs" />
+    <Compile Include="Core\WriteOnce.cs" />
     <Compile Include="Extensions\ActuatorFactoryExtensions.cs" />
     <Compile Include="Extensions\DeviceServiceExtensions.cs" />
     <Compile Include="Extensions\CollectionsExtensions.cs" />
     <Compile Include="Extensions\EqualityDecorator.cs" />
+    <Compile Include="Extensions\IMotionDetectorExtensions.cs" />
     <Compile Include="Extensions\ReactiveExtensions.cs" />
     <Compile Include="LightAutomationService.cs" />
     <Compile Include="MessagesModel\Additionalappliancedetails.cs" />

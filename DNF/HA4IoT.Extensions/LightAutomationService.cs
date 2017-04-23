@@ -3,142 +3,123 @@ using System.Collections.Generic;
 using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Sensors;
 using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Triggers;
 using System.Reactive.Linq;
 using System.Linq;
 using HA4IoT.Extensions.MotionModel;
-using HA4IoT.Extensions.Extensions;
-using HA4IoT.Contracts.Components;
+using HA4IoT.Contracts.Components.Features;
+using HA4IoT.Contracts.Services.System;
+using HA4IoT.Contracts.Services.Daylight;
 
 namespace HA4IoT.Extensions
 {
     public class LightAutomationService : IService, IDisposable
     {
-        //Add observable with motion vectors detected
-        //Add property with number of persons
         private const int MOTION_TIME_WINDOW = 3000;
-        private const int MOTION_TIME_SHIFT = 200;
 
-        private readonly Dictionary<IMotionDetector, MotionDescriptor> _motionDetectors = new Dictionary<IMotionDetector, MotionDescriptor>();
         private readonly IAreaRegistryService _areaService;
+        private readonly ISchedulerService _schedulerService;
+        private readonly IDaylightService _daylightService;
+        
         private readonly List<IDisposable> _resources = new List<IDisposable>();
+        private readonly Dictionary<IMotionDetector, MotionDescriptor> _motionDescriptors = new Dictionary<IMotionDetector, MotionDescriptor>();
 
-        public LightAutomationService(IAreaRegistryService areaService)
+        private bool _hasStarted = false;
+
+         public LightAutomationService(IAreaRegistryService areaService, 
+                                      ISchedulerService schedulerService, 
+                                      IDaylightService daylightService
+        )
         {
             _areaService = areaService;
+            _schedulerService = schedulerService;
+            _daylightService = daylightService;
         }
 
         public void Startup()
         {
-            FindRegistredMotionDetectors();
-        }
+            _hasStarted = true;
 
-        private void FindRegistredMotionDetectors()
+            _motionDescriptors.Values.ToList().ForEach(x => x.InitDescriptor());
+        }
+        
+        public MotionDescriptor RegisterMotionDescriptor(MotionDescriptor descriptor)
         {
-            foreach (var area in _areaService.GetAreas())
+            if(descriptor == null) new ArgumentNullException(nameof(descriptor));
+
+            if(_hasStarted)
             {
-                foreach (var motionDetector in area.GetComponents<IMotionDetector>())
-                {
-                    _motionDetectors[motionDetector] = new MotionDescriptor
-                    {
-                        Area = area
-                    };
-                }
+                throw new Exception("Cannot register new descriptors after service has started");
             }
-        }
+            
+            descriptor.SetArea(GetAreaForDetector(descriptor.MotionDetector));
+            
 
-        public MotionDescriptor ConfigureMotionDetector(IMotionDetector motionDetector, IMotionDetector neighbor,  IComponent acutatot)
-        {
-             if(!_motionDetectors.ContainsKey(motionDetector))
-             {
-                throw new Exception("This motion detector was not register in any area");
-             }
-
-            var descriptor = _motionDetectors[motionDetector];
-            descriptor.MotionDetector = motionDetector;
-            descriptor.Neighbor = neighbor;
-            descriptor.Acutator = acutatot;
-
-            var trigger = motionDetector.MotionDetectedTrigger;
-
-            descriptor.MotionSource = Observable.FromEventPattern<TriggeredEventArgs>
-            (
-                h => trigger.Triggered += h,
-                h => trigger.Triggered -= h).Select(x => descriptor
-            );
+            if (descriptor.Lamp?.GetFeatures()?.Supports<PowerStateFeature>() ?? false)
+            {
+                throw new Exception($"Component {descriptor?.Lamp?.Id} is not supporting PowerStateFeature");
+            }
 
             return descriptor;
         }
-        
+
+        private IArea GetAreaForDetector(IMotionDetector md)
+        {
+            foreach (var area in _areaService.GetAreas())
+            {
+                if(area.GetComponent<IMotionDetector>(md.Id) != null)
+                {
+                    return area;
+                }
+            }
+
+            return null;
+        }
 
         public void StartWatchForMove()
         {
-            if (_motionDetectors.All(x => x.Value.MotionSource == null))
-            {
-                throw new Exception("First you have to add motion detectors with ConfigureMotionDetector");
-            }
+            var detectors = _motionDescriptors.Values
+                                              .Select(x => x.MotionSource)
+                                              .Merge()
+                                              .Select(messages => messages);
 
-            var detectors = _motionDetectors.Values
-                                            .Where(s => s.MotionSource != null)
-                                            .Select(x => x.MotionSource)
-                                            .Merge()
-                                            .Select(messages => messages);
+            
+            var motion = detectors.Timestamp()
+                                  .Do(y =>
+                                  {
+                                      var descriptor = _motionDescriptors[y.Value];
+                                      descriptor.SetLastMotionTime(y.Timestamp);
+                                      descriptor.TurnOnLamp();
+                                      
+                                  })
+                                  .Buffer(detectors, (x) => { return Observable.Timer(TimeSpan.FromMilliseconds(MOTION_TIME_WINDOW)); })
+                                  .Select(x =>
+                                  {
+                                        var vector = new MotionVector();
 
-            var motion = detectors.DistinctForTime(TimeSpan.FromMilliseconds(1100));
+                                        //foreach (var ev in x)
+                                        //{
+                                        //    if (vector.Path.Count == 0)
+                                        //    {
+                                        //        vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
+                                        //        continue;
+                                        //    }
 
-            //var motion = detectors.Timestamp().Buffer(detectors, (x) => { return Observable.Timer(TimeSpan.FromSeconds(3)); }).Select(x =>
-            //                    {
-            //                        var vector = new MotionVector();
+                                        //    if (ev.Value.MotionDetector == _motionDetectors[vector.End.MotionDetector].Neighbor)
+                                        //    {
+                                        //        vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
+                                        //    }
+                                        //}
 
-            //                        foreach (var ev in x)
-            //                        {
-            //                            if (vector.Path.Count == 0)
-            //                            {
-            //                                vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
-            //                                continue;
-            //                            }
+                                        return vector;
+                                  })
+                                  .Where(y => y.Path.Count > 1)
+                                  .DistinctUntilChanged();
 
-            //                            if (ev.Value.MotionDetector == _motionDetectors[vector.End.MotionDetector].Neighbor)
-            //                            {
-            //                                vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
-            //                            }
-            //                        }
-
-            //                        return vector;
-            //                    })
-            //                    .Where(y => y.Path.Count > 1)
-            //                    .DistinctUntilChanged();
-
-            //var motion = detectors.Timestamp()
-            //                      .Buffer(TimeSpan.FromMilliseconds(MOTION_TIME_WINDOW), TimeSpan.FromMilliseconds(MOTION_TIME_SHIFT))
-            //                      .Select(x =>
-            //                      {
-            //                          var vector = new MotionVector();
-
-            //                          foreach (var ev in x)
-            //                          {
-            //                              if(vector.Path.Count == 0)
-            //                              {
-            //                                  vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
-            //                                  continue;
-            //                              }
-
-            //                              if (ev.Value.MotionDetector == _motionDetectors[vector.End.MotionDetector].Neighbor)
-            //                              {
-            //                                  vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
-            //                              }
-            //                          }
-
-            //                          return vector;
-            //                      })
-            //                      .Where(y => y.Path.Count > 1)
-            //                      .DistinctFor(TimeSpan.FromSeconds(3));
-
+          
             var resource = motion.Subscribe(x =>
             {
                 var time = DateTime.Now;
-               Console.WriteLine($"[{time.Minute}:{time.Second}:{time.Millisecond}] {x.MotionDetector.Id}");
+               Console.WriteLine($"[{time.Minute}:{time.Second}:{time.Millisecond}] {x.ToString()}");
                 
             });
 

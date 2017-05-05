@@ -3,14 +3,15 @@ using HA4IoT.Contracts.Services.System;
 using HA4IoT.Hardware.RemoteSwitch;
 using System.Threading.Tasks;
 using HA4IoT.Controller.Dnf.Rooms;
-using HA4IoT.Hardware;
 using HA4IoT.Controller.Dnf.Enums;
 using HA4IoT.Contracts;
 using HA4IoT.Contracts.Hardware.I2C;
 using HA4IoT.Hardware.I2C.I2CHardwareBridge;
 using HA4IoT.Contracts.Hardware.Services;
 using HA4IoT.Hardware.CCTools;
-using HA4IoT.Contracts.Logging;
+using System;
+using HA4IoT.Hardware.Services;
+using HA4IoT.Extensions;
 
 namespace HA4IoT.Controller.Dnf
 {
@@ -27,40 +28,42 @@ namespace HA4IoT.Controller.Dnf
         private const byte I2C_ADDRESS_INPUT_1 = 88;  // SCL - SCL - SCL (88)
         private const byte I2C_ADDRESS_INPUT_2 = 16;  // GND - SCL - GND (16)
 
+        private readonly InterruptMonitorService _interruptMonitorService;
         private readonly CCToolsDeviceService _ccToolsBoardService;
-        private readonly IGpioService _pi2GpioService;
+        private readonly IGpioService _gpioService;
         private readonly IDeviceRegistryService _deviceService;
         private readonly II2CBusService _i2CBusService;
         private readonly ISchedulerService _schedulerService;
         private readonly RemoteSocketService _remoteSocketService;
         private readonly IContainer _containerService;
-        private readonly ILogService _logService;
+        private readonly IEtwLoggingService _etwLoggingService;
 
         public Configuration(
             CCToolsDeviceService ccToolsBoardService,
-            IGpioService pi2GpioService,
+            IGpioService gpioService,
             IDeviceRegistryService deviceService,
             II2CBusService i2CBusService,
             ISchedulerService schedulerService,
             RemoteSocketService remoteSocketService,
+            InterruptMonitorService interruptMonitorService,
             IContainer containerService,
-            ILogService logService
-            )
+            IEtwLoggingService etwLoggingService)
         {
-            _ccToolsBoardService = ccToolsBoardService;
-            _pi2GpioService = pi2GpioService;
-            _deviceService = deviceService;
-            _i2CBusService = i2CBusService;
-            _schedulerService = schedulerService;
-            _remoteSocketService = remoteSocketService;
-            _containerService = containerService;
-            _logService = logService;
-
+            _interruptMonitorService = interruptMonitorService ?? throw new ArgumentNullException(nameof(interruptMonitorService));
+            _ccToolsBoardService = ccToolsBoardService ?? throw new ArgumentNullException(nameof(ccToolsBoardService));
+            _gpioService = gpioService ?? throw new ArgumentNullException(nameof(gpioService));
+            _deviceService = deviceService ?? throw new ArgumentNullException(nameof(deviceService));
+            _i2CBusService = i2CBusService ?? throw new ArgumentNullException(nameof(i2CBusService));
+            _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
+            _remoteSocketService = remoteSocketService ?? throw new ArgumentNullException(nameof(remoteSocketService));
+            _containerService = containerService ?? throw new ArgumentNullException(nameof(containerService));
+            _etwLoggingService = etwLoggingService ?? throw new ArgumentNullException(nameof(etwLoggingService));
         }
 
         public Task ApplyAsync()
         {
-            //_synonymService.TryLoadPersistedSynonyms();
+            _interruptMonitorService.RegisterInterrupt("Default", _gpioService.GetInput(RASPBERRY_INTERRUPT));
+            _interruptMonitorService.RegisterCallback("Default", _ccToolsBoardService.PollInputs);
 
             _ccToolsBoardService.RegisterHSPE16InputOnly(CCToolsDevices.HSPE16_88.ToString(), new I2CSlaveAddress(I2C_ADDRESS_INPUT_1));
             _ccToolsBoardService.RegisterHSPE16InputOnly(CCToolsDevices.HSPE16_16.ToString(), new I2CSlaveAddress(I2C_ADDRESS_INPUT_2));
@@ -68,15 +71,8 @@ namespace HA4IoT.Controller.Dnf
             _ccToolsBoardService.RegisterHSREL8(CCToolsDevices.HSRel8_24.ToString(), new I2CSlaveAddress(I2C_ADDRESS_REL_2));
 
             var i2CHardwareBridge = new I2CHardwareBridge(new I2CSlaveAddress(I2C_ADDRESS_ARDUINO), _i2CBusService, _schedulerService);
-            _deviceService.AddDevice(i2CHardwareBridge);
+            _deviceService.RegisterDevice(i2CHardwareBridge);
 
- 
-            //var currentController = new CurrentController(i2CHardwareBridge.CurrentAccessor);
-            //_deviceService.AddDevice(currentController);
-
-            //_remoteSocketService.Sender = new LPD433MHzSignalSender(i2CHardwareBridge, ARDUINO_433_SEND_PIN, _apiService);
-            //var brennenstuhl = new BrennenstuhlCodeSequenceProvider();
-            //_remoteSocketService.RegisterRemoteSocket(0, brennenstuhl.GetSequencePair(BrennenstuhlSystemCode.AllOn, BrennenstuhlUnitCode.A));
 
             _containerService.GetInstance<LivingroomConfiguration>().Apply();
             _containerService.GetInstance<BalconyConfiguration>().Apply();
@@ -88,12 +84,6 @@ namespace HA4IoT.Controller.Dnf
             _containerService.GetInstance<HouseConfiguration>().Apply();
             _containerService.GetInstance<StaircaseConfiguration>().Apply();
 
-
-            //_synonymService.RegisterDefaultComponentStateSynonyms();
-
-            var ioBoardsInterruptMonitor = new InterruptMonitor(_pi2GpioService.GetInput(RASPBERRY_INTERRUPT), _logService);
-            ioBoardsInterruptMonitor.InterruptDetected += (s, e) => _ccToolsBoardService.PollInputBoardStates();
-            ioBoardsInterruptMonitor.Start();
 
             return Task.FromResult(0);
         }

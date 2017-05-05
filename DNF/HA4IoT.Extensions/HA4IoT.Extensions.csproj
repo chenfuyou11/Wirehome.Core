@@ -115,12 +115,14 @@
     <Compile Include="Core\MonostableBinaryOutputAdapter.cs" />
     <Compile Include="Core\MonostableLamp.cs" />
     <Compile Include="Core\WriteOnce.cs" />
+    <Compile Include="EtwLoggingService.cs" />
     <Compile Include="Extensions\ActuatorFactoryExtensions.cs" />
     <Compile Include="Extensions\DeviceServiceExtensions.cs" />
     <Compile Include="Extensions\CollectionsExtensions.cs" />
     <Compile Include="Extensions\EqualityDecorator.cs" />
     <Compile Include="Extensions\IMotionDetectorExtensions.cs" />
     <Compile Include="Extensions\ReactiveExtensions.cs" />
+    <Compile Include="Contracts\IEtwLoggingService.cs" />
     <Compile Include="LightAutomationService.cs" />
     <Compile Include="MessagesModel\Additionalappliancedetails.cs" />
     <Compile Include="AlexaDispatcherEndpointService.cs" />
@@ -132,6 +134,7 @@
     <Compile Include="MessagesModel\TurnRequest.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="MessagesModel\UnwillingToSetValueError.cs" />
+    <Compile Include="MotionModel\AreaType.cs" />
     <Compile Include="MotionModel\MotionDescriptor.cs" />
     <Compile Include="MotionModel\MotionPoint.cs" />
     <Compile Include="MotionModel\MotionVector.cs" />

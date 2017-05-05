@@ -40,7 +40,10 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
             var room = _areaService.RegisterArea(Room.StairCase);
 
-            _sensorFactory.RegisterMotionDetector(room, StaircaseElements.MotionDetector, input[HSPE16Pin.GPIO0].WithInvertedState(true));
+            var GPIO0 = input[HSPE16Pin.GPIO0];
+            GPIO0.IsStateInverted = true;
+
+            _sensorFactory.RegisterMotionDetector(room, StaircaseElements.MotionDetector, GPIO0);
 
             _actuatorFactory.RegisterLamp(room, ToiletElements.Light, relays[HSREL8Pin.Relay5]);
 

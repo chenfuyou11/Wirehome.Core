@@ -14,6 +14,7 @@ using HA4IoT.Contracts.Services.Settings;
 using HA4IoT.Triggers;
 using HA4IoT.Contracts.Services.Daylight;
 using HA4IoT.Extensions.MotionModel;
+using HA4IoT.Contracts.Logging;
 
 namespace HA4IoT.Extensions.Tests
 {
@@ -163,9 +164,10 @@ namespace HA4IoT.Extensions.Tests
 
             var schedulerService = Mock.Of<ISchedulerService>();
             var daylightService = Mock.Of<IDaylightService>();
+            var logService = Mock.Of<ILogService>();
 
 
-            var lightAutomation = new LightAutomationService(areaService, schedulerService, daylightService);
+            var lightAutomation = new LightAutomationService(areaService, schedulerService, daylightService, logService);
 
             return
             (

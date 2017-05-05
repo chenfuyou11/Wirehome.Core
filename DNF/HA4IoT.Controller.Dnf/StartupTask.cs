@@ -11,6 +11,8 @@ namespace HA4IoT.Controller.Dnf
 
         public void Run(IBackgroundTaskInstance taskInstance)
         {
+            //  \\192.168.0.106\c$\Data\Users\DefaultAccount\AppData\Local\Packages
+
             //TODO
             //Log.SeverityLevel = LogSeverityLevel.Error;
 

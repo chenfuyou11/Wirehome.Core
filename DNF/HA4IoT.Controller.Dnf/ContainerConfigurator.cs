@@ -18,6 +18,7 @@ namespace HA4IoT.Controller.Dnf
 
             
             containerService.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
+            containerService.RegisterSingleton<IEtwLoggingService, EtwLoggingService>();
         }
     }
 

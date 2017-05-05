@@ -8,13 +8,9 @@ namespace HA4IoT.Extensions.Tests
     {
         public event EventHandler<TimerTickEventArgs> Tick;
 
-        public void Run()
-        {
-        }
-
         public void ExecuteTick(TimeSpan elapsedTime)
         {
-            Tick?.Invoke(this, new TimerTickEventArgs(elapsedTime));
+            Tick?.Invoke(this, new TimerTickEventArgs { ElapsedTime = elapsedTime });
         }
 
         public void Startup()

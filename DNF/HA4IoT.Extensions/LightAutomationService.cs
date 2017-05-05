@@ -9,17 +9,22 @@ using HA4IoT.Extensions.MotionModel;
 using HA4IoT.Contracts.Components.Features;
 using HA4IoT.Contracts.Services.System;
 using HA4IoT.Contracts.Services.Daylight;
+using System.Diagnostics;
+using HA4IoT.Contracts.Logging;
 
 namespace HA4IoT.Extensions
 {
     public class LightAutomationService : IService, IDisposable
     {
         private const int MOTION_TIME_WINDOW = 3000;
+        private const string MOTION_TIMER = "MOTION_TIMER";
+        private const int COLLISION_RESOLUTION_TIME = 10000;
 
         private readonly IAreaRegistryService _areaService;
         private readonly ISchedulerService _schedulerService;
         private readonly IDaylightService _daylightService;
-        
+        private readonly ILogger _logger;
+
         private readonly List<IDisposable> _resources = new List<IDisposable>();
         private readonly Dictionary<IMotionDetector, MotionDescriptor> _motionDescriptors = new Dictionary<IMotionDetector, MotionDescriptor>();
 
@@ -27,19 +32,37 @@ namespace HA4IoT.Extensions
 
          public LightAutomationService(IAreaRegistryService areaService, 
                                       ISchedulerService schedulerService, 
-                                      IDaylightService daylightService
-        )
-        {
+                                      IDaylightService daylightService,
+                                      ILogService logService
+         )
+         {
             _areaService = areaService;
             _schedulerService = schedulerService;
             _daylightService = daylightService;
-        }
+            _logger = logService.CreatePublisher(nameof(LightAutomationService));
+         }
 
         public void Startup()
         {
             _hasStarted = true;
 
             _motionDescriptors.Values.ToList().ForEach(x => x.InitDescriptor());
+
+            _schedulerService.RegisterSchedule(MOTION_TIMER, TimeSpan.FromSeconds(1), (Action)MotionScheduler);
+        }
+
+        public void MotionScheduler()
+        {
+            var ms = Stopwatch.StartNew();
+            ms.Start();
+
+            foreach(var descriptor in _motionDescriptors.Values)
+            {
+                
+            }
+
+            ms.Stop();
+            _logger.Info($"MotionScheduler time {ms.ElapsedMilliseconds}ms");
         }
         
         public MotionDescriptor RegisterMotionDescriptor(MotionDescriptor descriptor)
@@ -88,8 +111,7 @@ namespace HA4IoT.Extensions
                                   {
                                       var descriptor = _motionDescriptors[y.Value];
                                       descriptor.SetLastMotionTime(y.Timestamp);
-                                      descriptor.TurnOnLamp();
-                                      
+                                      descriptor.TryTurnOnLamp();   
                                   })
                                   .Buffer(detectors, (x) => { return Observable.Timer(TimeSpan.FromMilliseconds(MOTION_TIME_WINDOW)); })
                                   .Select(x =>

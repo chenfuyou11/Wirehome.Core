@@ -5,31 +5,29 @@ using Windows.Foundation.Diagnostics;
 
 namespace HA4IoT.Extensions
 {
-    public class EtwLoggingService : ServiceBase, IEtwLoggingService
+    public class EtwLoggingService : ILogAdapter
     {
         LoggingChannel _loggingChannel;
 
-        public EtwLoggingService(ILogService logService)
+        public EtwLoggingService()
         {
             _loggingChannel = new LoggingChannel("HA4IoT", null, new Guid("4bd2826e-54a1-4ba9-bf63-92b73ea1ac4a"));
 
-            //logService.LogEntryPublished += LogService_LogEntryPublished;
         }
+        
+        public void ProcessLogEntry(LogEntry logEntry)
+        {
+            var fields = new LoggingFields();
 
-        //private void LogService_LogEntryPublished(object sender, LogEntryPublishedEventArgs e)
-        //{
-        //    var fields = new LoggingFields();
 
+            fields.AddStringArray("Source", new string[] { logEntry.Source ?? "" });
 
-        //    fields.AddStringArray("Source", new string[] { e.LogEntry.Source ?? "" });
-            
-        //    //fields.AddString("Exception", e.LogEntry.Exception ?? "");
-        //    //fields.AddString("Source", e.LogEntry.Source ?? "");
+            //fields.AddString("Exception", logEntry.Exception ?? "");
+            //fields.AddString("Source", logEntry.Source ?? "");
 
-        //    _loggingChannel.LogEvent(e.LogEntry.Message, fields, MapSeverity(e.LogEntry.Severity));
+            _loggingChannel.LogEvent(logEntry.Message, fields, MapSeverity(logEntry.Severity));
 
-          
-        //}
+        }
 
         private static LoggingLevel MapSeverity(LogEntrySeverity severity)
         {

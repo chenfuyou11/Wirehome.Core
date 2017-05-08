@@ -15,10 +15,8 @@ namespace HA4IoT.Controller.Dnf
         public void ConfigureContainer(IContainer containerService)
         {
             if (containerService == null) throw new ArgumentNullException(nameof(containerService));
-
             
             containerService.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
-            containerService.RegisterSingleton<IEtwLoggingService, EtwLoggingService>();
         }
     }
 

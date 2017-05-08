@@ -1,7 +1,7 @@
 ﻿using HA4IoT.Core;
 using Windows.ApplicationModel.Background;
 using HA4IoT.Contracts.Logging;
-
+using HA4IoT.Extensions;
 
 namespace HA4IoT.Controller.Dnf
 {
@@ -22,6 +22,8 @@ namespace HA4IoT.Controller.Dnf
                 ConfigurationType = typeof(Configuration),
                 ContainerConfigurator = new ContainerConfigurator()
             };
+
+            options.LogAdapters.Add(new EtwLoggingService());
 
             var controller = new Core.Controller(options);
             controller.RunAsync(taskInstance);

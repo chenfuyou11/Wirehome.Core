@@ -7,13 +7,13 @@ using HA4IoT.Controller.Dnf.Enums;
 using HA4IoT.Extensions.Extensions;
 using HA4IoT.Extensions;
 using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Services.System;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Hardware.CCTools;
 using System;
 using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Services.Areas;
 using HA4IoT.Extensions.Core;
+using Windows.Media.Playback;
+using Windows.Media.Core;
+using Windows.Storage;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -55,7 +55,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
             _sensorFactory.RegisterTemperatureSensor(room, LivingroomElements.TempSensor, tempSensor);
             _sensorFactory.RegisterHumiditySensor(room, LivingroomElements.HumiditySensor, humiditySensor);
-            _sensorFactory.RegisterMotionDetector(room, LivingroomElements.MotionDetector, input[HSPE16Pin.GPIO0]);
+            var md = _sensorFactory.RegisterMotionDetector(room, LivingroomElements.MotionDetector, input[HSPE16Pin.GPIO0]);
 
             var lamp1 = _actuatorFactory.RegisterMonostableLamp(room, LivingroomElements.TVLight, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay0], input[HSPE16Pin.GPIO14], _schedulerService));
             var lamp2 = _actuatorFactory.RegisterMonostableLamp(room, LivingroomElements.BedLight, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay1], input[HSPE16Pin.GPIO13], _schedulerService));
@@ -66,7 +66,18 @@ namespace HA4IoT.Controller.Dnf.Rooms
             // .WithTrigger(room.GetMotionDetector(LivingroomElements.MotionDetector))
             // .WithTarget(room.GetMonostableLamp(LivingroomElements.MainLight));
 
+            //md.MotionDetectedTrigger.Triggered += MotionDetectedTrigger_Triggered;
+        }
 
+        private async void MotionDetectedTrigger_Triggered(object sender, Contracts.Triggers.TriggeredEventArgs e)
+        {
+            var player = new MediaPlayer()
+            {
+                Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/falcon.mp3")),
+                AutoPlay = false
+            };
+            player.Play();
+ 
         }
 
 

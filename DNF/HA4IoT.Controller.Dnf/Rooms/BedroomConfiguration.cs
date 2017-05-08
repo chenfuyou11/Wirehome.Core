@@ -5,12 +5,11 @@ using HA4IoT.Contracts.Services.System;
 using HA4IoT.Sensors;
 using HA4IoT.Controller.Dnf.Enums;
 using HA4IoT.Extensions.Extensions;
-using HA4IoT.Contracts.Services.System;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Hardware.CCTools;
-using System;
 using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Services.Areas;
+using Windows.Media.Playback;
+using Windows.Media.Core;
+using System;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -50,10 +49,11 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _sensorFactory.RegisterTemperatureSensor(room, BedroomElements.TempSensor, tempSensor);
             _sensorFactory.RegisterHumiditySensor(room, BedroomElements.HumiditySensor, humiditySensor);
 
-            _sensorFactory.RegisterMotionDetector(room, BedroomElements.MotionDetector, input[HSPE16Pin.GPIO1]);
+            var md = _sensorFactory.RegisterMotionDetector(room, BedroomElements.MotionDetector, input[HSPE16Pin.GPIO1]);
 
             _actuatorFactory.RegisterLamp(room, BedroomElements.Light, relays[HSREL8Pin.Relay0]);
         }
 
+        
     }
 }

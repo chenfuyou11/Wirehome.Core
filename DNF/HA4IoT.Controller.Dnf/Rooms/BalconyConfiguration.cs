@@ -6,9 +6,10 @@ using HA4IoT.Extensions.Extensions;
 using HA4IoT.Contracts.Services.System;
 using HA4IoT.Contracts.Areas;
 using HA4IoT.Hardware.CCTools;
-using System;
 using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Services.Areas;
+using System;
+
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -55,7 +56,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _sensorFactory.RegisterMotionDetector(room, BalconyElements.MotionDetector, input[HSPE16Pin.GPIO7]);
 
             _actuatorFactory.RegisterLamp(room, BalconyElements.Light, relays[HSREL8Pin.Relay0]);
-          
+
             //var brennenstuhl = new BrennenstuhlCodeSequenceProvider();
             //var remoteSocket = RemoteSocketController.WithRemoteSocket((int)RemoteSockets.RemoteSocket_One, brennenstuhl.GetSequencePair(BrennenstuhlSystemCode.AllOn, BrennenstuhlUnitCode.D));
 

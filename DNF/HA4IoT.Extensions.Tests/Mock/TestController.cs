@@ -31,7 +31,7 @@ namespace HA4IoT.Extensions.Tests
     public class TestController : IController
     {
         //private readonly TestApiAdapter _apiAdapter = new TestApiAdapter();
-        private readonly Container _container = new Container();
+        private readonly Container _container = new Container(new ControllerOptions());
 
         public TestController()
         {

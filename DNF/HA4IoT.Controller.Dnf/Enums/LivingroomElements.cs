@@ -10,6 +10,7 @@
         CurrentSensor = 0,
         HumiditySensor = 14,
         LightAutomation = 15,
+        SchedulerAutomation = 20
 
     }
 

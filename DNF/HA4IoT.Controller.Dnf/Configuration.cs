@@ -36,7 +36,6 @@ namespace HA4IoT.Controller.Dnf
         private readonly ISchedulerService _schedulerService;
         private readonly RemoteSocketService _remoteSocketService;
         private readonly IContainer _containerService;
-        private readonly IEtwLoggingService _etwLoggingService;
 
         public Configuration(
             CCToolsDeviceService ccToolsBoardService,
@@ -46,8 +45,8 @@ namespace HA4IoT.Controller.Dnf
             ISchedulerService schedulerService,
             RemoteSocketService remoteSocketService,
             InterruptMonitorService interruptMonitorService,
-            IContainer containerService,
-            IEtwLoggingService etwLoggingService)
+            IContainer containerService
+            )
         {
             _interruptMonitorService = interruptMonitorService ?? throw new ArgumentNullException(nameof(interruptMonitorService));
             _ccToolsBoardService = ccToolsBoardService ?? throw new ArgumentNullException(nameof(ccToolsBoardService));
@@ -57,7 +56,7 @@ namespace HA4IoT.Controller.Dnf
             _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
             _remoteSocketService = remoteSocketService ?? throw new ArgumentNullException(nameof(remoteSocketService));
             _containerService = containerService ?? throw new ArgumentNullException(nameof(containerService));
-            _etwLoggingService = etwLoggingService ?? throw new ArgumentNullException(nameof(etwLoggingService));
+            
         }
 
         public Task ApplyAsync()

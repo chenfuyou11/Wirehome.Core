@@ -67,19 +67,29 @@ namespace HA4IoT.Controller.Dnf.Rooms
             // .WithTarget(room.GetMonostableLamp(LivingroomElements.MainLight));
 
             //md.MotionDetectedTrigger.Triggered += MotionDetectedTrigger_Triggered;
+
+            //var speaker = new Speaker("speaker", new System.Collections.Generic.Dictionary<Enum, string>
+            //    {
+            //        { BirdSounds.Falcon, "Assets/falcon.mp3" }
+            //    }
+            //);
+
+            //speaker.ExecuteCommand(new PlayCommand(BirdSounds.Falcon));
+
+            //var livingRoomAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, LivingroomElements.SchedulerAutomation)
+            //.WithSchedulerTime(new SchedulerConfiguration
+            //{
+             //   StartTime = new TimeSpan(18, 0, 0),
+             //   TurnOnTimeSpan = new TimeSpan(0, 1, 0)
+           // });
+
+
         }
 
-        private async void MotionDetectedTrigger_Triggered(object sender, Contracts.Triggers.TriggeredEventArgs e)
-        {
-            var player = new MediaPlayer()
-            {
-                Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/falcon.mp3")),
-                AutoPlay = false
-            };
-            player.Play();
- 
-        }
+    }
 
-
+    public enum BirdSounds
+    {
+        Falcon
     }
 }

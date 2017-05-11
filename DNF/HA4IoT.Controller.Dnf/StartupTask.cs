@@ -23,7 +23,7 @@ namespace HA4IoT.Controller.Dnf
                 ContainerConfigurator = new ContainerConfigurator()
             };
 
-            options.LogAdapters.Add(new EtwLoggingService());
+            //options.LogAdapters.Add(new EtwLoggingService());
 
             var controller = new Core.Controller(options);
             controller.RunAsync(taskInstance);

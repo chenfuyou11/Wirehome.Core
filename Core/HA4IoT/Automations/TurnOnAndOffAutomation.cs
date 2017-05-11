@@ -37,6 +37,7 @@ namespace HA4IoT.Automations
         private IDelayedAction _turnOffTimeout;
         private bool _turnOffIfButtonPressedWhileAlreadyOn;
         private bool _isOn;
+        private SchedulerConfiguration _schedulerConfig;
 
         public TurnOnAndOffAutomation(string id, IDateTimeService dateTimeService, ISchedulerService schedulerService, ISettingsService settingsService, IDaylightService daylightService)
             : base(id)
@@ -282,5 +283,72 @@ namespace HA4IoT.Automations
 
             return true;
         }
+
+        public TurnOnAndOffAutomation WithSchedulerTime(SchedulerConfiguration schedulerConfig)
+        {
+            if(schedulerConfig.WorkingTime > schedulerConfig.TurnOnTimeSpan)
+            {
+                throw new Exception($"Working time [{schedulerConfig.WorkingTime}] cannot be larger that scheduler time [{schedulerConfig.TurnOnTimeSpan}]");
+            }
+
+            _schedulerConfig = schedulerConfig;
+
+
+            var now = _dateTimeService.Time;
+            var scheduled = _schedulerConfig.StartTime;
+            TimeSpan timeToStartScheduler;
+
+            Settings.Duration = schedulerConfig.WorkingTime;
+            
+            if (scheduled > now)
+            {
+                var diff = (int)((scheduled - now).TotalSeconds / _schedulerConfig.TurnOnTimeSpan.TotalSeconds);
+                timeToStartScheduler = scheduled - (TimeSpan.FromSeconds(diff * _schedulerConfig.TurnOnTimeSpan.TotalSeconds) + now); 
+            }
+            else
+            {
+                var diff = (int)((now - scheduled).TotalSeconds / _schedulerConfig.TurnOnTimeSpan.TotalSeconds) + 1;
+                timeToStartScheduler =  ((TimeSpan.FromSeconds(diff * _schedulerConfig.TurnOnTimeSpan.TotalSeconds) + scheduled)) - now;
+            }
+
+            _schedulerService.In(timeToStartScheduler, StartScheduler);
+
+            return this;
+        }
+
+        private void StartScheduler()
+        {
+            _schedulerService.In(_schedulerConfig.TurnOnTimeSpan, StartScheduler);
+
+            ExecuteAutoTrigger();
+
+            SetTurnOffTimeout();
+        }
+
+        private void SetTurnOffTimeout()
+        {
+            if (Settings.Duration.Ticks > 0)
+            {
+                lock (_syncRoot)
+                {
+                    if (!GetConditionsAreFulfilled())
+                    {
+                        return;
+                    }
+
+                    _turnOffTimeout?.Cancel();
+                    _turnOffTimeout = _schedulerService.In(Settings.Duration, TurnOff);
+                }
+            }
+        }
+
+
+    }
+
+    public class SchedulerConfiguration
+    {
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan TurnOnTimeSpan { get; set; }
+        public TimeSpan WorkingTime { get; set; }
     }
 }

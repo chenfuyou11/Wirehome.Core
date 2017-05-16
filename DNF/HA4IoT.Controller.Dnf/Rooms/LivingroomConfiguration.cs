@@ -11,9 +11,7 @@ using System;
 using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Services.Areas;
 using HA4IoT.Extensions.Core;
-using Windows.Media.Playback;
-using Windows.Media.Core;
-using Windows.Storage;
+using HA4IoT.Hardware.RemoteSwitch;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -26,6 +24,9 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private readonly AutomationFactory _automationFactory;
         private readonly IAlexaDispatcherEndpointService _alexaService;
         private readonly ISchedulerService _schedulerService;
+        private readonly RemoteSocketService _remoteSocketService;
+
+       
 
         public LivingroomConfiguration(IDeviceRegistryService deviceService,
                                     IAreaRegistryService areaService,
@@ -33,7 +34,8 @@ namespace HA4IoT.Controller.Dnf.Rooms
                                     ActuatorFactory actuatorFactory,
                                     AutomationFactory automationFactory,
                                     IAlexaDispatcherEndpointService alexaService,
-                                    ISchedulerService schedulerService)
+                                    ISchedulerService schedulerService,
+                                    RemoteSocketService remoteSocketService)
         {
             _deviceService = deviceService;
             _areaService = areaService;
@@ -42,6 +44,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _automationFactory = automationFactory;
             _alexaService = alexaService;
             _schedulerService = schedulerService;
+            _remoteSocketService = remoteSocketService ?? throw new ArgumentNullException(nameof(remoteSocketService));
         }
 
         public void Apply()
@@ -62,34 +65,12 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
             _alexaService.AddConnectedVivices("Light", new IComponent[] { lamp1, lamp2 });
 
-            //_automationFactory.RegisterTurnOnAndOffAutomation(room, LivingroomElements.LightAutomation)
-            // .WithTrigger(room.GetMotionDetector(LivingroomElements.MotionDetector))
-            // .WithTarget(room.GetMonostableLamp(LivingroomElements.MainLight));
-
-            //md.MotionDetectedTrigger.Triggered += MotionDetectedTrigger_Triggered;
-
-            //var speaker = new Speaker("speaker", new System.Collections.Generic.Dictionary<Enum, string>
-            //    {
-            //        { BirdSounds.Falcon, "Assets/falcon.mp3" }
-            //    }
-            //);
-
-            //speaker.ExecuteCommand(new PlayCommand(BirdSounds.Falcon));
-
-            //var livingRoomAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, LivingroomElements.SchedulerAutomation)
-            //.WithSchedulerTime(new SchedulerConfiguration
-            //{
-             //   StartTime = new TimeSpan(18, 0, 0),
-             //   TurnOnTimeSpan = new TimeSpan(0, 1, 0)
-           // });
-
-
+            md.StateChanged += Md_StateChanged;
         }
 
-    }
-
-    public enum BirdSounds
-    {
-        Falcon
+        private void Md_StateChanged(object sender, ComponentFeatureStateChangedEventArgs e)
+        {
+            
+        }
     }
 }

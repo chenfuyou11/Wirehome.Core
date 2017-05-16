@@ -110,6 +110,7 @@
     <Compile Include="Rooms\BalconyConfiguration.cs" />
     <Compile Include="Rooms\BathroomConfiguration.cs" />
     <Compile Include="Rooms\BedroomConfiguration.cs" />
+    <Compile Include="Enums\BirdSounds.cs" />
     <Compile Include="Rooms\HallwayConfiguration.cs" />
     <Compile Include="Rooms\KitchenConfiguration.cs" />
     <Compile Include="Rooms\LivingroomConfiguration.cs" />
@@ -126,9 +127,18 @@
     <None Include="HA4IoT.Controller.Dnf_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\eagle.mp3" />
+    <Content Include="Assets\eagle_bad.mp3" />
     <Content Include="Assets\falcon.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\falcon_2.mp3" />
+    <Content Include="Assets\hawk.mp3" />
+    <Content Include="Assets\hawk_2.mp3" />
+    <Content Include="Assets\owl.mp3" />
+    <Content Include="Assets\owl_2.mp3" />
+    <Content Include="Assets\owl_3.mp3" />
+    <Content Include="Assets\owl_4.mp3" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

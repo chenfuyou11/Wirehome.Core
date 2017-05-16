@@ -9,7 +9,11 @@ using HA4IoT.Hardware.CCTools;
 using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Services.Areas;
 using System;
-
+using HA4IoT.Extensions.Core;
+using HA4IoT.Hardware.RemoteSwitch;
+using HA4IoT.Contracts.Components.States;
+using HA4IoT.Hardware.RemoteSwitch.Codes.Protocols;
+using HA4IoT.Triggers;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -21,17 +25,25 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
         private readonly CCToolsDeviceService _ccToolsBoardService;
+        private readonly RemoteSocketService _remoteSocketService;
+        private readonly ISchedulerService _schedulerService;
+
+        private RemoteSocketOutputPort _socket;
 
         private const int TIME_TO_ON = 30;
         private const int TIME_WHILE_ON = 5;
+        private Speaker _speaker;
 
-      
+
         public BalconyConfiguration(IDeviceRegistryService deviceService, 
                                     IAreaRegistryService areaService,
                                     CCToolsDeviceService ccToolsBoardService,
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
-                                    AutomationFactory automationFactory) 
+                                    AutomationFactory automationFactory,
+                                    RemoteSocketService remoteSocketService,
+                                    ISchedulerService schedulerService
+                                    ) 
         {
             _deviceService = deviceService ?? throw new ArgumentNullException(nameof(deviceService));
             _areaService = areaService ?? throw new ArgumentNullException(nameof(areaService));
@@ -39,6 +51,23 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _actuatorFactory = actuatorFactory ?? throw new ArgumentNullException(nameof(actuatorFactory));
             _sensorFactory = sensorFactory ?? throw new ArgumentNullException(nameof(sensorFactory));
             _automationFactory = automationFactory ?? throw new ArgumentNullException(nameof(automationFactory));
+            _remoteSocketService = remoteSocketService ?? throw new ArgumentNullException(nameof(remoteSocketService));
+            _schedulerService = schedulerService;
+
+            _speaker = new Speaker("speaker", new System.Collections.Generic.Dictionary<Enum, string>
+                {
+                    { BirdSounds.Eagle, "Assets/eagle.mp3" },
+                    { BirdSounds.EagleBad, "Assets/eagle_bad.mp3" },
+                    { BirdSounds.Falcon, "Assets/falcon.mp3" },
+                    { BirdSounds.Falcon2, "Assets/falcon_2.mp3" },
+                    { BirdSounds.Hawk, "Assets/hawk.mp3" },
+                    { BirdSounds.Hawk2, "Assets/hawk_2.mp3" },
+                    { BirdSounds.Owl, "Assets/owl.mp3" },
+                    { BirdSounds.Owl2, "Assets/owl_2.mp3" },
+                    { BirdSounds.Owl3, "Assets/owl_3.mp3" },
+                    { BirdSounds.Owl4, "Assets/owl_4.mp3" }
+                }
+           );
         }
 
         public void Apply()
@@ -53,20 +82,35 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _sensorFactory.RegisterTemperatureSensor(room, BalconyElements.TempSensor, tempSensor);
             _sensorFactory.RegisterHumiditySensor(room, BalconyElements.HumiditySensor, humiditySensor);
 
-            _sensorFactory.RegisterMotionDetector(room, BalconyElements.MotionDetector, input[HSPE16Pin.GPIO7]);
+            var md = _sensorFactory.RegisterMotionDetector(room, BalconyElements.MotionDetector, input[HSPE16Pin.GPIO7]);
+            md.StateChanged += Md_StateChanged;
 
             _actuatorFactory.RegisterLamp(room, BalconyElements.Light, relays[HSREL8Pin.Relay0]);
 
-            //var brennenstuhl = new BrennenstuhlCodeSequenceProvider();
-            //var remoteSocket = RemoteSocketController.WithRemoteSocket((int)RemoteSockets.RemoteSocket_One, brennenstuhl.GetSequencePair(BrennenstuhlSystemCode.AllOn, BrennenstuhlUnitCode.D));
+            var codeSequenceProvider = new DipswitchCodeProvider();
+            _socket = _remoteSocketService.RegisterRemoteSocket(BalconyElements.RemoteSocket.ToString(), codeSequenceProvider.GetCodePair(DipswitchSystemCode.AllOn, DipswitchUnitCode.D));
 
-            //_actuatorFactory.RegisterSocket(room, (BalconyElements.RemoteSocket, remoteSocket.GetOutput((int)RemoteSockets.RemoteSocket_One));
-
-            //room.SetupTurnOnAndOffAutomation()
-            //    .WithTrigger(new IntervalTrigger(TimeSpan.FromSeconds(TIME_TO_ON), this.Controller.ServiceLocator.GetService<ISchedulerService>()))
-            //    .WithTarget(room.Socket(BalconyElements.RemoteSocket))
+            //var livingRoomAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, LivingroomElements.SchedulerAutomation)
+            //    .WithTrigger(new IntervalTrigger(TimeSpan.FromSeconds(TIME_TO_ON), _schedulerService))
+            //    //.WithTarget(room.Socket(BalconyElements.RemoteSocket))
             //    .WithOnDuration(TimeSpan.FromSeconds(TIME_WHILE_ON));
+
+
+            //var livingRoomAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, LivingroomElements.SchedulerAutomation)
+            //.WithSchedulerTime(new SchedulerConfiguration
+            //{
+            //   StartTime = new TimeSpan(18, 0, 0),
+            //   TurnOnTimeSpan = new TimeSpan(0, 1, 0)
+            // });
         }
 
+        private void Md_StateChanged(object sender, Contracts.Components.ComponentFeatureStateChangedEventArgs e)
+        {
+            var state = e.NewState.Extract<MotionDetectionState>();
+            if (state.Value == MotionDetectionStateValue.MotionDetected)
+            {
+                _speaker.PlayRandom();
+            }
+        }
     }
 }

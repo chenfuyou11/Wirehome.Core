@@ -48,7 +48,7 @@ namespace HA4IoT.Extensions
 
             _motionDescriptors.Values.ToList().ForEach(x => x.InitDescriptor());
 
-            _schedulerService.RegisterSchedule(MOTION_TIMER, TimeSpan.FromSeconds(1), (Action)MotionScheduler);
+            _schedulerService.Register(MOTION_TIMER, TimeSpan.FromSeconds(1), (Action)MotionScheduler);
         }
 
         public void MotionScheduler()

@@ -12,6 +12,7 @@ using HA4IoT.Hardware.CCTools;
 using System;
 using HA4IoT.Hardware.Services;
 using HA4IoT.Extensions;
+using HA4IoT.Hardware.RemoteSwitch.Adapters;
 
 namespace HA4IoT.Controller.Dnf
 {
@@ -64,13 +65,15 @@ namespace HA4IoT.Controller.Dnf
             _interruptMonitorService.RegisterInterrupt("Default", _gpioService.GetInput(RASPBERRY_INTERRUPT));
             _interruptMonitorService.RegisterCallback("Default", _ccToolsBoardService.PollInputs);
 
-            _ccToolsBoardService.RegisterHSPE16InputOnly(CCToolsDevices.HSPE16_88.ToString(), new I2CSlaveAddress(I2C_ADDRESS_INPUT_1));
-            _ccToolsBoardService.RegisterHSPE16InputOnly(CCToolsDevices.HSPE16_16.ToString(), new I2CSlaveAddress(I2C_ADDRESS_INPUT_2));
-            _ccToolsBoardService.RegisterHSREL8(CCToolsDevices.HSRel8_32.ToString(), new I2CSlaveAddress(I2C_ADDRESS_REL_1));
-            _ccToolsBoardService.RegisterHSREL8(CCToolsDevices.HSRel8_24.ToString(), new I2CSlaveAddress(I2C_ADDRESS_REL_2));
+            _ccToolsBoardService.RegisterDevice(CCToolsDevice.HSPE16_InputOnly, CCToolsDevices.HSPE16_88.ToString(), I2C_ADDRESS_INPUT_1);
+            _ccToolsBoardService.RegisterDevice(CCToolsDevice.HSPE16_InputOnly, CCToolsDevices.HSPE16_16.ToString(), I2C_ADDRESS_INPUT_2);
+            _ccToolsBoardService.RegisterDevice(CCToolsDevice.HSRel8, CCToolsDevices.HSRel8_32.ToString(), I2C_ADDRESS_REL_1);
+            _ccToolsBoardService.RegisterDevice(CCToolsDevice.HSRel8, CCToolsDevices.HSRel8_24.ToString(), I2C_ADDRESS_REL_2);
 
             var i2CHardwareBridge = new I2CHardwareBridge(new I2CSlaveAddress(I2C_ADDRESS_ARDUINO), _i2CBusService, _schedulerService);
             _deviceService.RegisterDevice(i2CHardwareBridge);
+
+            _remoteSocketService.Adapter = new I2CHardwareBridgeLdp433MhzBridgeAdapter(i2CHardwareBridge, ARDUINO_433_SEND_PIN);
 
 
             _containerService.GetInstance<LivingroomConfiguration>().Apply();
@@ -82,7 +85,6 @@ namespace HA4IoT.Controller.Dnf
             _containerService.GetInstance<HallwayConfiguration>().Apply();
             _containerService.GetInstance<HouseConfiguration>().Apply();
             _containerService.GetInstance<StaircaseConfiguration>().Apply();
-
 
             return Task.FromResult(0);
         }

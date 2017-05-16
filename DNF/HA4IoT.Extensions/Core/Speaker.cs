@@ -33,7 +33,7 @@ namespace HA4IoT.Extensions.Core
             _commandExecutor.Register<PlayCommand>(c => PlaySpecific(c));
             _commandExecutor.Register<TurnOffCommand>(c => Stop());
 
-            _soundIndexGenerator = new Random(_Sounds.Count);
+            _soundIndexGenerator = new Random();
             _player = new MediaPlayer()
             {
                 AutoPlay = false
@@ -82,7 +82,7 @@ namespace HA4IoT.Extensions.Core
 
         public void PlayRandom()
         {
-            var sound = _Sounds.ElementAt(_soundIndexGenerator.Next()).Value;
+            var sound = _Sounds.ElementAt(_soundIndexGenerator.Next(0, _Sounds.Count - 1)).Value;
             Play(sound);
         }
 

@@ -100,7 +100,7 @@ namespace HA4IoT.Extensions
             httpContext.Response.MimeType = MimeTypeProvider.Json;
         }
 
-        private ApiContext CreateApiContext(HttpContext httpContext)
+        private ApiCall CreateApiContext(HttpContext httpContext)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace HA4IoT.Extensions
                 var action = httpContext.Request.Uri.Substring("/alexa/".Length);
                 var parameter = string.IsNullOrEmpty(bodyText) ? new JObject() : JObject.Parse(bodyText);
 
-                return new ApiContext(action, parameter, null);
+                return new ApiCall(action, parameter, null);
             }
             catch (Exception)
             {
@@ -130,7 +130,7 @@ namespace HA4IoT.Extensions
             }
         }
 
-        private object DispatchHttpRequest(ApiContext context)
+        private object DispatchHttpRequest(ApiCall context)
         {
             if (context.Action.IndexOf("discover") > -1)
             {
@@ -144,7 +144,7 @@ namespace HA4IoT.Extensions
             return null;
         }
 
-        private object PrepareDicsoverMessage(ApiContext context)
+        private object PrepareDicsoverMessage(ApiCall context)
         {
             var response = GenerateDiscoveredHeader();
 
@@ -298,7 +298,7 @@ namespace HA4IoT.Extensions
             return actions;
         }
 
-        private object PrepareInvokeMessage(ApiContext context)
+        private object PrepareInvokeMessage(ApiCall context)
         {
             TurnRequest request = null;
 

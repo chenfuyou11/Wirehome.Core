@@ -4,14 +4,14 @@ namespace HA4IoT.Hardware.RemoteSwitch.Codes.Protocols
 {
     public class DipswitchCodeProvider
     {
-        public Lpd433MhzCodePair GetCodePair(DipswitchSystemCode systemCode, DipswitchUnitCode unitCode)
+        public Lpd433MhzCodePair GetCodePair(DipswitchSystemCode systemCode, DipswitchUnitCode unitCode, int repeats = 3)
         {
             return new Lpd433MhzCodePair(
-                GetCode(systemCode, unitCode, RemoteSocketCommand.TurnOn),
-                GetCode(systemCode, unitCode, RemoteSocketCommand.TurnOff));
+                GetCode(systemCode, unitCode, RemoteSocketCommand.TurnOn, repeats),
+                GetCode(systemCode, unitCode, RemoteSocketCommand.TurnOff, repeats));
         }
 
-        public Lpd433MhzCode GetCode(DipswitchSystemCode systemCode, DipswitchUnitCode unitCode, RemoteSocketCommand command)
+        public Lpd433MhzCode GetCode(DipswitchSystemCode systemCode, DipswitchUnitCode unitCode, RemoteSocketCommand command, int repeats = 3)
         {
             // Examples:
             // System Code = 11111
@@ -47,7 +47,7 @@ namespace HA4IoT.Hardware.RemoteSwitch.Codes.Protocols
             code = SetUnitCode(code, unitCode);
             code = SetCommand(code, command);
 
-            return new Lpd433MhzCode(code, 24, 1, 3);
+            return new Lpd433MhzCode(code, 24, 1, repeats);
         }
 
         private uint SetSystemCode(uint code, DipswitchSystemCode systemCode)

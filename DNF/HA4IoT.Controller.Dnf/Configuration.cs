@@ -75,7 +75,6 @@ namespace HA4IoT.Controller.Dnf
 
             _remoteSocketService.Adapter = new I2CHardwareBridgeLdp433MhzBridgeAdapter(i2CHardwareBridge, ARDUINO_433_SEND_PIN);
 
-
             _containerService.GetInstance<LivingroomConfiguration>().Apply();
             _containerService.GetInstance<BalconyConfiguration>().Apply();
             _containerService.GetInstance<BedroomConfiguration>().Apply();

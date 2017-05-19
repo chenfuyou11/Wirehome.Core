@@ -256,6 +256,7 @@ namespace HA4IoT.Automations
             }
         }
 
+       
 
         private bool GetConditionsAreFulfilled()
         {
@@ -297,9 +298,9 @@ namespace HA4IoT.Automations
 
         public TurnOnAndOffAutomation WithSchedulerTime(SchedulerConfiguration schedulerConfig)
         {
-            if(schedulerConfig.WorkingTime > schedulerConfig.TurnOnTimeSpan)
+            if(schedulerConfig.WorkingTime > schedulerConfig.TurnOnInterval)
             {
-                throw new Exception($"Working time [{schedulerConfig.WorkingTime}] cannot be larger that scheduler time [{schedulerConfig.TurnOnTimeSpan}]");
+                throw new Exception($"Working time [{schedulerConfig.WorkingTime}] cannot be larger that scheduler time [{schedulerConfig.TurnOnInterval}]");
             }
 
             _schedulerConfig = schedulerConfig;
@@ -313,13 +314,13 @@ namespace HA4IoT.Automations
             
             if (scheduled > now)
             {
-                var diff = (int)((scheduled - now).TotalSeconds / _schedulerConfig.TurnOnTimeSpan.TotalSeconds);
-                timeToStartScheduler = scheduled - (TimeSpan.FromSeconds(diff * _schedulerConfig.TurnOnTimeSpan.TotalSeconds) + now); 
+                var diff = (int)((scheduled - now).TotalSeconds / _schedulerConfig.TurnOnInterval.TotalSeconds);
+                timeToStartScheduler = scheduled - (TimeSpan.FromSeconds(diff * _schedulerConfig.TurnOnInterval.TotalSeconds) + now); 
             }
             else
             {
-                var diff = (int)((now - scheduled).TotalSeconds / _schedulerConfig.TurnOnTimeSpan.TotalSeconds) + 1;
-                timeToStartScheduler =  ((TimeSpan.FromSeconds(diff * _schedulerConfig.TurnOnTimeSpan.TotalSeconds) + scheduled)) - now;
+                var diff = (int)((now - scheduled).TotalSeconds / _schedulerConfig.TurnOnInterval.TotalSeconds) + 1;
+                timeToStartScheduler =  ((TimeSpan.FromSeconds(diff * _schedulerConfig.TurnOnInterval.TotalSeconds) + scheduled)) - now;
             }
 
             _schedulerService.In(timeToStartScheduler, StartScheduler);
@@ -329,7 +330,9 @@ namespace HA4IoT.Automations
 
         private void StartScheduler()
         {
-            _schedulerService.In(_schedulerConfig.TurnOnTimeSpan, StartScheduler);
+            _schedulerService.In(_schedulerConfig.TurnOnInterval, StartScheduler);
+
+            Debug.WriteLine("SOCKET TURN ON");
 
             ExecuteAutoTrigger();
 
@@ -348,10 +351,26 @@ namespace HA4IoT.Automations
                     }
 
                     _turnOffTimeout?.Cancel();
-                    _turnOffTimeout = _schedulerService.In(Settings.Duration, TurnOff);
+                    _turnOffTimeout = _schedulerService.In(Settings.Duration, TurnOffTest);
                 }
             }
         }
+
+        private void TurnOffTest()
+        {
+            _turnOffTimeout?.Cancel();
+            if (GetTurnOffConditionsAreFulfilled())
+            {
+
+                Debug.WriteLine("SOCKET TURN OFF");
+
+                _components.ForEach(c => c.TryTurnOff());
+
+                _isOn = false;
+                _lastTurnedOn.Stop();
+            }
+        }
+
 
 
     }
@@ -359,7 +378,23 @@ namespace HA4IoT.Automations
     public class SchedulerConfiguration
     {
         public TimeSpan StartTime { get; set; }
-        public TimeSpan TurnOnTimeSpan { get; set; }
+        public TimeSpan TurnOnInterval { get; set; }
         public TimeSpan WorkingTime { get; set; }
+
+        public TimeSpan TotalWorkPerHour
+        {
+            get
+            {
+                return TimeSpan.FromSeconds(((int)(60 * 60 / (TurnOnInterval + WorkingTime).TotalSeconds)) * WorkingTime.TotalSeconds);
+            }
+        }
+
+        public TimeSpan TotalWorkPerDay
+        {
+            get
+            {
+                return TimeSpan.FromSeconds(((int)(60 * 60 * 24 / (TurnOnInterval + WorkingTime).TotalSeconds)) * WorkingTime.TotalSeconds);
+            }
+        }
     }
 }

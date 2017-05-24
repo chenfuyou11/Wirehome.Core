@@ -17,6 +17,7 @@ using HA4IoT.Contracts.Services.Settings;
 using HA4IoT.Contracts.Services.System;
 using HA4IoT.Contracts.Triggers;
 using HA4IoT.Triggers;
+using System.Globalization;
 
 namespace HA4IoT.Automations
 {
@@ -41,13 +42,12 @@ namespace HA4IoT.Automations
         private IDelayedAction _turnOffTimeout;
         private bool _turnOffIfButtonPressedWhileAlreadyOn;
         private bool _isOn;
-        private SchedulerConfiguration _schedulerConfig;
-
+  
         public TurnOnAndOffAutomation(
             string id,
-            IDateTimeService dateTimeService, 
+            IDateTimeService dateTimeService,
             ISchedulerService schedulerService,
-            ISettingsService settingsService, 
+            ISettingsService settingsService,
             IDaylightService daylightService,
             IMessageBrokerService messageBroker)
             : base(id)
@@ -256,7 +256,7 @@ namespace HA4IoT.Automations
             }
         }
 
-       
+
 
         private bool GetConditionsAreFulfilled()
         {
@@ -296,91 +296,87 @@ namespace HA4IoT.Automations
             return true;
         }
 
-        public TurnOnAndOffAutomation WithSchedulerTime(SchedulerConfiguration schedulerConfig)
+        public TurnOnAndOffAutomation WithSchedulerTime(AutomationScheduler schedulerConfig)
         {
-            if(schedulerConfig.WorkingTime > schedulerConfig.TurnOnInterval)
+            _schedulerService.In(schedulerConfig.GetNextTurnOnTime(), () =>
             {
-                throw new Exception($"Working time [{schedulerConfig.WorkingTime}] cannot be larger that scheduler time [{schedulerConfig.TurnOnInterval}]");
-            }
+                ExecuteAutoTrigger();
 
-            _schedulerConfig = schedulerConfig;
+                if (schedulerConfig.ScheduleTurnOff)
+                {
+                    Settings.Duration = schedulerConfig.GetNextTurnOffTime();
 
-
-            var now = _dateTimeService.Time;
-            var scheduled = _schedulerConfig.StartTime;
-            TimeSpan timeToStartScheduler;
-
-            Settings.Duration = schedulerConfig.WorkingTime;
-            
-            if (scheduled > now)
-            {
-                var diff = (int)((scheduled - now).TotalSeconds / _schedulerConfig.TurnOnInterval.TotalSeconds);
-                timeToStartScheduler = scheduled - (TimeSpan.FromSeconds(diff * _schedulerConfig.TurnOnInterval.TotalSeconds) + now); 
-            }
-            else
-            {
-                var diff = (int)((now - scheduled).TotalSeconds / _schedulerConfig.TurnOnInterval.TotalSeconds) + 1;
-                timeToStartScheduler =  ((TimeSpan.FromSeconds(diff * _schedulerConfig.TurnOnInterval.TotalSeconds) + scheduled)) - now;
-            }
-
-            _schedulerService.In(timeToStartScheduler, StartScheduler);
+                    StartTimeout();
+                }
+            }    
+            );
 
             return this;
         }
-
-        private void StartScheduler()
-        {
-            _schedulerService.In(_schedulerConfig.TurnOnInterval, StartScheduler);
-
-            Debug.WriteLine("SOCKET TURN ON");
-
-            ExecuteAutoTrigger();
-
-            SetTurnOffTimeout();
-        }
-
-        private void SetTurnOffTimeout()
-        {
-            if (Settings.Duration.Ticks > 0)
-            {
-                lock (_syncRoot)
-                {
-                    if (!GetConditionsAreFulfilled())
-                    {
-                        return;
-                    }
-
-                    _turnOffTimeout?.Cancel();
-                    _turnOffTimeout = _schedulerService.In(Settings.Duration, TurnOffTest);
-                }
-            }
-        }
-
-        private void TurnOffTest()
-        {
-            _turnOffTimeout?.Cancel();
-            if (GetTurnOffConditionsAreFulfilled())
-            {
-
-                Debug.WriteLine("SOCKET TURN OFF");
-
-                _components.ForEach(c => c.TryTurnOff());
-
-                _isOn = false;
-                _lastTurnedOn.Stop();
-            }
-        }
-
-
+        
 
     }
 
-    public class SchedulerConfiguration
+    public class AutomationScheduler
     {
         public TimeSpan StartTime { get; set; }
         public TimeSpan TurnOnInterval { get; set; }
         public TimeSpan WorkingTime { get; set; }
 
+        private bool _firstTimeStart = true;
+
+        private readonly IDateTimeService _dateTimeService;
+
+        public AutomationScheduler(IDateTimeService dateTimeService)
+        {
+            _dateTimeService = dateTimeService;
+        }
+
+        public TimeSpan GetNextTurnOnTime()
+        {
+            if (_firstTimeStart)
+            {
+                _firstTimeStart = false;
+
+                var now = _dateTimeService.Time;
+                var scheduled = StartTime;
+                TimeSpan timeToStartScheduler;
+
+
+                if (scheduled > now)
+                {
+                    var diff = (int)((scheduled - now).TotalSeconds / TurnOnInterval.TotalSeconds);
+                    timeToStartScheduler = scheduled - (TimeSpan.FromSeconds(diff * TurnOnInterval.TotalSeconds) + now);
+                }
+                else
+                {
+                    var diff = (int)((now - scheduled).TotalSeconds / TurnOnInterval.TotalSeconds) + 1;
+                    timeToStartScheduler = ((TimeSpan.FromSeconds(diff * TurnOnInterval.TotalSeconds) + scheduled)) - now;
+                }
+
+                return timeToStartScheduler;
+            }
+            else
+            {
+                return TurnOnInterval;
+            }
+        }
+
+        public bool ScheduleTurnOff
+        {
+            get
+            {
+                return WorkingTime.Ticks > 0;
+            }
+            
+        }
+
+        public TimeSpan GetNextTurnOffTime()
+        {
+            return WorkingTime;
+        }
+
+ 
         public TimeSpan TotalWorkPerHour
         {
             get
@@ -397,4 +393,51 @@ namespace HA4IoT.Automations
             }
         }
     }
+
+    public interface ISchedulerFactory
+    {
+        AutomationScheduler GetScheduler();
+    }
+
+    public class PompScheduler : ISchedulerFactory
+    {
+        private const int HOURS_IN_DAY = 24;
+        private int _waterPerMinuteCapacity;
+        private int _dailyWaterConsumption;
+        private TimeSpan _workingTime;
+        private readonly IDateTimeService _dateTimeService;
+
+        /// <summary>
+        /// Generate scheduler for water pump
+        /// </summary>
+        /// <param name="waterPerMinuteConsumption">Water that is pumped thru the manadged system in one minute period - value in [mL]</param>
+        /// <param name="dailyWaterConsumption">Desired water that should be pumped in whole day</param>
+        /// <param name="workingTime">Working time for single working segment</param>
+        public PompScheduler(int waterPerMinuteConsumption, int dailyWaterConsumption, TimeSpan workingTime, IDateTimeService dateTimeService)
+        {
+            _waterPerMinuteCapacity = waterPerMinuteConsumption;
+            _dailyWaterConsumption = dailyWaterConsumption;
+            _workingTime = workingTime;
+            _dateTimeService = dateTimeService;
+        }
+
+        public AutomationScheduler GetScheduler()
+        {
+            var totalWorkingTime = TimeSpan.FromMinutes(_dailyWaterConsumption / _waterPerMinuteCapacity);
+            var workingPartsCount = (int) (totalWorkingTime.Ticks / _workingTime.Ticks);
+            var dayWorkingTime = TimeSpan.FromHours(HOURS_IN_DAY);
+
+            var turnOnInterval = TimeSpan.FromTicks(dayWorkingTime.Ticks / workingPartsCount);
+            
+            return new AutomationScheduler(_dateTimeService)
+            {
+                WorkingTime = _workingTime,
+                TurnOnInterval = turnOnInterval
+            };
+        }
+    }
+
+
 }
+
+

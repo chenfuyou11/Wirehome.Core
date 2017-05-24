@@ -4,9 +4,9 @@
     {
         public bool IsEnabled { get; set; }
 
-        public int Latitude { get; set; }
+        public float Latitude { get; set; }
 
-        public int Longitude { get; set; }
+        public float Longitude { get; set; }
 
         public string AppId { get; set; }
 

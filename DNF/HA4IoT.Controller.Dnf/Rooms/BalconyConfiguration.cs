@@ -73,6 +73,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
         public void Apply()
         {
             var input = _deviceService.GetDevice<HSPE16InputOnly>(CCToolsDevices.HSPE16_16.ToString());
+            var input_2 = _deviceService.GetDevice<HSPE16InputOnly>(CCToolsDevices.HSPE16_88.ToString());
             var relays = _deviceService.GetDevice<HSREL8>(CCToolsDevices.HSRel8_24.ToString());
             var tempSensor = _deviceService.GetTempSensor((int)BalconyElements.TempSensor);
             var humiditySensor = _deviceService.GetHumiditySensor((int)BalconyElements.TempSensor);
@@ -82,15 +83,14 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _sensorFactory.RegisterTemperatureSensor(room, BalconyElements.TempSensor, tempSensor);
             _sensorFactory.RegisterHumiditySensor(room, BalconyElements.HumiditySensor, humiditySensor);
 
-            var md = _sensorFactory.RegisterMotionDetector(room, BalconyElements.MotionDetector, input[HSPE16Pin.GPIO7]);
-            md.StateChanged += Md_StateChanged;
+            var md =_sensorFactory.RegisterMotionDetector(room, BalconyElements.MotionDetector, input[HSPE16Pin.GPIO7]);
+            var md2 = _sensorFactory.RegisterMotionDetector(room, BalconyElements.BirdMotionDetector, input_2[HSPE16Pin.GPIO2]);
+            md2.StateChanged += Md_StateChanged;
 
             _actuatorFactory.RegisterLamp(room, BalconyElements.Light, relays[HSREL8Pin.Relay0]);
 
             var codeSequenceProvider = new DipswitchCodeProvider();
-
             var codePair = codeSequenceProvider.GetCodePair(DipswitchSystemCode.AllOn, DipswitchUnitCode.D, 10);
-    
             var socket = _actuatorFactory.RegisterSocket(room, BalconyElements.RemoteSocket, _remoteSocketService.RegisterRemoteSocket(BalconyElements.RemoteSocket.ToString(), codePair));
             
             //var livingRoomAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, LivingroomElements.SchedulerAutomation)

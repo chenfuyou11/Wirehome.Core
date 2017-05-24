@@ -3,6 +3,7 @@
     enum BalconyElements
     {
         MotionDetector,
+        BirdMotionDetector,
         Light,
         TempSensor = 10,
         HumiditySensor,

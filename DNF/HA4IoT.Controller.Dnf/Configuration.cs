@@ -13,6 +13,7 @@ using System;
 using HA4IoT.Hardware.Services;
 using HA4IoT.Extensions;
 using HA4IoT.Hardware.RemoteSwitch.Adapters;
+using HA4IoT.ExternalServices.OpenWeatherMap;
 
 namespace HA4IoT.Controller.Dnf
 {
@@ -37,6 +38,7 @@ namespace HA4IoT.Controller.Dnf
         private readonly ISchedulerService _schedulerService;
         private readonly RemoteSocketService _remoteSocketService;
         private readonly IContainer _containerService;
+        private readonly OpenWeatherMapService _weatherService;
 
         public Configuration(
             CCToolsDeviceService ccToolsBoardService,
@@ -46,7 +48,8 @@ namespace HA4IoT.Controller.Dnf
             ISchedulerService schedulerService,
             RemoteSocketService remoteSocketService,
             InterruptMonitorService interruptMonitorService,
-            IContainer containerService
+            IContainer containerService,
+            OpenWeatherMapService weatherService
             )
         {
             _interruptMonitorService = interruptMonitorService ?? throw new ArgumentNullException(nameof(interruptMonitorService));
@@ -57,13 +60,18 @@ namespace HA4IoT.Controller.Dnf
             _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
             _remoteSocketService = remoteSocketService ?? throw new ArgumentNullException(nameof(remoteSocketService));
             _containerService = containerService ?? throw new ArgumentNullException(nameof(containerService));
-            
+            _weatherService = weatherService ?? throw new ArgumentNullException(nameof(weatherService));
         }
 
         public Task ApplyAsync()
         {
             _interruptMonitorService.RegisterInterrupt("Default", _gpioService.GetInput(RASPBERRY_INTERRUPT));
             _interruptMonitorService.RegisterCallback("Default", _ccToolsBoardService.PollInputs);
+
+            _weatherService.Settings.AppId = "bdff167243cc14c420b941ddc7eda50d";
+            _weatherService.Settings.Latitude = 51.756757f;
+            _weatherService.Settings.Longitude = 19.525681f;
+            _weatherService.Refresh(null);
 
             _ccToolsBoardService.RegisterDevice(CCToolsDevice.HSPE16_InputOnly, CCToolsDevices.HSPE16_88.ToString(), I2C_ADDRESS_INPUT_1);
             _ccToolsBoardService.RegisterDevice(CCToolsDevice.HSPE16_InputOnly, CCToolsDevices.HSPE16_16.ToString(), I2C_ADDRESS_INPUT_2);
@@ -75,7 +83,7 @@ namespace HA4IoT.Controller.Dnf
 
             _remoteSocketService.Adapter = new I2CHardwareBridgeLdp433MhzBridgeAdapter(i2CHardwareBridge, ARDUINO_433_SEND_PIN);
 
-            _containerService.GetInstance<LivingroomConfiguration>().Apply();
+            //_containerService.GetInstance<LivingroomConfiguration>().Apply();
             _containerService.GetInstance<BalconyConfiguration>().Apply();
             _containerService.GetInstance<BedroomConfiguration>().Apply();
             _containerService.GetInstance<BathroomConfiguration>().Apply();

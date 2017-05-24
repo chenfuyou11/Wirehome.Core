@@ -122,6 +122,8 @@ namespace HA4IoT.Controller.Main.Main.Rooms
 
             _sensorFactory.RegisterButton(area, Bedroom.ButtonWindowUpper, input5.GetInput(10));
             _sensorFactory.RegisterButton(area, Bedroom.ButtonWindowLower, input5.GetInput(13));
+            _sensorFactory.RegisterButton(area, Bedroom.ButtonDoor, input5.GetInput(11));
+
             _sensorFactory.RegisterButton(area, Bedroom.ButtonBedLeftInner, input4.GetInput(2));
             _sensorFactory.RegisterButton(area, Bedroom.ButtonBedLeftOuter, input4.GetInput(0));
             _sensorFactory.RegisterButton(area, Bedroom.ButtonBedRightInner, input4.GetInput(1));
@@ -161,7 +163,7 @@ namespace HA4IoT.Controller.Main.Main.Rooms
 
             area.GetButton(Bedroom.ButtonDoor).CreatePressedShortTrigger(_messageBroker).Attach(() => ceilingLights.TryTogglePowerState());
             area.GetButton(Bedroom.ButtonWindowUpper).CreatePressedShortTrigger(_messageBroker).Attach(() => ceilingLights.TryTogglePowerState());
-
+            
             area.GetButton(Bedroom.ButtonDoor).CreatePressedLongTrigger(_messageBroker).Attach(() =>
             {
                 area.GetComponent(Bedroom.LampBedLeft).TryTurnOff();
@@ -182,7 +184,8 @@ namespace HA4IoT.Controller.Main.Main.Rooms
                 .WithEnabledAtNight()
                 .WithSkipIfAnyIsAlreadyOn(area.GetLamp(Bedroom.LampBedLeft), area.GetLamp(Bedroom.LampBedRight));
 
-            _actuatorFactory.RegisterFan(area, Bedroom.Fan, new BedroomFanAdapter(hsrel8));
+            var fan = _actuatorFactory.RegisterFan(area, Bedroom.Fan, new BedroomFanAdapter(hsrel8));
+            area.GetButton(Bedroom.ButtonWindowLower).CreatePressedShortTrigger(_messageBroker).Attach(() => fan.TryIncreaseLevel());
 
             area.GetButton(Bedroom.ButtonBedLeftInner).CreatePressedShortTrigger(_messageBroker).Attach(() => area.GetComponent(Bedroom.LampBedLeft).TryTogglePowerState());
             area.GetButton(Bedroom.ButtonBedLeftInner).CreatePressedLongTrigger(_messageBroker).Attach(() => area.GetComponent(Bedroom.CombinedCeilingLights).TryTogglePowerState());

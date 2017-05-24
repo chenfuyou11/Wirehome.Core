@@ -7,6 +7,7 @@ using HA4IoT.Contracts.Adapters;
 using System.Linq;
 using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Contracts.Components.States;
+using System.Threading.Tasks;
 
 namespace HA4IoT.Extensions.Core
 {
@@ -34,7 +35,7 @@ namespace HA4IoT.Extensions.Core
             _input.StateChanged += Input_StateChanged;
         }
 
-        public void SetState(AdapterPowerState powerState, AdapterColor color, params IHardwareParameter[] hardwareParameters)
+        public Task SetState(AdapterPowerState powerState, AdapterColor color, params IHardwareParameter[] hardwareParameters)
         {
             if (color != null)
             {
@@ -42,9 +43,11 @@ namespace HA4IoT.Extensions.Core
             }
 
             SetState(powerState, hardwareParameters);
+
+            return Task.FromResult(0);
         }
 
-        public void SetState(AdapterPowerState powerState, params IHardwareParameter[] parameters)
+        public Task  SetState(AdapterPowerState powerState, params IHardwareParameter[] parameters)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
@@ -59,7 +62,7 @@ namespace HA4IoT.Extensions.Core
                    || (inputState == BinaryState.High && powerState == AdapterPowerState.On)
                 )
                 {
-                    return;
+                    return Task.FromResult(0);
                 }
 
                 _ControledStateChange = true;
@@ -73,6 +76,8 @@ namespace HA4IoT.Extensions.Core
                     _ControledStateChange = false;
                 });
             }
+
+            return Task.FromResult(0);
         }
 
         private void Input_StateChanged(Object sender, BinaryStateChangedEventArgs e)
@@ -91,5 +96,6 @@ namespace HA4IoT.Extensions.Core
             }
         }
 
+        
     }
 }

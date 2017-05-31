@@ -3,20 +3,20 @@ using System.Threading.Tasks;
 using HA4IoT.Actuators;
 using HA4IoT.Actuators.Lamps;
 using HA4IoT.Actuators.StateMachines;
+using HA4IoT.Areas;
 using HA4IoT.Automations;
 using HA4IoT.Components;
 using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Commands;
+using HA4IoT.Contracts.Components.Commands;
 using HA4IoT.Contracts.Core;
 using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.Services;
+using HA4IoT.Contracts.Hardware.RaspberryPi;
 using HA4IoT.Contracts.Messaging;
 using HA4IoT.Hardware;
 using HA4IoT.Hardware.CCTools;
 using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Sensors;
 using HA4IoT.Sensors.Buttons;
-using HA4IoT.Services.Areas;
 
 namespace HA4IoT.Controller.Main.Cellar
 {
@@ -50,7 +50,7 @@ namespace HA4IoT.Controller.Main.Cellar
 
         public Task ApplyAsync()
         {
-            var hsrt16 = (HSRT16)_ccToolsBoardService.RegisterDevice(CCToolsDevice.HSRT16, "HSRT16", 32);
+            var hsrt16 = (HSRT16)_ccToolsBoardService.RegisterDevice(CCToolsDeviceType.HSRT16, "HSRT16", 32);
 
             var garden = _areaService.RegisterArea("Garden");
 
@@ -65,7 +65,7 @@ namespace HA4IoT.Controller.Main.Cellar
             _actuatorFactory.RegisterLamp(garden, Garden.LampTerrace, hsrt16[HSRT16Pin.Relay15]);
             var stateMachine = _actuatorFactory.RegisterStateMachine(garden, Garden.StateMachine, InitializeStateMachine);
             
-            var button = _sensorFactory.RegisterButton(garden, Garden.Button, _gpioService.GetInput(4).WithInvertedState());
+            var button = _sensorFactory.RegisterButton(garden, Garden.Button, _gpioService.GetInput(4, GpioPullMode.High, GpioInputMonitoringMode.Interrupt).WithInvertedState());
 
             button.CreatePressedShortTrigger(_messageBroker).Attach(() => stateMachine.TrySetNextState());
             button.CreatePressedLongTrigger(_messageBroker).Attach(() => stateMachine.TryTurnOff());

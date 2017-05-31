@@ -3,15 +3,12 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Web.Http;
 using HA4IoT.Contracts.Api;
+using HA4IoT.Contracts.Core;
+using HA4IoT.Contracts.Environment;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Services.Daylight;
-using HA4IoT.Contracts.Services.OutdoorHumidity;
-using HA4IoT.Contracts.Services.OutdoorTemperature;
-using HA4IoT.Contracts.Services.Settings;
-using HA4IoT.Contracts.Services.Storage;
-using HA4IoT.Contracts.Services.System;
-using HA4IoT.Contracts.Services.Weather;
+using HA4IoT.Contracts.Settings;
+using HA4IoT.Contracts.Storage;
 using Newtonsoft.Json.Linq;
 
 namespace HA4IoT.ExternalServices.OpenWeatherMap
@@ -21,11 +18,8 @@ namespace HA4IoT.ExternalServices.OpenWeatherMap
     {
         private const string StorageFilename = "OpenWeatherMapCache.json";
 
-        private readonly ISchedulerService _schedulerService;
-        private readonly IOutdoorTemperatureService _outdoorTemperatureService;
-        private readonly IOutdoorHumidityService _outdoorHumidityService;
+        private readonly IOutdoorService _outdoorService;
         private readonly IDaylightService _daylightService;
-        private readonly IWeatherService _weatherService;
         private readonly IDateTimeService _dateTimeService;
         private readonly ISystemInformationService _systemInformationService;
         private readonly IStorageService _storageService;
@@ -37,13 +31,11 @@ namespace HA4IoT.ExternalServices.OpenWeatherMap
         public float Humidity { get; private set; }
         public TimeSpan Sunrise { get; private set; }
         public TimeSpan Sunset { get; private set; }
-        public Weather Weather { get; private set; }
+        public WeatherCondition Condition { get; private set; }
         
         public OpenWeatherMapService(
-            IOutdoorTemperatureService outdoorTemperatureService,
-            IOutdoorHumidityService outdoorHumidityService,
+            IOutdoorService outdoorService,
             IDaylightService daylightService,
-            IWeatherService weatherService,
             IDateTimeService dateTimeService, 
             ISchedulerService schedulerService, 
             ISystemInformationService systemInformationService,
@@ -51,34 +43,23 @@ namespace HA4IoT.ExternalServices.OpenWeatherMap
             IStorageService storageService,
             ILogService logService)
         {
+            if (schedulerService == null) throw new ArgumentNullException(nameof(schedulerService));
             if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
-            _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
-            _outdoorTemperatureService = outdoorTemperatureService ?? throw new ArgumentNullException(nameof(outdoorTemperatureService));
-            _outdoorHumidityService = outdoorHumidityService ?? throw new ArgumentNullException(nameof(outdoorHumidityService));
+            _outdoorService = outdoorService ?? throw new ArgumentNullException(nameof(outdoorService));
             _daylightService = daylightService ?? throw new ArgumentNullException(nameof(daylightService));
-            _weatherService = weatherService ?? throw new ArgumentNullException(nameof(weatherService));
             _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
             _systemInformationService = systemInformationService ?? throw new ArgumentNullException(nameof(systemInformationService));
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
 
             _log = logService?.CreatePublisher(nameof(OpenWeatherMapService)) ?? throw new ArgumentNullException(nameof(logService));
 
-            settingsService.CreateSettingsMonitor<OpenWeatherMapServiceSettings>(s => Settings = s.NewSettings);           
+            settingsService.CreateSettingsMonitor<OpenWeatherMapServiceSettings>(s => Settings = s.NewSettings);
+
+            LoadPersistedData();
+            schedulerService.Register("OpenWeatherMapServiceUpdater", TimeSpan.FromMinutes(5), RefreshAsync);
         }
 
         public OpenWeatherMapServiceSettings Settings { get; private set; }
-
-        public override void Startup()
-        {
-            if (!Settings.IsEnabled)
-            {
-                _log.Info("Open Weather Map Service is disabled.");
-                return;
-            }
-
-            LoadPersistedData();
-            _schedulerService.Register("OpenWeatherMapServiceUpdater", TimeSpan.FromMinutes(5), RefreshAsync);
-        }
 
         [ApiMethod]
         public void Status(IApiCall apiCall)
@@ -96,7 +77,7 @@ namespace HA4IoT.ExternalServices.OpenWeatherMap
         {
             if (!Settings.IsEnabled)
             {
-                _log.Verbose("Fetching Open Weather Map Service is disabled.");
+                _log.Verbose("OpenWeatherMapService is disabled.");
                 return;
             }
 
@@ -124,12 +105,12 @@ namespace HA4IoT.ExternalServices.OpenWeatherMap
         {
             if (Settings.UseTemperature)
             {
-                _outdoorTemperatureService.Update(Temperature);
+                _outdoorService.UpdateTemperature(Temperature);
             }
 
             if (Settings.UseHumidity)
             {
-                _outdoorHumidityService.Update(Humidity);
+                _outdoorService.UpdateHumidity(Humidity);
             }
 
             if (Settings.UseSunriseSunset)
@@ -139,7 +120,7 @@ namespace HA4IoT.ExternalServices.OpenWeatherMap
 
             if (Settings.UseWeather)
             {
-                _weatherService.Update(Weather);
+                _outdoorService.UpdateCondition(Condition);
             }
         }
 
@@ -147,7 +128,7 @@ namespace HA4IoT.ExternalServices.OpenWeatherMap
         {
             var uri = new Uri($"http://api.openweathermap.org/data/2.5/weather?lat={Settings.Latitude}&lon={Settings.Longitude}&APPID={Settings.AppId}&units=metric");
 
-            _systemInformationService.Set("OpenWeatherMapService/Uri", uri.ToString());
+            _systemInformationService.Set($"{nameof(OpenWeatherMapService)}/Uri", uri.ToString());
 
             var stopwatch = Stopwatch.StartNew();
             try
@@ -160,7 +141,7 @@ namespace HA4IoT.ExternalServices.OpenWeatherMap
             }
             finally
             {
-                _systemInformationService.Set("OpenWeatherMapService/LastFetchDuration", stopwatch.Elapsed);
+                _systemInformationService.Set($"{nameof(OpenWeatherMapService)}/LastFetchDuration", stopwatch.Elapsed);
             }
         }
 
@@ -171,7 +152,9 @@ namespace HA4IoT.ExternalServices.OpenWeatherMap
                 var parser = new OpenWeatherMapResponseParser();
                 parser.Parse(weatherData);
 
-                Weather = parser.Weather;
+                _systemInformationService.Set($"{nameof(OpenWeatherMapService)}/LastConditionCode", parser.ConditionCode);
+
+                Condition = parser.Condition;
                 Temperature = parser.Temperature;
                 Humidity = parser.Humidity;
 

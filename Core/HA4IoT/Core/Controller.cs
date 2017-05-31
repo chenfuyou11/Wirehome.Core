@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Storage;
 using HA4IoT.Components;
+using HA4IoT.Contracts;
 using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Core;
+using HA4IoT.Contracts.Hardware.Interrupts;
+using HA4IoT.Contracts.Hardware.RemoteSockets;
 using HA4IoT.Contracts.Logging;
+using HA4IoT.Contracts.Notifications;
 using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services.Notifications;
-using HA4IoT.Contracts.Services.Settings;
-using HA4IoT.Contracts.Services.System;
-using HA4IoT.Net.Http;
+using HA4IoT.Contracts.Settings;
+using HA4IoT.Hardware.RemoteSockets;
 using HA4IoT.Settings;
 using Newtonsoft.Json.Linq;
 
@@ -37,8 +38,10 @@ namespace HA4IoT.Core
 
         public static bool IsRunningInUnitTest { get; set; }
 
-        public event EventHandler StartupCompleted;
-        public event EventHandler StartupFailed;
+        public IContainer Container => _container;
+
+        public event EventHandler<StartupCompletedEventArgs> StartupCompleted;
+        public event EventHandler<StartupFailedEventArgs> StartupFailed;
 
         public Task RunAsync(IBackgroundTaskInstance taskInstance)
         {
@@ -48,74 +51,59 @@ namespace HA4IoT.Core
 
         public Task RunAsync()
         {
-            return Task.Run(() => StartupAsync());
+            return Task.Run(RunAsyncInternal);
         }
 
-        private async void StartupAsync()
+        private async Task RunAsyncInternal()
         {
+            var stopwatch = Stopwatch.StartNew();
             try
             {
-                var stopwatch = Stopwatch.StartNew();
+                _container.RegisterSingleton<IController>(() => this);
+                _container.RegisterServices();
+                _options.ContainerConfigurator?.ConfigureContainer(_container);
+                _container.Verify();
 
-                RegisterServices();
-
-                var httpServer = _container.GetInstance<HttpServer>();
-                await httpServer.BindAsync(_options.HttpServerPort);
+                _log = _container.GetInstance<ILogService>().CreatePublisher(nameof(Controller));
+                
+                _container.GetInstance<IInterruptMonitorService>().RegisterInterrupts();
+                _container.GetInstance<IDeviceRegistryService>().RegisterDevices();
+                _container.GetInstance<IRemoteSocketService>().RegisterRemoteSockets();
 
                 _container.StartupServices(_log);
                 _container.ExposeRegistrationsToApi();
 
                 await TryConfigureAsync();
 
-                StartupCompleted?.Invoke(this, EventArgs.Empty);
-                stopwatch.Stop();
+                StartupCompleted?.Invoke(this, new StartupCompletedEventArgs(stopwatch.Elapsed));
 
-                _container.GetInstance<IApiDispatcherService>().ConfigurationRequested += (s, e) =>
-                {
-                    e.ApiContext.Result["Controller"] = JObject.FromObject(_container.GetInstance<ISettingsService>().GetSettings<ControllerSettings>());
-                };
-
-                _log.Info("Startup completed after " + stopwatch.Elapsed);
-
-                _container.GetInstance<ISystemInformationService>().Set("Health/StartupDuration", stopwatch.Elapsed);
-                _container.GetInstance<ISystemInformationService>().Set("Health/StartupTimestamp", _container.GetInstance<IDateTimeService>().Now);
+                _container.GetInstance<IScriptingService>().TryExecuteStartupScripts();
             }
             catch (Exception exception)
             {
-                _log?.Error(exception, "Failed to initialize.");
-                StartupFailed?.Invoke(this, EventArgs.Empty);
-
+                StartupFailed?.Invoke(this, new StartupFailedEventArgs(stopwatch.Elapsed, exception));
                 _deferral?.Complete();
             }
-        }
-
-        private void RegisterServices()
-        {
-            _container.RegisterSingleton<IController>(() => this);
-            _container.RegisterSingleton(() => _options);
-
-            _container.RegisterServices();
-            _options.ContainerConfigurator?.ConfigureContainer(_container);
-
-            _container.Verify();
-            _log = _container.GetInstance<ILogService>().CreatePublisher(nameof(Controller));
-
-            _log.Info("Services registered.");
         }
 
         private async Task TryConfigureAsync()
         {
             try
             {
+                _container.GetInstance<IApiDispatcherService>().ConfigurationRequested += (s, e) =>
+                {
+                    e.ApiContext.Result["Controller"] = JObject.FromObject(_container.GetInstance<ISettingsService>().GetSettings<ControllerSettings>());
+                };
+
                 await TryApplyCodeConfigurationAsync();
-                TryApplyScriptConfiguration();
-                
+
                 _log.Info("Resetting all components");
                 var componentRegistry = _container.GetInstance<IComponentRegistryService>();
                 foreach (var component in componentRegistry.GetComponents())
                 {
                     component.TryReset();
                 }
+
             }
             catch (Exception exception)
             {
@@ -148,27 +136,6 @@ namespace HA4IoT.Core
             {
                 _log.Error(exception, "Error while applying code configuration");
                 _container.GetInstance<INotificationService>().CreateError("Configuration code has failed.");
-            }
-        }
-
-        private void TryApplyScriptConfiguration()
-        {
-            try
-            {
-                var configurationScriptFile = Path.Combine(StoragePath.StorageRoot, "Configuration.lua");
-                if (!File.Exists(configurationScriptFile))
-                {
-                    _log.Verbose("Configuration script not found.");
-                    return;
-                }
-
-                var scriptCode = File.ReadAllText(configurationScriptFile);
-                _container.GetInstance<IScriptingService>().ExecuteScript(scriptCode, "applyConfiguration");
-            }
-            catch (Exception exception)
-            {
-                _log.Error(exception, "Error while applying script configuration");
-                _container.GetInstance<INotificationService>().CreateError("Configuration script has failed.");
             }
         }
     }

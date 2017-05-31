@@ -1,16 +1,16 @@
 ﻿using System;
 using HA4IoT.Actuators;
+using HA4IoT.Areas;
 using HA4IoT.Components;
 using HA4IoT.Contracts.Areas;
+using HA4IoT.Contracts.Core;
 using HA4IoT.Contracts.Hardware;
 using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Services.System;
 using HA4IoT.Hardware.CCTools;
 using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Hardware.I2C.I2CHardwareBridge;
 using HA4IoT.Sensors;
 using HA4IoT.Sensors.Buttons;
-using HA4IoT.Services.Areas;
 
 namespace HA4IoT.Controller.Main.Main.Rooms
 {
@@ -78,8 +78,8 @@ namespace HA4IoT.Controller.Main.Main.Rooms
 
         public void Apply()
         {
-            var hsrel8 = (HSREL8)_ccToolsBoardService.RegisterDevice(CCToolsDevice.HSRel8, InstalledDevice.LivingRoomHSREL8.ToString(), 18);
-            var hsrel5 = (HSREL5)_ccToolsBoardService.RegisterDevice(CCToolsDevice.HSRel5, InstalledDevice.LivingRoomHSREL5.ToString(), 57);
+            var hsrel8 = (HSREL8)_ccToolsBoardService.RegisterDevice(CCToolsDeviceType.HSRel8, InstalledDevice.LivingRoomHSREL8.ToString(), 18);
+            var hsrel5 = (HSREL5)_ccToolsBoardService.RegisterDevice(CCToolsDeviceType.HSRel5, InstalledDevice.LivingRoomHSREL5.ToString(), 57);
 
             var input0 = _deviceService.GetDevice<HSPE16InputOnly>(InstalledDevice.Input0.ToString());
             var input1 = _deviceService.GetDevice<HSPE16InputOnly>(InstalledDevice.Input1.ToString());

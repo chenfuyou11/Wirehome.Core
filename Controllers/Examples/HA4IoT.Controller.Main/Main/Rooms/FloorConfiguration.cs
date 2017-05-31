@@ -2,12 +2,13 @@
 using HA4IoT.Actuators;
 using HA4IoT.Actuators.Lamps;
 using HA4IoT.Actuators.RollerShutters;
+using HA4IoT.Areas;
 using HA4IoT.Automations;
 using HA4IoT.Components;
 using HA4IoT.Contracts.Areas;
+using HA4IoT.Contracts.Core;
 using HA4IoT.Contracts.Hardware;
 using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Services.System;
 using HA4IoT.Hardware;
 using HA4IoT.Hardware.CCTools;
 using HA4IoT.Hardware.CCTools.Devices;
@@ -15,7 +16,6 @@ using HA4IoT.Hardware.I2C.I2CHardwareBridge;
 using HA4IoT.Sensors;
 using HA4IoT.Sensors.Buttons;
 using HA4IoT.Sensors.MotionDetectors;
-using HA4IoT.Services.Areas;
 
 namespace HA4IoT.Controller.Main.Main.Rooms
 {
@@ -89,9 +89,9 @@ namespace HA4IoT.Controller.Main.Main.Rooms
 
         public void Apply()
         {
-            var hsrel5Stairway = (HSREL5)_ccToolsBoardService.RegisterDevice(CCToolsDevice.HSRel5, InstalledDevice.StairwayHSREL5.ToString(), 60);
+            var hsrel5Stairway = (HSREL5)_ccToolsBoardService.RegisterDevice(CCToolsDeviceType.HSRel5, InstalledDevice.StairwayHSREL5.ToString(), 60);
             var hspe8UpperFloor = _deviceService.GetDevice<HSPE8OutputOnly>(InstalledDevice.UpperFloorAndOfficeHSPE8.ToString());
-            var hspe16FloorAndLowerBathroom = (HSPE16OutputOnly)_ccToolsBoardService.RegisterDevice(CCToolsDevice.HSPE16_OutputOnly, InstalledDevice.LowerFloorAndLowerBathroomHSPE16.ToString(), 17);
+            var hspe16FloorAndLowerBathroom = (HSPE16OutputOnly)_ccToolsBoardService.RegisterDevice(CCToolsDeviceType.HSPE16_OutputOnly, InstalledDevice.LowerFloorAndLowerBathroomHSPE16.ToString(), 17);
 
             var input1 = _deviceService.GetDevice<HSPE16InputOnly>(InstalledDevice.Input1.ToString());
             var input2 = _deviceService.GetDevice<HSPE16InputOnly>(InstalledDevice.Input2.ToString());

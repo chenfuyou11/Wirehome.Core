@@ -8,7 +8,7 @@ namespace HA4IoT.Controller.Main
     {
         public void Run(IBackgroundTaskInstance taskInstance)
         {
-            var hostname = System.Net.Dns.GetHostName();
+            var hostname = global::System.Net.Dns.GetHostName();
 
             Type configurationType;
             if (hostname == "HA4IoT-Main")
@@ -26,7 +26,6 @@ namespace HA4IoT.Controller.Main
 
             var options = new ControllerOptions
             {
-                StatusLedGpio = 22,
                 ConfigurationType = configurationType
             };
 

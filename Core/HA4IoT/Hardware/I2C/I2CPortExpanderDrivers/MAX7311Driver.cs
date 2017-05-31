@@ -1,6 +1,6 @@
 ﻿using System;
+using HA4IoT.Contracts.Core;
 using HA4IoT.Contracts.Hardware.I2C;
-using HA4IoT.Contracts.Services.System;
 
 namespace HA4IoT.Hardware.I2C.I2CPortExpanderDrivers
 {
@@ -9,14 +9,20 @@ namespace HA4IoT.Hardware.I2C.I2CPortExpanderDrivers
         private readonly II2CBusService _i2CBus;
         private readonly I2CSlaveAddress _address;
 
-        private const byte InputPortRegisterA = 0;
-        private const byte OutputPortRegisterA = 2;
-        private const byte PolarityInversionRegisterA = 4;
-        private const byte ConfigurationRegisterA = 6;
+        // Byte 0 = Offset
+        // Register 0-1=Input
+        // Register 2-3=Output
+        // Register 4-5=Inversion
+        // Register 6-7=Configuration
+        // Register 8=Timeout
+        private readonly byte[] _allRegistersWriteBuffer = { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
+
+        private readonly byte[] _inputWriteBuffer = { 0 };
+        private readonly byte[] _inputReadBuffer = new byte[2];
 
         public MAX7311Driver(I2CSlaveAddress address, II2CBusService i2CBus)
         {
-            _address = address ?? throw new ArgumentNullException(nameof(address));
+            _address = address;
             _i2CBus = i2CBus ?? throw new ArgumentNullException(nameof(i2CBus));
         }
 
@@ -27,32 +33,17 @@ namespace HA4IoT.Hardware.I2C.I2CPortExpanderDrivers
             if (state == null) throw new ArgumentNullException(nameof(state));
             if (state.Length != StateSize) throw new ArgumentException("Length is invalid.", nameof(state));
 
-            byte[] setConfigurationToOutput = { ConfigurationRegisterA, 0, 0 };
-            byte[] setState = { OutputPortRegisterA, state[0], state[1] };
+            // Update the output registers only.
+            _allRegistersWriteBuffer[3] = state[0];
+            _allRegistersWriteBuffer[4] = state[1];
 
-            _i2CBus.Execute(_address, bus =>
-            {
-                bus.Write(setConfigurationToOutput);
-                bus.Write(setState);
-            });
+            _i2CBus.Write(_address, _allRegistersWriteBuffer);
         }
 
         public byte[] Read()
         {
-            byte[] readState = { InputPortRegisterA };
-            var buffer = new byte[StateSize];
-            _i2CBus.Execute(_address, bus => bus.WriteRead(readState, buffer));
-
-            return buffer;
-        }
-
-        public void SetPolarityInversion(byte[] polarityInversion)
-        {
-            if (polarityInversion == null) throw new ArgumentNullException(nameof(polarityInversion));
-            if (polarityInversion.Length != StateSize) throw new ArgumentException("Length is invalid.", nameof(polarityInversion));
-
-            byte[] polarityInversionRegister = { PolarityInversionRegisterA };
-            _i2CBus.Execute(_address, bus => bus.WriteRead(polarityInversionRegister, polarityInversion));
+            _i2CBus.WriteRead(_address, _inputWriteBuffer, _inputReadBuffer);
+            return _inputReadBuffer;
         }
     }
 }

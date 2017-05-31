@@ -2,14 +2,14 @@
 using System.Threading;
 using Windows.Devices.Gpio;
 using HA4IoT.Contracts.Hardware;
+using HA4IoT.Contracts.Hardware.RaspberryPi;
 using HA4IoT.Contracts.Logging;
 
 namespace HA4IoT.Hardware.RaspberryPi
 {
     public sealed class GpioInputPort : IBinaryInput, IDisposable
     {
-        private const int PollInterval = 15;
-        private const long DebounceTimeoutTicks = 1000;
+        private const int PollInterval = 15; // TODO: Set from constructor. Consider two classes with "IGpioMonitoringStrategy".
 
         private readonly GpioPin _pin;
         // ReSharper disable once NotAccessedField.Local
@@ -17,18 +17,29 @@ namespace HA4IoT.Hardware.RaspberryPi
 
         private BinaryState _latestState;
 
-        public GpioInputPort(GpioPin pin, GpioInputMonitoringMode mode = GpioInputMonitoringMode.Interrupt)
+        public GpioInputPort(GpioPin pin, GpioInputMonitoringMode mode, GpioPullMode pullMode)
         {
             _pin = pin ?? throw new ArgumentNullException(nameof(pin));
-            _pin.SetDriveMode(GpioPinDriveMode.Input);
-            //_pin.DebounceTimeout = TimeSpan.FromTicks(DebounceTimeoutTicks);
-
+            if (pullMode == GpioPullMode.High)
+            {
+                _pin.SetDriveMode(GpioPinDriveMode.InputPullUp);
+            }
+            else if (pullMode == GpioPullMode.Low)
+            {
+                _pin.SetDriveMode(GpioPinDriveMode.InputPullDown);
+            }
+            else
+            {
+                _pin.SetDriveMode(GpioPinDriveMode.Input);
+            }
+            
             if (mode == GpioInputMonitoringMode.Polling)
             {
                 _timer = new Timer(PollState, null, 0, Timeout.Infinite);
             }
             else if (mode == GpioInputMonitoringMode.Interrupt)
             {
+                //_pin.DebounceTimeout = TimeSpan.FromTicks(DebounceTimeoutTicks); // TODO: Set from constructor.
                 _pin.ValueChanged += HandleInterrupt;
             }
 

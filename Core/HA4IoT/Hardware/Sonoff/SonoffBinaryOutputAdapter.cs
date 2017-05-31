@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Adapters;
+using HA4IoT.Contracts.Components.Adapters;
 using HA4IoT.Contracts.Hardware;
 using HA4IoT.Contracts.Hardware.DeviceMessaging;
-using HA4IoT.Contracts.Hardware.Services;
+using HA4IoT.Contracts.Hardware.Mqtt;
 
 namespace HA4IoT.Hardware.Sonoff
 {

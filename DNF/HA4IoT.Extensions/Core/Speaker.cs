@@ -2,15 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Components.States;
-using HA4IoT.Commands;
-using HA4IoT.Contracts.Commands;
 using Windows.Media.Playback;
 using Windows.Media.Core;
 using HA4IoT.Contracts.Components.Features;
+using HA4IoT.Components.Commands;
+using HA4IoT.Contracts.Components.Commands;
 
 namespace HA4IoT.Extensions.Core
 {

@@ -3,10 +3,10 @@ using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Sensors;
 using HA4IoT.Contracts.Components;
 using HA4IoT.Extensions.Core;
-using HA4IoT.Contracts.Commands;
 using HA4IoT.Conditions;
 using HA4IoT.Contracts.Conditions;
 using System.Linq;
+using HA4IoT.Contracts.Components.Commands;
 
 namespace HA4IoT.Extensions.MotionModel
 {

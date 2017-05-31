@@ -1,7 +1,6 @@
 ﻿using System;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Adapters;
 using HA4IoT.Contracts.Components.States;
+using HA4IoT.Contracts.Components.Adapters;
 
 namespace HA4IoT.Extensions.Core
 {

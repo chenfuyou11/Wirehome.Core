@@ -7,10 +7,10 @@ using System.Reactive.Linq;
 using System.Linq;
 using HA4IoT.Extensions.MotionModel;
 using HA4IoT.Contracts.Components.Features;
-using HA4IoT.Contracts.Services.System;
-using HA4IoT.Contracts.Services.Daylight;
 using System.Diagnostics;
 using HA4IoT.Contracts.Logging;
+using HA4IoT.Contracts.Core;
+using HA4IoT.Contracts.Environment;
 
 namespace HA4IoT.Extensions
 {

@@ -1,13 +1,10 @@
 ﻿using System;
-using HA4IoT.Actuators.StateMachines;
 using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Services.System;
-using System.Diagnostics;
-using HA4IoT.Contracts.Adapters;
 using System.Linq;
-using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Contracts.Components.States;
 using System.Threading.Tasks;
+using HA4IoT.Contracts.Components.Adapters;
+using HA4IoT.Contracts.Core;
 
 namespace HA4IoT.Extensions.Core
 {

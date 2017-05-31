@@ -99,7 +99,6 @@
     <Compile Include="Mock\TestDateTimeService.cs" />
     <Compile Include="Mock\TestDaylightService.cs" />
     <Compile Include="Mock\TestHomeAutomationTimer.cs" />
-    <Compile Include="Mock\TestLogger.cs" />
     <Compile Include="Mock\TestMotionDetectorAdapter.cs" />
     <Compile Include="Mock\TestStorageService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -12,6 +12,7 @@ using HA4IoT.Services.Areas;
 using HA4IoT.Extensions.Core;
 using HA4IoT.Actuators.Lamps;
 using HA4IoT.Extensions.Extensions;
+using System;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -58,12 +59,14 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
             var toiletAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, HallwayElements.LightToiletAutomation)
              .WithTrigger(room.GetMotionDetector(HallwayElements.MotionDetectorToilet))
-             .WithTarget(room.GetLamp(HallwayElements.Light_Two));
+             .WithTarget(room.GetLamp(HallwayElements.Light_Two))
+             .WithEnabledAtNight(TimeSpan.FromMinutes(-30), TimeSpan.FromMinutes(0));
 
 
             var livingRoomAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, HallwayElements.LightLivingroomAutomation)
              .WithTrigger(room.GetMotionDetector(HallwayElements.MotionDetectorLivingroom))
-             .WithTarget(room.GetLamp(HallwayElements.Light_One));
+             .WithTarget(room.GetLamp(HallwayElements.Light_One))
+             .WithEnabledAtNight(TimeSpan.FromMinutes(-30), TimeSpan.FromMinutes(0));
 
             _alexaService.AddConnectedVivices("Hallway Light", new IComponent[] { lamp1, lamp2 });
 

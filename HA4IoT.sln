@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.4
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers", "{CD5D2CCD-44D0-46E5-BE14-3B377048E0A2}"
 EndProject
@@ -69,7 +69,6 @@ Global
 		{D3634558-2746-441F-BC09-454B1EC7DC1D}.Debug|ARM.Deploy.0 = Debug|ARM
 		{D3634558-2746-441F-BC09-454B1EC7DC1D}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|ARM
 		{D3634558-2746-441F-BC09-454B1EC7DC1D}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|ARM
-		{D3634558-2746-441F-BC09-454B1EC7DC1D}.Debug|ARM (For Raspberry Pi).Deploy.0 = Debug|ARM
 		{D3634558-2746-441F-BC09-454B1EC7DC1D}.Debug|x64.ActiveCfg = Debug|x64
 		{D3634558-2746-441F-BC09-454B1EC7DC1D}.Debug|x64.Build.0 = Debug|x64
 		{D3634558-2746-441F-BC09-454B1EC7DC1D}.Debug|x64.Deploy.0 = Debug|x64
@@ -345,6 +344,7 @@ Global
 		{7AB8593B-A23C-467A-B8FB-09C9F32ABF54}.Debug|ARM.Build.0 = Debug|ARM
 		{7AB8593B-A23C-467A-B8FB-09C9F32ABF54}.Debug|ARM.Deploy.0 = Debug|ARM
 		{7AB8593B-A23C-467A-B8FB-09C9F32ABF54}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|ARM
+		{7AB8593B-A23C-467A-B8FB-09C9F32ABF54}.Debug|ARM (For Raspberry Pi).Deploy.0 = Debug|ARM
 		{7AB8593B-A23C-467A-B8FB-09C9F32ABF54}.Debug|x64.ActiveCfg = Debug|x64
 		{7AB8593B-A23C-467A-B8FB-09C9F32ABF54}.Debug|x64.Build.0 = Debug|x64
 		{7AB8593B-A23C-467A-B8FB-09C9F32ABF54}.Debug|x64.Deploy.0 = Debug|x64

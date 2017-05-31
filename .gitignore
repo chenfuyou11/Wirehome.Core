@@ -19,3 +19,4 @@ HA4IoT.sdf
 *.pubxml
 .vs/
 Controllers/HA4IoT.Controller.Default/AppPackages/
+DNF/HA4IoT.Controller.Dnf/AppPackages/

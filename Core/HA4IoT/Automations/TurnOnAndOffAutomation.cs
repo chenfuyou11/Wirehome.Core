@@ -117,10 +117,10 @@ namespace HA4IoT.Automations
             return this;
         }
 
-        public TurnOnAndOffAutomation WithEnabledAtNight()
+        public TurnOnAndOffAutomation WithEnabledAtNight(TimeSpan? sunriseShift = null, TimeSpan? sunsetShift = null)
         {
-            TimeSpan Start() => _daylightService.Sunset.Subtract(TimeSpan.FromHours(1));
-            TimeSpan End() => _daylightService.Sunrise.Add(TimeSpan.FromHours(1));
+            TimeSpan Start() => _daylightService.Sunset.Add(sunsetShift.GetValueOrDefault(TimeSpan.FromHours(-1)));
+            TimeSpan End() => _daylightService.Sunrise.Add(sunriseShift.GetValueOrDefault(TimeSpan.FromHours(1)));
 
             _enablingConditionsValidator.WithCondition(ConditionRelation.Or, new TimeRangeCondition(_dateTimeService).WithStart(Start).WithEnd(End));
             return this;
@@ -308,13 +308,11 @@ namespace HA4IoT.Automations
 
                     StartTimeout();
                 }
-            }    
+            }
             );
 
             return this;
         }
-        
-
     }
 
     public class AutomationScheduler
@@ -368,7 +366,7 @@ namespace HA4IoT.Automations
             {
                 return WorkingTime.Ticks > 0;
             }
-            
+
         }
 
         public TimeSpan GetNextTurnOffTime()
@@ -376,7 +374,7 @@ namespace HA4IoT.Automations
             return WorkingTime;
         }
 
- 
+
         public TimeSpan TotalWorkPerHour
         {
             get
@@ -424,11 +422,11 @@ namespace HA4IoT.Automations
         public AutomationScheduler GetScheduler()
         {
             var totalWorkingTime = TimeSpan.FromMinutes(_dailyWaterConsumption / _waterPerMinuteCapacity);
-            var workingPartsCount = (int) (totalWorkingTime.Ticks / _workingTime.Ticks);
+            var workingPartsCount = (int)(totalWorkingTime.Ticks / _workingTime.Ticks);
             var dayWorkingTime = TimeSpan.FromHours(HOURS_IN_DAY);
 
             var turnOnInterval = TimeSpan.FromTicks(dayWorkingTime.Ticks / workingPartsCount);
-            
+
             return new AutomationScheduler(_dateTimeService)
             {
                 WorkingTime = _workingTime,

@@ -10,6 +10,7 @@ using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Services.Areas;
 using HA4IoT.Extensions.Core;
 using HA4IoT.Actuators.Lamps;
+using System;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -56,7 +57,9 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
             _automationFactory.RegisterTurnOnAndOffAutomation(room, KitchenElements.LightAutomation)
              .WithTrigger(room.GetMotionDetector(KitchenElements.MotionDetector))
-             .WithTarget(room.GetLamp(KitchenElements.Light));
+             .WithTarget(room.GetLamp(KitchenElements.Light))
+             .WithEnabledAtNight(TimeSpan.FromMinutes(-30), TimeSpan.FromMinutes(0));
+
 
         }
 

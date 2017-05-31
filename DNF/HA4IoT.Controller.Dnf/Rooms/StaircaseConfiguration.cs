@@ -47,9 +47,9 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
             _actuatorFactory.RegisterLamp(room, ToiletElements.Light, relays[HSREL8Pin.Relay5]);
 
-            _automationFactory.RegisterTurnOnAndOffAutomation(room, StaircaseElements.LightAutomation)
-             .WithTrigger(room.GetMotionDetector(StaircaseElements.MotionDetector))
-             .WithTarget(room.GetLamp(StaircaseElements.Light));      
+            //_automationFactory.RegisterTurnOnAndOffAutomation(room, StaircaseElements.LightAutomation)
+            // .WithTrigger(room.GetMotionDetector(StaircaseElements.MotionDetector))
+            // .WithTarget(room.GetLamp(StaircaseElements.Light));      
         }
     }
 }

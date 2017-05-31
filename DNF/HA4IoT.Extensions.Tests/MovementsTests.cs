@@ -15,6 +15,8 @@ using HA4IoT.Triggers;
 using HA4IoT.Contracts.Services.Daylight;
 using HA4IoT.Extensions.MotionModel;
 using HA4IoT.Contracts.Logging;
+using HA4IoT.Contracts.Commands;
+using HA4IoT.Contracts.Messaging;
 
 namespace HA4IoT.Extensions.Tests
 {
@@ -77,7 +79,7 @@ namespace HA4IoT.Extensions.Tests
 
                     await Task.Delay(diff);
 
-                    (m.MotionDetector.MotionDetectedTrigger as Trigger).Execute();
+                    m.MotionDetector.ExecuteCommand(new TriggerMotionDetectionCommand());
                 }
 
                 await Task.Delay(waitAfter);
@@ -187,12 +189,10 @@ namespace HA4IoT.Extensions.Tests
         {
             var adapter = new TestMotionDetectorAdapter();
 
-            return new MotionDetector(id, adapter, controller.GetInstance<ISchedulerService>(), controller.GetInstance<ISettingsService>());
+            return new MotionDetector(id, adapter, controller.GetInstance<ISchedulerService>(), controller.GetInstance<ISettingsService>(), controller.GetInstance<IMessageBrokerService>());
         }
     }
-
-
-
+    
     //var scheduler = new TestScheduler();
     //var xs = scheduler.CreateHotObservable
     //         (

@@ -139,6 +139,7 @@
     <Compile Include="MotionModel\MotionDescriptor.cs" />
     <Compile Include="MotionModel\MotionPoint.cs" />
     <Compile Include="MotionModel\MotionVector.cs" />
+    <Compile Include="PresenceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Exceptions\StateAlreadySetException.cs" />
     <EmbeddedResource Include="Properties\HA4IoT.Extensions.rd.xml" />

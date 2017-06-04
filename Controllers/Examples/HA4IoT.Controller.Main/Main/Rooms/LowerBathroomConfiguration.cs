@@ -9,9 +9,11 @@ using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Core;
 using HA4IoT.Contracts.Hardware;
 using HA4IoT.Contracts.Messaging;
+using HA4IoT.Contracts.Scheduling;
 using HA4IoT.Contracts.Settings;
-using HA4IoT.Hardware.CCTools.Devices;
-using HA4IoT.Hardware.I2C.I2CHardwareBridge;
+using HA4IoT.Hardware.Drivers.CCTools.Devices;
+using HA4IoT.Hardware.Drivers.I2CHardwareBridge;
+using HA4IoT.Scheduling;
 using HA4IoT.Sensors;
 using HA4IoT.Sensors.Buttons;
 using HA4IoT.Sensors.MotionDetectors;
@@ -29,7 +31,7 @@ namespace HA4IoT.Controller.Main.Main.Rooms
         private readonly SensorFactory _sensorFactory;
         private readonly IMessageBrokerService _messageBroker;
 
-        private IDelayedAction _bathmodeResetDelayedAction;
+        private IScheduledAction _bathmodeResetDelayedAction;
 
         public enum LowerBathroom
         {
@@ -127,7 +129,7 @@ namespace HA4IoT.Controller.Main.Main.Rooms
             bathroom.GetLamp(LowerBathroom.LampMirror).TryTurnOff();
 
             _bathmodeResetDelayedAction?.Cancel();
-            _bathmodeResetDelayedAction = _schedulerService.In(TimeSpan.FromHours(1), () =>
+            _bathmodeResetDelayedAction = ScheduledAction.Schedule(TimeSpan.FromHours(1), () =>
             {
                 bathroom.GetLamp(LowerBathroom.LightCeilingDoor).TryTurnOff();
                 _settingsService.SetComponentEnabledState(motionDetector, true);

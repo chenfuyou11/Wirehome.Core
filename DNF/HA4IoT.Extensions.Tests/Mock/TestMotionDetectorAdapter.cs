@@ -1,5 +1,6 @@
-﻿using System;
-using HA4IoT.Contracts.Adapters;
+﻿using HA4IoT.Contracts.Components.Adapters;
+using System;
+
 
 namespace HA4IoT.Extensions.Tests
 {

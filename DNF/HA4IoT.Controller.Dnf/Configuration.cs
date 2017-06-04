@@ -1,19 +1,16 @@
 ﻿using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Services.System;
-using HA4IoT.Hardware.RemoteSwitch;
 using System.Threading.Tasks;
 using HA4IoT.Controller.Dnf.Rooms;
 using HA4IoT.Controller.Dnf.Enums;
-using HA4IoT.Contracts;
 using HA4IoT.Contracts.Hardware.I2C;
 using HA4IoT.Hardware.I2C.I2CHardwareBridge;
-using HA4IoT.Contracts.Hardware.Services;
 using HA4IoT.Hardware.CCTools;
 using System;
-using HA4IoT.Hardware.Services;
-using HA4IoT.Extensions;
-using HA4IoT.Hardware.RemoteSwitch.Adapters;
 using HA4IoT.ExternalServices.OpenWeatherMap;
+using HA4IoT.Hardware.Interrupts;
+using HA4IoT.Contracts.Hardware.RaspberryPi;
+using HA4IoT.Hardware.RemoteSockets;
+using HA4IoT.Hardware.RemoteSockets.Adapters;
 
 namespace HA4IoT.Controller.Dnf
 {
@@ -65,23 +62,24 @@ namespace HA4IoT.Controller.Dnf
 
         public Task ApplyAsync()
         {
-            _interruptMonitorService.RegisterInterrupt("Default", _gpioService.GetInput(RASPBERRY_INTERRUPT));
-            _interruptMonitorService.RegisterCallback("Default", _ccToolsBoardService.PollInputs);
+            _interruptMonitorService.RegisterInterrupt("Default", _gpioService.GetInput(RASPBERRY_INTERRUPT, GpioPullMode.None, GpioInputMonitoringMode.Interrupt));
+            _interruptMonitorService.RegisterCallback("Default", _ccToolsBoardService.PollAllInputDevices);
 
             _weatherService.Settings.AppId = "bdff167243cc14c420b941ddc7eda50d";
             _weatherService.Settings.Latitude = 51.756757f;
             _weatherService.Settings.Longitude = 19.525681f;
             _weatherService.Refresh(null);
 
-            _ccToolsBoardService.RegisterDevice(CCToolsDevice.HSPE16_InputOnly, CCToolsDevices.HSPE16_88.ToString(), I2C_ADDRESS_INPUT_1);
-            _ccToolsBoardService.RegisterDevice(CCToolsDevice.HSPE16_InputOnly, CCToolsDevices.HSPE16_16.ToString(), I2C_ADDRESS_INPUT_2);
-            _ccToolsBoardService.RegisterDevice(CCToolsDevice.HSRel8, CCToolsDevices.HSRel8_32.ToString(), I2C_ADDRESS_REL_1);
-            _ccToolsBoardService.RegisterDevice(CCToolsDevice.HSRel8, CCToolsDevices.HSRel8_24.ToString(), I2C_ADDRESS_REL_2);
+            _ccToolsBoardService.RegisterDevice(CCToolsDeviceType.HSPE16_InputOnly, CCToolsDevices.HSPE16_88.ToString(), I2C_ADDRESS_INPUT_1);
+            _ccToolsBoardService.RegisterDevice(CCToolsDeviceType.HSPE16_InputOnly, CCToolsDevices.HSPE16_16.ToString(), I2C_ADDRESS_INPUT_2);
+            _ccToolsBoardService.RegisterDevice(CCToolsDeviceType.HSRel8, CCToolsDevices.HSRel8_32.ToString(), I2C_ADDRESS_REL_1);
+            _ccToolsBoardService.RegisterDevice(CCToolsDeviceType.HSRel8, CCToolsDevices.HSRel8_24.ToString(), I2C_ADDRESS_REL_2);
 
-            var i2CHardwareBridge = new I2CHardwareBridge(new I2CSlaveAddress(I2C_ADDRESS_ARDUINO), _i2CBusService, _schedulerService);
+            var i2CHardwareBridge = new I2CHardwareBridge(CCToolsDevices.I2CHardwareBridge.ToString(), new I2CSlaveAddress(I2C_ADDRESS_ARDUINO), _i2CBusService, _schedulerService);
             _deviceService.RegisterDevice(i2CHardwareBridge);
 
-            _remoteSocketService.Adapter = new I2CHardwareBridgeLdp433MhzBridgeAdapter(i2CHardwareBridge, ARDUINO_433_SEND_PIN);
+            //TODO
+            //_remoteSocketService. = new I2CHardwareBridgeLdp433MhzBridgeAdapter(CCToolsDevices.I2CHardwareBridgeLdp433MhzBridgeAdapter.ToString(), i2CHardwareBridge, ARDUINO_433_SEND_PIN);
 
             _containerService.GetInstance<LivingroomConfiguration>().Apply();
             _containerService.GetInstance<BalconyConfiguration>().Apply();

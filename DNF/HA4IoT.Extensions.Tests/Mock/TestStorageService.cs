@@ -1,6 +1,7 @@
-﻿using System;
+﻿using HA4IoT.Contracts.Storage;
+using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Services.Storage;
+
 
 namespace HA4IoT.Extensions.Tests
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Services.Daylight;
+using HA4IoT.Contracts.Environment;
 
 namespace HA4IoT.Extensions.Tests
 {

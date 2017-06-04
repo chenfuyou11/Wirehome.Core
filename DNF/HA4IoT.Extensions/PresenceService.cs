@@ -9,7 +9,7 @@ namespace HA4IoT.Extensions
     public class AbsenceService
     {
         private IDayOffProvider _dayOffProvider;
-        private List<DayDescription> _absences;
+        //private List<DayDescription> _absences;
 
         public AbsenceService(IDayOffProvider dayOffProvider)
         {
@@ -34,31 +34,8 @@ namespace HA4IoT.Extensions
         //public HourActivity WorkingDaysAbsenceHours;
     }
 
-    public struct DayDescription
-    {
-        public DateTime Date { get; set; }
-        public HourActivity HourActivity { get; set; }
-        public DayCyclic Cyclic { get; set; }
-    }
-
-    public enum DayCyclic
-    {
-        None,
-        WorkingDay,
-        Monday,
-        Tuesday,
-        Wednesday,
-        Thursday,
-        Friday,
-        Saturday,
-        Sunday
-    }
-
-    public class HourActivity
-    {
-        public byte[] _hours { get; private set; } = new byte[24];
-    }
-
+   
+   
     public class PolishDayOffProvider : IDayOffProvider
     {
         public bool IsDayOff(DateTime date)

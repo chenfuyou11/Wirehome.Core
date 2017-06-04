@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HA4IoT.Contracts.Services.Storage;
 using Moq;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
@@ -9,20 +8,22 @@ using System.Threading.Tasks;
 using Microsoft.Reactive.Testing;
 using System.Linq;
 using HA4IoT.Sensors.MotionDetectors;
-using HA4IoT.Contracts.Services.System;
-using HA4IoT.Contracts.Services.Settings;
-using HA4IoT.Triggers;
-using HA4IoT.Contracts.Services.Daylight;
 using HA4IoT.Extensions.MotionModel;
 using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Commands;
 using HA4IoT.Contracts.Messaging;
+using HA4IoT.Contracts.Components.Commands;
+using HA4IoT.Contracts.Storage;
+using HA4IoT.Contracts.Core;
+using HA4IoT.Contracts.Environment;
+using HA4IoT.Contracts.Settings;
 
 namespace HA4IoT.Extensions.Tests
 {
     [TestClass]
     public class MovementsTests : ReactiveTest
     {
+       
+
         [TestMethod]
         public void TestMove()
         {
@@ -192,7 +193,9 @@ namespace HA4IoT.Extensions.Tests
             return new MotionDetector(id, adapter, controller.GetInstance<ISchedulerService>(), controller.GetInstance<ISettingsService>(), controller.GetInstance<IMessageBrokerService>());
         }
     }
-    
+
+
+   
     //var scheduler = new TestScheduler();
     //var xs = scheduler.CreateHotObservable
     //         (

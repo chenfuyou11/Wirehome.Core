@@ -6,25 +6,21 @@ using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Automations;
 using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware.DeviceMessaging;
 using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services.Backup;
-using HA4IoT.Contracts.Services.Daylight;
-using HA4IoT.Contracts.Services.Notifications;
-using HA4IoT.Contracts.Services.Resources;
-using HA4IoT.Contracts.Services.Settings;
-using HA4IoT.Contracts.Services.Storage;
-using HA4IoT.Contracts.Services.System;
 using HA4IoT.Logging;
 using HA4IoT.Notifications;
-using HA4IoT.Services;
-using HA4IoT.Services.Areas;
-using HA4IoT.Services.Backup;
-using HA4IoT.Services.Resources;
-using HA4IoT.Services.Scheduling;
-using HA4IoT.Services.System;
 using HA4IoT.Settings;
-
+using HA4IoT.Contracts.Storage;
+using HA4IoT.Contracts.Notifications;
+using HA4IoT.Contracts.Resources;
+using HA4IoT.Contracts.Settings;
+using HA4IoT.Contracts.Backup;
+using HA4IoT.Backup;
+using HA4IoT.Resources;
+using HA4IoT.Scheduling;
+using HA4IoT.Automations;
+using HA4IoT.Components;
+using HA4IoT.Areas;
 
 namespace HA4IoT.Extensions.Tests
 {
@@ -65,8 +61,9 @@ namespace HA4IoT.Extensions.Tests
             //_container.GetInstance<IApiDispatcherService>().RegisterAdapter(_apiAdapter);
         }
 
-        public event EventHandler StartupCompleted;
-        public event EventHandler StartupFailed;
+       
+        public event EventHandler<StartupCompletedEventArgs> StartupCompleted;
+        public event EventHandler<StartupFailedEventArgs> StartupFailed;
         public event EventHandler Shutdown;
 
         public TInstance GetInstance<TInstance>() where TInstance : class

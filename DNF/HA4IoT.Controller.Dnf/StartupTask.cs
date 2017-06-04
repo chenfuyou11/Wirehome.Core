@@ -18,7 +18,7 @@ namespace HA4IoT.Controller.Dnf
 
             var options = new ControllerOptions
             {
-                StatusLedGpio = RASPBERRY_LED,
+                //StatusLedGpio = RASPBERRY_LED,
                 ConfigurationType = typeof(Configuration),
                 ContainerConfigurator = new ContainerConfigurator()
             };

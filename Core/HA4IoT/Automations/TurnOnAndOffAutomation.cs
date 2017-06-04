@@ -325,8 +325,9 @@ namespace HA4IoT.Automations
         private bool _firstTimeStart = true;
 
         private readonly IDateTimeService _dateTimeService;
+        private readonly IScheduleProvider _scheduleProvider;
 
-        public AutomationScheduler(IDateTimeService dateTimeService)
+        public AutomationScheduler(IDateTimeService dateTimeService, IScheduleProvider scheduleProvider)
         {
             _dateTimeService = dateTimeService;
         }
@@ -393,46 +394,143 @@ namespace HA4IoT.Automations
         }
     }
 
-    public interface ISchedulerFactory
+    public interface IScheduleProvider
     {
-        AutomationScheduler GetScheduler();
+        List<ScheduleActivity> CalculateDaySchedule();
+    }
+    
+    public struct ScheduleActivity
+    {
+        public TimeSpan TurnOnTime { get; set; }
+        public TimeSpan WorkingTime { get; set; }
+
+        public override string ToString()
+        {
+            return $"{TurnOnTime} : {WorkingTime}";
+        }
     }
 
-    public class PompScheduler : ISchedulerFactory
+    public class ActivityDescriptor
+    {
+        public TimeSpan Start { get; set; }
+        public TimeSpan End { get; set; }
+        public double Value { get; set; }
+    }
+
+    public struct DaySchedule
+    {
+        public List<ActivityDescriptor> DayActivitySchedule { get; set; }
+        public DayCyclic Cyclic { get; set; }
+    }
+
+    [Flags]
+    public enum DayCyclic
+    {
+        None = 0,
+        Monday = 1,
+        Tuesday = 2,
+        Wednesday = 4,
+        Thursday = 8,
+        Friday = 16,
+        Saturday = 32,
+        Sunday = 64,
+        WorkingDay = 128,
+        Weekend = 256,
+        All = 512
+    }
+
+
+
+    public class PompScheduler : IScheduleProvider
     {
         private const int HOURS_IN_DAY = 24;
         private int _waterPerMinuteCapacity;
         private int _dailyWaterConsumption;
-        private TimeSpan _workingTime;
+        private TimeSpan _activityWorkingTime;
         private readonly IDateTimeService _dateTimeService;
+        private DaySchedule _daySchedule;
 
         /// <summary>
         /// Generate scheduler for water pump
         /// </summary>
         /// <param name="waterPerMinuteConsumption">Water that is pumped thru the manadged system in one minute period - value in [mL]</param>
         /// <param name="dailyWaterConsumption">Desired water that should be pumped in whole day</param>
-        /// <param name="workingTime">Working time for single working segment</param>
-        public PompScheduler(int waterPerMinuteConsumption, int dailyWaterConsumption, TimeSpan workingTime, IDateTimeService dateTimeService)
+        /// <param name="pompMaxWorkingTime">Working time for single working segment</param>
+        public PompScheduler(int waterPerMinuteConsumption, int dailyWaterConsumption, TimeSpan pompMaxWorkingTime, IDateTimeService dateTimeService, DaySchedule daySchedule)
         {
             _waterPerMinuteCapacity = waterPerMinuteConsumption;
             _dailyWaterConsumption = dailyWaterConsumption;
-            _workingTime = workingTime;
+            _activityWorkingTime = pompMaxWorkingTime;
             _dateTimeService = dateTimeService;
+            _daySchedule = daySchedule;
+
+            ValidateInput();
         }
 
-        public AutomationScheduler GetScheduler()
+        private void ValidateInput()
         {
-            var totalWorkingTime = TimeSpan.FromMinutes(_dailyWaterConsumption / _waterPerMinuteCapacity);
-            var workingPartsCount = (int)(totalWorkingTime.Ticks / _workingTime.Ticks);
-            var dayWorkingTime = TimeSpan.FromHours(HOURS_IN_DAY);
-
-            var turnOnInterval = TimeSpan.FromTicks(dayWorkingTime.Ticks / workingPartsCount);
-
-            return new AutomationScheduler(_dateTimeService)
+            if(_daySchedule.DayActivitySchedule.Any(x => x.Start > x.End))
             {
-                WorkingTime = _workingTime,
-                TurnOnInterval = turnOnInterval
-            };
+                throw new ArgumentException("Start of activity should not be set after end of it");
+            }
+
+            if(_daySchedule.DayActivitySchedule.Any(e => _daySchedule.DayActivitySchedule.Any(ev => e != ev && ev.Start < e.End && ev.End > e.Start)))
+            {
+                throw new ArgumentException("Activities should not overlap with each other");
+            }
+        }
+
+        public List<ScheduleActivity> CalculateDaySchedule()
+        {
+            // Calculate day of work
+            //_dateTimeService.Now;
+            var activities = new List<ScheduleActivity>();
+            var currentTime = new TimeSpan(0);
+            var pomp_day_work_time = CalculatePompDailyWorkTime();
+
+            // Time of work during the day
+            var day_work_time = _daySchedule.DayActivitySchedule.Where(x => x.Value > 0).Sum(y => y.End.Ticks - y.Start.Ticks);
+            // How much value we spent in whole day
+            var day_work_value = _daySchedule.DayActivitySchedule.Sum(x => x.Value * (x.End.Ticks - x.Start.Ticks));
+
+            foreach (var period in _daySchedule.DayActivitySchedule)
+            {
+                currentTime = period.Start;
+
+                if (period.Value > 0)
+                {
+                    var period_time = period.End.Ticks - period.Start.Ticks;
+                    // What percentage of whole day is in this period
+                    var period_work_percentage = (period.Value * period_time) / day_work_value;
+
+                    // Working time for this period
+                    var period_working_time = period_work_percentage * pomp_day_work_time.Ticks;
+
+                    var activitiesNumber = period_working_time / _activityWorkingTime.Ticks;
+                    var activitiesNumberRounded = (int)Math.Ceiling((decimal)activitiesNumber);
+
+                    var timeBetweenActivities = period_time / activitiesNumberRounded;
+
+                    for (int i = 0; i < activitiesNumberRounded; i++)
+                    {
+                        activities.Add(new ScheduleActivity
+                        {
+                            TurnOnTime = currentTime,
+                            WorkingTime = _activityWorkingTime.Ticks < period_working_time ? _activityWorkingTime : TimeSpan.FromTicks((long)period_working_time)
+                        });
+
+                        period_working_time -= _activityWorkingTime.Ticks;
+                        currentTime = new TimeSpan(currentTime.Ticks + (long)timeBetweenActivities);
+                    }
+                }
+            }
+
+            return activities;
+        }
+
+        public TimeSpan CalculatePompDailyWorkTime()
+        {
+            return TimeSpan.FromMinutes(_dailyWaterConsumption / _waterPerMinuteCapacity);          
         }
     }
 

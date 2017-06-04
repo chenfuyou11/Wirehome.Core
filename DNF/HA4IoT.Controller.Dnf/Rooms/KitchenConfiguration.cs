@@ -1,14 +1,14 @@
 ﻿using HA4IoT.Actuators;
 using HA4IoT.Automations;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Services.System;
 using HA4IoT.Sensors;
 using HA4IoT.Controller.Dnf.Enums;
-using HA4IoT.Sensors.MotionDetectors;
 using HA4IoT.Extensions.Extensions;
+using HA4IoT.Contracts.Areas;
 using HA4IoT.Hardware.CCTools.Devices;
-using HA4IoT.Services.Areas;
 using HA4IoT.Extensions.Core;
+using HA4IoT.Contracts.Core;
+using HA4IoT.Areas;
+using HA4IoT.Sensors.MotionDetectors;
 using HA4IoT.Actuators.Lamps;
 using System;
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Services.System;
+using HA4IoT.Contracts.Core;
 
 namespace HA4IoT.Extensions.Tests
 {

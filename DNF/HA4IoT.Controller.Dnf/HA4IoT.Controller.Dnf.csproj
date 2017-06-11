@@ -91,6 +91,10 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="Configuration\Configuration-Devices.json" />
+    <None Include="Configuration\Configuration-Interrupts.json" />
+    <None Include="Configuration\Configuration-RemoteSockets.json" />
+    <None Include="Configuration\Configuration.json" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>

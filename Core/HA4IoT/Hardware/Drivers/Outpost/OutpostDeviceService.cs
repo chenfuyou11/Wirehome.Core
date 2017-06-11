@@ -9,6 +9,8 @@ using HA4IoT.Contracts.Hardware.Outpost;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Scheduling;
 using HA4IoT.Contracts.Services;
+using HA4IoT.Hardware.Drivers.I2CHardwareBridge;
+using HA4IoT.Contracts.Hardware.RemoteSockets.Adapters;
 
 namespace HA4IoT.Hardware.Drivers.Outpost
 {
@@ -18,6 +20,7 @@ namespace HA4IoT.Hardware.Drivers.Outpost
         private readonly ISchedulerService _schedulerService;
         private readonly IDeviceMessageBrokerService _deviceMessageBroker;
         private readonly ILogService _logService;
+        private readonly IDeviceRegistryService _deviceRegistryService;
 
         public OutpostDeviceService(
             IDeviceRegistryService deviceRegistryService,
@@ -31,6 +34,7 @@ namespace HA4IoT.Hardware.Drivers.Outpost
             _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
             _deviceMessageBroker = deviceMessageBroker ?? throw new ArgumentNullException(nameof(deviceMessageBroker));
             _logService = logService ?? throw new ArgumentNullException(nameof(logService));
+            _deviceRegistryService = deviceRegistryService ?? throw new ArgumentNullException(nameof(deviceRegistryService));
 
             deviceRegistryService.RegisterDeviceFactory(new OutpostDeviceFactory(this));
         }
@@ -64,6 +68,15 @@ namespace HA4IoT.Hardware.Drivers.Outpost
             if (deviceName == null) throw new ArgumentNullException(nameof(deviceName));
 
             return new OutpostLpdBridgeAdapter(id, deviceName, _deviceMessageBroker);
+        }
+
+        public ILdp433MhzBridgeAdapter CreateLdp433MhzBridgeAdapter(string id, byte pin)
+        {
+            if(id == null) throw new ArgumentNullException(nameof(id));
+
+            var i2cHardwareBridge = _deviceRegistryService.GetDevice<I2CHardwareBridge.I2CHardwareBridge>();
+            
+            return new I2CHardwareBridgeLdp433MhzBridgeAdapter(id, i2cHardwareBridge, pin);
         }
 
         public IDevice CreateI2CHardwareBridge(string id, int address)

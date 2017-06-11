@@ -3,6 +3,7 @@ using HA4IoT.Contracts.Devices;
 using HA4IoT.Contracts.Devices.Configuration;
 using HA4IoT.Contracts.Hardware.I2C.I2CHardwareBridge.Configuration;
 using HA4IoT.Contracts.Hardware.Outpost.Configuration;
+using HA4IoT.Hardware.Drivers.I2CHardwareBridge.Configuration;
 
 namespace HA4IoT.Hardware.Drivers.Outpost
 {
@@ -28,6 +29,11 @@ namespace HA4IoT.Hardware.Drivers.Outpost
                 {
                     return CreateI2CHardwareBridge(id, deviceConfiguration, out device);
                 }
+
+                case "I2CLdp433MhzBridge":
+                {
+                     return CreateI2CLdp433MhzBridge(id, deviceConfiguration, out device);
+                }
             }
 
             device = null;
@@ -46,6 +52,13 @@ namespace HA4IoT.Hardware.Drivers.Outpost
         {
             var configuration = deviceConfiguration.Driver.Parameters.ToObject<I2CHardwareBridgeConfiguration>();
             device = _outpostDeviceService.CreateI2CHardwareBridge(id, configuration.Address);
+            return true;
+        }
+
+        private bool CreateI2CLdp433MhzBridge(string id, DeviceConfiguration deviceConfiguration, out IDevice device)
+        {
+            var configuration = deviceConfiguration.Driver.Parameters.ToObject<I2CLdp433MhzBridgeConfiguration>();
+            device = _outpostDeviceService.CreateLdp433MhzBridgeAdapter(id, configuration.Pin);
             return true;
         }
     }

@@ -48,6 +48,14 @@ namespace HA4IoT.Api
         {
         }
 
+        public HttpServer HttpServer
+        {
+            get
+            {
+                return _httpServer;
+            }
+        }
+
         private void OnHttpRequestReceived(object sender, HttpRequestReceivedEventArgs e)
         {
             if (e.Context.Request.Uri.StartsWith(ApiBaseUri, StringComparison.OrdinalIgnoreCase))

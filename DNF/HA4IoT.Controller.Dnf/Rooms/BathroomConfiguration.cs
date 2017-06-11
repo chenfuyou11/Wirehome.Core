@@ -4,7 +4,6 @@ using HA4IoT.Sensors;
 using HA4IoT.Controller.Dnf.Enums;
 using HA4IoT.Extensions.Extensions;
 using HA4IoT.Contracts.Areas;
-using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Extensions.Core;
 using HA4IoT.Contracts.Core;
 using HA4IoT.Areas;
@@ -12,6 +11,8 @@ using HA4IoT.Contracts.Environment;
 using HA4IoT.Contracts.Settings;
 using HA4IoT.Sensors.MotionDetectors;
 using HA4IoT.Actuators.Lamps;
+using HA4IoT.Contracts.Scheduling;
+using HA4IoT.Hardware.Drivers.CCTools.Devices;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {

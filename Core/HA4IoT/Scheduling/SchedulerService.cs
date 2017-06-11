@@ -42,7 +42,7 @@ namespace HA4IoT.Scheduling
             }
         }
 
-        public void Register(string name, TimeSpan interval, Action action)
+        public void Register(string name, TimeSpan interval, Action action, bool isOneTimeSchedule = false)
         {
             Register(name, interval, () =>
             {
@@ -51,7 +51,7 @@ namespace HA4IoT.Scheduling
             });
         }
 
-        public void Register(string name, TimeSpan interval, Func<Task> action)
+        public void Register(string name, TimeSpan interval, Func<Task> action, bool isOneTimeSchedule = false)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (action == null) throw new ArgumentNullException(nameof(action));
@@ -63,7 +63,7 @@ namespace HA4IoT.Scheduling
                     throw new InvalidOperationException($"Schedule with name '{name}' is already registered.");
                 }
 
-                var schedule = new Schedule(name, interval, action) { NextExecution = _dateTimeService.Now };
+                var schedule = new Schedule(name, interval, action) { NextExecution = _dateTimeService.Now, IsOneTimeSchedule = isOneTimeSchedule };
                 _schedules.Add(schedule);
 
                 _log.Info($"Registerd schedule '{name}' with interval of {interval}.");

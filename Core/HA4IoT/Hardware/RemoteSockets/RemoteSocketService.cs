@@ -44,7 +44,7 @@ namespace HA4IoT.Hardware.RemoteSockets
 
             // Ensure that the state of the remote switch is restored if the original remote is used
             // or the switch has been removed from the socket and plugged in at another place.
-            schedulerService.Register("RCSocketStateSender", TimeSpan.FromMinutes(1), () => RefreshStates());
+            schedulerService.Register("RCSocketStateSender" + Guid.NewGuid().ToString(), TimeSpan.FromMinutes(1), () => RefreshStates());
 
             _log = logService.CreatePublisher(nameof(RemoteSocketService));
         }

@@ -7,14 +7,14 @@ namespace HA4IoT.Hardware.Drivers.RemoteSockets
 {
     public static class DipswitchCodeProvider
     {
-        public static Lpd433MhzCodePair GetCodePair(DipswitchSystemCode systemCode, DipswitchUnitCode unitCode)
+        public static Lpd433MhzCodePair GetCodePair(DipswitchSystemCode systemCode, DipswitchUnitCode unitCode, int repeat = 3)
         {
             return new Lpd433MhzCodePair(
-                GetCode(systemCode, unitCode, RemoteSocketCommand.TurnOn),
-                GetCode(systemCode, unitCode, RemoteSocketCommand.TurnOff));
+                GetCode(systemCode, unitCode, RemoteSocketCommand.TurnOn, repeat),
+                GetCode(systemCode, unitCode, RemoteSocketCommand.TurnOff, repeat));
         }
 
-        public static Lpd433MhzCode GetCode(DipswitchSystemCode systemCode, DipswitchUnitCode unitCode, RemoteSocketCommand command)
+        public static Lpd433MhzCode GetCode(DipswitchSystemCode systemCode, DipswitchUnitCode unitCode, RemoteSocketCommand command, int repeat = 3)
         {
             // Examples:
             // System Code = 11111
@@ -55,7 +55,7 @@ namespace HA4IoT.Hardware.Drivers.RemoteSockets
                 Value = code,
                 Length = 24,
                 Protocol = 1,
-                Repeats = 3
+                Repeats = repeat
             };
         }
 

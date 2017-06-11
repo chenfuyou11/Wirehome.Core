@@ -5,15 +5,18 @@ using HA4IoT.Sensors;
 using HA4IoT.Controller.Dnf.Enums;
 using HA4IoT.Extensions.Extensions;
 using HA4IoT.Contracts.Areas;
-using HA4IoT.Hardware.CCTools;
-using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Extensions.Core;
 using HA4IoT.Contracts.Components.States;
 using HA4IoT.Contracts.Core;
 using HA4IoT.Hardware.RemoteSockets;
 using HA4IoT.Areas;
-using HA4IoT.Hardware.RemoteSockets.Protocols;
 using HA4IoT.Contracts.Hardware.RemoteSockets.Protocols;
+using HA4IoT.Hardware.Drivers.CCTools;
+using HA4IoT.Contracts.Scheduling;
+using HA4IoT.Hardware.Drivers.CCTools.Devices;
+using HA4IoT.Hardware.Drivers.RemoteSockets;
+using HA4IoT.Contracts.Actuators;
+using HA4IoT.Contracts.Components.Commands;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -33,7 +36,8 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private const int TIME_TO_ON = 30;
         private const int TIME_WHILE_ON = 5;
         private Speaker _speaker;
-
+        private ISocket _socket;
+        private bool test;
 
         public BalconyConfiguration(IDeviceRegistryService deviceService, 
                                     IAreaRegistryService areaService,
@@ -89,12 +93,12 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
             _actuatorFactory.RegisterLamp(room, BalconyElements.Light, relays[HSREL8Pin.Relay0]);
 
-            var codeSequenceProvider = new DipswitchCodeProvider();
-            var codePair = codeSequenceProvider.GetCodePair(DipswitchSystemCode.AllOn, DipswitchUnitCode.D, 10);
-            //var socket = _actuatorFactory.RegisterSocket(room, BalconyElements.RemoteSocket, _remoteSocketService.RegisterRemoteSocket( BalconyElements.RemoteSocket.ToString(), codePair));
-            
+ 
+            var codePair = DipswitchCodeProvider.GetCodePair(DipswitchSystemCode.AllOn, DipswitchUnitCode.D, 10);
+            _socket = _actuatorFactory.RegisterSocket(room, BalconyElements.RemoteSocket, _remoteSocketService.RegisterRemoteSocket(BalconyElements.RemoteSocket.ToString(), "RemoteSocketBridge", codePair));
+
             //var livingRoomAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, LivingroomElements.SchedulerAutomation)
-            //.WithSchedulerTime(new SchedulerConfiguration
+            //.WithSchedulerTime(new AutomationScheduler
             //{
             //    StartTime = new TimeSpan(18, 0, 0),
             //    TurnOnInterval = new TimeSpan(0, 0, 5),
@@ -105,10 +109,21 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
         private void Md_StateChanged(object sender, Contracts.Components.ComponentFeatureStateChangedEventArgs e)
         {
-            var state = e.NewState.Extract<MotionDetectionState>();
-            if (state.Value == MotionDetectionStateValue.MotionDetected)
+            //var state = e.NewState.Extract<MotionDetectionState>();
+            //if (state.Value == MotionDetectionStateValue.MotionDetected)
+            //{
+            //    _speaker.PlayRandom();
+            //}
+
+            if (test)
             {
-                _speaker.PlayRandom();
+                _socket.ExecuteCommand(new TurnOffCommand());
+                test = false;
+            }
+            else
+            {
+                _socket.ExecuteCommand(new TurnOnCommand());
+                test = true;
             }
         }
     } 

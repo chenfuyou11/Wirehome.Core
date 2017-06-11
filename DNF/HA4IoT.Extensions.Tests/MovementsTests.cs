@@ -13,9 +13,9 @@ using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Messaging;
 using HA4IoT.Contracts.Components.Commands;
 using HA4IoT.Contracts.Storage;
-using HA4IoT.Contracts.Core;
 using HA4IoT.Contracts.Environment;
 using HA4IoT.Contracts.Settings;
+using HA4IoT.Contracts.Scheduling;
 
 namespace HA4IoT.Extensions.Tests
 {

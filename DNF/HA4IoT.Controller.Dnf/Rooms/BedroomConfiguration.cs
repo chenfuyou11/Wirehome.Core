@@ -4,9 +4,9 @@ using HA4IoT.Sensors;
 using HA4IoT.Controller.Dnf.Enums;
 using HA4IoT.Extensions.Extensions;
 using HA4IoT.Contracts.Areas;
-using HA4IoT.Hardware.CCTools.Devices;
 using HA4IoT.Contracts.Core;
 using HA4IoT.Areas;
+using HA4IoT.Hardware.Drivers.CCTools.Devices;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {

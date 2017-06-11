@@ -21,6 +21,7 @@ using HA4IoT.Scheduling;
 using HA4IoT.Automations;
 using HA4IoT.Components;
 using HA4IoT.Areas;
+using HA4IoT.Contracts.Scheduling;
 
 namespace HA4IoT.Extensions.Tests
 {

@@ -154,6 +154,7 @@
     <Compile Include="Configuration\ConfigurationService.cs" />
     <Compile Include="Hardware\Drivers\CCTools\Configuration\CCToolsDeviceDriverConfiguration.cs" />
     <Compile Include="Hardware\Drivers\CCTools\Configuration\CCToolsDeviceFactory.cs" />
+    <Compile Include="Hardware\Drivers\I2CHardwareBridge\Configuration\I2CLdp433MhzBridgeConfiguration.cs" />
     <Compile Include="Hardware\I2C\I2CTransferResult.cs" />
     <Compile Include="Hardware\Drivers\Outpost\OutpostDeviceFactory.cs" />
     <Compile Include="Logging\RollingCollection.cs" />
@@ -392,7 +393,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Hardware\AbstractionLayer\" />
-    <Folder Include="Hardware\Drivers\I2CHardwareBridge\Configuration\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

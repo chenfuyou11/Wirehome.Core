@@ -8,7 +8,6 @@ namespace HA4IoT.Controller.Dnf
 {
     internal class ContainerConfigurator : IContainerConfigurator
     {
-
         public ContainerConfigurator()
         {
         }
@@ -18,7 +17,7 @@ namespace HA4IoT.Controller.Dnf
             if (containerService == null) throw new ArgumentNullException(nameof(containerService));
             
             containerService.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
-            //containerService.RegisterSingleton<ILdp433MhzBridgeAdapter>(() => new )
+
         }
     }
 

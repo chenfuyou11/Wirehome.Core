@@ -4,7 +4,7 @@ using System.Linq;
 using HA4IoT.Contracts.Components.States;
 using System.Threading.Tasks;
 using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Core;
+using HA4IoT.Contracts.Scheduling;
 
 namespace HA4IoT.Extensions.Core
 {
@@ -44,7 +44,7 @@ namespace HA4IoT.Extensions.Core
             return Task.FromResult(0);
         }
 
-        public Task  SetState(AdapterPowerState powerState, params IHardwareParameter[] parameters)
+        public Task SetState(AdapterPowerState powerState, params IHardwareParameter[] parameters)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
@@ -65,13 +65,13 @@ namespace HA4IoT.Extensions.Core
                 _ControledStateChange = true;
 
                 _output.Write(BinaryState.High, commit ? WriteBinaryStateMode.Commit : WriteBinaryStateMode.NoCommit);
-
-                _schedulerService.In(TimeSpan.FromMilliseconds(ON_TIME),() =>
+                
+                _schedulerService.Register("MonostableBinaryOutputAdapter_" + Guid.NewGuid().ToString(), TimeSpan.FromMilliseconds(ON_TIME),() =>
                 {
                     _output.Write(BinaryState.Low, commit ? WriteBinaryStateMode.Commit : WriteBinaryStateMode.NoCommit);
 
                     _ControledStateChange = false;
-                });
+                }, true);
             }
 
             return Task.FromResult(0);

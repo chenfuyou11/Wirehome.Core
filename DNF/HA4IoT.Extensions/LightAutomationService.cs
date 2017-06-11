@@ -9,8 +9,8 @@ using HA4IoT.Extensions.MotionModel;
 using HA4IoT.Contracts.Components.Features;
 using System.Diagnostics;
 using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Core;
 using HA4IoT.Contracts.Environment;
+using HA4IoT.Contracts.Scheduling;
 
 namespace HA4IoT.Extensions
 {

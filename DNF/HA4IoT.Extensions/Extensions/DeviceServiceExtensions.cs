@@ -1,5 +1,5 @@
 ﻿using HA4IoT.Contracts.Core;
-using HA4IoT.Hardware.I2C.I2CHardwareBridge;
+using HA4IoT.Hardware.Drivers.I2CHardwareBridge;
 
 namespace HA4IoT.Extensions.Extensions
 {

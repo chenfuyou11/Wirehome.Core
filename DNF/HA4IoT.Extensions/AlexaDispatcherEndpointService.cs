@@ -15,6 +15,7 @@ using HA4IoT.Contracts.Components.Features;
 using HA4IoT.Net.Http;
 using HA4IoT.Contracts.Settings;
 using HA4IoT.Contracts.Components.Commands;
+using HA4IoT.Api;
 
 namespace HA4IoT.Extensions
 {
@@ -25,7 +26,7 @@ namespace HA4IoT.Extensions
         private const string MANUFACTURE = "HA4IoT";
         private const string NAMESPACE = "Alexa.ConnectedHome.Control";
 
-        private readonly HttpServer _httpServer;
+        private readonly HttpServerService _httpServer;
         private readonly IAreaRegistryService _areService;
         private readonly ISettingsService _settingService;
         private readonly IComponentRegistryService _componentService;
@@ -47,7 +48,7 @@ namespace HA4IoT.Extensions
         private Dictionary<string, IEnumerable<IComponent>> _connectedDevices = new Dictionary<string, IEnumerable<IComponent>>();
         private Dictionary<string, IEnumerable<string>> _aliases = new Dictionary<string, IEnumerable<string>>();
 
-        public AlexaDispatcherEndpointService(HttpServer httpServer, IAreaRegistryService areService, ISettingsService settingService, IComponentRegistryService componentService, ILogService logService)
+        public AlexaDispatcherEndpointService(HttpServerService httpServer, IAreaRegistryService areService, ISettingsService settingService, IComponentRegistryService componentService, ILogService logService)
         {
             _httpServer = httpServer ?? throw new ArgumentNullException(nameof(httpServer));
             _areService = areService ?? throw new ArgumentNullException(nameof(areService));
@@ -59,7 +60,7 @@ namespace HA4IoT.Extensions
 
         public void Startup()
         {
-            _httpServer.HttpRequestReceived += DispatchHttpRequest;
+            _httpServer.HttpServer.HttpRequestReceived += DispatchHttpRequest;
         }
 
         public void AddConnectedVivices(string friendlyName, IEnumerable<IComponent> devices)

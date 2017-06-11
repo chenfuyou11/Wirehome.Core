@@ -301,18 +301,17 @@ namespace HA4IoT.Automations
 
         public TurnOnAndOffAutomation WithSchedulerTime(AutomationScheduler schedulerConfig)
         {
-            //_schedulerService.In(schedulerConfig.GetNextTurnOnTime(), () =>
-            //{
-            //    ExecuteAutoTrigger();
+            _schedulerService.Register(Guid.NewGuid().ToString(), schedulerConfig.GetNextTurnOnTime(), () =>
+            {
+                ExecuteAutoTrigger();
 
-            //    if (schedulerConfig.ScheduleTurnOff)
-            //    {
-            //        Settings.Duration = schedulerConfig.GetNextTurnOffTime();
+                if (schedulerConfig.ScheduleTurnOff)
+                {
+                    Settings.Duration = schedulerConfig.GetNextTurnOffTime();
 
-            //        StartTimeout();
-            //    }
-            //}
-            //);
+                    StartTimeout();
+                }
+            }, true);
 
             return this;
         }
@@ -334,8 +333,15 @@ namespace HA4IoT.Automations
             _dateTimeService = dateTimeService;
         }
 
+        public AutomationScheduler()
+        {
+            
+        }
+
         public TimeSpan GetNextTurnOnTime()
         {
+            return TimeSpan.FromSeconds(5);
+            
             if (_firstTimeStart)
             {
                 _firstTimeStart = false;

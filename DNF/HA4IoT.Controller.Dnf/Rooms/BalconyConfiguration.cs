@@ -36,8 +36,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private const int TIME_TO_ON = 30;
         private const int TIME_WHILE_ON = 5;
         private Speaker _speaker;
-        private ISocket _socket;
-        private bool test;
+
 
         public BalconyConfiguration(IDeviceRegistryService deviceService, 
                                     IAreaRegistryService areaService,
@@ -94,17 +93,17 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _actuatorFactory.RegisterLamp(room, BalconyElements.Light, relays[HSREL8Pin.Relay0]);
 
  
-            var codePair = DipswitchCodeProvider.GetCodePair(DipswitchSystemCode.AllOn, DipswitchUnitCode.D, 10);
-            _socket = _actuatorFactory.RegisterSocket(room, BalconyElements.RemoteSocket, _remoteSocketService.RegisterRemoteSocket(BalconyElements.RemoteSocket.ToString(), "RemoteSocketBridge", codePair));
+            var codePair = DipswitchCodeProvider.GetCodePair(DipswitchSystemCode.AllOn, DipswitchUnitCode.D, 20);
+            var socket = _actuatorFactory.RegisterSocket(room, BalconyElements.RemoteSocket, _remoteSocketService.RegisterRemoteSocket(BalconyElements.RemoteSocket.ToString(), "RemoteSocketBridge", codePair));
 
-            //var livingRoomAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, LivingroomElements.SchedulerAutomation)
-            //.WithSchedulerTime(new AutomationScheduler
-            //{
-            //    StartTime = new TimeSpan(18, 0, 0),
-            //    TurnOnInterval = new TimeSpan(0, 0, 5),
-            //    WorkingTime = new TimeSpan(0, 0, 1)
-            //})
-            //.WithTarget(socket);
+            var livingRoomAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, LivingroomElements.SchedulerAutomation)
+            .WithSchedulerTime(new AutomationScheduler
+            {
+                StartTime = new TimeSpan(18, 0, 0),
+                TurnOnInterval = new TimeSpan(0, 0, 5),
+                WorkingTime = new TimeSpan(0, 0, 2)
+            })
+            .WithTarget(socket);
         }
 
         private void Md_StateChanged(object sender, Contracts.Components.ComponentFeatureStateChangedEventArgs e)
@@ -114,17 +113,6 @@ namespace HA4IoT.Controller.Dnf.Rooms
             //{
             //    _speaker.PlayRandom();
             //}
-
-            if (test)
-            {
-                _socket.ExecuteCommand(new TurnOffCommand());
-                test = false;
-            }
-            else
-            {
-                _socket.ExecuteCommand(new TurnOnCommand());
-                test = true;
-            }
         }
     } 
 }

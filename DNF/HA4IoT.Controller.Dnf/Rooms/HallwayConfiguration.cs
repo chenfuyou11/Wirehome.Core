@@ -25,15 +25,14 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
         private readonly IAlexaDispatcherEndpointService _alexaService;
-        private readonly ISchedulerService _schedulerService;
 
         public HallwayConfiguration(IDeviceRegistryService deviceService,
                                     IAreaRegistryService areaService,
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
                                     AutomationFactory automationFactory,
-                                    IAlexaDispatcherEndpointService alexaService,
-                                    ISchedulerService schedulerService)  
+                                    IAlexaDispatcherEndpointService alexaService
+                                    )  
         {
             _deviceService = deviceService;
             _areaService = areaService;
@@ -41,7 +40,6 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _actuatorFactory = actuatorFactory;
             _automationFactory = automationFactory;
             _alexaService = alexaService;
-            _schedulerService = schedulerService;
         }
 
         public void Apply()
@@ -55,8 +53,8 @@ namespace HA4IoT.Controller.Dnf.Rooms
             var m1 = _sensorFactory.RegisterMotionDetector(room, HallwayElements.MotionDetectorToilet, input[HSPE16Pin.GPIO5]);
             var m2 = _sensorFactory.RegisterMotionDetector(room, HallwayElements.MotionDetectorLivingroom, input[HSPE16Pin.GPIO6]);
 
-            var lamp1 = _actuatorFactory.RegisterMonostableLamp(room, HallwayElements.Light_Two, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay3], input2[HSPE16Pin.GPIO14], _schedulerService));
-            var lamp2 = _actuatorFactory.RegisterMonostableLamp(room, HallwayElements.Light_One, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay4], input2[HSPE16Pin.GPIO13], _schedulerService));
+            var lamp1 = _actuatorFactory.RegisterMonostableLamp(room, HallwayElements.Light_Two, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay3], input2[HSPE16Pin.GPIO14]));
+            var lamp2 = _actuatorFactory.RegisterMonostableLamp(room, HallwayElements.Light_One, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay4], input2[HSPE16Pin.GPIO13]));
 
             var toiletAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, HallwayElements.LightToiletAutomation)
              .WithTrigger(room.GetMotionDetector(HallwayElements.MotionDetectorToilet))

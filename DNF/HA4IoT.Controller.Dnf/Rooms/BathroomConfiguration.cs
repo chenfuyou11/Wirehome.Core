@@ -23,30 +23,20 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private readonly SensorFactory _sensorFactory;
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
-        private readonly ISchedulerService _schedulerService;
-        private readonly IDateTimeService _dateTimeService;
-        private readonly IDaylightService _daylightService;
-        private readonly ISettingsService _settingsService;
 
         public BathroomConfiguration(IDeviceRegistryService deviceService,
                                     IAreaRegistryService areaService,
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
-                                    AutomationFactory automationFactory,
-                                    ISchedulerService schedulerService,
-                                    IDateTimeService dateTimeService,
-                                    IDaylightService daylightService,
-                                    ISettingsService settingsService) 
+                                    AutomationFactory automationFactory
+                                    ) 
         {
             _deviceService = deviceService;
             _areaService = areaService;
             _sensorFactory = sensorFactory;
             _actuatorFactory = actuatorFactory;
             _automationFactory = automationFactory;
-            _schedulerService = schedulerService;
-            _dateTimeService = dateTimeService;
-            _daylightService = daylightService;
-            _settingsService = settingsService;
+
         }
 
         public void Apply()
@@ -63,7 +53,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _sensorFactory.RegisterHumiditySensor(room, BathroomElements.HumiditySensor, humiditySensor);
             _sensorFactory.RegisterMotionDetector(room, BathroomElements.MotionDetector, input[HSPE16Pin.GPIO2]);
             
-            _actuatorFactory.RegisterMonostableLamp(room, BathroomElements.Light, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay0], input_88[HSPE16Pin.GPIO11], _schedulerService));
+            _actuatorFactory.RegisterMonostableLamp(room, BathroomElements.Light, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay0], input_88[HSPE16Pin.GPIO11]));
             
             _automationFactory.RegisterTurnOnAndOffAutomation(room, BathroomElements.LightAutomation)
            .WithTrigger(room.GetMotionDetector(BathroomElements.MotionDetector))

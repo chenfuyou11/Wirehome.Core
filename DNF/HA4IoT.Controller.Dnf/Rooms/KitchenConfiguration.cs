@@ -22,21 +22,19 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private readonly SensorFactory _sensorFactory;
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
-        private readonly ISchedulerService _schedulerService;
 
         public KitchenConfiguration(IDeviceRegistryService deviceService,
                                     IAreaRegistryService areaService,
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
-                                    AutomationFactory automationFactory,
-                                    ISchedulerService schedulerService)  
+                                    AutomationFactory automationFactory
+                                    )  
         {
             _deviceService = deviceService;
             _areaService = areaService;
             _sensorFactory = sensorFactory;
             _actuatorFactory = actuatorFactory;
             _automationFactory = automationFactory;
-            _schedulerService = schedulerService;
         }
 
         public  void Apply()
@@ -54,7 +52,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _sensorFactory.RegisterHumiditySensor(room, KitchenElements.HumiditySensor, humiditySensor);
             _sensorFactory.RegisterMotionDetector(room, KitchenElements.MotionDetector, input[HSPE16Pin.GPIO4]);
 
-            _actuatorFactory.RegisterMonostableLamp(room, KitchenElements.Light, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay5], input2[HSPE16Pin.GPIO12], _schedulerService));
+            _actuatorFactory.RegisterMonostableLamp(room, KitchenElements.Light, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay5], input2[HSPE16Pin.GPIO12]));
 
             _automationFactory.RegisterTurnOnAndOffAutomation(room, KitchenElements.LightAutomation)
              .WithTrigger(room.GetMotionDetector(KitchenElements.MotionDetector))

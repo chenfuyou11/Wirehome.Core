@@ -5,6 +5,7 @@ using HA4IoT.Contracts.Components.States;
 using System.Threading.Tasks;
 using HA4IoT.Contracts.Components.Adapters;
 using HA4IoT.Contracts.Scheduling;
+using HA4IoT.Scheduling;
 
 namespace HA4IoT.Extensions.Core
 {
@@ -13,7 +14,6 @@ namespace HA4IoT.Extensions.Core
     {
         private readonly IBinaryOutput _output;
         private readonly IBinaryInput _input;
-        private readonly ISchedulerService _schedulerService;
         private readonly int ON_TIME = 300;
         private bool _ControledStateChange = false;
 
@@ -23,11 +23,10 @@ namespace HA4IoT.Extensions.Core
 
         public int ColorResolutionBits => 0;
 
-        public MonostableBinaryOutputAdapter(IBinaryOutput output, IBinaryInput input, ISchedulerService schedulerService)
+        public MonostableBinaryOutputAdapter(IBinaryOutput output, IBinaryInput input)
         {
             _output = output ?? throw new ArgumentNullException(nameof(output));
             _input = input ?? throw new ArgumentNullException(nameof(input));
-            _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
 
             _input.StateChanged += Input_StateChanged;
         }
@@ -65,13 +64,13 @@ namespace HA4IoT.Extensions.Core
                 _ControledStateChange = true;
 
                 _output.Write(BinaryState.High, commit ? WriteBinaryStateMode.Commit : WriteBinaryStateMode.NoCommit);
-                
-                _schedulerService.Register("MonostableBinaryOutputAdapter_" + Guid.NewGuid().ToString(), TimeSpan.FromMilliseconds(ON_TIME),() =>
+
+                ScheduledAction.Schedule(TimeSpan.FromMilliseconds(ON_TIME), () =>
                 {
                     _output.Write(BinaryState.Low, commit ? WriteBinaryStateMode.Commit : WriteBinaryStateMode.NoCommit);
 
                     _ControledStateChange = false;
-                }, true);
+                });
             }
 
             return Task.FromResult(0);

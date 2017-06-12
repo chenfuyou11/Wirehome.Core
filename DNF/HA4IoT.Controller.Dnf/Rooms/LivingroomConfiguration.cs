@@ -13,6 +13,7 @@ using System;
 using HA4IoT.Hardware.RemoteSockets;
 using HA4IoT.Contracts.Scheduling;
 using HA4IoT.Hardware.Drivers.CCTools.Devices;
+using HA4IoT.Contracts.Hardware.RemoteSockets;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -24,19 +25,14 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
         private readonly IAlexaDispatcherEndpointService _alexaService;
-        private readonly ISchedulerService _schedulerService;
-        private readonly RemoteSocketService _remoteSocketService;
-
-       
 
         public LivingroomConfiguration(IDeviceRegistryService deviceService,
                                     IAreaRegistryService areaService,
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
                                     AutomationFactory automationFactory,
-                                    IAlexaDispatcherEndpointService alexaService,
-                                    ISchedulerService schedulerService,
-                                    RemoteSocketService remoteSocketService)
+                                    IAlexaDispatcherEndpointService alexaService
+                                     )
         {
             _deviceService = deviceService;
             _areaService = areaService;
@@ -44,8 +40,6 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _actuatorFactory = actuatorFactory;
             _automationFactory = automationFactory;
             _alexaService = alexaService;
-            _schedulerService = schedulerService;
-            _remoteSocketService = remoteSocketService ?? throw new ArgumentNullException(nameof(remoteSocketService));
         }
 
         public void Apply()
@@ -61,8 +55,8 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _sensorFactory.RegisterHumiditySensor(room, LivingroomElements.HumiditySensor, humiditySensor);
             var md = _sensorFactory.RegisterMotionDetector(room, LivingroomElements.MotionDetector, input[HSPE16Pin.GPIO0]);
 
-            var lamp1 = _actuatorFactory.RegisterMonostableLamp(room, LivingroomElements.TVLight, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay0], input[HSPE16Pin.GPIO14], _schedulerService));
-            var lamp2 = _actuatorFactory.RegisterMonostableLamp(room, LivingroomElements.BedLight, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay1], input[HSPE16Pin.GPIO13], _schedulerService));
+            var lamp1 = _actuatorFactory.RegisterMonostableLamp(room, LivingroomElements.TVLight, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay0], input[HSPE16Pin.GPIO14]));
+            var lamp2 = _actuatorFactory.RegisterMonostableLamp(room, LivingroomElements.BedLight, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay1], input[HSPE16Pin.GPIO13]));
 
             _alexaService.AddConnectedVivices("Light", new IComponent[] { lamp1, lamp2 });
 

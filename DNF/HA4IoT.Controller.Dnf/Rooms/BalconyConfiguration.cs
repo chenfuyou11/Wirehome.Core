@@ -15,8 +15,7 @@ using HA4IoT.Hardware.Drivers.CCTools;
 using HA4IoT.Contracts.Scheduling;
 using HA4IoT.Hardware.Drivers.CCTools.Devices;
 using HA4IoT.Hardware.Drivers.RemoteSockets;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Components.Commands;
+using HA4IoT.Contracts.Hardware.RemoteSockets;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -27,11 +26,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private readonly SensorFactory _sensorFactory;
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
-        private readonly CCToolsDeviceService _ccToolsBoardService;
-        private readonly RemoteSocketService _remoteSocketService;
-        private readonly ISchedulerService _schedulerService;
-
-
+        private readonly IRemoteSocketService _remoteSocketService;
 
         private const int TIME_TO_ON = 30;
         private const int TIME_WHILE_ON = 5;
@@ -40,22 +35,18 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
         public BalconyConfiguration(IDeviceRegistryService deviceService, 
                                     IAreaRegistryService areaService,
-                                    CCToolsDeviceService ccToolsBoardService,
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
                                     AutomationFactory automationFactory,
-                                    RemoteSocketService remoteSocketService,
-                                    ISchedulerService schedulerService
+                                    IRemoteSocketService remoteSocketService
                                     ) 
         {
             _deviceService = deviceService ?? throw new ArgumentNullException(nameof(deviceService));
             _areaService = areaService ?? throw new ArgumentNullException(nameof(areaService));
-            _ccToolsBoardService = ccToolsBoardService ?? throw new ArgumentNullException(nameof(ccToolsBoardService));
             _actuatorFactory = actuatorFactory ?? throw new ArgumentNullException(nameof(actuatorFactory));
             _sensorFactory = sensorFactory ?? throw new ArgumentNullException(nameof(sensorFactory));
             _automationFactory = automationFactory ?? throw new ArgumentNullException(nameof(automationFactory));
             _remoteSocketService = remoteSocketService ?? throw new ArgumentNullException(nameof(remoteSocketService));
-            _schedulerService = schedulerService;
 
             _speaker = new Speaker("speaker", new System.Collections.Generic.Dictionary<Enum, string>
                 {
@@ -92,7 +83,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
             _actuatorFactory.RegisterLamp(room, BalconyElements.Light, relays[HSREL8Pin.Relay0]);
 
- 
+          
             var codePair = DipswitchCodeProvider.GetCodePair(DipswitchSystemCode.AllOn, DipswitchUnitCode.D, 20);
             var socket = _actuatorFactory.RegisterSocket(room, BalconyElements.RemoteSocket, _remoteSocketService.RegisterRemoteSocket(BalconyElements.RemoteSocket.ToString(), "RemoteSocketBridge", codePair));
 

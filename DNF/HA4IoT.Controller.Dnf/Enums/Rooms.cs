@@ -9,6 +9,7 @@
         Bedroom,
         Kitchen,
         Toilet,
-        StairCase
+        StairCase,
+        Test
     }
 }

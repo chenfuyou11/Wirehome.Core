@@ -28,15 +28,16 @@ namespace HA4IoT.Controller.Dnf
             _weatherService.Settings.Longitude = 19.525681f;
             _weatherService.Refresh(null);
 
-            _containerService.GetInstance<LivingroomConfiguration>().Apply();
-            _containerService.GetInstance<BalconyConfiguration>().Apply();
-            _containerService.GetInstance<BedroomConfiguration>().Apply();
-            _containerService.GetInstance<BathroomConfiguration>().Apply();
-            _containerService.GetInstance<ToiletConfiguration>().Apply();
-            _containerService.GetInstance<KitchenConfiguration>().Apply();
-            _containerService.GetInstance<HallwayConfiguration>().Apply();
-            _containerService.GetInstance<HouseConfiguration>().Apply();
-            _containerService.GetInstance<StaircaseConfiguration>().Apply();
+            _containerService.GetInstance<TestConfiguration>().Apply();
+            //_containerService.GetInstance<LivingroomConfiguration>().Apply();
+            //_containerService.GetInstance<BalconyConfiguration>().Apply();
+            //_containerService.GetInstance<BedroomConfiguration>().Apply();
+            //_containerService.GetInstance<BathroomConfiguration>().Apply();
+            //_containerService.GetInstance<ToiletConfiguration>().Apply();
+            //_containerService.GetInstance<KitchenConfiguration>().Apply();
+            //_containerService.GetInstance<HallwayConfiguration>().Apply();
+            //_containerService.GetInstance<HouseConfiguration>().Apply();
+            //_containerService.GetInstance<StaircaseConfiguration>().Apply();
 
             return Task.FromResult(0);
         }

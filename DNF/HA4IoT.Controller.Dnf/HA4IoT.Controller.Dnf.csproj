@@ -95,6 +95,9 @@
     <None Include="Configuration\Configuration-Interrupts.json" />
     <None Include="Configuration\Configuration-RemoteSockets.json" />
     <None Include="Configuration\Configuration.json" />
+    <None Include="Configuration\OnlyArduino\Configuration-Devices.json" />
+    <None Include="Configuration\OnlyArduino\Configuration-RemoteSockets.json" />
+    <None Include="Configuration\OnlyArduino\Configuration.json" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +114,7 @@
     <Compile Include="Enums\StaircaseElements.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\Rooms.cs" />
+    <Compile Include="Rooms\TestConfiguration.cs" />
     <Compile Include="Rooms\BalconyConfiguration.cs" />
     <Compile Include="Rooms\BathroomConfiguration.cs" />
     <Compile Include="Rooms\BedroomConfiguration.cs" />

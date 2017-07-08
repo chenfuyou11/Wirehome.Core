@@ -340,7 +340,7 @@ namespace HA4IoT.Automations
 
         public TimeSpan GetNextTurnOnTime()
         {
-            return TimeSpan.FromSeconds(5);
+            return TurnOnInterval;
             
             if (_firstTimeStart)
             {

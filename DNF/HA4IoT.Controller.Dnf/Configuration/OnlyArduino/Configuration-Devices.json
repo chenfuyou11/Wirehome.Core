@@ -1,0 +1,25 @@
+{
+  "DeviceRegistryService": {
+    "Devices": {
+  
+      // Bridge
+      "I2CHardwareBridge": {
+        "Driver": {
+          "Type": "I2CHardwareBridge",
+          "Parameters": {
+            "Address": 50
+          }
+        }
+      },
+
+      "RemoteSocketBridge": {
+        "Driver": {
+          "Type": "I2CLdp433MhzBridge",
+          "Parameters": {
+            "Pin": "7"
+          }
+        }
+      }
+    }
+  }
+}

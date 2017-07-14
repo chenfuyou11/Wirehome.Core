@@ -48,7 +48,8 @@ namespace HA4IoT.Extensions
         private Dictionary<string, IEnumerable<IComponent>> _connectedDevices = new Dictionary<string, IEnumerable<IComponent>>();
         private Dictionary<string, IEnumerable<string>> _aliases = new Dictionary<string, IEnumerable<string>>();
 
-        public AlexaDispatcherEndpointService(HttpServerService httpServer, IAreaRegistryService areService, ISettingsService settingService, IComponentRegistryService componentService, ILogService logService)
+        public AlexaDispatcherEndpointService(HttpServerService httpServer, IAreaRegistryService areService, ISettingsService settingService, 
+            IComponentRegistryService componentService, ILogService logService)
         {
             _httpServer = httpServer ?? throw new ArgumentNullException(nameof(httpServer));
             _areService = areService ?? throw new ArgumentNullException(nameof(areService));

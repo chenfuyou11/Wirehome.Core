@@ -96,7 +96,6 @@
     <None Include="Configuration\Configuration-RemoteSockets.json" />
     <None Include="Configuration\Configuration.json" />
     <None Include="Configuration\OnlyArduino\Configuration-Devices.json" />
-    <None Include="Configuration\OnlyArduino\Configuration-RemoteSockets.json" />
     <None Include="Configuration\OnlyArduino\Configuration.json" />
     <None Include="project.json" />
   </ItemGroup>

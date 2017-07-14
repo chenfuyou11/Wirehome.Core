@@ -15,5 +15,7 @@ namespace HA4IoT.Contracts.Core
 
         void RegisterSingleton<TContract, TImplementation>() where TContract : class
             where TImplementation : class, TContract;
+
+        void RegisterSingletonCollection<TItem>(IEnumerable<TItem> items) where TItem : class;
     }
 }

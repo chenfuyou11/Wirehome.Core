@@ -113,26 +113,37 @@ void setup()
 	pinMode(LED, OUTPUT);
 	digitalWrite(LED, HIGH);
 
-	
-	SerialEx::Init();
-	Infrared::Init();
+    Serial.begin(9600);
 
-	Wire.begin(I2C_SLAVE_ADDRESS);
-	Wire.onReceive(handleI2CWrite);
-	Wire.onRequest(handleI2CRead);
+	//SerialEx::Init();
+	//Infrared::Init();
+
+	 Wire.begin(I2C_SLAVE_ADDRESS);
+	 Wire.onReceive(handleI2CWrite);
+	 Wire.onRequest(handleI2CRead);
 
 	digitalWrite(LED, LOW);
 }
 
 void loop() 
 { 
-	Infrared::ProcessLoop();
+	//Infrared::ProcessLoop();
+    //uint8_t value = 15;
+    //uint8_t value2 = 30;
+	int value = 15;
+    digitalWrite(LED, HIGH);
+	Serial.write(value);
+	//Serial.write(value2);
+    
+	delay(1000);
 
-	DHT22Controller_loop();
+	digitalWrite(LED, LOW);
 
-	LPD433MhzController_loop();
+	// DHT22Controller_loop();
 
-	CurrentController_loop();
+	// LPD433MhzController_loop();
+
+	// CurrentController_loop();
 }
 
 

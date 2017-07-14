@@ -2,16 +2,20 @@
 #include <Arduino.h>
 
 #include "IRLibDecodeBase.h"
+#include "IRLib_P01_NEC.h"
 #include "IRLib_P02_Sony.h"
-#include "IRLib_P09_GICable.h"
+#include "IRLib_P07_NECx.h"
+#include "IRLib_P08_Samsung36.h"
 #include "IRLibCombo.h"
 #include "IRLibRecvPCI.h"
+#include "Common.h"
 
 class Infrared
 {
   private:
-    static IRdecode myDecoder;   //create decoder
-    static IRrecvPCI  myReceiver; //receiver on pin 2
+    static IRdecode myDecoder;
+    static IRrecvPCI  myReceiver; 
+
   public:
     static void Init();
     static void ProcessLoop();

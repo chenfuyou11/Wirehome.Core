@@ -1,0 +1,1 @@
+#define RS_ACTION_Infrared 1

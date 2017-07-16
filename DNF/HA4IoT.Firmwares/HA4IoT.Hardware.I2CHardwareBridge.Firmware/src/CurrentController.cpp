@@ -1,6 +1,5 @@
 #include <Arduino.h>
-
-#define DEBUG 0
+#include "SerialEx.h"
 
 #define ACTION_REGISTER_SENSOR 0
 #define POLL_INTERVAL 2000UL
@@ -70,9 +69,7 @@ void CurrentController_handleI2CWrite(uint8_t package[], uint8_t packageLength)
 		}
 	}
 
-	#if (DEBUG)
-		Serial.println("Set sensor PIN to " + String(_CurrentPinForRead));
-	#endif
+	SerialEx::WriteLine("Set sensor PIN to " + String(_CurrentPinForRead));
 }
 
 uint8_t CurrentController_handleI2CRead(uint8_t response[])
@@ -80,15 +77,11 @@ uint8_t CurrentController_handleI2CRead(uint8_t response[])
 	int pinIndex = getCurrentPinIndex(_CurrentPinForRead);
 	if (pinIndex == -1)
 	{
-		#if (DEBUG)
-			Serial.println("Cache value for " + String(_CurrentPinForRead) + " not found");
-		#endif
+		SerialEx::WriteLine("Cache value for " + String(_CurrentPinForRead) + " not found");
 		return 0;
 	}
 
-	#if (DEBUG)
-		Serial.println("Fetching cache value from index " + String(pinIndex));
-	#endif
+	SerialEx::WriteLine("Fetching cache value from index " + String(pinIndex));
 
 	for (int i = 0; i < RESPONSE_SIZE; i++)
 	{
@@ -143,10 +136,8 @@ void getVPP()
 		_CurrentCache[i][3] = converter.bytes.b2;
 		_CurrentCache[i][4] = converter.bytes.b3;
 
-		#if(DEBUG)
-			Serial.print(",Current:");
-			Serial.print(voltage);
-		#endif
+		SerialEx::WriteLine(",Current:");
+		SerialEx::WriteText(String(voltage));
 	}
 }
 

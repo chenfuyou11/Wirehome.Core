@@ -1,7 +1,6 @@
 #include "Dht22Reader.h"
 #include <Arduino.h>
-
-#define DEBUG 0
+#include "SerialEx.h"
 
 #define ACTION_REGISTER_SENSOR 0
 #define POLL_INTERVAL 2500UL
@@ -67,10 +66,8 @@ void DHT22Controller_handleI2CWrite(uint8_t package[], uint8_t packageLength)
 			break;
 		}
 	}
-
-	#if (DEBUG)
-		Serial.println("Set sensor PIN to " + String(_pinForRead));
-	#endif
+    
+	SerialEx::WriteLine("Set sensor PIN to " + String(_pinForRead));
 }
 
 uint8_t DHT22Controller_handleI2CRead(uint8_t response[])
@@ -78,15 +75,11 @@ uint8_t DHT22Controller_handleI2CRead(uint8_t response[])
 	int pinIndex = getPinIndex(_pinForRead);
 	if (pinIndex == -1)
 	{
-		#if (DEBUG)
-			Serial.println("Cache value for " + String(_pinForRead) + " not found");
-		#endif
+		SerialEx::WriteLine("Cache value for " + String(_pinForRead) + " not found");
 		return 0;
 	}
 
-	#if (DEBUG)
-		Serial.println("Fetching cache value from index " + String(pinIndex));
-	#endif
+	SerialEx::WriteLine("Fetching cache value from index " + String(pinIndex));
 
 	for (int i = 0; i < RESPONSE_SIZE; i++)
 	{
@@ -140,14 +133,12 @@ void pollSensors()
 		_cache[i][7] = converter.bytes.b2;
 		_cache[i][8] = converter.bytes.b3;
 
-		#if(DEBUG)
-			Serial.print("Read DHT22 sensor SUCCESS:");
-			Serial.print(success);
-			Serial.print(",TEMP:");
-			Serial.print(temperature);
-			Serial.print(",HUM:");
-			Serial.println(humidity);
-		#endif
+		SerialEx::WriteText("Read DHT22 sensor SUCCESS:");
+		SerialEx::WriteText(String(success));
+		SerialEx::WriteText(",TEMP:");
+		SerialEx::WriteText(String(temperature));
+		SerialEx::WriteText(",HUM:");
+		SerialEx::WriteLine(String(humidity));
 	}
 }
 

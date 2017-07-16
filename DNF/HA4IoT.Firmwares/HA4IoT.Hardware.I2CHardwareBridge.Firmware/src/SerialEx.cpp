@@ -9,6 +9,13 @@ void SerialEx::WriteText(const String &message)
 {
 	#if DEBUG
  	 	Serial.print(message);
+	#endif
+}
+
+void SerialEx::WriteLine(const String &message)
+{
+	#if DEBUG
+ 	 	Serial.println(message);
 		Serial.flush();
 	#endif
 }

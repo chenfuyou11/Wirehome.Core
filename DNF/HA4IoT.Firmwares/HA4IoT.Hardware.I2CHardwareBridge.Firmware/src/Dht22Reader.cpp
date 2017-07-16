@@ -1,4 +1,5 @@
 #include "Dht22Reader.h"
+#include "SerialEx.h"
 
 Dht22Reader::Dht22Reader(uint8_t pin)
 {

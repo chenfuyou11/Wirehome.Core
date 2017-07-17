@@ -112,10 +112,12 @@
     <Compile Include="Contracts\ILightAutomationService.cs" />
     <Compile Include="Contracts\IAlexaDispatcherEndpointService.cs" />
     <Compile Include="Contracts\IMonostableLampAdapter.cs" />
+    <Compile Include="Core\CommandExecutorEx.cs" />
     <Compile Include="Core\MonostableBinaryOutputAdapter.cs" />
     <Compile Include="Core\MonostableLamp.cs" />
     <Compile Include="Core\Speaker.cs" />
     <Compile Include="Core\WriteOnce.cs" />
+    <Compile Include="Devices\Denon.cs" />
     <Compile Include="Logging\EtwLoggingService.cs" />
     <Compile Include="Extensions\ActuatorFactoryExtensions.cs" />
     <Compile Include="Extensions\DeviceServiceExtensions.cs" />

@@ -67,6 +67,8 @@ namespace HA4IoT.Controller.Dnf.Rooms
             })
             .WithTarget(socket);
 
+            //TEST
+
             _messageBroker.Subscribe<InfraredMessage>("SerialService", x =>
             {
                

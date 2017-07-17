@@ -19,9 +19,9 @@ namespace HA4IoT.Extensions
         private DataReader dataReaderObject = null;
         private readonly ILogger _logService;
         private readonly IMessageBrokerService _messageBroker;
-        private readonly List<IInfraredMessageHandler> _messageHandlers = new List<IInfraredMessageHandler>();
+        private readonly List<IUartMessageHandler> _messageHandlers = new List<IUartMessageHandler>();
 
-        public SerialService(ILogService logService, IMessageBrokerService messageBroker, IEnumerable<IInfraredMessageHandler> handlers)
+        public SerialService(ILogService logService, IMessageBrokerService messageBroker, IEnumerable<IUartMessageHandler> handlers)
         {
             _logService = logService.CreatePublisher(nameof(SerialService));
             _messageBroker = messageBroker;
@@ -47,17 +47,11 @@ namespace HA4IoT.Extensions
             serialPort.DataBits = 8;
             serialPort.Handshake = SerialHandshake.None;
 
-            dataReaderObject = new DataReader(serialPort.InputStream);
-            while (true)
-            {
-                var headerBytesRead = await dataReaderObject.LoadAsync(1);
-                int x = 3;
-            }
 
-            // Create cancellation token object to close I/O operations when closing the device
-            //ReadCancellationTokenSource = new CancellationTokenSource();
+            //Create cancellation token object to close I/ O operations when closing the device
+            ReadCancellationTokenSource = new CancellationTokenSource();
 
-            //Listen();
+            Listen();
         }
 
         private async void Listen()
@@ -67,6 +61,7 @@ namespace HA4IoT.Extensions
                 if (serialPort != null)
                 {
                     dataReaderObject = new DataReader(serialPort.InputStream);
+                    dataReaderObject.ByteOrder = ByteOrder.LittleEndian;
 
                     while (true)
                     {
@@ -93,7 +88,7 @@ namespace HA4IoT.Extensions
             }
         }
 
-        public void RegisterHandler(IInfraredMessageHandler handler)
+        public void RegisterHandler(IUartMessageHandler handler)
         {
             _messageHandlers.Add(handler);
         }
@@ -147,6 +142,8 @@ namespace HA4IoT.Extensions
                             {
                                 var message = handler.Handle(dataReaderObject);
                                 await _messageBroker.Publish("SerialService", message);
+
+                                _logService.Info($"Recived UART message handled by {handler.GetType().Name}, Message details: [{message}]");
                             }
                         }
                     }

@@ -18,7 +18,7 @@ namespace HA4IoT.Controller.Dnf
             
             containerService.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
             containerService.RegisterSingleton<ISerialService, SerialService>();
-            containerService.RegisterSingletonCollection(new IInfraredMessageHandler[] { new InfraredMessageHandler() });
+            containerService.RegisterSingletonCollection(new IUartMessageHandler[] { new InfraredMessageHandler(), new LPD433MessageHandler() });
         }
     }
 

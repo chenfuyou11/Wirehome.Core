@@ -1,30 +1,22 @@
 #include <Wire.h>
 #include "SerialEx.h"
 #include "Infrared.h"
+#include "LPD433.h"
 #include "Dht22Controller.h"
-#include "LPD433MhzController.h"
 #include "CurrentController.h"
+#include "common.h"
 
 #define IS_HIGH(pin) (PIND & (1<<pin))
 #define IS_LOW(pin) ((PIND & (1<<pin))==0)
 #define SET_HIGH(pin) (PORTD) |= (1<<(pin))
 #define SET_LOW(pin) (PORTD) &= (~(1<<(pin)))
 
-#define I2C_SLAVE_ADDRESS 50
-#define LED 13
-
-#define I2C_ACTION_DHT22 1
-#define I2C_ACTION_433MHz 2
-#define I2C_ACTION_Infrared 3
-#define I2C_ACTION_433MHz_Read 4
-#define I2C_ACTION_Current 5
-
 uint8_t _lastAction = 0;
 
 void handleI2CRead()
 {
-	SerialEx::WriteText("I2C READ for action" + String(_lastAction));
-	digitalWrite(LED, HIGH);
+	SerialEx::WriteLine("I2C READ for action" + String(_lastAction));
+	digitalWrite(PIN_LED, HIGH);
 
 	uint8_t response[32];
 	size_t responseLength = 0;
@@ -34,11 +26,6 @@ void handleI2CRead()
 		case I2C_ACTION_DHT22:
 		{
 			responseLength = DHT22Controller_handleI2CRead(response);
-			break;
-		}
-		case I2C_ACTION_433MHz_Read:
-		{
-			responseLength = LPD433MhzController_handleI2CRead(response);
 			break;
 		}
 		case I2C_ACTION_Current:
@@ -51,7 +38,7 @@ void handleI2CRead()
 	Wire.write(response, responseLength);
 	Wire.flush();
 
-	digitalWrite(LED, LOW);
+	digitalWrite(PIN_LED, LOW);
 }
 
 void handleI2CWrite(int dataLength)
@@ -64,7 +51,7 @@ void handleI2CWrite(int dataLength)
 		return;
 	}
 
-	digitalWrite(LED, HIGH);
+	digitalWrite(PIN_LED, HIGH);
 
 	_lastAction = Wire.read();
 
@@ -73,7 +60,7 @@ void handleI2CWrite(int dataLength)
 
 	Wire.readBytes(package, packageLength);
 
-	SerialEx::WriteText("I2C WRITE for action " + String(_lastAction));
+	SerialEx::WriteLine("I2C WRITE for action " + String(_lastAction));
 
 	switch (_lastAction)
 	{
@@ -84,7 +71,7 @@ void handleI2CWrite(int dataLength)
 		}
 		case I2C_ACTION_433MHz:
 		{
-			LPD433MhzController_handleI2CWrite(package, packageLength);
+			LPD433::Send(package, packageLength);
 			break;
 		}
 		case I2C_ACTION_Infrared:
@@ -92,58 +79,41 @@ void handleI2CWrite(int dataLength)
 			Infrared::Send(package, packageLength);
 			break;
 		}
-		case I2C_ACTION_433MHz_Read:
-		{
-			LPD433MhzController_SetReadMode(package, packageLength);
-			break;
-		}
 		case I2C_ACTION_Current:
 		{
 			CurrentController_handleI2CWrite(package, packageLength);
 			break;
 		}
-
 	}
 
-	digitalWrite(LED, LOW);
+	digitalWrite(PIN_LED, LOW);
 }
 
 void setup() 
 {
-	pinMode(LED, OUTPUT);
-	digitalWrite(LED, HIGH);
+	pinMode(PIN_LED, OUTPUT);
+	digitalWrite(PIN_LED, HIGH);
 
-    Serial.begin(9600);
+	SerialEx::Init();
+	Infrared::Init();
+	LPD433::Init();
 
-	//SerialEx::Init();
-	//Infrared::Init();
+	Wire.begin(I2C_SLAVE_ADDRESS);
+	Wire.onReceive(handleI2CWrite);
+	Wire.onRequest(handleI2CRead);
 
-	 Wire.begin(I2C_SLAVE_ADDRESS);
-	 Wire.onReceive(handleI2CWrite);
-	 Wire.onRequest(handleI2CRead);
-
-	digitalWrite(LED, LOW);
+	digitalWrite(PIN_LED, LOW);
 }
 
 void loop() 
 { 
-	//Infrared::ProcessLoop();
-    //uint8_t value = 15;
-    //uint8_t value2 = 30;
-	int value = 15;
-    digitalWrite(LED, HIGH);
-	Serial.write(value);
-	//Serial.write(value2);
-    
-	delay(1000);
+	Infrared::ProcessLoop();
 
-	digitalWrite(LED, LOW);
+    LPD433::ProcessLoop();
 
-	// DHT22Controller_loop();
+	DHT22Controller_loop();
 
-	// LPD433MhzController_loop();
-
-	// CurrentController_loop();
+	//CurrentController_loop();
 }
 
 

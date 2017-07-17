@@ -2,7 +2,7 @@
 
 namespace HA4IoT.Extensions
 {
-    public interface IInfraredMessageHandler
+    public interface IUartMessageHandler
     {
         bool CanHandle(byte messageType, byte messageSize);
         object Handle(DataReader reader);

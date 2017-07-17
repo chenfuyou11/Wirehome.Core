@@ -1,6 +1,8 @@
 #include "Infrared.h"
+#include "SerialEx.h"
+#include "common.h"
 
-IRrecvPCI Infrared::myReceiver = IRrecvPCI(2);
+IRrecvPCI Infrared::myReceiver = IRrecvPCI(PIN_IR);
 IRdecode Infrared::myDecoder;
 
 void Infrared::Init()
@@ -31,7 +33,7 @@ void Infrared::ProcessLoop()
 
 			for(bufIndex_t i=1; i<recvGlobal.recvLength; i++) 
 			{
-				Serial.print(recvGlobal.recvBuffer[i],DEC);
+				//Serial.print(recvGlobal.recvBuffer[i],DEC);
 			}
 		}
 		else 
@@ -45,12 +47,13 @@ void Infrared::ProcessLoop()
       			codeValue = myDecoder.value;
       			codeBits = myDecoder.bits;
 
-				uint8_t messageSize = sizeof(codeProtocol)+sizeof(codeValue)+sizeof(codeBits)+1;
+				uint8_t messageSize = sizeof(codeProtocol)+sizeof(codeValue)+sizeof(codeBits);
 				Serial.write(messageSize);
 				Serial.write(RS_ACTION_Infrared);
 				Serial.write(codeProtocol);
-				Serial.write(codeValue);
+				Serial.write((byte*)&codeValue, sizeof(codeValue));
 				Serial.write(codeBits);
+				Serial.flush();
     		}
   		}
     	myReceiver.enableIRIn();

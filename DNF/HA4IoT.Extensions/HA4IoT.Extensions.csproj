@@ -112,6 +112,8 @@
     <Compile Include="Contracts\ILightAutomationService.cs" />
     <Compile Include="Contracts\IAlexaDispatcherEndpointService.cs" />
     <Compile Include="Contracts\IMonostableLampAdapter.cs" />
+    <Compile Include="Core\Infrared\LPD433Message.cs" />
+    <Compile Include="Core\Infrared\LPD433MessageHandler.cs" />
     <Compile Include="Core\CommandExecutorEx.cs" />
     <Compile Include="Core\MonostableBinaryOutputAdapter.cs" />
     <Compile Include="Core\MonostableLamp.cs" />
@@ -127,7 +129,7 @@
     <Compile Include="Extensions\ReactiveExtensions.cs" />
     <Compile Include="Contracts\IEtwLoggingService.cs" />
     <Compile Include="Contracts\ISerialService.cs" />
-    <Compile Include="Contracts\IInfraredMessageHandler.cs" />
+    <Compile Include="Contracts\IUartMessageHandler.cs" />
     <Compile Include="Core\Infrared\InfraredMessage.cs" />
     <Compile Include="Core\Infrared\InfraredMessageHandler.cs" />
     <Compile Include="Motion\LightAutomationService.cs" />

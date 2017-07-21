@@ -1,5 +1,6 @@
 #define RS_ACTION_Infrared 1
 #define RS_ACTION_LPD433 2
+#define RS_ACTION_Infrared_RAW 3
 
 #define I2C_SLAVE_ADDRESS 50
 

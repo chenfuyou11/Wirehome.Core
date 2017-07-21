@@ -26,14 +26,21 @@ void Infrared::ProcessLoop()
 			//The raw time values start in decodeBuffer[1] because
 			//the [0] entry is the gap between frames. The address
 			//is passed to the raw send routine.
-			codeValue=(uint32_t)&(recvGlobal.decodeBuffer[1]);
-			//This isn't really number of bits. It's the number of entries
-			//in the buffer.
-			codeBits=recvGlobal.decodeLength-1;
-
+			//codeValue=(uint32_t)&(recvGlobal.decodeBuffer[1]);
+			//codeBits=recvGlobal.decodeLength-1;
+	
+			uint8_t messageSize = 0;
 			for(bufIndex_t i=1; i<recvGlobal.recvLength; i++) 
 			{
-				//Serial.print(recvGlobal.recvBuffer[i],DEC);
+				messageSize += sizeof(recvGlobal.recvBuffer[i]);
+			}
+			
+			Serial.write(messageSize);
+			Serial.write(RS_ACTION_Infrared_RAW);
+           
+			for(bufIndex_t i=1; i<recvGlobal.recvLength; i++) 
+			{
+				Serial.print(recvGlobal.recvBuffer[i]);
 			}
 		}
 		else 

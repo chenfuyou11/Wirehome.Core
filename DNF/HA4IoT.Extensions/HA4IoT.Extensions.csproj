@@ -112,6 +112,8 @@
     <Compile Include="Contracts\ILightAutomationService.cs" />
     <Compile Include="Contracts\IAlexaDispatcherEndpointService.cs" />
     <Compile Include="Contracts\IMonostableLampAdapter.cs" />
+    <Compile Include="Core\Infrared\InfraredRawMessage.cs" />
+    <Compile Include="Core\Infrared\InfraredRawMessageHandler.cs" />
     <Compile Include="Core\Infrared\LPD433Message.cs" />
     <Compile Include="Core\Infrared\LPD433MessageHandler.cs" />
     <Compile Include="Core\CommandExecutorEx.cs" />

@@ -19,7 +19,7 @@ namespace HA4IoT.Extensions
             return false;
         }
 
-        public object Handle(DataReader reader)
+        public object Handle(DataReader reader, byte messageSize)
         {
             var system = reader.ReadByte();
             var code = reader.ReadUInt32();

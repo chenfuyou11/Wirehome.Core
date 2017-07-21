@@ -41,7 +41,7 @@ namespace HA4IoT.Extensions
             // Configure serial settings
             serialPort.WriteTimeout = TimeSpan.FromMilliseconds(1000);
             serialPort.ReadTimeout = TimeSpan.FromMilliseconds(1000);
-            serialPort.BaudRate = 9600;
+            serialPort.BaudRate = 115200;
             serialPort.Parity = SerialParity.None;
             serialPort.StopBits = SerialStopBitCount.One;
             serialPort.DataBits = 8;
@@ -140,7 +140,7 @@ namespace HA4IoT.Extensions
                         {
                             if(handler.CanHandle(messageType, messageBodySize))
                             {
-                                var message = handler.Handle(dataReaderObject);
+                                var message = handler.Handle(dataReaderObject, messageBodySize);
                                 await _messageBroker.Publish("SerialService", message);
 
                                 _logService.Info($"Recived UART message handled by {handler.GetType().Name}, Message details: [{message}]");

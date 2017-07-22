@@ -24,7 +24,15 @@ namespace HA4IoT.Hardware.Drivers.I2CHardwareBridge
         public string Id { get; }
 
         public DHT22Accessor DHT22Accessor { get; }
-        
+
+        public I2CSlaveAddress Address
+        {
+            get
+            {
+                return _address;
+            }
+        }
+
         public void ExecuteCommand(I2CHardwareBridgeCommand command)
         {
             if (command == null) throw new ArgumentNullException(nameof(command));

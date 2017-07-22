@@ -13,6 +13,8 @@ using HA4IoT.Contracts.Hardware.RemoteSockets;
 using HA4IoT.Extensions;
 using HA4IoT.Contracts.Messaging;
 using System.Threading.Tasks;
+using HA4IoT.Contracts.Scheduling;
+using HA4IoT.Extensions.I2C;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -26,6 +28,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private readonly IRemoteSocketService _remoteSocketService;
         private readonly ISerialService _serialService;
         private readonly IMessageBrokerService _messageBroker;
+        private readonly ISchedulerService _schedulerService;
 
         private const int TIME_TO_ON = 30;
         private const int TIME_WHILE_ON = 5;
@@ -38,7 +41,8 @@ namespace HA4IoT.Controller.Dnf.Rooms
                                     AutomationFactory automationFactory,
                                     IRemoteSocketService remoteSocketService,
                                     ISerialService serialService, 
-                                    IMessageBrokerService messageBroker
+                                    IMessageBrokerService messageBroker,
+                                    ISchedulerService schedulerService
                                     ) 
         {
             _deviceService = deviceService ?? throw new ArgumentNullException(nameof(deviceService));
@@ -49,6 +53,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _remoteSocketService = remoteSocketService ?? throw new ArgumentNullException(nameof(remoteSocketService));
             _serialService = serialService ?? throw new ArgumentNullException(nameof(serialService));
             _messageBroker = messageBroker ?? throw new ArgumentNullException(nameof(messageBroker));
+            _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
         }
 
         public async Task Apply()
@@ -68,6 +73,20 @@ namespace HA4IoT.Controller.Dnf.Rooms
             .WithTarget(socket);
 
             //TEST
+
+            //NECX, 
+            //3772833823
+            //32
+            _schedulerService.Register("TEST_IR", TimeSpan.FromSeconds(3), () =>
+            {
+                _messageBroker.Publish(typeof(I2CService).Name, new InfraredMessage
+                {
+                    IfraredSystem = IfraredSystem.NECX,
+                    Bits = 32,
+                    Code = 3772833823
+                });
+
+            });
 
             _messageBroker.Subscribe<InfraredMessage>("SerialService", x =>
             {

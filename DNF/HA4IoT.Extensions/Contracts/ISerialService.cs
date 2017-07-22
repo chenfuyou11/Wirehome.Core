@@ -4,7 +4,7 @@ namespace HA4IoT.Extensions
 {
     public interface ISerialService : IService
     {
-        void RegisterHandler(IUartMessageHandler handler);
+        void RegisterHandler(IMessageHandler handler);
         void Close();
     }
 }

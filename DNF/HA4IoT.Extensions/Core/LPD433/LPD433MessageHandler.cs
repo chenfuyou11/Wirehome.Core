@@ -1,13 +1,20 @@
-﻿using Windows.Storage.Streams;
+﻿using System;
+using Newtonsoft.Json.Linq;
+using Windows.Storage.Streams;
 
 namespace HA4IoT.Extensions
 {
-    public class LPD433MessageHandler : IUartMessageHandler
+    public class LPD433MessageHandler : IMessageHandler
     {
         private const byte MESSAGE_SIZE = 8;
         private const byte MESSAGE_TYPE = 2;
 
-        public bool CanHandle(byte messageType, byte messageSize)
+        public bool CanHandleI2C(string messageType)
+        {
+            return false;
+        }
+
+        public bool CanHandleUart(byte messageType, byte messageSize)
         {
             if (messageType == MESSAGE_TYPE && messageSize == MESSAGE_SIZE)
             {
@@ -17,7 +24,12 @@ namespace HA4IoT.Extensions
             return false;
         }
 
-        public object Handle(DataReader reader, byte messageSize)
+        public byte[] PrepareI2cPackage(JObject message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object ReadUart(IDataReader reader, byte messageSize)
         {
             var code = reader.ReadUInt32();
             var bits = reader.ReadByte();
@@ -29,6 +41,11 @@ namespace HA4IoT.Extensions
                 Bits = bits,
                 Protocol = protocol
             };
+        }
+
+        public Type SupportedMessageType()
+        {
+            throw new NotImplementedException();
         }
     }
 }

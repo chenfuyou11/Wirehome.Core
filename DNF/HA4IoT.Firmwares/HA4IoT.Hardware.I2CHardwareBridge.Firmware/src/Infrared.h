@@ -2,6 +2,7 @@
 #include <Arduino.h>
 
 #include "IRLibDecodeBase.h"
+#include <IRLibSendBase.h>   
 #include "IRLib_P01_NEC.h"
 #include "IRLib_P02_Sony.h"
 #include "IRLib_P07_NECx.h"
@@ -15,6 +16,7 @@ class Infrared
   private:
     static IRdecode myDecoder;
     static IRrecvPCI  myReceiver; 
+    static IRsend mySender;
 
   public:
     static void Init();

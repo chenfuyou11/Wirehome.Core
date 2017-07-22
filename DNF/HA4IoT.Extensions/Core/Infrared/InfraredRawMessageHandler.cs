@@ -1,13 +1,20 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 using Windows.Storage.Streams;
 
 namespace HA4IoT.Extensions
 {
-    public class InfraredRawMessageHandler : IUartMessageHandler
+    public class InfraredRawMessageHandler : IMessageHandler
     {
-        private const byte MESSAGE_TYPE = 3;
+        private const byte MESSAGE_TYPE = 4;
 
-        public bool CanHandle(byte messageType, byte messageSize)
+        public bool CanHandleI2C(string messageType)
+        {
+            return false;
+        }
+
+        public bool CanHandleUart(byte messageType, byte messageSize)
         {
             if (messageType == MESSAGE_TYPE)
             {
@@ -17,7 +24,12 @@ namespace HA4IoT.Extensions
             return false;
         }
 
-        public object Handle(DataReader reader, byte messageSize)
+        public byte[] PrepareI2cPackage(JObject message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object ReadUart(DataReader reader, byte messageSize)
         {
             var arraySize = messageSize / 2;
             var buffer = new ushort[arraySize];
@@ -30,6 +42,16 @@ namespace HA4IoT.Extensions
             {
                 RawArray = buffer.ToList()
             };
+        }
+
+        public object ReadUart(IDataReader reader, byte messageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Type SupportedMessageType()
+        {
+            throw new NotImplementedException();
         }
     }
 }

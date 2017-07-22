@@ -18,8 +18,6 @@ void LPD433::Send(uint8_t package[], uint8_t packageLength)
 		return;
 	}
 
-	uint8_t data[] = { package[0], package[1], package[2], package[3] };
-	uint8_t length = package[4];
 	uint8_t repeats = package[5];
 	uint8_t pin = package[6];
 
@@ -43,7 +41,7 @@ void LPD433::ProcessLoop()
 
 		uint8_t messageSize = sizeof(value) + sizeof(bit) + sizeof(protocol);
 		Serial.write(messageSize);
-		Serial.write(RS_ACTION_LPD433);
+		Serial.write(I2C_ACTION_433MHz);
 		Serial.write((byte*)&value, sizeof(value));
 	    Serial.write(bit);
         Serial.write(protocol);

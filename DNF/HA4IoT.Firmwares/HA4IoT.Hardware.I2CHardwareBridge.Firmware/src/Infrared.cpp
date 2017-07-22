@@ -4,6 +4,13 @@
 
 IRrecvPCI Infrared::myReceiver = IRrecvPCI(PIN_IR);
 IRdecode Infrared::myDecoder;
+IRsend Infrared::mySender = IRsend();
+
+union ArrayToInteger
+{
+  byte array[4];
+  uint32_t value;
+};
 
 void Infrared::Init()
 {
@@ -36,7 +43,7 @@ void Infrared::ProcessLoop()
 			}
 			
 			Serial.write(messageSize);
-			Serial.write(RS_ACTION_Infrared_RAW);
+			Serial.write(I2C_ACTION_Infrared_RAW);
            
 			for(bufIndex_t i=1; i<recvGlobal.recvLength; i++) 
 			{
@@ -56,7 +63,7 @@ void Infrared::ProcessLoop()
 
 				uint8_t messageSize = sizeof(codeProtocol)+sizeof(codeValue)+sizeof(codeBits);
 				Serial.write(messageSize);
-				Serial.write(RS_ACTION_Infrared);
+				Serial.write(I2C_ACTION_Infrared);
 				Serial.write(codeProtocol);
 				Serial.write((byte*)&codeValue, sizeof(codeValue));
 				Serial.write(codeBits);
@@ -69,7 +76,30 @@ void Infrared::ProcessLoop()
 
 void Infrared::Send(uint8_t package[], uint8_t packageLength)
 {
-	
+	if (packageLength != 7)
+	{
+		SerialEx::WriteLine(F("Received invalid infrared package."));
+		return;
+	}
+
+	uint8_t repeats = package[0];
+	uint8_t sys = package[1];
+	uint8_t bits = package[2];
+
+    ArrayToInteger converter;
+	converter.array[0] = package[3];
+	converter.array[1] = package[4];
+	converter.array[2] = package[5];
+	converter.array[3] =package[6];
+
+    myReceiver.disableIRIn();
+
+	for(byte i=0; i<repeats; i++)
+	{
+		mySender.send(sys, converter.value, bits);
+	}
+
+	myReceiver.enableIRIn();
 }
 
 

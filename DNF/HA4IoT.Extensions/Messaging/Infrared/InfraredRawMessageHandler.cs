@@ -3,7 +3,7 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using Windows.Storage.Streams;
 
-namespace HA4IoT.Extensions
+namespace HA4IoT.Extensions.Messaging
 {
     public class InfraredRawMessageHandler : IMessageHandler
     {
@@ -51,7 +51,7 @@ namespace HA4IoT.Extensions
 
         public Type SupportedMessageType()
         {
-            throw new NotImplementedException();
+            return typeof(InfraredRawMessage);
         }
     }
 }

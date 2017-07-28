@@ -3,9 +3,10 @@
 
 class SerialEx
 {
+  private:
+    static uint8_t DebugMode;
   public:
     static void Init();
-    static void WriteText(const String &message);
-    static void WriteLine(const String &message);
-    static void WriteError(const String &message);
+    static void SetMode(uint8_t package[], uint8_t packageLength);
+    static void SendMessage(const String &message);
 };

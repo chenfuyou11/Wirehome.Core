@@ -67,7 +67,7 @@ void DHT22Controller_handleI2CWrite(uint8_t package[], uint8_t packageLength)
 		}
 	}
     
-	SerialEx::WriteLine("Set sensor PIN to " + String(_pinForRead));
+	SerialEx::SendMessage("Set sensor PIN to " + String(_pinForRead));
 }
 
 uint8_t DHT22Controller_handleI2CRead(uint8_t response[])
@@ -75,11 +75,11 @@ uint8_t DHT22Controller_handleI2CRead(uint8_t response[])
 	int pinIndex = getPinIndex(_pinForRead);
 	if (pinIndex == -1)
 	{
-		SerialEx::WriteLine("Cache value for " + String(_pinForRead) + " not found");
+		SerialEx::SendMessage("Cache value for " + String(_pinForRead) + " not found");
 		return 0;
 	}
 
-	SerialEx::WriteLine("Fetching cache value from index " + String(pinIndex));
+	SerialEx::SendMessage("Fetching cache value from index " + String(pinIndex));
 
 	for (int i = 0; i < RESPONSE_SIZE; i++)
 	{
@@ -133,12 +133,12 @@ void pollSensors()
 		_cache[i][7] = converter.bytes.b2;
 		_cache[i][8] = converter.bytes.b3;
 
-		SerialEx::WriteText("Read DHT22 sensor SUCCESS:");
-		SerialEx::WriteText(String(success));
-		SerialEx::WriteText(",TEMP:");
-		SerialEx::WriteText(String(temperature));
-		SerialEx::WriteText(",HUM:");
-		SerialEx::WriteLine(String(humidity));
+		SerialEx::SendMessage("Read DHT22 sensor SUCCESS:");
+		SerialEx::SendMessage(String(success));
+		SerialEx::SendMessage(",TEMP:");
+		SerialEx::SendMessage(String(temperature));
+		SerialEx::SendMessage(",HUM:");
+		SerialEx::SendMessage(String(humidity));
 	}
 }
 

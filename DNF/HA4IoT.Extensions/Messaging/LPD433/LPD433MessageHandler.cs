@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using Windows.Storage.Streams;
 
-namespace HA4IoT.Extensions
+namespace HA4IoT.Extensions.Messaging
 {
     public class LPD433MessageHandler : IMessageHandler
     {
@@ -45,7 +45,7 @@ namespace HA4IoT.Extensions
 
         public Type SupportedMessageType()
         {
-            throw new NotImplementedException();
+            return typeof(LPD433Message);
         }
     }
 }

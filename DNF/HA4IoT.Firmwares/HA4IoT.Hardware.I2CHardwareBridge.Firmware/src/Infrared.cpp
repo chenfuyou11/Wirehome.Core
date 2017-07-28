@@ -6,12 +6,6 @@ IRrecvPCI Infrared::myReceiver = IRrecvPCI(PIN_IR);
 IRdecode Infrared::myDecoder;
 IRsend Infrared::mySender = IRsend();
 
-union ArrayToInteger
-{
-  byte array[4];
-  uint32_t value;
-};
-
 void Infrared::Init()
 {
 	Infrared::myReceiver.enableIRIn();
@@ -30,25 +24,19 @@ void Infrared::ProcessLoop()
 
 		if(codeProtocol == UNKNOWN)
 		{
-			//The raw time values start in decodeBuffer[1] because
-			//the [0] entry is the gap between frames. The address
-			//is passed to the raw send routine.
-			//codeValue=(uint32_t)&(recvGlobal.decodeBuffer[1]);
-			//codeBits=recvGlobal.decodeLength-1;
-	
-			uint8_t messageSize = 0;
-			for(bufIndex_t i=1; i<recvGlobal.recvLength; i++) 
-			{
-				messageSize += sizeof(recvGlobal.recvBuffer[i]);
-			}
+			// uint8_t messageSize = 0;
+			// for(bufIndex_t i=1; i<recvGlobal.recvLength; i++) 
+			// {
+			// 	messageSize += sizeof(recvGlobal.recvBuffer[i]);
+			// }
 			
-			Serial.write(messageSize);
-			Serial.write(I2C_ACTION_Infrared_RAW);
+			// Serial.write(messageSize);
+			// Serial.write(I2C_ACTION_Infrared_RAW);
            
-			for(bufIndex_t i=1; i<recvGlobal.recvLength; i++) 
-			{
-				Serial.print(recvGlobal.recvBuffer[i]);
-			}
+			// for(bufIndex_t i=1; i<recvGlobal.recvLength; i++) 
+			// {
+			// 	Serial.print(recvGlobal.recvBuffer[i]);
+			// }
 		}
 		else 
 		{
@@ -78,7 +66,7 @@ void Infrared::Send(uint8_t package[], uint8_t packageLength)
 {
 	if (packageLength != 7)
 	{
-		SerialEx::WriteLine(F("Received invalid infrared package."));
+		SerialEx::SendMessage(F("Received invalid infrared package."));
 		return;
 	}
 
@@ -101,6 +89,3 @@ void Infrared::Send(uint8_t package[], uint8_t packageLength)
 
 	myReceiver.enableIRIn();
 }
-
-
-

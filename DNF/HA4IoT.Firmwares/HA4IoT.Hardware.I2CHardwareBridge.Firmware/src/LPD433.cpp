@@ -14,7 +14,7 @@ void LPD433::Send(uint8_t package[], uint8_t packageLength)
 {
 	if (packageLength != 7)
 	{
-		SerialEx::WriteLine(F("Received invalid 433MHz package."));
+		SerialEx::SendMessage(F("Received invalid 433MHz package."));
 		return;
 	}
 

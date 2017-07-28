@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Windows.Storage.Streams;
 
-namespace HA4IoT.Extensions
+namespace HA4IoT.Extensions.Messaging
 {
     public class InfraredMessageHandler : IMessageHandler
     {

@@ -141,7 +141,7 @@ namespace HA4IoT.Extensions
                                 var message = handler.ReadUart(dataReaderObject, messageBodySize);
                                 await _messageBroker.Publish("SerialService", message);
 
-                                _logService.Info($"Recived UART message handled by {handler.GetType().Name}, Message details: [{message}]");
+                                _logService.Info($"Recived UART message handled by {handler.GetType().Name}, Message details: [{message.ToString()}]");
                             }
                         }
                     }

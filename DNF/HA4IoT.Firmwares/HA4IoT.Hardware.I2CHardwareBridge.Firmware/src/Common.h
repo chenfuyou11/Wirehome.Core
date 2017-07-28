@@ -1,3 +1,6 @@
+#pragma once
+#include <Arduino.h>
+
 #define I2C_SLAVE_ADDRESS 50
 
 #define PIN_LED 13
@@ -9,3 +12,22 @@
 #define I2C_ACTION_Infrared 3
 #define I2C_ACTION_Infrared_RAW 4
 #define I2C_ACTION_Current 5
+#define I2C_ACTION_DEBUG 10
+
+union CurrentFloatToBytes
+{
+	float value;
+	struct
+	{
+		uint8_t b0;
+		uint8_t b1;
+		uint8_t b2;
+		uint8_t b3;
+	} bytes;
+};
+
+union ArrayToInteger
+{
+  byte array[4];
+  uint32_t value;
+};

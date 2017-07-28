@@ -3,7 +3,7 @@
 #include "Infrared.h"
 #include "LPD433.h"
 #include "Dht22Controller.h"
-#include "CurrentController.h"
+#include "Current.h"
 #include "common.h"
 
 #define IS_HIGH(pin) (PIND & (1<<pin))
@@ -15,7 +15,7 @@ uint8_t _lastAction = 0;
 
 void handleI2CRead()
 {
-	SerialEx::WriteLine("I2C READ for action" + String(_lastAction));
+	SerialEx::SendMessage("I2C READ for action" + String(_lastAction));
 	digitalWrite(PIN_LED, HIGH);
 
 	uint8_t response[32];
@@ -26,11 +26,6 @@ void handleI2CRead()
 		case I2C_ACTION_DHT22:
 		{
 			responseLength = DHT22Controller_handleI2CRead(response);
-			break;
-		}
-		case I2C_ACTION_Current:
-		{
-			responseLength = CurrentController_handleI2CRead(response);
 			break;
 		}
 	}
@@ -47,7 +42,7 @@ void handleI2CWrite(int dataLength)
 
 	if (dataLength > 32) 
 	{ 
-		SerialEx::WriteError(F("Received too large package"));
+		SerialEx::SendMessage(F("Received too large package"));
 		return;
 	}
 
@@ -60,7 +55,7 @@ void handleI2CWrite(int dataLength)
 
 	Wire.readBytes(package, packageLength);
 
-	SerialEx::WriteLine("I2C WRITE for action " + String(_lastAction));
+	SerialEx::SendMessage("I2C WRITE for action " + String(_lastAction));
 
 	switch (_lastAction)
 	{
@@ -81,7 +76,12 @@ void handleI2CWrite(int dataLength)
 		}
 		case I2C_ACTION_Current:
 		{
-			CurrentController_handleI2CWrite(package, packageLength);
+			Current::Register(package, packageLength);
+			break;
+		}
+		case I2C_ACTION_DEBUG:
+		{
+			SerialEx::SetMode(package, packageLength);
 			break;
 		}
 	}
@@ -113,7 +113,7 @@ void loop()
 
 	DHT22Controller_loop();
 
-	//CurrentController_loop();
+	Current::ProcessLoop();
 }
 
 

@@ -15,6 +15,7 @@ using HA4IoT.Contracts.Messaging;
 using System.Threading.Tasks;
 using HA4IoT.Contracts.Scheduling;
 using HA4IoT.Extensions.I2C;
+using HA4IoT.Extensions.Messaging;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -77,16 +78,16 @@ namespace HA4IoT.Controller.Dnf.Rooms
             //NECX, 
             //3772833823
             //32
-            _schedulerService.Register("TEST_IR", TimeSpan.FromSeconds(3), () =>
-            {
-                _messageBroker.Publish(typeof(I2CService).Name, new InfraredMessage
-                {
-                    IfraredSystem = IfraredSystem.NECX,
-                    Bits = 32,
-                    Code = 3772833823
-                });
+            //_schedulerService.Register("TEST_IR", TimeSpan.FromSeconds(3), () =>
+            //{
+            //    _messageBroker.Publish(typeof(I2CService).Name, new InfraredMessage
+            //    {
+            //        IfraredSystem = IfraredSystem.NECX,
+            //        Bits = 32,
+            //        Code = 3772833823
+            //    });
 
-            });
+            //});
 
             _messageBroker.Subscribe<InfraredMessage>("SerialService", x =>
             {

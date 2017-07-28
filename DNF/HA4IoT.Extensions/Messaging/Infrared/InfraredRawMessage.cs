@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HA4IoT.Extensions
+namespace HA4IoT.Extensions.Messaging
 {
     public class InfraredRawMessage
     {

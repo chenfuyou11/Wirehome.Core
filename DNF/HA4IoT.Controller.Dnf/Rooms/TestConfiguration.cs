@@ -64,20 +64,19 @@ namespace HA4IoT.Controller.Dnf.Rooms
             var codePair = DipswitchCodeProvider.GetCodePair(DipswitchSystemCode.AllOn, DipswitchUnitCode.D, 3);
             var socket = _actuatorFactory.RegisterSocket(room, BalconyElements.RemoteSocket, _remoteSocketService.RegisterRemoteSocket(BalconyElements.RemoteSocket.ToString(), "RemoteSocketBridge", codePair));
 
-            var livingRoomAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, LivingroomElements.SchedulerAutomation)
-            .WithSchedulerTime(new AutomationScheduler
-            {
-                StartTime = new TimeSpan(18, 0, 0),
-                TurnOnInterval = new TimeSpan(0, 0, 20),
-                WorkingTime = new TimeSpan(0, 0, 5)
-            })
-            .WithTarget(socket);
+
+
+            //var livingRoomAutomation = _automationFactory.RegisterTurnOnAndOffAutomation(room, LivingroomElements.SchedulerAutomation)
+            //.WithSchedulerTime(new AutomationScheduler
+            //{
+            //    StartTime = new TimeSpan(18, 0, 0),
+            //    TurnOnInterval = new TimeSpan(0, 0, 20),
+            //    WorkingTime = new TimeSpan(0, 0, 5)
+            //})
+            //.WithTarget(socket);
 
             //TEST
 
-            //NECX, 
-            //3772833823
-            //32
             //_schedulerService.Register("TEST_IR", TimeSpan.FromSeconds(3), () =>
             //{
             //    _messageBroker.Publish(typeof(I2CService).Name, new InfraredMessage
@@ -87,12 +86,28 @@ namespace HA4IoT.Controller.Dnf.Rooms
             //        Code = 3772833823
             //    });
 
+            //var last = false;
+
+            //_schedulerService.Register("TEST_LPD", TimeSpan.FromSeconds(3), () =>
+            //{
+            //    _messageBroker.Publish(typeof(I2CService).Name, new LPD433Message
+            //    {
+            //        Pin = 7,
+            //        Code = last ? codePair.OnCode.Value : codePair.OffCode.Value
+            //    });
+
+            //    last = !last;
             //});
 
-            _messageBroker.Subscribe<InfraredMessage>("SerialService", x =>
+            _messageBroker.Publish(typeof(I2CService).Name, new CurrentMessage
             {
-               
+                Pin = 14
             });
+
+            //_messageBroker.Subscribe<CurrentMessage>("SerialService", x =>
+            //{
+               
+            //});
             
         }
 

@@ -3,14 +3,13 @@
 #include "SerialEx.h"
 #include "Current.h"
 
-#define ACTION_REGISTER_SENSOR 0
 #define POLL_INTERVAL 1000UL
-#define SAMPLE_TIME 50
-#define VALUE_ON_LEVEL 0.15
+#define SAMPLE_TIME 50	
+#define VALUE_ON_LEVEL 0.18
 
 uint8_t Current::Pins[8];
 uint8_t Current::PinsIndex = 0;
-uint8_t Current::Cache[8][1];
+uint8_t Current::Cache[8][2];
 int Current::Min[8];
 int Current::Max[8];
 unsigned long Current::LastMillies = millis();
@@ -29,24 +28,18 @@ int Current::GetPinIndex(uint8_t pin)
 
 void Current::Register(uint8_t package[], uint8_t packageLength)
 {
-	if (packageLength != 2) return;
-	uint8_t action = package[0];
+	if (packageLength != 1) return;
+	
+	uint8_t pin = package[0];
 
-	switch (action)
+	if (Current::GetPinIndex(pin) == -1)
 	{
-		case ACTION_REGISTER_SENSOR:
-		{
-			uint8_t pin = package[1];
-
-			if (Current::GetPinIndex(pin) == -1)
-			{
-				Current::Pins[Current::PinsIndex] = pin;
-				Current::Cache[Current::PinsIndex][0] = 0; 
-				Current::PinsIndex++;
-			}
-			break;
-		}
+		Current::Pins[Current::PinsIndex] = pin;
+		Current::Cache[Current::PinsIndex][0] = 0;
+		Current::Cache[Current::PinsIndex][1] = 0; 
+		Current::PinsIndex++;
 	}
+
 }
 
 void Current::ReadCurrent()
@@ -81,18 +74,22 @@ void Current::ReadCurrent()
 		float voltage = (current * 5.0) / 1024.0;
 		uint8_t value = 0;
 		int last_value = Current::Cache[i][0];
+		int last_prop = Current::Cache[i][1];
 		
 		if(voltage > VALUE_ON_LEVEL)
 		{
 			value = 1;
 		}
 
-		Current::Cache[i][0] = value;
-		if(value != last_value)
+		Current::Cache[i][1] = value;
+		
+		if(value == last_prop && value != last_value)
 		{
-			Serial.write(sizeof(value) + sizeof(i));
+			Current::Cache[i][0] = value;
+
+			Serial.write(sizeof(value) + sizeof(Current::Pins[i]));
 			Serial.write(I2C_ACTION_Current);
-			Serial.write(i);
+			Serial.write(Current::Pins[i]);
 			Serial.write(value);
 			Serial.flush();
 		}
@@ -101,6 +98,15 @@ void Current::ReadCurrent()
 
 void Current::ProcessLoop()
 {
+	// if(Current::PinsIndex == 0)
+	// {
+	// 	Serial.println("Pin registred");
+
+	// 	Current::Pins[Current::PinsIndex] = 14;
+	// 	Current::Cache[Current::PinsIndex][0] = 0; 
+	// 	Current::PinsIndex++;
+	// }
+
 	unsigned long currentMillies = millis();
 	unsigned long elapsedTime = currentMillies - Current::LastMillies;
 

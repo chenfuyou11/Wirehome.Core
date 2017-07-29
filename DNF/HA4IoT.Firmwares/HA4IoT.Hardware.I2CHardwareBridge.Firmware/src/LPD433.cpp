@@ -18,6 +18,7 @@ void LPD433::Send(uint8_t package[], uint8_t packageLength)
 		return;
 	}
 
+    uint8_t length = package[4];
 	uint8_t repeats = package[5];
 	uint8_t pin = package[6];
 
@@ -27,7 +28,7 @@ void LPD433::Send(uint8_t package[], uint8_t packageLength)
 
 	for(int i = 0; i < repeats; i++)
 	{
-		LPD433::mySwitch.send(send_code, 24);
+		LPD433::mySwitch.send(send_code, length);
 	}
 }
 
@@ -36,18 +37,18 @@ void LPD433::ProcessLoop()
 	if (LPD433::mySwitch.available()) 
 	{
     	unsigned long value = LPD433::mySwitch.getReceivedValue();
-        unsigned int bit = LPD433::mySwitch.getReceivedBitlength();
-        unsigned int protocol = LPD433::mySwitch.getReceivedProtocol();
+        uint8_t bit = LPD433::mySwitch.getReceivedBitlength();
+        uint8_t protocol = LPD433::mySwitch.getReceivedProtocol();
+    	mySwitch.resetAvailable();
 
 		uint8_t messageSize = sizeof(value) + sizeof(bit) + sizeof(protocol);
+
 		Serial.write(messageSize);
 		Serial.write(I2C_ACTION_433MHz);
 		Serial.write((byte*)&value, sizeof(value));
 	    Serial.write(bit);
         Serial.write(protocol);
-		Serial.flush();
- 
-    	mySwitch.resetAvailable();
-  	}
 
+		//Serial.flush();
+  	}
 }

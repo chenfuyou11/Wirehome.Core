@@ -1,38 +1,43 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Windows.Storage.Streams;
 
 namespace HA4IoT.Extensions.Messaging
 {
-    public class InfraredMessageHandler : IMessageHandler
+    public class InfraredMessage : IMessage
     {
         private const byte MESSAGE_SIZE = 6;
         private const byte MESSAGE_TYPE = 3;
 
-        public bool CanHandleUart(byte messageType, byte messageSize)
+        public byte Repeats { get; set; } = 1;
+        public byte System { get; set; }
+        public uint Code { get; set; }
+        public byte Bits { get; set; }
+
+        public override string ToString()
         {
-            if(messageType == MESSAGE_TYPE && messageSize == MESSAGE_SIZE)
-            {
-                return true;
-            }
-            
-            return false;
+            return $"System: {IfraredSystem}, Code: {Code}, Bits: {Bits}";
         }
 
-        public bool CanHandleI2C(string messageType)
+        public IfraredSystem IfraredSystem
         {
-            if(messageType == typeof(InfraredMessage).Name)
+            get
             {
-                return true;
+                return (IfraredSystem)System;
             }
-
-            return false;
+            set
+            {
+                System = (byte)value;
+            }
+        }
+        
+        public bool CanSerialize(string messageType)
+        {
+            return messageType == GetType().Name;
         }
 
-        public byte[] PrepareI2cPackage(JObject message)
+        public byte[] Serialize(JObject message)
         {
             var infraredMessage = message.ToObject<InfraredMessage>();
 
@@ -48,7 +53,17 @@ namespace HA4IoT.Extensions.Messaging
             return package.ToArray();
         }
 
-        public object ReadUart(IDataReader reader, byte messageSize)
+        public bool CanDeserialize(byte messageType, byte messageSize)
+        {
+            if (messageType == MESSAGE_TYPE && messageSize == MESSAGE_SIZE)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public object Deserialize(IDataReader reader, byte? messageSize = null)
         {
             var system = reader.ReadByte();
             var code = reader.ReadUInt32();
@@ -61,10 +76,8 @@ namespace HA4IoT.Extensions.Messaging
                 Bits = bits
             };
         }
-
-        public Type SupportedMessageType()
-        {
-            return typeof(InfraredMessage);
-        }
     }
+
+
+
 }

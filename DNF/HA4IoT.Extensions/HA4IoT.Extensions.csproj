@@ -112,10 +112,13 @@
     <Compile Include="Contracts\ILightAutomationService.cs" />
     <Compile Include="Contracts\IAlexaDispatcherEndpointService.cs" />
     <Compile Include="Contracts\IMonostableLampAdapter.cs" />
+    <Compile Include="Core\DipswitchCode.cs" />
     <Compile Include="Messaging\DebugMessage.cs" />
     <Compile Include="Core\InfraredSystem.cs" />
     <Compile Include="Contracts\IMessage.cs" />
     <Compile Include="Messaging\CurrentMessage.cs" />
+    <Compile Include="Messaging\HumidityMessage.cs" />
+    <Compile Include="Messaging\TemperatureMessage.cs" />
     <Compile Include="Messaging\LPD433Message.cs" />
     <Compile Include="Core\CommandExecutorEx.cs" />
     <Compile Include="Core\MonostableBinaryOutputAdapter.cs" />

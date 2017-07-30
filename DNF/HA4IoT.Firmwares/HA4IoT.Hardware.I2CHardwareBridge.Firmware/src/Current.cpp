@@ -98,15 +98,6 @@ void Current::ReadCurrent()
 
 void Current::ProcessLoop()
 {
-	// if(Current::PinsIndex == 0)
-	// {
-	// 	Serial.println("Pin registred");
-
-	// 	Current::Pins[Current::PinsIndex] = 14;
-	// 	Current::Cache[Current::PinsIndex][0] = 0; 
-	// 	Current::PinsIndex++;
-	// }
-
 	unsigned long currentMillies = millis();
 	unsigned long elapsedTime = currentMillies - Current::LastMillies;
 

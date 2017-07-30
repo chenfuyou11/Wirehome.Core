@@ -62,7 +62,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
             var room = _areaService.RegisterArea(Room.Test);
            
             var codePair = DipswitchCodeProvider.GetCodePair(DipswitchSystemCode.AllOn, DipswitchUnitCode.D, 3);
-            var socket = _actuatorFactory.RegisterSocket(room, BalconyElements.RemoteSocket, _remoteSocketService.RegisterRemoteSocket(BalconyElements.RemoteSocket.ToString(), "RemoteSocketBridge", codePair));
+            //var socket = _actuatorFactory.RegisterSocket(room, BalconyElements.RemoteSocket, _remoteSocketService.RegisterRemoteSocket(BalconyElements.RemoteSocket.ToString(), "RemoteSocketBridge", codePair));
 
 
 
@@ -86,7 +86,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
             //        Code = 3772833823
             //    });
 
-            //var last = false;
+            var last = false;
 
             //_schedulerService.Register("TEST_LPD", TimeSpan.FromSeconds(3), () =>
             //{
@@ -96,21 +96,35 @@ namespace HA4IoT.Controller.Dnf.Rooms
             //        Code = last ? codePair.OnCode.Value : codePair.OffCode.Value
             //    });
 
-            //    last = !last;
+            //    
             //});
 
-            _messageBroker.Publish(typeof(I2CService).Name, new CurrentMessage
+            //_messageBroker.Publish(typeof(I2CService).Name, new CurrentMessage
+            //{
+            //    Pin = 14
+            //});
+
+            _messageBroker.Publish(typeof(I2CService).Name, new TemperatureMessage
             {
-                Pin = 14
+                Pin = 13
             });
 
-            //_messageBroker.Subscribe<CurrentMessage>("SerialService", x =>
-            //{
-               
-            //});
-            
+
+            _messageBroker.Subscribe<LPD433Message>("SerialService", x =>
+            {
+                _messageBroker.Publish(typeof(I2CService).Name, new LPD433Message
+                {
+                    Pin = 7,
+                    Code = last ? codePair.OnCode.Value : codePair.OffCode.Value
+
+                });
+
+                last = !last;
+            }
+            );
+
         }
 
-       
+
     } 
 }

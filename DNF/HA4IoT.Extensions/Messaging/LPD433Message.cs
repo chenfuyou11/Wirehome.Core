@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using HA4IoT.Extensions.Core;
+using Newtonsoft.Json.Linq;
 using System;
 using Windows.Storage.Streams;
 
@@ -16,8 +17,27 @@ namespace HA4IoT.Extensions.Messaging
         public byte Bits { get; set; } = 24;
         public byte Protocol { get; set; }
 
+        public DipswitchCode DipswitchCode
+        {
+            get
+            {
+                if(Code > 0)
+                {
+                    return DipswitchCode.ParseCode(Code);
+                }
+
+                return null;
+            }
+        }
+
         public override string ToString()
         {
+            var code = DipswitchCode;
+            if(code != null)
+            {
+                return $"Command: {code.Command}, System: {code.System}, Unit: {code.Unit}";
+            }
+            
             return $"Code: {Code}, Bits: {Bits}, Protocol: {Protocol}";
         }
         

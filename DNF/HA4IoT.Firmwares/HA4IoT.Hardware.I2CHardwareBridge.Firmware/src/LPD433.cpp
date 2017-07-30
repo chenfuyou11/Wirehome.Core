@@ -48,7 +48,6 @@ void LPD433::ProcessLoop()
 		Serial.write((byte*)&value, sizeof(value));
 	    Serial.write(bit);
         Serial.write(protocol);
-
-		//Serial.flush();
+		Serial.flush();
   	}
 }

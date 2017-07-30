@@ -2,7 +2,7 @@
 #include "SerialEx.h"
 #include "Infrared.h"
 #include "LPD433.h"
-#include "Dht22Controller.h"
+#include "Dht.h"
 #include "Current.h"
 #include "common.h"
 
@@ -15,7 +15,6 @@ uint8_t _lastAction = 0;
 
 void handleI2CRead()
 {
-	SerialEx::SendMessage("I2C READ for action" + String(_lastAction));
 	digitalWrite(PIN_LED, HIGH);
 
 	uint8_t response[32];
@@ -23,11 +22,7 @@ void handleI2CRead()
 
 	switch (_lastAction)
 	{
-		case I2C_ACTION_DHT22:
-		{
-			responseLength = DHT22Controller_handleI2CRead(response);
-			break;
-		}
+		
 	}
 
 	Wire.write(response, responseLength);
@@ -59,9 +54,9 @@ void handleI2CWrite(int dataLength)
 
 	switch (_lastAction)
 	{
-		case I2C_ACTION_DHT22:
+		case I2C_ACTION_TEMPERATURE:
 		{
-			DHT22Controller_handleI2CWrite(package, packageLength);
+			DHT::Register(package, packageLength);
 			break;
 		}
 		case I2C_ACTION_433MHz:
@@ -111,11 +106,7 @@ void loop()
 
     LPD433::ProcessLoop();
 
-	DHT22Controller_loop();
+	DHT::ProcessLoop();
 
 	Current::ProcessLoop();
 }
-
-
-
-

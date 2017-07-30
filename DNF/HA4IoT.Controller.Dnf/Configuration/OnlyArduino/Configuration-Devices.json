@@ -10,15 +10,6 @@
             "Address": 50
           }
         }
-      },
-
-      "RemoteSocketBridge": {
-        "Driver": {
-          "Type": "I2CLdp433MhzBridge",
-          "Parameters": {
-            "Pin": "7"
-          }
-        }
       }
     }
   }

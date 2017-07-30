@@ -7,14 +7,15 @@
 #define PIN_IR 2
 #define PIN_RC 3
 
-#define I2C_ACTION_DHT22 1
+#define I2C_ACTION_TEMPERATURE 1
 #define I2C_ACTION_433MHz 2
 #define I2C_ACTION_Infrared 3
 #define I2C_ACTION_Infrared_RAW 4
 #define I2C_ACTION_Current 5
+#define I2C_ACTION_HUMANITY 6
 #define I2C_ACTION_DEBUG 10
 
-union CurrentFloatToBytes
+union FloatToBytes
 {
 	float value;
 	struct

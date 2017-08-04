@@ -6,7 +6,8 @@
 
 #define POLL_INTERVAL 2500UL
 #define RESPONSE_SIZE 9UL
-#define DIFF_MIN_VALUE 0.2
+#define DIFF_TEMP_MIN_VALUE 0.2
+#define DIFF_HUMIDITY_MIN_VALUE 0.3
 
 uint8_t DHT::Pins[16][2];
 uint8_t DHT::PinsIndex = 0;
@@ -45,6 +46,7 @@ void DHT::Register(uint8_t package[], uint8_t packageLength)
 	}
 	else
 	{
+		// If already exists force check on this pin
 		DHT::Pins[pinIndex][1] = 1;
 	}
 }
@@ -71,7 +73,7 @@ void DHT::PullSensors()
 
 			union FloatToBytes converter;
 
-			if(abs(temperature-prev_temperature) > DIFF_MIN_VALUE || forceRead == 1)
+			if(abs(temperature-prev_temperature) > DIFF_TEMP_MIN_VALUE || forceRead == 1)
 			{	
 				converter.value = temperature;
 				Serial.write(4+1);
@@ -85,7 +87,7 @@ void DHT::PullSensors()
 				DHT::Cache[i][0] = temperature;
 			}
 
-			if(abs(humidity-prev_humidity) > DIFF_MIN_VALUE || forceRead == 1)
+			if(abs(humidity-prev_humidity) > DIFF_HUMIDITY_MIN_VALUE || forceRead == 1)
 			{
 				union FloatToBytes converter;
 				converter.value = humidity;

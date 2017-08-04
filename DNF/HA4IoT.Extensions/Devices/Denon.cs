@@ -5,12 +5,12 @@ using HA4IoT.Contracts.Components.States;
 using HA4IoT.Contracts.Components.Features;
 using HA4IoT.Contracts.Components.Commands;
 using HA4IoT.Components.Commands;
-using System.Net;
-using System.Text;
-using System.IO;
 using System.Xml;
 using System.Net.Http;
 using System.Threading.Tasks;
+using HA4IoT.Contracts.Messaging;
+using HA4IoT.Extensions.Messaging;
+using HA4IoT.Extensions.Messaging.Services;
 
 namespace HA4IoT.Extensions.Devices
 {
@@ -20,22 +20,31 @@ namespace HA4IoT.Extensions.Devices
         private CommandExecutor _commandExecutor;
         private readonly string _denonControlAddress;
         private readonly string _denonConfigAddress;
+        private readonly IMessageBrokerService _messageBrokerService;
 
-        public Denon(string id, string hostname) : base(id)
+        public Denon(string id, string hostname, IMessageBrokerService messageBroker) : base(id)
         {
             _commandExecutor = new CommandExecutor();
             _commandExecutor.Register<TurnOnCommand>(c => 
             {
-                SendCommand("cmd0", "PutZone_OnOff/ON");
+                _messageBrokerService.Publish(typeof(HttpMessagingService).Name, new DenonMessage
+                {
+                    ParamName = "cmd0",
+                    ParamValue = "PutZone_OnOff/ON",
+                    DeviceAddress= hostname
+                });
+                
             });
             _commandExecutor.Register<TurnOffCommand>(c =>
             {
-                SendCommand("cmd0", "PutZone_OnOff/OFF");
+                _messageBrokerService.Publish(typeof(HttpMessagingService).Name, new DenonMessage
+                {
+                    ParamName = "cmd0",
+                    ParamValue = "PutZone_OnOff/OFF",
+                    DeviceAddress = hostname
+                });
             }
             );
-
-            _denonControlAddress = "http://" + hostname + "/MainZone/index.put.asp";
-            _denonConfigAddress = "http://" + hostname + "/goform/formMainZone_MainZoneXml.xml";
         }
 
         public override void ExecuteCommand(ICommand command)
@@ -77,61 +86,7 @@ namespace HA4IoT.Extensions.Devices
             OnStateChanged(oldState);
         }
 
-      
-        public async void SendCommand(string paramName, string paramValue)
-        {
-            try
-            {
-                Uri uri = new Uri(_denonControlAddress);
-                WebRequest webRequest = WebRequest.Create(uri);
-
-                webRequest.Method = "POST";
-                webRequest.ContentType = "application/x-www-form-urlencoded";
-
-                string parameterString = "";
-                parameterString += paramName + "=" + paramValue + "&";
-                parameterString = parameterString.Substring(0, parameterString.Length - 1);
-
-                byte[] byteArray = Encoding.UTF8.GetBytes(parameterString);
-                webRequest.Headers["ContentLength"] = byteArray.Length.ToString();
-
-                using (Stream stream = await webRequest.GetRequestStreamAsync())
-                {
-                    stream.Write(byteArray, 0, byteArray.Length);
-                }
-
-                using (WebResponse response = await webRequest.GetResponseAsync())
-                {
-                    using (Stream stream = response.GetResponseStream())
-                    {
-                        using (StreamReader sr = new StreamReader(stream))
-                        {
-                            string responseStream = sr.ReadToEnd();
-                        }
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                throw exception;
-            }
-        }
-
-        private async Task<XmlDocument> GetStateAsync(string hostname)
-        {
-            HttpClient httpClient = new HttpClient();
-            XmlDocument xml = new XmlDocument();
-            
-            var httpResponse = await httpClient.GetAsync(_denonConfigAddress);
-            httpResponse.EnsureSuccessStatusCode();
-            using (var stream = await httpResponse.Content.ReadAsStreamAsync())
-            {
-                xml.Load(stream);
-            }
-
-            return xml;
-                    
-        }
+  
     }
 
     

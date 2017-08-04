@@ -1,6 +1,7 @@
 ﻿
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Messaging;
+using HA4IoT.Extensions.Contracts;
 using HA4IoT.Extensions.Exceptions;
 using HA4IoT.Extensions.Messaging;
 using System;
@@ -12,9 +13,9 @@ using Windows.Devices.Enumeration;
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
 
-namespace HA4IoT.Extensions
+namespace HA4IoT.Extensions.MessagesModel.Services
 {
-    public class SerialService : ISerialService
+    public class SerialMessagingService : ISerialMessagingService
     {
         private SerialDevice serialPort = null;
         private CancellationTokenSource ReadCancellationTokenSource;
@@ -23,9 +24,9 @@ namespace HA4IoT.Extensions
         private readonly IMessageBrokerService _messageBroker;
         private readonly List<IMessage> _messageHandlers = new List<IMessage>();
 
-        public SerialService(ILogService logService, IMessageBrokerService messageBroker, IEnumerable<IMessage> handlers)
+        public SerialMessagingService(ILogService logService, IMessageBrokerService messageBroker, IEnumerable<IMessage> handlers)
         {
-            _logService = logService.CreatePublisher(nameof(SerialService));
+            _logService = logService.CreatePublisher(nameof(SerialMessagingService));
             _messageBroker = messageBroker;
             _messageHandlers.AddRange(handlers);
         }

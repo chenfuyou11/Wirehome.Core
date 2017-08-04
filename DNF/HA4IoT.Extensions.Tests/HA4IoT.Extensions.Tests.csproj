@@ -95,6 +95,7 @@
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DevicesTests.cs" />
     <Compile Include="Mock\TestController.cs" />
     <Compile Include="Mock\TestDateTimeService.cs" />
     <Compile Include="Mock\TestDaylightService.cs" />

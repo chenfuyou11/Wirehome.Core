@@ -1,4 +1,5 @@
-﻿using HA4IoT.Extensions.Core;
+﻿using HA4IoT.Extensions.Contracts;
+using HA4IoT.Extensions.Core;
 using Newtonsoft.Json.Linq;
 using System;
 using Windows.Storage.Streams;
@@ -7,15 +8,18 @@ namespace HA4IoT.Extensions.Messaging
 {
     public class LPD433Message : IMessage
     {
-        private const byte MESSAGE_SIZE = 6;
-        private const byte MESSAGE_TYPE = 2;
 
         public uint Code { get; set; }
         public byte Pin { get; set; } = 1;
         public byte Repeats { get; set; } = 1;
-
         public byte Bits { get; set; } = 24;
+
         public byte Protocol { get; set; }
+
+        public MessageType Type()
+        {
+            return MessageType.LPD433;
+        }
 
         public DipswitchCode DipswitchCode
         {
@@ -48,7 +52,7 @@ namespace HA4IoT.Extensions.Messaging
 
         public bool CanDeserialize(byte messageType, byte messageSize)
         {
-            if (messageType == MESSAGE_TYPE && messageSize == MESSAGE_SIZE)
+            if (messageType == (byte)Type() && messageSize == 6)
             {
                 return true;
             }
@@ -61,7 +65,7 @@ namespace HA4IoT.Extensions.Messaging
             var lpd433Message = message.ToObject<LPD433Message>();
 
             var package = new byte[8];
-            package[0] = MESSAGE_TYPE;
+            package[0] = (byte)Type();
 
             var code = BitConverter.GetBytes(lpd433Message.Code);
             Array.Copy(code, 0, package, 1, 4);
@@ -85,6 +89,11 @@ namespace HA4IoT.Extensions.Messaging
                 Bits = bits,
                 Protocol = protocol
             };
+        }
+
+        public string MessageAddress(JObject message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

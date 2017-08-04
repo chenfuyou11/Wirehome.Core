@@ -16,6 +16,7 @@ using HA4IoT.Net.Http;
 using HA4IoT.Contracts.Settings;
 using HA4IoT.Contracts.Components.Commands;
 using HA4IoT.Api;
+using HA4IoT.Extensions.Contracts;
 
 namespace HA4IoT.Extensions
 {

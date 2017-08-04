@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HA4IoT.Contracts.Components.Adapters;
 using HA4IoT.Contracts.Scheduling;
 using HA4IoT.Scheduling;
+using HA4IoT.Extensions.Contracts;
 
 namespace HA4IoT.Extensions.Core
 {

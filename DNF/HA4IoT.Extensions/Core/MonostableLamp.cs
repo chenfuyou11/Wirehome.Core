@@ -8,6 +8,7 @@ using HA4IoT.Contracts.Hardware;
 using HA4IoT.Components.Commands;
 using HA4IoT.Contracts.Components.Commands;
 using HA4IoT.Contracts.Components.Adapters;
+using HA4IoT.Extensions.Contracts;
 
 namespace HA4IoT.Extensions.Core
 {

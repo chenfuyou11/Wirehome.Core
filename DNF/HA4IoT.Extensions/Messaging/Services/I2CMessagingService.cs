@@ -1,15 +1,15 @@
 ﻿using HA4IoT.Contracts.Core;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Messaging;
-using HA4IoT.Extensions.Messaging;
+using HA4IoT.Extensions.Contracts;
 using HA4IoT.Hardware.Drivers.I2CHardwareBridge;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
-namespace HA4IoT.Extensions.I2C
+namespace HA4IoT.Extensions.MessagesModel.Services
 {
-    public class I2CService : II2CService
+    public class I2CMessagingService : II2CMessagingService
     {
         private readonly ILogger _logService;
         private readonly IMessageBrokerService _messageBroker;
@@ -18,9 +18,9 @@ namespace HA4IoT.Extensions.I2C
         private I2CHardwareBridge _bridge;
         private readonly List<IMessage> _messageHandlers = new List<IMessage>();
 
-        public I2CService(ILogService logService, IMessageBrokerService messageBroker, II2CBusService i2CBusService, IDeviceRegistryService deviceService, IEnumerable<IMessage> handlers)
+        public I2CMessagingService(ILogService logService, IMessageBrokerService messageBroker, II2CBusService i2CBusService, IDeviceRegistryService deviceService, IEnumerable<IMessage> handlers)
         {
-            _logService = logService.CreatePublisher(nameof(I2CService));
+            _logService = logService.CreatePublisher(nameof(I2CMessagingService));
             _messageBroker = messageBroker;
             _i2cServiceBus = i2CBusService;
             _deviceService = deviceService;
@@ -37,7 +37,7 @@ namespace HA4IoT.Extensions.I2C
                 {
                     Id = Guid.NewGuid().ToString(),
                     PayloadType = handler.GetType().Name,
-                    Topic = typeof(I2CService).Name,
+                    Topic = typeof(I2CMessagingService).Name,
                     Callback = MessageHandler
                 });
             });

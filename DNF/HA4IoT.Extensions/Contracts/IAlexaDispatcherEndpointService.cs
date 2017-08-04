@@ -2,7 +2,7 @@
 using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Services;
 
-namespace HA4IoT.Extensions
+namespace HA4IoT.Extensions.Contracts
 {
     public interface IAlexaDispatcherEndpointService : IService
     {

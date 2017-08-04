@@ -7,14 +7,14 @@
 #define SAMPLE_TIME 50	
 #define VALUE_ON_LEVEL 0.18
 
-uint8_t Current::Pins[8];
+uint8_t Current::Pins[8][2];
 uint8_t Current::PinsIndex = 0;
 uint8_t Current::Cache[8][2];
 int Current::Min[8];
 int Current::Max[8];
 unsigned long Current::LastMillies = millis();
 
-int Current::GetPinIndex(uint8_t pin)
+uint8_t Current::GetPinIndex(uint8_t pin)
 {
 	for (int i = 0; i < Current::PinsIndex; i++)
 	{
@@ -23,7 +23,7 @@ int Current::GetPinIndex(uint8_t pin)
 			return i;
 		}
 	}
-	return -1;
+	return 255;
 }
 
 void Current::Register(uint8_t package[], uint8_t packageLength)
@@ -32,12 +32,19 @@ void Current::Register(uint8_t package[], uint8_t packageLength)
 	
 	uint8_t pin = package[0];
 
-	if (Current::GetPinIndex(pin) == -1)
+	if (Current::GetPinIndex(pin) == 255)
 	{
-		Current::Pins[Current::PinsIndex] = pin;
+		Current::Pins[Current::PinsIndex][0] = pin;
+		Current::Pins[Current::PinsIndex][1] = 0;
+
 		Current::Cache[Current::PinsIndex][0] = 0;
 		Current::Cache[Current::PinsIndex][1] = 0; 
 		Current::PinsIndex++;
+	}
+	else
+	{
+		// If Exists force check
+		Current::Pins[Current::PinsIndex][1] = 1;
 	}
 
 }
@@ -55,7 +62,7 @@ void Current::ReadCurrent()
 	{
 		for (int i = 0; i < Current::PinsIndex; i++)
 		{
-			int readValue = analogRead(Current::Pins[i]);
+			int readValue = analogRead(Current::Pins[i][0]);
 
 			if (readValue > Current::Max[i])
 			{
@@ -73,6 +80,7 @@ void Current::ReadCurrent()
 		int current = Current::Max[i] - Current::Min[i];
 		float voltage = (current * 5.0) / 1024.0;
 		uint8_t value = 0;
+		uint8_t forceCheck = 0;
 		int last_value = Current::Cache[i][0];
 		int last_prop = Current::Cache[i][1];
 		
@@ -82,16 +90,19 @@ void Current::ReadCurrent()
 		}
 
 		Current::Cache[i][1] = value;
+		forceCheck = Current::Pins[i][1];
 		
-		if(value == last_prop && value != last_value)
+		if((value == last_prop && value != last_value) || forceCheck)
 		{
 			Current::Cache[i][0] = value;
 
-			Serial.write(sizeof(value) + sizeof(Current::Pins[i]));
+			Serial.write(sizeof(value) + sizeof(Current::Pins[i][0]));
 			Serial.write(I2C_ACTION_Current);
-			Serial.write(Current::Pins[i]);
+			Serial.write(Current::Pins[i][0]);
 			Serial.write(value);
 			Serial.flush();
+
+			Current::Pins[i][1] = 0;
 		}
 	}
 }

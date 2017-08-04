@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using HA4IoT.Extensions.Contracts;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using Windows.Storage.Streams;
@@ -7,12 +8,14 @@ namespace HA4IoT.Extensions.Messaging
 {
     public class TemperatureMessage : IMessage
     {
-        private const byte MESSAGE_SIZE = 5;
-        private const byte MESSAGE_TYPE = 1;
-
         public float Temperature { get; set; }
         public byte Pin { get; set; } = 1;
-        
+
+        public MessageType Type()
+        {
+            return MessageType.Temperature;
+        }
+
         public override string ToString()
         {
             return $"New temperature {Temperature} on pin {Pin}";
@@ -25,7 +28,7 @@ namespace HA4IoT.Extensions.Messaging
 
         public bool CanDeserialize(byte messageType, byte messageSize)
         {
-            if (messageType == MESSAGE_TYPE && messageSize == MESSAGE_SIZE)
+            if (messageType == (byte)Type() && messageSize == 5)
             {
                 return true;
             }
@@ -39,7 +42,7 @@ namespace HA4IoT.Extensions.Messaging
 
             var package = new List<byte>
             {
-                MESSAGE_TYPE,
+                (byte)Type(),
                 currentMessage.Pin
             };
 
@@ -56,6 +59,11 @@ namespace HA4IoT.Extensions.Messaging
                 Pin = pin,
                 Temperature = temp
             };
+        }
+
+        public string MessageAddress(JObject message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

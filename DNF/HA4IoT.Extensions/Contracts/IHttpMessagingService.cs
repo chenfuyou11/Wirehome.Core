@@ -2,9 +2,9 @@
 using HA4IoT.Contracts.Services;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Extensions.I2C
+namespace HA4IoT.Extensions.Contracts
 {
-    public interface II2CService : IService
+    public interface IHttpMessagingService : IService
     {
         void MessageHandler(Message<JObject> message);
     }

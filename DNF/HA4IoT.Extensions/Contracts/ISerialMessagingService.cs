@@ -1,9 +1,9 @@
 ﻿using HA4IoT.Contracts.Services;
 using HA4IoT.Extensions.Messaging;
 
-namespace HA4IoT.Extensions
+namespace HA4IoT.Extensions.Contracts
 {
-    public interface ISerialService : IService
+    public interface ISerialMessagingService : IService
     {
         void RegisterHandler(IMessage handler);
         void Close();

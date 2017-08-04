@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Extensions
+﻿namespace HA4IoT.Extensions.Contracts
 {
     public interface IEtwLoggingService
     {

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using HA4IoT.Extensions.Contracts;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using Windows.Storage.Streams;
@@ -7,11 +8,13 @@ namespace HA4IoT.Extensions.Messaging
 {
     public class CurrentMessage : IMessage
     {
-        private const byte MESSAGE_SIZE = 2;
-        private const byte MESSAGE_TYPE = 5;
-
         public byte Pin { get; set; }
         public byte State { get; set; }
+
+        public MessageType Type()
+        {
+            return MessageType.Current;
+        }
 
         public override string ToString()
         {
@@ -25,7 +28,7 @@ namespace HA4IoT.Extensions.Messaging
 
         public bool CanDeserialize(byte messageType, byte messageSize)
         {
-            if (messageType == MESSAGE_TYPE && messageSize == MESSAGE_SIZE)
+            if (messageType == (byte)Type() && messageSize == 2)
             {
                 return true;
             }
@@ -39,7 +42,7 @@ namespace HA4IoT.Extensions.Messaging
 
             var package = new List<byte>
             {
-                MESSAGE_TYPE,
+                (byte)Type(),
                 currentMessage.Pin
             };
             
@@ -56,6 +59,11 @@ namespace HA4IoT.Extensions.Messaging
                 Pin = pin,
                 State = state
             };
+        }
+
+        public string MessageAddress(JObject message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using HA4IoT.Extensions.Contracts;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using Windows.Storage.Streams;
@@ -7,13 +8,15 @@ namespace HA4IoT.Extensions.Messaging
 {
     public class InfraredMessage : IMessage
     {
-        private const byte MESSAGE_SIZE = 6;
-        private const byte MESSAGE_TYPE = 3;
-
         public byte Repeats { get; set; } = 1;
         public byte System { get; set; }
         public uint Code { get; set; }
         public byte Bits { get; set; }
+
+        public MessageType Type()
+        {
+            return MessageType.Infrared;
+        }
 
         public override string ToString()
         {
@@ -43,7 +46,7 @@ namespace HA4IoT.Extensions.Messaging
 
             var package = new List<byte>
             {
-                MESSAGE_TYPE,
+                (byte)Type(),
                 infraredMessage.Repeats,
                 infraredMessage.System,
                 infraredMessage.Bits
@@ -55,7 +58,7 @@ namespace HA4IoT.Extensions.Messaging
 
         public bool CanDeserialize(byte messageType, byte messageSize)
         {
-            if (messageType == MESSAGE_TYPE && messageSize == MESSAGE_SIZE)
+            if (messageType == (byte)Type() && messageSize == 6)
             {
                 return true;
             }
@@ -75,6 +78,11 @@ namespace HA4IoT.Extensions.Messaging
                 Code = code,
                 Bits = bits
             };
+        }
+
+        public string MessageAddress(JObject message)
+        {
+            throw new NotImplementedException();
         }
     }
 

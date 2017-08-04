@@ -4,7 +4,7 @@ using HA4IoT.Contracts.Services;
 using HA4IoT.Contracts.Areas;
 using System;
 
-namespace HA4IoT.Extensions
+namespace HA4IoT.Extensions.Contracts
 {
     public interface ILightAutomationService
     {

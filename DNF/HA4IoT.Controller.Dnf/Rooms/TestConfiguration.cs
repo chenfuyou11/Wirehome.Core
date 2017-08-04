@@ -10,12 +10,12 @@ using HA4IoT.Areas;
 using HA4IoT.Contracts.Hardware.RemoteSockets.Protocols;
 using HA4IoT.Hardware.Drivers.RemoteSockets;
 using HA4IoT.Contracts.Hardware.RemoteSockets;
-using HA4IoT.Extensions;
 using HA4IoT.Contracts.Messaging;
 using System.Threading.Tasks;
 using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Extensions.I2C;
 using HA4IoT.Extensions.Messaging;
+using HA4IoT.Extensions.Contracts;
+using HA4IoT.Extensions.Messaging.Services;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {
@@ -27,7 +27,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
         private readonly IRemoteSocketService _remoteSocketService;
-        private readonly ISerialService _serialService;
+        private readonly ISerialMessagingService _serialService;
         private readonly IMessageBrokerService _messageBroker;
         private readonly ISchedulerService _schedulerService;
 
@@ -41,7 +41,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
                                     ActuatorFactory actuatorFactory,
                                     AutomationFactory automationFactory,
                                     IRemoteSocketService remoteSocketService,
-                                    ISerialService serialService, 
+                                    ISerialMessagingService serialService, 
                                     IMessageBrokerService messageBroker,
                                     ISchedulerService schedulerService
                                     ) 
@@ -104,7 +104,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
             //    Pin = 14
             //});
 
-            _messageBroker.Publish(typeof(I2CService).Name, new TemperatureMessage
+            _messageBroker.Publish(typeof(II2CMessagingService).Name, new TemperatureMessage
             {
                 Pin = 13
             });
@@ -112,14 +112,44 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
             _messageBroker.Subscribe<LPD433Message>("SerialService", x =>
             {
-                _messageBroker.Publish(typeof(I2CService).Name, new LPD433Message
+                if
+                (
+                    x.Payload.Content.DipswitchCode?.Command == Hardware.RemoteSockets.RemoteSocketCommand.TurnOff &&
+                    x.Payload.Content.DipswitchCode?.System == DipswitchSystemCode.AllOn &&
+                    x.Payload.Content.DipswitchCode?.Unit == DipswitchUnitCode.A
+                )
                 {
-                    Pin = 7,
-                    Code = last ? codePair.OnCode.Value : codePair.OffCode.Value
+                    _messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage
+                    {
+                        ParamName = "cmd0",
+                        ParamValue = "PutZone_OnOff/OFF",
+                        DeviceAddress = "192.168.0.101"
+                    });
+                }
 
-                });
+                if
+               (
+                   x.Payload.Content.DipswitchCode?.Command == Hardware.RemoteSockets.RemoteSocketCommand.TurnOn &&
+                   x.Payload.Content.DipswitchCode?.System == DipswitchSystemCode.AllOn &&
+                   x.Payload.Content.DipswitchCode?.Unit == DipswitchUnitCode.A
+               )
+                {
+                    _messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage
+                    {
+                        ParamName = "cmd0",
+                        ParamValue = "PutZone_OnOff/ON",
+                        DeviceAddress = "192.168.0.101"
+                    });
+                }
 
-                last = !last;
+                //_messageBroker.Publish(typeof(II2CMessagingService).Name, new LPD433Message
+                //{
+                //    Pin = 7,
+                //    Code = last ? codePair.OnCode.Value : codePair.OffCode.Value
+
+                //});
+
+                //last = !last;
             }
             );
 

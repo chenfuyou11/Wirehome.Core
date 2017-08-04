@@ -1,18 +1,22 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 using Windows.Storage.Streams;
+using HA4IoT.Extensions.Contracts;
 
 namespace HA4IoT.Extensions.Messaging
 {
     public class DebugMessage : IMessage
     {
-        private const byte MESSAGE_TYPE = 10;
-
         public string Message { get; set; }
-        
+
+        public MessageType Type()
+        {
+            return MessageType.Debug;
+        }
+
         public bool CanDeserialize(byte messageType, byte messageSize)
         {
-            if (messageType == MESSAGE_TYPE)
+            if (messageType == (byte)Type())
             {
                 return true;
             }
@@ -43,6 +47,11 @@ namespace HA4IoT.Extensions.Messaging
         public override string ToString()
         {
             return $"Debug message: {Message}";
+        }
+
+        public string MessageAddress(JObject message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

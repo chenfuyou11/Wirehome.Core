@@ -7,13 +7,9 @@ using HA4IoT.Contracts.Areas;
 using HA4IoT.Extensions.Core;
 using HA4IoT.Contracts.Core;
 using HA4IoT.Areas;
-using HA4IoT.Extensions;
 using HA4IoT.Contracts.Components;
-using System;
-using HA4IoT.Hardware.RemoteSockets;
-using HA4IoT.Contracts.Scheduling;
 using HA4IoT.Hardware.Drivers.CCTools.Devices;
-using HA4IoT.Contracts.Hardware.RemoteSockets;
+using HA4IoT.Extensions.Contracts;
 
 namespace HA4IoT.Controller.Dnf.Rooms
 {

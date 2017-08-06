@@ -5,7 +5,7 @@ using HA4IoT.Extensions.Contracts;
 
 namespace HA4IoT.Extensions.Messaging
 {
-    public class DebugMessage : IMessage
+    public class DebugMessage : IBinaryMessage
     {
         public string Message { get; set; }
 

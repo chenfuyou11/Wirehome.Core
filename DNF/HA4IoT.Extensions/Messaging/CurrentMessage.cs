@@ -6,7 +6,7 @@ using Windows.Storage.Streams;
 
 namespace HA4IoT.Extensions.Messaging
 {
-    public class CurrentMessage : IMessage
+    public class CurrentMessage : IBinaryMessage
     {
         public byte Pin { get; set; }
         public byte State { get; set; }

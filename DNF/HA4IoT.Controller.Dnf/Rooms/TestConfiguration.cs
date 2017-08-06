@@ -119,12 +119,12 @@ namespace HA4IoT.Controller.Dnf.Rooms
                     x.Payload.Content.DipswitchCode?.Unit == DipswitchUnitCode.A
                 )
                 {
-                    _messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage
-                    {
-                        ParamName = "cmd0",
-                        ParamValue = "PutZone_OnOff/OFF",
-                        DeviceAddress = "192.168.0.101"
-                    });
+                    //_messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage
+                    //{
+                    //    ParamName = "cmd0",
+                    //    ParamValue = "PutZone_OnOff/OFF",
+                    //    DeviceAddress = "192.168.0.101"
+                    //});
                 }
 
                 if
@@ -134,12 +134,12 @@ namespace HA4IoT.Controller.Dnf.Rooms
                    x.Payload.Content.DipswitchCode?.Unit == DipswitchUnitCode.A
                )
                 {
-                    _messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage
-                    {
-                        ParamName = "cmd0",
-                        ParamValue = "PutZone_OnOff/ON",
-                        DeviceAddress = "192.168.0.101"
-                    });
+                    //_messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage
+                    //{
+                    //    ParamName = "cmd0",
+                    //    ParamValue = "PutZone_OnOff/ON",
+                    //    DeviceAddress = "192.168.0.101"
+                    //});
                 }
 
                 //_messageBroker.Publish(typeof(II2CMessagingService).Name, new LPD433Message

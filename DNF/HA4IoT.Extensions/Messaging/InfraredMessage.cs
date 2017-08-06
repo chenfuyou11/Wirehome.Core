@@ -6,7 +6,7 @@ using Windows.Storage.Streams;
 
 namespace HA4IoT.Extensions.Messaging
 {
-    public class InfraredMessage : IMessage
+    public class InfraredMessage : IBinaryMessage
     {
         public byte Repeats { get; set; } = 1;
         public byte System { get; set; }

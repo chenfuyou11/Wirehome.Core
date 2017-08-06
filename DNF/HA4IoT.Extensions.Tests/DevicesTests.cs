@@ -85,7 +85,6 @@ namespace HA4IoT.Extensions.Tests
             string returnNode = "Mute";
 
             var address = $"http://{host}/goform/{api}.xml?{zone}+{command}";
-
             address = "http://192.168.0.101/goform/formMainZone_MainZoneXml.xml";
 
             using (var httpClient = new HttpClient())
@@ -103,11 +102,7 @@ namespace HA4IoT.Extensions.Tests
                     new {
                        Name = x.Attribute("index").Value,
                        Value = x.Attribute("index").Value
-                    });
-
-       
-
-                    
+                    }); 
                 }
             }
             
@@ -117,9 +112,9 @@ namespace HA4IoT.Extensions.Tests
         [TestMethod]
         public void SendSamsung()
         { 
-            var remote = new SamsungTV("192.168.0.104", 55000, "Ha4Iot");
+            //var remote = new SamsungTV("192.168.0.104", 55000, "Ha4Iot");
 
-            remote.Send("KEY_VOLDOWN");
+            //remote.Send("KEY_VOLDOWN");
 
             //KEY_POWEROFF
             //KEY_CHDOWN
@@ -164,7 +159,10 @@ namespace HA4IoT.Extensions.Tests
         [TestMethod]
         public void SendSony()
         {
+            //var sony = new SonyBraviaTV("192.168.0.107", "8d76d476-4e75-4891-8888-22ffe33a3ef8", "Ha4IoT", 
+            //    "13d2af6b9430422c41980548d64dd6cdf61e9b5e20325a9bbba29894b666c9fe");
 
+            //sony.SendIrccAsync(RemoteControllerKeys.WakeUp);
         }
 
         public static class RemoteControllerKeys

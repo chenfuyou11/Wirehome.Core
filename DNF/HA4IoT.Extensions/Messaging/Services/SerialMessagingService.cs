@@ -22,9 +22,9 @@ namespace HA4IoT.Extensions.MessagesModel.Services
         private DataReader dataReaderObject = null;
         private readonly ILogger _logService;
         private readonly IMessageBrokerService _messageBroker;
-        private readonly List<IMessage> _messageHandlers = new List<IMessage>();
+        private readonly List<IBinaryMessage> _messageHandlers = new List<IBinaryMessage>();
 
-        public SerialMessagingService(ILogService logService, IMessageBrokerService messageBroker, IEnumerable<IMessage> handlers)
+        public SerialMessagingService(ILogService logService, IMessageBrokerService messageBroker, IEnumerable<IBinaryMessage> handlers)
         {
             _logService = logService.CreatePublisher(nameof(SerialMessagingService));
             _messageBroker = messageBroker;
@@ -85,7 +85,7 @@ namespace HA4IoT.Extensions.MessagesModel.Services
             }
         }
 
-        public void RegisterHandler(IMessage handler)
+        public void RegisterHandler(IBinaryMessage handler)
         {
             _messageHandlers.Add(handler);
         }

@@ -4,7 +4,7 @@ using Windows.Storage.Streams;
 
 namespace HA4IoT.Extensions.Contracts
 {
-    public interface IMessage
+    public interface IBinaryMessage
     {
         bool CanDeserialize(byte messageType, byte messageSize);
         bool CanSerialize(string messageType);

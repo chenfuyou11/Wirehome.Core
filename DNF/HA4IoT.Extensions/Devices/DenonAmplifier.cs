@@ -11,10 +11,11 @@ using System.Threading.Tasks;
 using HA4IoT.Contracts.Messaging;
 using HA4IoT.Extensions.Messaging;
 using HA4IoT.Extensions.Messaging.Services;
+using HA4IoT.Extensions.Messaging.DenonMessages;
 
 namespace HA4IoT.Extensions.Devices
 {
-    public class Denon : ComponentBase
+    public class DenonAmplifier : ComponentBase
     {
         private PowerStateValue _powerState = PowerStateValue.Off;
         private CommandExecutor _commandExecutor;
@@ -22,26 +23,30 @@ namespace HA4IoT.Extensions.Devices
         private readonly string _denonConfigAddress;
         private readonly IMessageBrokerService _messageBrokerService;
 
-        public Denon(string id, string hostname, IMessageBrokerService messageBroker) : base(id)
+        public DenonAmplifier(string id, string hostname, IMessageBrokerService messageBroker) : base(id)
         {
             _commandExecutor = new CommandExecutor();
             _commandExecutor.Register<TurnOnCommand>(c => 
             {
-                _messageBrokerService.Publish(typeof(HttpMessagingService).Name, new DenonMessage
+                _messageBrokerService.Publish(typeof(HttpMessagingService).Name, new DenonControlMessage
                 {
-                    ParamName = "cmd0",
-                    ParamValue = "PutZone_OnOff/ON",
-                    DeviceAddress= hostname
+                    Zone = "1",
+                    Command = "PowerOn",
+                    Api = "formiPhoneAppPower",
+                    ReturnNode = "Power",
+                    Address = hostname
                 });
                 
             });
             _commandExecutor.Register<TurnOffCommand>(c =>
             {
-                _messageBrokerService.Publish(typeof(HttpMessagingService).Name, new DenonMessage
+                _messageBrokerService.Publish(typeof(HttpMessagingService).Name, new DenonControlMessage
                 {
-                    ParamName = "cmd0",
-                    ParamValue = "PutZone_OnOff/OFF",
-                    DeviceAddress = hostname
+                    Zone = "1",
+                    Command = "PowerOff",
+                    Api = "formiPhoneAppPower",
+                    ReturnNode = "Power",
+                    Address = hostname
                 });
             }
             );

@@ -16,9 +16,9 @@ namespace HA4IoT.Extensions.MessagesModel.Services
         private readonly II2CBusService _i2cServiceBus;
         private readonly IDeviceRegistryService _deviceService;
         private I2CHardwareBridge _bridge;
-        private readonly List<IMessage> _messageHandlers = new List<IMessage>();
+        private readonly List<IBinaryMessage> _messageHandlers = new List<IBinaryMessage>();
 
-        public I2CMessagingService(ILogService logService, IMessageBrokerService messageBroker, II2CBusService i2CBusService, IDeviceRegistryService deviceService, IEnumerable<IMessage> handlers)
+        public I2CMessagingService(ILogService logService, IMessageBrokerService messageBroker, II2CBusService i2CBusService, IDeviceRegistryService deviceService, IEnumerable<IBinaryMessage> handlers)
         {
             _logService = logService.CreatePublisher(nameof(I2CMessagingService));
             _messageBroker = messageBroker;

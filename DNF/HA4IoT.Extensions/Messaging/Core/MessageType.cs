@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HA4IoT.Extensions.Messaging
+﻿namespace HA4IoT.Extensions.Messaging
 {
     public enum MessageType
     {
@@ -15,7 +9,6 @@ namespace HA4IoT.Extensions.Messaging
         Current = 5,
         Humidity = 6,
         Debug = 10,
-        Denon = 20
-        
+        Samsung = 20
     }
 }

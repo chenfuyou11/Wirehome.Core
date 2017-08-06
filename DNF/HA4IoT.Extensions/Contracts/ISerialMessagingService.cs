@@ -5,7 +5,7 @@ namespace HA4IoT.Extensions.Contracts
 {
     public interface ISerialMessagingService : IService
     {
-        void RegisterHandler(IMessage handler);
+        void RegisterHandler(IBinaryMessage handler);
         void Close();
     }
 }

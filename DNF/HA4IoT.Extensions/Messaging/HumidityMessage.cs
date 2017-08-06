@@ -6,7 +6,7 @@ using Windows.Storage.Streams;
 
 namespace HA4IoT.Extensions.Messaging
 {
-    public class HumidityMessage : IMessage
+    public class HumidityMessage : IBinaryMessage
     {
         public HumidityMessage()
         {

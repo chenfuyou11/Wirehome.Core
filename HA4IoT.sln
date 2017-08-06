@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.12
+VisualStudioVersion = 15.0.26730.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers", "{CD5D2CCD-44D0-46E5-BE14-3B377048E0A2}"
 EndProject
@@ -55,6 +55,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Extensions", "DNF\HA4IoT.Extensions\HA4IoT.Extensions.csproj", "{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Extensions.Tests", "DNF\HA4IoT.Extensions.Tests\HA4IoT.Extensions.Tests.csproj", "{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HA4IoT.WindowsService", "DNF\HA4IoT.WindowsService\HA4IoT.WindowsService.csproj", "{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -435,6 +437,34 @@ Global
 		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|x86.Build.0 = Release|x86
 		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|x86.Deploy.0 = Release|x86
 		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69}.Release|x86 (For local).ActiveCfg = Release|x86
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|Any CPU (For Cloud Components).ActiveCfg = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|Any CPU (For Cloud Components).Build.0 = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|ARM.Build.0 = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|x64.Build.0 = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|x86.Build.0 = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|x86 (For local).ActiveCfg = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Debug|x86 (For local).Build.0 = Debug|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|Any CPU (For Cloud Components).ActiveCfg = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|Any CPU (For Cloud Components).Build.0 = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|ARM.ActiveCfg = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|ARM.Build.0 = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|ARM (For Raspberry Pi).ActiveCfg = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|ARM (For Raspberry Pi).Build.0 = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|x64.ActiveCfg = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|x64.Build.0 = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|x86.ActiveCfg = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|x86.Build.0 = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|x86 (For local).ActiveCfg = Release|Any CPU
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}.Release|x86 (For local).Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -455,5 +485,9 @@ Global
 		{7AB8593B-A23C-467A-B8FB-09C9F32ABF54} = {FC699828-F953-4DA6-978B-EE8BFB988390}
 		{4CE9CDB3-AAAC-4241-B8BF-7FBC89A0595E} = {FC699828-F953-4DA6-978B-EE8BFB988390}
 		{7DA3FEFF-939F-40FC-9AD8-6CCE40CCCF69} = {FC699828-F953-4DA6-978B-EE8BFB988390}
+		{D65BABD3-DDC5-4CD2-9513-79575D4BEC36} = {FC699828-F953-4DA6-978B-EE8BFB988390}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {67048500-54F1-4071-B01E-6215AD81A909}
 	EndGlobalSection
 EndGlobal

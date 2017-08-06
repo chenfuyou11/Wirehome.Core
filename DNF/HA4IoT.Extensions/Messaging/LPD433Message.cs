@@ -6,7 +6,7 @@ using Windows.Storage.Streams;
 
 namespace HA4IoT.Extensions.Messaging
 {
-    public class LPD433Message : IMessage
+    public class LPD433Message : IBinaryMessage
     {
 
         public uint Code { get; set; }

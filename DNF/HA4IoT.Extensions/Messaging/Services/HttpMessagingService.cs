@@ -1,11 +1,16 @@
 ﻿using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Messaging;
 using HA4IoT.Extensions.Contracts;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace HA4IoT.Extensions.Messaging.Services
 {
@@ -13,9 +18,9 @@ namespace HA4IoT.Extensions.Messaging.Services
     {
         private readonly ILogger _logService;
         private readonly IMessageBrokerService _messageBroker;
-        private readonly List<IMessage> _messageHandlers = new List<IMessage>();
+        private readonly List<IBinaryMessage> _messageHandlers = new List<IBinaryMessage>();
 
-        public HttpMessagingService(ILogService logService, IMessageBrokerService messageBroker, IEnumerable<IMessage> handlers)
+        public HttpMessagingService(ILogService logService, IMessageBrokerService messageBroker, IEnumerable<IBinaryMessage> handlers)
         {
             _logService = logService.CreatePublisher(nameof(HttpMessagingService));
             _messageBroker = messageBroker;
@@ -36,45 +41,72 @@ namespace HA4IoT.Extensions.Messaging.Services
             });
         }
 
-        public void MessageHandler(Message<JObject> message)
+        public async void MessageHandler(Message<JObject> message)
         {
-            _messageHandlers.ForEach(async handler =>
+            var tasks = _messageHandlers.Select(i => HandleMessage(message, i));
+            await Task.WhenAll(tasks);
+        }
+
+        private async Task HandleMessage(Message<JObject> message, IBinaryMessage handler)
+        {
+            if (handler.CanSerialize(message.Payload.Type))
             {
-                if (handler.CanSerialize(message.Payload.Type))
+                try
                 {
-                    try
-                    {                        
-                        Uri uri = new Uri(handler.MessageAddress(message.Payload.Content));
-                        var webRequest = WebRequest.Create(uri);
-                        webRequest.Method = "POST";
-                        webRequest.ContentType = "application/x-www-form-urlencoded";
-                                
-                        byte[] byteArray = handler.Serialize(message.Payload.Content);
-                        webRequest.Headers["ContentLength"] = byteArray.Length.ToString();
+                    var httpMessage = message.Payload.Content.ToObject<HttpMessage>();
 
-                        using (Stream stream = await webRequest.GetRequestStreamAsync())
-                        {
-                            stream.Write(byteArray, 0, byteArray.Length);
-                        }
-
-                        using (WebResponse response = await webRequest.GetResponseAsync())
-                        {
-                            using (Stream stream = response.GetResponseStream())
-                            {
-                                using (StreamReader sr = new StreamReader(stream))
-                                {
-                                    string responseStream = await sr.ReadToEndAsync();
-                                }
-                            }
-                        }
-
-                    }
-                    catch (Exception ex)
+                    if (httpMessage.RequestType == "POST")
                     {
-                        _logService.Error(ex, $"Handler of type {handler.GetType().Name} failed to process message");
+                        await HandlePostRequest(httpMessage);
+                    }
+                    else if (httpMessage.RequestType == "GET")
+                    {
+                        await HandleGetRequest(httpMessage);
                     }
                 }
-            });
+                catch (Exception ex)
+                {
+                    _logService.Error(ex, $"Handler of type {handler.GetType().Name} failed to process message");
+                }
+            }
+        }
+
+        private static async Task HandleGetRequest(HttpMessage httpMessage)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var httpResponse = await httpClient.GetAsync(httpMessage.GetAddress());
+                httpResponse.EnsureSuccessStatusCode();
+                var responseBody = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                httpMessage.ValidateResponse(responseBody);
+            }
+        }
+
+        private static async Task HandlePostRequest(HttpMessage httpMessage)
+        {
+            var httpClientHandler = new HttpClientHandler();
+            if (httpMessage.Cookies != null)
+            {
+                httpClientHandler.CookieContainer = httpMessage.Cookies;
+                httpClientHandler.UseCookies = true;
+            }
+
+            using (var httpClient = new HttpClient(httpClientHandler))
+            {
+                foreach (var header in httpMessage.DefaultHeaders)
+                {
+                    httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
+                }
+
+                if (!string.IsNullOrWhiteSpace(httpMessage.AuthorisationHeader.Key))
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(httpMessage.AuthorisationHeader.Key, httpMessage.AuthorisationHeader.Value);
+                }
+
+                var response = await httpClient.PostAsync(httpMessage.GetAddress(), new StringContent(httpMessage.Serialize())).ConfigureAwait(false);
+                var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                httpMessage.ValidateResponse(responseBody);
+            }
         }
     }
 }

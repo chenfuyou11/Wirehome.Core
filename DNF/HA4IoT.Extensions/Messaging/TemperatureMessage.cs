@@ -6,7 +6,7 @@ using Windows.Storage.Streams;
 
 namespace HA4IoT.Extensions.Messaging
 {
-    public class TemperatureMessage : IMessage
+    public class TemperatureMessage : IBinaryMessage
     {
         public float Temperature { get; set; }
         public byte Pin { get; set; } = 1;

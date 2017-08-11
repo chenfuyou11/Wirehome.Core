@@ -14,7 +14,7 @@ namespace HA4IoT.Extensions.Messaging.SonyMessages
             DefaultHeaders.Add("SOAPACTION", "\"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC\"");
         }
 
-        public override string GetAddress()
+        public override string MessageAddress()
         {
             Cookies.Add(new Uri($"http://{Address}/sony/"), new Cookie("auth", AuthorisationKey, "/sony", Address));
             return $"http://{Address}/sony/IRCC";

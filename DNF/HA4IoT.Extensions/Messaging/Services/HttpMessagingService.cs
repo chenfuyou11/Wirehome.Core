@@ -1,13 +1,10 @@
 ﻿using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Messaging;
 using HA4IoT.Extensions.Contracts;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -75,7 +72,7 @@ namespace HA4IoT.Extensions.Messaging.Services
         {
             using (var httpClient = new HttpClient())
             {
-                var httpResponse = await httpClient.GetAsync(httpMessage.GetAddress());
+                var httpResponse = await httpClient.GetAsync(httpMessage.MessageAddress());
                 httpResponse.EnsureSuccessStatusCode();
                 var responseBody = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 httpMessage.ValidateResponse(responseBody);
@@ -91,6 +88,11 @@ namespace HA4IoT.Extensions.Messaging.Services
                 httpClientHandler.UseCookies = true;
             }
 
+            if (httpMessage.Creditionals != null)
+            {
+                httpClientHandler.Credentials = httpMessage.Creditionals;
+            }
+            
             using (var httpClient = new HttpClient(httpClientHandler))
             {
                 foreach (var header in httpMessage.DefaultHeaders)
@@ -103,7 +105,12 @@ namespace HA4IoT.Extensions.Messaging.Services
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(httpMessage.AuthorisationHeader.Key, httpMessage.AuthorisationHeader.Value);
                 }
 
-                var response = await httpClient.PostAsync(httpMessage.GetAddress(), new StringContent(httpMessage.Serialize())).ConfigureAwait(false);
+                var content = new StringContent(httpMessage.Serialize());
+                if (!string.IsNullOrWhiteSpace(httpMessage.ContentType))
+                {
+                    content.Headers.ContentType = new MediaTypeHeaderValue(httpMessage.ContentType);
+                }
+                var response = await httpClient.PostAsync(httpMessage.MessageAddress(), content).ConfigureAwait(false);
                 var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 httpMessage.ValidateResponse(responseBody);
             }

@@ -1,13 +1,12 @@
 ﻿using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Messaging;
 using HA4IoT.Extensions.Contracts;
+using HA4IoT.Extensions.Messaging.Core;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Windows.Networking;
 using Windows.Networking.Sockets;
@@ -53,7 +52,7 @@ namespace HA4IoT.Extensions.Messaging.Services
             {
                 try
                 {
-                    var tcpMessage = message.Payload.Content.ToObject<BaseMessage>();
+                    var tcpMessage = message.Payload.Content.ToObject<IBaseMessage>();
                     using(var socket = new StreamSocket())
                     {
                         Uri uri = new Uri($"tcp://{tcpMessage.Address}");

@@ -19,7 +19,7 @@ namespace HA4IoT.Extensions.Messaging.SonyMessages
             RequestType = "POST";
         }
 
-        public override string GetAddress()
+        public override string MessageAddress()
         {
             if (!string.IsNullOrWhiteSpace(PIN))
             {

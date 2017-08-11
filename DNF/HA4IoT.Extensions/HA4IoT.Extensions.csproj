@@ -115,10 +115,11 @@
     <Compile Include="Core\DipswitchCode.cs" />
     <Compile Include="Devices\SamsungTV.cs" />
     <Compile Include="Devices\SonyBraviaTV.cs" />
-    <Compile Include="Messaging\Core\BaseMessage.cs" />
+    <Compile Include="Contracts\IHttpMessage.cs" />
+    <Compile Include="Contracts\IBaseMessage.cs" />
     <Compile Include="Messaging\DebugMessage.cs" />
     <Compile Include="Core\InfraredSystem.cs" />
-    <Compile Include="Contracts\IMessage.cs" />
+    <Compile Include="Contracts\IBinaryMessage.cs" />
     <Compile Include="Messaging\CurrentMessage.cs" />
     <Compile Include="Messaging\DenonMessages\DenonMappingMessage.cs" />
     <Compile Include="Messaging\DenonMessages\DenonStatusLightMessage.cs" />
@@ -127,6 +128,14 @@
     <Compile Include="Messaging\Core\HttpMessage.cs" />
     <Compile Include="Messaging\HumidityMessage.cs" />
     <Compile Include="Messaging\Core\MessageType.cs" />
+    <Compile Include="Messaging\KodiMessages\JsonModels\Data.cs" />
+    <Compile Include="Messaging\KodiMessages\JsonModels\JsonPausePlayResult.cs" />
+    <Compile Include="Messaging\KodiMessages\JsonModels\JsonRpcError.cs" />
+    <Compile Include="Messaging\KodiMessages\JsonModels\JsonRpcRequest.cs" />
+    <Compile Include="Messaging\KodiMessages\JsonModels\JsonRpcResponse.cs" />
+    <Compile Include="Messaging\KodiMessages\KodiPingMessage.cs" />
+    <Compile Include="Messaging\KodiMessages\RpcErrorCode.cs" />
+    <Compile Include="Messaging\KodiMessages\JsonModels\Stack.cs" />
     <Compile Include="Messaging\SamsungMessages\SamsungControlMessage.cs" />
     <Compile Include="Contracts\ITcpMessagingService.cs" />
     <Compile Include="Messaging\Services\TcpMessagingService.cs" />
@@ -170,6 +179,7 @@
     <Compile Include="Motion\MotionModel\MotionPoint.cs" />
     <Compile Include="Motion\MotionModel\MotionVector.cs" />
     <Compile Include="Motion\PresenceService.cs" />
+    <Compile Include="Networking\WakeOnLan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Exceptions\StateAlreadySetException.cs" />
     <Compile Include="Messaging\Services\SerialMessagingService.cs" />

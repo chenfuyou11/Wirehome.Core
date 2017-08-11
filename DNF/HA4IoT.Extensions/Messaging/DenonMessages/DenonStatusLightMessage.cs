@@ -13,7 +13,7 @@ namespace HA4IoT.Extensions.Messaging.DenonMessages
             RequestType = "GET";
         }
 
-        public override string GetAddress()
+        public override string MessageAddress()
         {
             if(Zone == "1")
             {

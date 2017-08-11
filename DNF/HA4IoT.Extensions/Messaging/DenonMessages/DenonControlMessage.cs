@@ -16,7 +16,7 @@ namespace HA4IoT.Extensions.Messaging.DenonMessages
             RequestType = "GET";
         }
 
-        public override string GetAddress()
+        public override string MessageAddress()
         {
             return $"http://{Address}/goform/{Api}.xml?{Zone}+{Command}";
         }

@@ -122,6 +122,13 @@ namespace HA4IoT.Core
             _container.RegisterCollection(items);
         }
 
+        public void RegisterSingletonCollection<TItem>(IEnumerable<Assembly> assemblies) where TItem : class
+        {
+            if (assemblies == null) throw new ArgumentNullException(nameof(assemblies));
+
+            _container.RegisterCollection(typeof(TItem), assemblies);
+        }
+
         public void RegisterSingleton<TContract>(Func<TContract> instanceCreator) where TContract : class
         {
             if (instanceCreator == null) throw new ArgumentNullException(nameof(instanceCreator));

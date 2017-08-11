@@ -3,9 +3,9 @@ using HA4IoT.Extensions;
 using HA4IoT.Extensions.Contracts;
 using HA4IoT.Extensions.MessagesModel.Services;
 using HA4IoT.Extensions.Messaging;
-using HA4IoT.Extensions.Messaging.SamsungMessages;
 using HA4IoT.Extensions.Messaging.Services;
 using System;
+using System.Reflection;
 
 namespace HA4IoT.Controller.Dnf
 {
@@ -24,10 +24,10 @@ namespace HA4IoT.Controller.Dnf
             containerService.RegisterSingleton<II2CMessagingService, I2CMessagingService>();
             containerService.RegisterSingleton<IHttpMessagingService, HttpMessagingService>();
             containerService.RegisterSingleton<ITcpMessagingService, TcpMessagingService>();
-            containerService.RegisterSingletonCollection(new IBinaryMessage[] { new InfraredMessage(), new LPD433Message(), new DebugMessage(), new CurrentMessage(),
-                                                                          new TemperatureMessage(), new HumidityMessage(), new SamsungControlMessage()  }
-                                                        );
-
+            
+            var assembly = typeof(InfraredMessage).GetTypeInfo().Assembly;
+            containerService.RegisterSingletonCollection<IBinaryMessage>(new[] { assembly });
+            containerService.RegisterSingletonCollection<IHttpMessage>(new[] { assembly });
         }
     }
 

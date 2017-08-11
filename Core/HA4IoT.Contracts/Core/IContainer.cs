@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace HA4IoT.Contracts.Core
 {
@@ -17,5 +18,7 @@ namespace HA4IoT.Contracts.Core
             where TImplementation : class, TContract;
 
         void RegisterSingletonCollection<TItem>(IEnumerable<TItem> items) where TItem : class;
+
+        void RegisterSingletonCollection<TItem>(IEnumerable<Assembly> assemblies) where TItem : class;
     }
 }

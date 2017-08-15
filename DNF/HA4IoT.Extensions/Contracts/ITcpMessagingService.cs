@@ -6,6 +6,6 @@ namespace HA4IoT.Extensions.Messaging.Services
 {
     public interface ITcpMessagingService : IService
     {
-        void MessageHandler(Message<JObject> message);
+
     }
 }

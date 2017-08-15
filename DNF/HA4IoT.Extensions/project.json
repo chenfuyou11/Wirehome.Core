@@ -1,7 +1,8 @@
 ﻿{
   "dependencies": {
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
-    "Newtonsoft.Json": "10.0.2",
+    "Newtonsoft.Json": "10.0.3",
+    "SimpleInjector": "4.0.8",
     "System.Reactive": "3.1.1"
   },
   "frameworks": {

@@ -1,5 +1,8 @@
 ﻿using HA4IoT.Extensions.Devices.Samsung;
+using HA4IoT.Extensions.Extensions;
+using HA4IoT.Extensions.Messaging;
 using HA4IoT.Extensions.Messaging.KodiMessages;
+using HA4IoT.Extensions.Messaging.Services;
 using HA4IoT.Extensions.Networking;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -9,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -18,7 +22,19 @@ namespace HA4IoT.Extensions.Tests
     [TestClass]
     public partial class DevicesTests
     {
-     
+        //[TestMethod]
+        //public void Test()
+        //{
+        //    var extensionsAssemblie = new[] { typeof(InfraredMessage).GetTypeInfo().Assembly };
+        //    var namespaceName = (typeof(SerialMessagingService)).Namespace;
+
+        //    var registrations2 = from type in extensionsAssemblie.FirstOrDefault().GetExportedTypes()
+        //                         where type.Namespace == namespaceName
+        //                         where type.GetInterfaces().Any()
+        //                         select new { Service = type.GetInterfaces(false), Implementation = type };
+
+        //    var x = registrations2.ToList();
+        //}
 
         [TestMethod]
         public void WakeOnLanTest()

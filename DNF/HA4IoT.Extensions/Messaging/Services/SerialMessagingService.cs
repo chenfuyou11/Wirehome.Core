@@ -13,7 +13,7 @@ using Windows.Devices.Enumeration;
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
 
-namespace HA4IoT.Extensions.MessagesModel.Services
+namespace HA4IoT.Extensions.Messaging.Services
 {
     public class SerialMessagingService : ISerialMessagingService
     {
@@ -85,16 +85,18 @@ namespace HA4IoT.Extensions.MessagesModel.Services
             }
         }
 
-        public void RegisterHandler(IBinaryMessage handler)
-        {
-            _messageHandlers.Add(handler);
-        }
+        // DNF TODO
 
-        public void Close()
-        {
-            CancelReadTask();
-            CloseDevice();  
-        }
+        //public void RegisterHandler(IBinaryMessage handler)
+        //{
+        //    _messageHandlers.Add(handler);
+        //}
+
+        //public void Close()
+        //{
+        //    CancelReadTask();
+        //    CloseDevice();  
+        //}
 
         private void CloseDevice()
         {

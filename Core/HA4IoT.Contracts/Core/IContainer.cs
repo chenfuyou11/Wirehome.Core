@@ -20,5 +20,7 @@ namespace HA4IoT.Contracts.Core
         void RegisterSingletonCollection<TItem>(IEnumerable<TItem> items) where TItem : class;
 
         void RegisterSingletonCollection<TItem>(IEnumerable<Assembly> assemblies) where TItem : class;
+
+        void RegisterSingleton(Type service, Type implementation);
     }
 }

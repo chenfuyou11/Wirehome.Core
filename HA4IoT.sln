@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.0
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers", "{CD5D2CCD-44D0-46E5-BE14-3B377048E0A2}"
 EndProject
@@ -58,7 +58,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Extensions.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HA4IoT.WindowsService", "DNF\HA4IoT.WindowsService\HA4IoT.WindowsService.csproj", "{D65BABD3-DDC5-4CD2-9513-79575D4BEC36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.WindowsService.Core", "DNF\HA4IoT.WindowsService.Core\HA4IoT.WindowsService.Core.csproj", "{2BD6FF02-7C43-4F81-9E8C-ED496D28AFBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HA4IoT.WindowsService.Core", "DNF\HA4IoT.WindowsService.Core\HA4IoT.WindowsService.Core.csproj", "{2BD6FF02-7C43-4F81-9E8C-ED496D28AFBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,10 +1,11 @@
 ﻿using HA4IoT.Contracts.Core;
 using HA4IoT.Extensions;
 using HA4IoT.Extensions.Contracts;
-using HA4IoT.Extensions.MessagesModel.Services;
+using HA4IoT.Extensions.Extensions;
 using HA4IoT.Extensions.Messaging;
 using HA4IoT.Extensions.Messaging.Services;
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace HA4IoT.Controller.Dnf
@@ -18,17 +19,16 @@ namespace HA4IoT.Controller.Dnf
         public void ConfigureContainer(IContainer containerService)
         {
             if (containerService == null) throw new ArgumentNullException(nameof(containerService));
-            
+
+            var extensionsAssemblie = new[] { typeof(InfraredMessage).GetTypeInfo().Assembly };
+
             containerService.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
-            containerService.RegisterSingleton<ISerialMessagingService, SerialMessagingService>();
-            containerService.RegisterSingleton<II2CMessagingService, I2CMessagingService>();
-            containerService.RegisterSingleton<IHttpMessagingService, HttpMessagingService>();
-            containerService.RegisterSingleton<ITcpMessagingService, TcpMessagingService>();
-            
-            var assembly = typeof(InfraredMessage).GetTypeInfo().Assembly;
-            containerService.RegisterSingletonCollection<IBinaryMessage>(new[] { assembly });
-            containerService.RegisterSingletonCollection<IHttpMessage>(new[] { assembly });
+            containerService.RegisterServicesInNamespace(extensionsAssemblie.FirstOrDefault(), (typeof(SerialMessagingService)).Namespace);
+            containerService.RegisterSingletonCollection<IBinaryMessage>(extensionsAssemblie);
+            containerService.RegisterSingletonCollection<IHttpMessage>(extensionsAssemblie);
         }
+
+        
     }
 
 }

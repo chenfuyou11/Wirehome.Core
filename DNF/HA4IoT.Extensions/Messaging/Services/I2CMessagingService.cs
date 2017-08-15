@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
-namespace HA4IoT.Extensions.MessagesModel.Services
+namespace HA4IoT.Extensions.Messaging.Services
 {
     public class I2CMessagingService : II2CMessagingService
     {
@@ -43,7 +43,7 @@ namespace HA4IoT.Extensions.MessagesModel.Services
             });
         }
 
-        public void MessageHandler(Message<JObject> message)
+        private void MessageHandler(Message<JObject> message)
         {
             _messageHandlers.ForEach(handler =>
             {

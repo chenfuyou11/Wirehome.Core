@@ -40,13 +40,13 @@ namespace HA4IoT.Extensions.Messaging.Services
             });
         }
 
-        public async void MessageHandler(Message<JObject> message)
+        private async void MessageHandler(Message<JObject> message)
         {
-            var tasks = _messageHandlers.Select(i => HandleMessage(message, i));
+            var tasks = _messageHandlers.Select(i => SendMessage(message, i));
             await Task.WhenAll(tasks);
         }
 
-        private async Task HandleMessage(Message<JObject> message, IBinaryMessage handler)
+        private async Task SendMessage(Message<JObject> message, IBinaryMessage handler)
         {
             if (handler.CanSerialize(message.Payload.Type))
             {
@@ -78,4 +78,6 @@ namespace HA4IoT.Extensions.Messaging.Services
             }
         }
     }
+
+   
 }

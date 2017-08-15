@@ -117,6 +117,8 @@
     <Compile Include="Devices\SonyBraviaTV.cs" />
     <Compile Include="Contracts\IHttpMessage.cs" />
     <Compile Include="Contracts\IBaseMessage.cs" />
+    <Compile Include="Extensions\SimpleInjectorExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Messaging\DebugMessage.cs" />
     <Compile Include="Core\InfraredSystem.cs" />
     <Compile Include="Contracts\IBinaryMessage.cs" />

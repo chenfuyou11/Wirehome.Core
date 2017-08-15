@@ -115,6 +115,11 @@ namespace HA4IoT.Core
             _container.RegisterSingleton<TContract, TImplementation>();
         }
 
+        public void RegisterSingleton(Type service, Type implementation) 
+        {
+            _container.Register(service, implementation, Lifestyle.Singleton);
+        }
+
         public void RegisterSingletonCollection<TItem>(IEnumerable<TItem> items) where TItem : class
         {
             if (items == null) throw new ArgumentNullException(nameof(items));

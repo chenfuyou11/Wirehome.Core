@@ -5,51 +5,48 @@ using HA4IoT.Contracts.Components.States;
 using HA4IoT.Contracts.Components.Features;
 using HA4IoT.Contracts.Components.Commands;
 using HA4IoT.Components.Commands;
-using System.Xml;
-using System.Net.Http;
-using System.Threading.Tasks;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Extensions.Messaging;
-using HA4IoT.Extensions.Messaging.Services;
 using HA4IoT.Extensions.Messaging.DenonMessages;
+using HA4IoT.Extensions.Messaging.Core;
 
 namespace HA4IoT.Extensions.Devices
 {
     public class DenonAmplifier : ComponentBase
     {
-        private PowerStateValue _powerState = PowerStateValue.Off;
-        private CommandExecutor _commandExecutor;
-        private readonly string _denonControlAddress;
-        private readonly string _denonConfigAddress;
-        private readonly IMessageBrokerService _messageBrokerService;
+        private readonly CommandExecutor _commandExecutor;
+        private readonly IEventAggregator _eventAggregator;
 
-        public DenonAmplifier(string id, string hostname, IMessageBrokerService messageBroker) : base(id)
+        private PowerStateValue _powerState = PowerStateValue.Off;
+
+        public string Hostname { get; }
+
+        public DenonAmplifier(string id, string hostname, IEventAggregator eventAggregator) : base(id)
         {
             _commandExecutor = new CommandExecutor();
-            _commandExecutor.Register<TurnOnCommand>(c => 
-            {
-                _messageBrokerService.Publish(typeof(HttpMessagingService).Name, new DenonControlMessage
-                {
-                    Zone = "1",
-                    Command = "PowerOn",
-                    Api = "formiPhoneAppPower",
-                    ReturnNode = "Power",
-                    Address = hostname
-                });
+            Hostname = hostname ?? throw new ArgumentNullException(nameof(hostname));
+            _eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
+
+            //_commandExecutor.Register<TurnOnCommand>(async c => 
+            //{
+            //    var result = await _eventAggregator.PublishWithResultAsync<DenonControlMessage, string>(new DenonControlMessage
+            //    {
+            //        Command = "PowerOn",
+            //        Api = "formiPhoneAppPower",
+            //        ReturnNode = "Power",
+            //        Address = Hostname
+            //    });
                 
-            });
-            _commandExecutor.Register<TurnOffCommand>(c =>
-            {
-                _messageBrokerService.Publish(typeof(HttpMessagingService).Name, new DenonControlMessage
-                {
-                    Zone = "1",
-                    Command = "PowerOff",
-                    Api = "formiPhoneAppPower",
-                    ReturnNode = "Power",
-                    Address = hostname
-                });
-            }
-            );
+            //});
+            //_commandExecutor.Register<TurnOffCommand>(c =>
+            //{
+            //    _eventAggregator.PublishAsync(new DenonControlMessage
+            //    {
+            //        Command = "PowerOff",
+            //        Api = "formiPhoneAppPower",
+            //        ReturnNode = "Power",
+            //        Address = Hostname
+            //    });
+            //}
+            //);            
         }
 
         public override void ExecuteCommand(ICommand command)
@@ -66,7 +63,6 @@ namespace HA4IoT.Extensions.Devices
 
             return state;
         }
-
 
         public override IComponentFeatureCollection GetFeatures()
         {

@@ -16,7 +16,7 @@ namespace HA4IoT.Extensions.Messaging.DenonMessages
             return $"http://{Address}/goform/formMainZone_MainZoneXml.xml";
         }
 
-        public override void ValidateResponse(string responseBody)
+        public override object ParseResult(string responseBody)
         {
             using (var reader = new StringReader(responseBody))
             {
@@ -28,6 +28,9 @@ namespace HA4IoT.Extensions.Messaging.DenonMessages
                     Name = x.Attribute("index").Value,
                     Value = x.Attribute("index").Value
                 });
+
+                //TODO
+                return "";
             }
         } 
     }

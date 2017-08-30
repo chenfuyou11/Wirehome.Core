@@ -33,7 +33,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
         private const int TIME_TO_ON = 30;
         private const int TIME_WHILE_ON = 5;
-        private Speaker _speaker;
+        //private Speaker _speaker;
         
         public TestConfiguration(IDeviceRegistryService deviceService, 
                                     IAreaRegistryService areaService,
@@ -57,7 +57,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
         }
 
-        public async Task Apply()
+        public void Apply()
         { 
             var room = _areaService.RegisterArea(Room.Test);
            
@@ -86,7 +86,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
             //        Code = 3772833823
             //    });
 
-            var last = false;
+           // var last = false;
 
             //_schedulerService.Register("TEST_LPD", TimeSpan.FromSeconds(3), () =>
             //{
@@ -104,19 +104,19 @@ namespace HA4IoT.Controller.Dnf.Rooms
             //    Pin = 14
             //});
 
-            _messageBroker.Publish(typeof(II2CMessagingService).Name, new TemperatureMessage
-            {
-                Pin = 13
-            });
+            //_messageBroker.Publish(typeof(II2CMessagingService).Name, new TemperatureMessage
+            //{
+            //    Pin = 13
+            //});
 
 
             _messageBroker.Subscribe<LPD433Message>("SerialService", x =>
             {
                 if
                 (
-                    x.Payload.Content.DipswitchCode?.Command == Hardware.RemoteSockets.RemoteSocketCommand.TurnOff &&
-                    x.Payload.Content.DipswitchCode?.System == DipswitchSystemCode.AllOn &&
-                    x.Payload.Content.DipswitchCode?.Unit == DipswitchUnitCode.A
+                    x.Payload.Content.DipswitchCode?.Command == Hardware.RemoteSockets.RemoteSocketCommand.TurnOff
+                    && x.Payload.Content.DipswitchCode?.System == DipswitchSystemCode.AllOn
+                    && x.Payload.Content.DipswitchCode?.Unit == DipswitchUnitCode.A
                 )
                 {
                     //_messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage

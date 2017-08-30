@@ -22,6 +22,7 @@ using HA4IoT.Automations;
 using HA4IoT.Components;
 using HA4IoT.Areas;
 using HA4IoT.Contracts.Scheduling;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HA4IoT.Extensions.Tests
 {
@@ -59,13 +60,13 @@ namespace HA4IoT.Extensions.Tests
             _container.StartupServices(log);
             _container.ExposeRegistrationsToApi();
 
+ 
             //_container.GetInstance<IApiDispatcherService>().RegisterAdapter(_apiAdapter);
         }
 
-       
         public event EventHandler<StartupCompletedEventArgs> StartupCompleted;
         public event EventHandler<StartupFailedEventArgs> StartupFailed;
-        public event EventHandler Shutdown;
+       // public event EventHandler Shutdown;
 
         public TInstance GetInstance<TInstance>() where TInstance : class
         {

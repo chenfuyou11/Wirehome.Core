@@ -15,6 +15,6 @@ namespace HA4IoT.Extensions.Messaging
 
         string MessageAddress();
         string Serialize();
-        void ValidateResponse(string responseData);
+        object ParseResult(string responseData);
     }
 }

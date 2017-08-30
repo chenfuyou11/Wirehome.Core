@@ -1,19 +1,27 @@
-﻿using HA4IoT.Extensions.Devices.Samsung;
+﻿using HA4IoT.Configuration;
+using HA4IoT.Extensions.Devices.Samsung;
 using HA4IoT.Extensions.Extensions;
 using HA4IoT.Extensions.Messaging;
+using HA4IoT.Extensions.Messaging.Core;
+using HA4IoT.Extensions.Messaging.DenonMessages;
 using HA4IoT.Extensions.Messaging.KodiMessages;
 using HA4IoT.Extensions.Messaging.Services;
 using HA4IoT.Extensions.Networking;
+using HA4IoT.Logging;
+using HA4IoT.Messaging;
+using HA4IoT.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -22,19 +30,33 @@ namespace HA4IoT.Extensions.Tests
     [TestClass]
     public partial class DevicesTests
     {
-        //[TestMethod]
-        //public void Test()
-        //{
-        //    var extensionsAssemblie = new[] { typeof(InfraredMessage).GetTypeInfo().Assembly };
-        //    var namespaceName = (typeof(SerialMessagingService)).Namespace;
+        [TestMethod]
+        public async Task Test()
+        {
+            var log = new LogService(new[] { new EtwLoggingService() });
+            var conf = new ConfigurationService(log);
+            var script = new ScriptingService(conf, log);
 
-        //    var registrations2 = from type in extensionsAssemblie.FirstOrDefault().GetExportedTypes()
-        //                         where type.Namespace == namespaceName
-        //                         where type.GetInterfaces().Any()
-        //                         select new { Service = type.GetInterfaces(false), Implementation = type };
+            var brokre = new EventAggregator();
 
-        //    var x = registrations2.ToList();
-        //}
+            var message = new DenonControlMessage
+            {
+                Command = "PowerOn",
+                Api = "formiPhoneAppPower",
+                ReturnNode = "Power",
+                Address = "192.168.0.101"
+            };
+
+            var http = new HttpMessagingService(log, brokre);
+            http.Startup();
+
+            var test = new Stopwatch();
+            test.Start();
+            
+            var result = await brokre.PublishWithResultAsync<DenonControlMessage, string>(message, millisecondsTimeOut: 999999);
+
+            test.Stop();
+        }
 
         [TestMethod]
         public void WakeOnLanTest()
@@ -138,7 +160,7 @@ namespace HA4IoT.Extensions.Tests
 
 
             //CHANGE CHANNEL
-            http://192.168.0.101/goform/formiPhoneAppTuner.xml?1+PRESETUP 
+            //http://192.168.0.101/goform/formiPhoneAppTuner.xml?1+PRESETUP 
 
             //CHANGE PLAYBACK(FastForward, Next, Pause, Play, Previous, Rewind, StartOver, Stop)
             
@@ -176,7 +198,7 @@ namespace HA4IoT.Extensions.Tests
             string zone = "1";
             string command = "MuteOn";
             string api = "formiPhoneAppMute";
-            string returnNode = "Mute";
+            //string returnNode = "Mute";
 
             var address = $"http://{host}/goform/{api}.xml?{zone}+{command}";
             address = "http://192.168.0.101/goform/formMainZone_MainZoneXml.xml";

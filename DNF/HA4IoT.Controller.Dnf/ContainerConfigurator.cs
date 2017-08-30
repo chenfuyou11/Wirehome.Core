@@ -20,10 +20,11 @@ namespace HA4IoT.Controller.Dnf
         {
             if (containerService == null) throw new ArgumentNullException(nameof(containerService));
 
-            var extensionsAssemblie = new[] { typeof(InfraredMessage).GetTypeInfo().Assembly };
+            var baseTypeForRegister = typeof(SerialMessagingService);
+            var extensionsAssemblie = new[] { baseTypeForRegister.GetTypeInfo().Assembly };
 
             containerService.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
-            containerService.RegisterServicesInNamespace(extensionsAssemblie.FirstOrDefault(), (typeof(SerialMessagingService)).Namespace);
+            containerService.RegisterServicesInNamespace(extensionsAssemblie.FirstOrDefault(), baseTypeForRegister.Namespace);
             containerService.RegisterSingletonCollection<IBinaryMessage>(extensionsAssemblie);
             containerService.RegisterSingletonCollection<IHttpMessage>(extensionsAssemblie);
         }

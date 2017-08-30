@@ -17,7 +17,7 @@ namespace HA4IoT.Extensions.MotionModel
         private readonly ConditionsValidator _turnOffConditionsValidator = new ConditionsValidator().WithDefaultState(ConditionState.NotFulfilled);
 
         private readonly object _syncRoot = new object();
-        private bool _isInitialized = false;
+        //private bool _isInitialized = false;
 
         public IMotionDetector MotionDetector { get; private set; }
 
@@ -66,7 +66,7 @@ namespace HA4IoT.Extensions.MotionModel
 
         public void InitDescriptor()
         {
-            _isInitialized = true;
+            //_isInitialized = true;
         }
 
         public void SetArea(IArea area)

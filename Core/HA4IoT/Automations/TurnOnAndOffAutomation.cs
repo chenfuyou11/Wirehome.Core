@@ -326,9 +326,8 @@ namespace HA4IoT.Automations
         private bool _firstTimeStart = true;
 
         private readonly IDateTimeService _dateTimeService;
-        private readonly IScheduleProvider _scheduleProvider;
 
-        public AutomationScheduler(IDateTimeService dateTimeService, IScheduleProvider scheduleProvider)
+        public AutomationScheduler(IDateTimeService dateTimeService)
         {
             _dateTimeService = dateTimeService;
         }
@@ -340,8 +339,6 @@ namespace HA4IoT.Automations
 
         public TimeSpan GetNextTurnOnTime()
         {
-            return TurnOnInterval;
-            
             if (_firstTimeStart)
             {
                 _firstTimeStart = false;

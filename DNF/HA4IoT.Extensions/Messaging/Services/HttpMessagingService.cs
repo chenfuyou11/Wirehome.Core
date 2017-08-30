@@ -1,85 +1,64 @@
-﻿using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Extensions.Contracts;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using HA4IoT.Contracts.Logging;
+using HA4IoT.Extensions.Contracts;
+using HA4IoT.Extensions.Messaging.Core;
 
 namespace HA4IoT.Extensions.Messaging.Services
 {
     public class HttpMessagingService : IHttpMessagingService
     {
         private readonly ILogger _logService;
-        private readonly IMessageBrokerService _messageBroker;
-        private readonly List<IBinaryMessage> _messageHandlers = new List<IBinaryMessage>();
+        private readonly IEventAggregator _eventAggregator;
 
-        public HttpMessagingService(ILogService logService, IMessageBrokerService messageBroker, IEnumerable<IBinaryMessage> handlers)
+        public HttpMessagingService(ILogService logService, IEventAggregator eventAggregator)
         {
             _logService = logService.CreatePublisher(nameof(HttpMessagingService));
-            _messageBroker = messageBroker;
-            _messageHandlers.AddRange(handlers);
+            _eventAggregator = eventAggregator;
         }
 
         public void Startup()
         {
-            _messageHandlers.ForEach(handler =>
-            {
-                _messageBroker.Subscribe(new MessageSubscription
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    PayloadType = handler.GetType().Name,
-                    Topic = typeof(HttpMessagingService).Name,
-                    Callback = MessageHandler
-                });
-            });
+            _eventAggregator.SubscribeForAsyncResult<IHttpMessage>(MessageHandler);
         }
 
-        public async void MessageHandler(Message<JObject> message)
+        public async Task<object> MessageHandler(IMessageEnvelope<IHttpMessage> message)
         {
-            var tasks = _messageHandlers.Select(i => HandleMessage(message, i));
-            await Task.WhenAll(tasks);
-        }
+            var httpMessage = message.Message;
 
-        private async Task HandleMessage(Message<JObject> message, IBinaryMessage handler)
-        {
-            if (handler.CanSerialize(message.Payload.Type))
+            if (httpMessage.RequestType == "POST")
             {
-                try
-                {
-                    var httpMessage = message.Payload.Content.ToObject<HttpMessage>();
-
-                    if (httpMessage.RequestType == "POST")
-                    {
-                        await HandlePostRequest(httpMessage);
-                    }
-                    else if (httpMessage.RequestType == "GET")
-                    {
-                        await HandleGetRequest(httpMessage);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logService.Error(ex, $"Handler of type {handler.GetType().Name} failed to process message");
-                }
+                return await HandlePostRequest(httpMessage).ConfigureAwait(false);
             }
+            else
+            if (httpMessage.RequestType == "GET")
+            {
+                return await HandleGetRequest(httpMessage).ConfigureAwait(false);
+            }
+
+            return null;
         }
 
-        private static async Task HandleGetRequest(HttpMessage httpMessage)
+       
+
+        private async Task<object> HandleGetRequest(IHttpMessage httpMessage)
         {
             using (var httpClient = new HttpClient())
             {
-                var httpResponse = await httpClient.GetAsync(httpMessage.MessageAddress());
+                //throw new Exception("Test");
+
+                var address = httpMessage.MessageAddress();
+                var httpResponse = await httpClient.GetAsync(address).ConfigureAwait(false);
                 httpResponse.EnsureSuccessStatusCode();
                 var responseBody = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                httpMessage.ValidateResponse(responseBody);
+
+                return httpMessage.ParseResult(responseBody);
             }
         }
 
-        private static async Task HandlePostRequest(HttpMessage httpMessage)
+        private static async Task<object> HandlePostRequest(IHttpMessage httpMessage)
         {
             var httpClientHandler = new HttpClientHandler();
             if (httpMessage.Cookies != null)
@@ -112,7 +91,8 @@ namespace HA4IoT.Extensions.Messaging.Services
                 }
                 var response = await httpClient.PostAsync(httpMessage.MessageAddress(), content).ConfigureAwait(false);
                 var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                httpMessage.ValidateResponse(responseBody);
+
+                return httpMessage.ParseResult(responseBody);
             }
         }
     }

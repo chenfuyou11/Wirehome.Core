@@ -67,7 +67,7 @@ namespace HA4IoT.Extensions.Messaging.Services
                     }
                 }
             }
-            catch (TaskCanceledException tce)
+            catch (TaskCanceledException)
             {
                 CloseDevice();
             }

@@ -6,6 +6,6 @@ namespace HA4IoT.Extensions.Contracts
 {
     public interface IHttpMessagingService : IService
     {
-        void MessageHandler(Message<JObject> message);
+       
     }
 }

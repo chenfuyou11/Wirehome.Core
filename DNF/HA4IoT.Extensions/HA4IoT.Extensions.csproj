@@ -117,8 +117,17 @@
     <Compile Include="Devices\SonyBraviaTV.cs" />
     <Compile Include="Contracts\IHttpMessage.cs" />
     <Compile Include="Contracts\IBaseMessage.cs" />
+    <Compile Include="Extensions\TaskExtensions.cs" />
+    <Compile Include="Extensions\MessageBrokerExtensions.cs" />
     <Compile Include="Extensions\SimpleInjectorExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Messaging\Core\EventAggregator.cs" />
+    <Compile Include="Contracts\IEventAggregator.cs" />
+    <Compile Include="Messaging\Core\IMessageEnvelope.cs" />
+    <Compile Include="Messaging\Core\MessageEnvelope.cs" />
+    <Compile Include="Messaging\Core\SimpleResponse.cs" />
+    <Compile Include="Messaging\Core\Subscription.cs" />
+    <Compile Include="Messaging\Core\Subscriptions.cs" />
     <Compile Include="Messaging\DebugMessage.cs" />
     <Compile Include="Core\InfraredSystem.cs" />
     <Compile Include="Contracts\IBinaryMessage.cs" />

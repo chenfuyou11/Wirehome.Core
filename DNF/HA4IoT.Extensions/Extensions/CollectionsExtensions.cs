@@ -111,5 +111,13 @@ namespace HA4IoT.Extensions.Extensions
 
             return hash;
         }
+
+       
+        public static ICollection<T> AddChained<T>(this ICollection<T> collection, T item)
+        {
+            collection.Add(item);
+            return collection;
+        }
+       
     }
 }

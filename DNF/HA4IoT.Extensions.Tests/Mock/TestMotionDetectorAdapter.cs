@@ -11,7 +11,7 @@ namespace HA4IoT.Extensions.Tests
         public event EventHandler<MotionDetectorAdapterStateChangedEventArgs> StateChanged;
 
         public void Refresh()
-        {            
+        {
         }
 
         public void Begin()
@@ -35,5 +35,6 @@ namespace HA4IoT.Extensions.Tests
                 End();
             }           
         }
+
     }
 }

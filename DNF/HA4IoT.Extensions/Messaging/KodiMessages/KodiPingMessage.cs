@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using HA4IoT.Extensions.Messaging.Services;
+using Newtonsoft.Json;
 using System;
 
 namespace HA4IoT.Extensions.Messaging.KodiMessages
@@ -29,9 +30,13 @@ namespace HA4IoT.Extensions.Messaging.KodiMessages
             return jsonRpcRequest.ToString();
         }
 
-        public override void ValidateResponse(string responseData)
+        public override object ParseResult(string responseData)
         {
             var result = JsonConvert.DeserializeObject<JsonRpcResponse<JsonPausePlayResult>>(responseData);
+
+
+            //TODO
+            return "";
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HA4IoT.Extensions.Extensions;
 using System.Reactive.Linq;
+using System.Collections.Generic;
 
 namespace HA4IoT.Extensions.Messaging.Core
 {
@@ -11,28 +12,114 @@ namespace HA4IoT.Extensions.Messaging.Core
     {
         private readonly Subscriptions _Subscriptions = new Subscriptions();
 
+        public List<Subscription> GetSubscriptors<T>(MessageFilter filter = null)
+        {
+            return _Subscriptions.GetCurrentSubscriptions(typeof(T), filter);
+        }
+
         public async Task<R> PublishWithResultAsync<T, R>
         (
             T message,
-            string context = null,
+            MessageFilter filter = null,
             int millisecondsTimeOut = 2000,
-            CancellationToken cancellationToken = default(CancellationToken)
+            CancellationToken cancellationToken = default(CancellationToken),
+            int retryCount = 0
         ) where R : class
         {
-            var localSubscriptions = _Subscriptions.GetCurrentSubscriptions(typeof(T));
+            var localSubscriptions = GetSubscriptors<T>(filter);
 
             if (localSubscriptions.Count == 0) return default(R);
 
             var messageEnvelope = new MessageEnvelope<T>(message, cancellationToken);
 
-            var publishTask = localSubscriptions.Select(x => Task.Run(() => x.HandleAsync<T, R>(messageEnvelope)));
+            var publishTask = localSubscriptions.Select(x => Task.Run(async () =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        return await x.HandleAsync<T, R>(messageEnvelope).ConfigureAwait(false);
+                    }
+                    catch when (retryCount-- > 0) { }
+                }
+            }));
 
             return await publishTask.WhenAny<R>(millisecondsTimeOut, cancellationToken).ConfigureAwait(false);
         }
 
-        public Guid SubscribeForAsyncResult<T>(Func<IMessageEnvelope<T>, Task<object>> action, string context = null)
+        public IObservable<R> PublishWithResults<T, R>
+        (
+            T message,
+            MessageFilter filter = null,
+            int millisecondsTimeOut = 2000,
+            CancellationToken cancellationToken = default(CancellationToken)
+        ) where R : class
         {
-            return _Subscriptions.Register(action, context);
+            var localSubscriptions = GetSubscriptors<T>(filter);
+
+            if (localSubscriptions.Count == 0) return Observable.Empty<R>();
+
+            var messageEnvelope = new MessageEnvelope<T>(message, cancellationToken);
+
+            return localSubscriptions.Select(x => Task.Run(() => x.HandleAsync<T, R>(messageEnvelope)))
+                                     .ToObservable()
+                                     .SelectMany(x => x)
+                                     .Timeout(TimeSpan.FromMilliseconds(millisecondsTimeOut));
+        }
+
+
+        public Task Publish<T>
+        (
+            T message,
+            MessageFilter filter = null,
+            CancellationToken cancellationToken = default(CancellationToken)
+        )
+        {
+            var localSubscriptions = GetSubscriptors<T>(filter);
+
+            if (localSubscriptions.Count == 0) return Task.Delay(0);
+
+            var messageEnvelope = new MessageEnvelope<T>(message, cancellationToken);
+
+            var result = localSubscriptions.Select(x => Task.Run(() =>
+            {
+                x.Handle<T>(messageEnvelope);
+            }));
+
+            return Task.WhenAll(result);
+        }
+
+        public async Task PublishWithRepublishResult<T, R>
+        (
+            T message,
+            MessageFilter filter = null,
+            int millisecondsTimeOut = 2000,
+            CancellationToken cancellationToken = default(CancellationToken)
+        ) where R : class
+        {
+            var localSubscriptions = GetSubscriptors<T>(filter);
+
+            if (localSubscriptions.Count == 0) return;
+
+            var messageEnvelope = new MessageEnvelope<T>(message, cancellationToken);
+
+            var publishTask = localSubscriptions.Select(x => Task.Run(async () =>
+            {
+                var result = await x.HandleAsync<T, R>(messageEnvelope).ConfigureAwait(false);
+                await Publish(result).ConfigureAwait(false);
+            }));
+
+            await publishTask.WhenAll(millisecondsTimeOut, cancellationToken).ConfigureAwait(false);
+        }
+
+        public Guid SubscribeForAsyncResult<T>(Func<IMessageEnvelope<T>, Task<object>> action, MessageFilter filter = null)
+        {
+            return _Subscriptions.RegisterForAsyncResult(action, filter);
+        }
+
+        public Guid Subscribe<T>(Action<IMessageEnvelope<T>> action, MessageFilter filter = null)
+        {
+            return _Subscriptions.Register(action, filter);
         }
 
         public void UnSubscribe(Guid token)
@@ -49,86 +136,6 @@ namespace HA4IoT.Extensions.Messaging.Core
         {
             _Subscriptions.Clear();
         }
-
-        public void Dispose()
-        {
-            _Subscriptions.Dispose();
-        }
-
-        //public async Task<K> PublishWithResultAsync2<T, K>
-        //(
-        //    T message,
-        //    string context = null, 
-        //    int millisecondsTimeOut = 2000, 
-        //    CancellationToken cancellationToken = default(CancellationToken)
-        //)
-        //{
-        //    var localSubscriptions = _Subscriptions.GetCurrentSubscriptions(typeof(T));
-
-        //    var taskSource = new TaskCompletionSource<K>();
-        //    var resultTask = taskSource.Task;
-
-        //    var subscription = Subscribe<K>(m  =>
-        //    {
-        //        if(m.Exception != null)
-        //        {
-        //            taskSource.SetException(m.Exception);
-        //        }
-        //        else
-        //        {
-        //            taskSource.SetResult(m.Message);
-        //        }
-
-        //        return Task.FromResult(true);
-        //    }, context);
-
-        //    try
-        //    {
-        //        var publishTask = PublishAsync(message, context, cancellationToken);
-
-        //        await(new[] { publishTask, resultTask }).WhenAll(millisecondsTimeOut, cancellationToken);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        taskSource.SetCanceled();
-        //        throw;
-        //    }
-        //    finally
-        //    {
-        //        UnSubscribe(subscription);
-        //    }
-
-        //    return resultTask.Result;
-        //}
-
-        //public Task PublishResponseAsync<T>(T message, Guid orginalMessageId, Exception exception = null)
-        //{
-        //    var localSubscriptions = _Subscriptions.GetCurrentSubscriptions(typeof(MessageEnvelope<T>));
-        //    var messageid = Guid.NewGuid();
-        //    var messageEnvelope = new MessageEnvelope<T>
-        //    {
-        //        ID = messageid,
-        //        Message = message,
-        //        Exception = exception,
-        //        Context = orginalMessageId.ToString()
-        //    };
-
-        //    return localSubscriptions.ForEachAsync(x => { x.Handle(messageEnvelope); });
-        //}
-
-        //public Task PublishAsync<T>(T message, string context = null, CancellationToken cancellationToken = default(CancellationToken))
-        //{
-        //    var localSubscriptions = _Subscriptions.GetCurrentSubscriptions(typeof(T));
-        //    var messageid = Guid.NewGuid();
-        //    var messageEnvelope = new MessageEnvelope<T>
-        //    {
-        //        ID = messageid,
-        //        Context = context,
-        //        Message = message,
-        //        CancellationToken = cancellationToken
-        //    };
-
-        //    return localSubscriptions.ForEachAsync(x => { x.Handle(messageEnvelope); }, cancellationToken);
-        //}
+        
     }
 }

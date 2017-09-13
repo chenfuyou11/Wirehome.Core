@@ -14,11 +14,26 @@ namespace HA4IoT.Extensions.Messaging.Core
         private int _localSubscriptionRevision;
         private Subscription[] _localSubscriptions;
 
-        internal Guid Register<T>(Func<IMessageEnvelope<T>, Task> action, string context)
+        internal Guid RegisterForAsyncResult<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter)
         {
             var type = typeof(T);
             var key = Guid.NewGuid();
-            var subscription = new Subscription(type, key, action, context);
+            var subscription = new Subscription(type, key, action, filter);
+
+            lock (AllSubscriptions)
+            {
+                AllSubscriptions.Add(subscription);
+                _subscriptionRevision++;
+            }
+
+            return key;
+        }
+
+        internal Guid Register<T>(Action<IMessageEnvelope<T>> action, MessageFilter filter)
+        {
+            var type = typeof(T);
+            var key = Guid.NewGuid();
+            var subscription = new Subscription(type, key, action, filter);
 
             lock (AllSubscriptions)
             {
@@ -78,7 +93,7 @@ namespace HA4IoT.Extensions.Messaging.Core
             return latestSubscriptions;
         }
 
-        public List<Subscription> GetCurrentSubscriptions(Type messageType, string context = null)
+        public List<Subscription> GetCurrentSubscriptions(Type messageType, MessageFilter filter = null)
         {
             var latestSubscriptions = GetCurrentSubscriptions();
             var msgTypeInfo = messageType.GetTypeInfo();
@@ -90,8 +105,7 @@ namespace HA4IoT.Extensions.Messaging.Core
 
                 if (!subscription.Type.GetTypeInfo().IsAssignableFrom(msgTypeInfo)) continue;
 
-                //TODO Test this condition
-                if (!string.IsNullOrWhiteSpace(context) && subscription.Context?.IndexOf(context) == -1) continue;
+                if (!subscription.IsFilterMatch(filter)) continue;
                 
                 filteredSubscription.Add(subscription);
             }
@@ -99,9 +113,6 @@ namespace HA4IoT.Extensions.Messaging.Core
             return filteredSubscription;
         }
 
-        public void Dispose()
-        {
-            Clear();
-        }
+      
     }
 }

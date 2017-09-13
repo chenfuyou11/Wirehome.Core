@@ -8,12 +8,10 @@ namespace HA4IoT.Extensions.Extensions
 {
     public static class TaskExtensions
     {
-        public static async Task<Task> WhenAll(this IEnumerable<Task> tasks, int millisecondsTimeOut, CancellationToken cancellationToken) 
+        public static async Task<Task> WhenAll(this IEnumerable<Task> tasks, int millisecondsTimeOut, CancellationToken cancellationToken)
         {
             var timeoutTask = Task.Delay(millisecondsTimeOut, cancellationToken);
-            var workTasks = Task.WhenAll(tasks);
-
-            var result = await Task.WhenAny(new[] { timeoutTask, workTasks }).ConfigureAwait(false);
+            var result = await Task.WhenAny(tasks.ToList().AddChained(timeoutTask)).ConfigureAwait(false);
 
             if (result == timeoutTask)
             {
@@ -28,12 +26,7 @@ namespace HA4IoT.Extensions.Extensions
 
                 throw new InvalidOperationException("Not supported result in WhenAll");
             }
-            if(result == workTasks && result.IsFaulted)
-            {
-                var tokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                tokenSource.Cancel();
-            }
-            
+
             return result;
         }
 
@@ -64,11 +57,6 @@ namespace HA4IoT.Extensions.Extensions
             var tcs = new TaskCompletionSource<bool>();
             cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).SetResult(true), tcs);
             return tcs.Task;
-        }
-
-        public static Task ForEachAsync<T>(this IEnumerable<T> source, Action<T> body, CancellationToken token = default(CancellationToken))
-        {
-            return Task.WhenAll(from item in source select Task.Run(() => body(item), token));
         }
 
     }

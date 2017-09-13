@@ -31,7 +31,7 @@ namespace HA4IoT.Extensions.Tests
     public partial class DevicesTests
     {
         [TestMethod]
-        public async Task Test()
+        public async Task DenonControlMessage()
         {
             var log = new LogService(new[] { new EtwLoggingService() });
             var conf = new ConfigurationService(log);

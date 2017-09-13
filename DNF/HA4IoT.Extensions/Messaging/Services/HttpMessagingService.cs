@@ -19,6 +19,7 @@ namespace HA4IoT.Extensions.Messaging.Services
             _eventAggregator = eventAggregator;
         }
 
+        //Add Dispose - maybe to all IService
         public void Startup()
         {
             _eventAggregator.SubscribeForAsyncResult<IHttpMessage>(MessageHandler);
@@ -41,14 +42,10 @@ namespace HA4IoT.Extensions.Messaging.Services
             return null;
         }
 
-       
-
         private async Task<object> HandleGetRequest(IHttpMessage httpMessage)
         {
             using (var httpClient = new HttpClient())
             {
-                //throw new Exception("Test");
-
                 var address = httpMessage.MessageAddress();
                 var httpResponse = await httpClient.GetAsync(address).ConfigureAwait(false);
                 httpResponse.EnsureSuccessStatusCode();

@@ -118,6 +118,11 @@ namespace HA4IoT.Extensions.Extensions
             collection.Add(item);
             return collection;
         }
+
+        public static K ElementAtOrNull<T, K>(this Dictionary<T, K> dictionary, T lookupValue) where K: class
+        {
+            return dictionary.ContainsKey(lookupValue) ? dictionary[lookupValue] : null;
+        }
        
     }
 }

@@ -113,10 +113,19 @@
     <Compile Include="Contracts\IAlexaDispatcherEndpointService.cs" />
     <Compile Include="Contracts\IMonostableLampAdapter.cs" />
     <Compile Include="Core\DipswitchCode.cs" />
+    <Compile Include="Core\AsyncCommandExecutor.cs" />
+    <Compile Include="Contracts\ICommandExecute.cs" />
+    <Compile Include="Devices\Commands\VolumeDownCommand.cs" />
+    <Compile Include="Devices\Commands\VolumeUpCommand.cs" />
+    <Compile Include="Devices\DeviceComponent.cs" />
+    <Compile Include="Devices\Features\VolumeFeature.cs" />
     <Compile Include="Devices\SamsungTV.cs" />
     <Compile Include="Devices\SonyBraviaTV.cs" />
     <Compile Include="Contracts\IHttpMessage.cs" />
     <Compile Include="Contracts\IBaseMessage.cs" />
+    <Compile Include="Devices\States\VolumeState.cs" />
+    <Compile Include="Exceptions\WrongResultException.cs" />
+    <Compile Include="Extensions\IComponentFeatureExtensions.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Extensions\MessageBrokerExtensions.cs" />
     <Compile Include="Extensions\SimpleInjectorExtensions.cs" />
@@ -154,6 +163,9 @@
     <Compile Include="Contracts\IHttpMessagingService.cs" />
     <Compile Include="Messaging\SonyMessages\SonyControlMessage.cs" />
     <Compile Include="Messaging\SonyMessages\SonyRegisterRequest.cs" />
+    <Compile Include="Messaging\StateChangeMessages\PowerStateChange.cs" />
+    <Compile Include="Messaging\StateChangeMessages\StateChangeMessage.cs" />
+    <Compile Include="Messaging\StateChangeMessages\VolumeStateChangeMessage.cs" />
     <Compile Include="Messaging\TemperatureMessage.cs" />
     <Compile Include="Messaging\LPD433Message.cs" />
     <Compile Include="Core\CommandExecutorEx.cs" />
@@ -210,6 +222,7 @@
       <Name>HA4IoT</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

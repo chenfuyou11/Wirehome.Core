@@ -118,6 +118,9 @@
     <Compile Include="Automations\IAutomationRegistryService.cs" />
     <Compile Include="Api\Cloud\CloudRequestMessage.cs" />
     <Compile Include="Api\Cloud\CloudMessageHeader.cs" />
+    <Compile Include="Components\Attributes\FeatureAttribute.cs" />
+    <Compile Include="Components\Attributes\FeatureStateAttribute.cs" />
+    <Compile Include="Components\Attributes\ITypeAssociation.cs" />
     <Compile Include="Components\Commands\CommandUnknownException.cs" />
     <Compile Include="Components\Commands\CommandNotSupportedException.cs" />
     <Compile Include="Components\Commands\CommandParameterInvalidException.cs" />

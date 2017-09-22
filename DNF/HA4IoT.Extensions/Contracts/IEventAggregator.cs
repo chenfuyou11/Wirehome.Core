@@ -25,6 +25,16 @@ namespace HA4IoT.Extensions.Messaging.Core
             int retryCount = 0
         ) where R : class;
 
+        Task<R> PublishWithResultAsync<T, R>
+        (
+            T message,
+            R expectedResult,
+            MessageFilter filter = null,
+            int millisecondsTimeOut = 2000,
+            CancellationToken cancellationToken = default(CancellationToken),
+            int retryCount = 0
+        ) where R : class;
+
         IObservable<R> PublishWithResults<T, R>
         (
             T message,

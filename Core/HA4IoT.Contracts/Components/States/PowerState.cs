@@ -1,5 +1,9 @@
-﻿namespace HA4IoT.Contracts.Components.States
+﻿using HA4IoT.Contracts.Components.Attributes;
+using HA4IoT.Contracts.Components.Features;
+
+namespace HA4IoT.Contracts.Components.States
 {
+    [Feature(typeof(PowerStateFeature))]
     public class PowerState : EnumBasedState<PowerStateValue>
     {
         public static readonly PowerState Off = new PowerState(PowerStateValue.Off);

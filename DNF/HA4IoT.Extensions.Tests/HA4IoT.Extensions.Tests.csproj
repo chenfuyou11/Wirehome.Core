@@ -96,7 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mock\DerivedTestMessage.cs" />
-    <Compile Include="DevicesTests.cs" />
+    <Compile Include="DevicesIntegrationTests.cs" />
     <Compile Include="EventAggregatorTests.cs" />
     <Compile Include="Mock\TestController.cs" />
     <Compile Include="Mock\TestDateTimeService.cs" />

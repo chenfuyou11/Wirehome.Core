@@ -1,4 +1,8 @@
 ﻿using HA4IoT.Configuration;
+using HA4IoT.Contracts.Components.Commands;
+using HA4IoT.Contracts.Components.Features;
+using HA4IoT.Contracts.Components.States;
+using HA4IoT.Extensions.Devices;
 using HA4IoT.Extensions.Devices.Samsung;
 using HA4IoT.Extensions.Extensions;
 using HA4IoT.Extensions.Messaging;
@@ -25,11 +29,60 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
+
 namespace HA4IoT.Extensions.Tests
 {
     [TestClass]
-    public partial class DevicesTests
+    public partial class DevicesIntegrationTests
     {
+        public const string DENON_HOST = "192.168.0.101";
+
+        private static EventAggregator PrepareAggregator()
+        {
+            var log = new LogService(new[] { new EtwLoggingService() });
+            var conf = new ConfigurationService(log);
+            var script = new ScriptingService(conf, log);
+            var eventAggregator = new EventAggregator();
+            var http = new HttpMessagingService(log, eventAggregator);
+            http.Startup();
+            return eventAggregator;
+        }
+
+        [TestMethod]
+        public async Task DenonTurnOn()
+        {
+            var eventAggregator = PrepareAggregator();
+
+            var denon = new DenonAmplifier(Guid.NewGuid().ToString(), DENON_HOST, eventAggregator);
+
+            await denon.ExecuteAsyncCommand<TurnOnCommand>();
+        }
+
+        [TestMethod]
+        public async Task DenonTurnOff()
+        {
+            var eventAggregator = PrepareAggregator();
+
+            var denon = new DenonAmplifier(Guid.NewGuid().ToString(), DENON_HOST, eventAggregator);
+
+            await denon.ExecuteAsyncCommand<TurnOffCommand>();
+        }
+
+        [TestMethod]
+        public void Testowy()
+        {
+            var test = new PowerStateFeature();
+            var wow = test.SupportedCommands();
+
+            var power = PowerStateValue.On;
+
+            Enum en = power;
+
+            
+        }
+
+
+
         [TestMethod]
         public async Task DenonControlMessage()
         {

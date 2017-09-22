@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HA4IoT.Extensions.Extensions;
 using System.Reactive.Linq;
 using System.Collections.Generic;
+using HA4IoT.Extensions.Exceptions;
 
 namespace HA4IoT.Extensions.Messaging.Core
 {
@@ -45,6 +46,24 @@ namespace HA4IoT.Extensions.Messaging.Core
             }));
 
             return await publishTask.WhenAny<R>(millisecondsTimeOut, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<R> PublishWithResultAsync<T, R>
+        (
+            T message,
+            R expectedResult,
+            MessageFilter filter = null,
+            int millisecondsTimeOut = 2000,
+            CancellationToken cancellationToken = default(CancellationToken),
+            int retryCount = 0
+        ) where R : class
+        {
+            var result = await PublishWithResultAsync<T, R>(message, filter, millisecondsTimeOut, cancellationToken, retryCount).ConfigureAwait(false);
+            if(!EqualityComparer<R>.Default.Equals(result, expectedResult))
+            {
+                throw new WrongResultException(result, expectedResult);
+            }
+            return result;
         }
 
         public IObservable<R> PublishWithResults<T, R>

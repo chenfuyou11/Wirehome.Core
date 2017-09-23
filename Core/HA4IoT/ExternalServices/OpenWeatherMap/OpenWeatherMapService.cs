@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Windows.Web.Http;
 using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Core;
 using HA4IoT.Contracts.Environment;
@@ -11,6 +10,7 @@ using HA4IoT.Contracts.Services;
 using HA4IoT.Contracts.Settings;
 using HA4IoT.Contracts.Storage;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
 
 namespace HA4IoT.ExternalServices.OpenWeatherMap
 {

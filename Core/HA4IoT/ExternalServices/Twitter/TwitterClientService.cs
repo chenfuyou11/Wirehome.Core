@@ -4,13 +4,12 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Windows.Security.Cryptography;
-using Windows.Security.Cryptography.Core;
 using HA4IoT.Contracts.ExternalServices.Twitter;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Scripting;
 using HA4IoT.Contracts.Services;
 using HA4IoT.Contracts.Settings;
+using HA4IoT.Contracts.Cryptographic;
 
 namespace HA4IoT.ExternalServices.Twitter
 {
@@ -20,8 +19,9 @@ namespace HA4IoT.ExternalServices.Twitter
 
         private string _nonce;
         private string _timestamp;
+        private readonly ICryptoService _cryptoService;
 
-        public TwitterClientService(ISettingsService settingsService, ILogService logService, IScriptingService scriptingService)
+        public TwitterClientService(ISettingsService settingsService, ILogService logService, IScriptingService scriptingService, ICryptoService cryptoService)
         {
             if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
             if (logService == null) throw new ArgumentNullException(nameof(logService));
@@ -32,6 +32,7 @@ namespace HA4IoT.ExternalServices.Twitter
             _log = logService.CreatePublisher(nameof(TwitterClientService));
 
             scriptingService.RegisterScriptProxy(s => new TwitterClientScriptProxy(this));
+            this._cryptoService = cryptoService ?? throw new ArgumentNullException(nameof(cryptoService));
         }
 
         public TwitterClientServiceSettings Settings { get; private set; }
@@ -103,7 +104,9 @@ namespace HA4IoT.ExternalServices.Twitter
                 url,
                 parametersString);
 
-            return GenerateSignature(signingContent);
+            var key = Uri.EscapeDataString(Settings.ConsumerSecret) + "&" + Uri.EscapeDataString(Settings.AccessTokenSecret);
+
+            return _cryptoService.GenerateSignature(key, signingContent);
         }
 
         private string GetAuthorizationToken(string signature)
@@ -133,20 +136,6 @@ namespace HA4IoT.ExternalServices.Twitter
             return Math.Round(sinceEpoch.TotalSeconds).ToString(CultureInfo.InvariantCulture);
         }
 
-        private string GenerateSignature(string content)
-        {
-            var key = Uri.EscapeDataString(Settings.ConsumerSecret) + "&" + Uri.EscapeDataString(Settings.AccessTokenSecret);
-
-            var keyMaterial = CryptographicBuffer.ConvertStringToBinary(key, BinaryStringEncoding.Utf8);
-            var macAlgorithm = MacAlgorithmProvider.OpenAlgorithm("HMAC_SHA1");
-            var macKey = macAlgorithm.CreateKey(keyMaterial);
-            
-            var buffer = CryptographicBuffer.ConvertStringToBinary(content, BinaryStringEncoding.Utf8);
-
-            var signatureBuffer = CryptographicEngine.Sign(macKey, buffer);
-            var signature = CryptographicBuffer.EncodeToBase64String(signatureBuffer);
-
-            return signature;
-        }
+        
     }
 }

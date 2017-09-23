@@ -42,9 +42,7 @@ using HA4IoT.ExternalServices.TelegramBot;
 using HA4IoT.ExternalServices.Twitter;
 using HA4IoT.Hardware.Drivers.CCTools;
 using HA4IoT.Hardware.Drivers.Outpost;
-using HA4IoT.Hardware.Drivers.RaspberryPi;
 using HA4IoT.Hardware.Drivers.Sonoff;
-using HA4IoT.Hardware.I2C;
 using HA4IoT.Hardware.Interrupts;
 using HA4IoT.Hardware.RemoteSockets;
 using HA4IoT.Health;
@@ -148,6 +146,7 @@ namespace HA4IoT.Core
             return _container.GetInstance(type);
         }
 
+        //TODO DNF
         public void RegisterServices()
         {
             _container.RegisterSingleton<IContainer>(() => this);
@@ -161,14 +160,14 @@ namespace HA4IoT.Core
             _container.RegisterSingleton<ILogService, LogService>();
             _container.RegisterSingleton<IHealthService, HealthService>();
             _container.RegisterSingleton<IDateTimeService, DateTimeService>();
-            _container.RegisterSingleton<ISchedulerService, SchedulerService>();
-            _container.RegisterSingleton<DiscoveryServerService>();
+            //_container.RegisterSingleton<ISchedulerService, SchedulerService>();
+            //_container.RegisterSingleton<DiscoveryServerService>();
 
             _container.RegisterSingleton<IConfigurationService, ConfigurationService>();
             _container.RegisterInitializer<ConfigurationService>(s => s.Initialize());
 
             _container.RegisterSingleton<IStorageService, StorageService>();
-            _container.RegisterSingleton<ITimerService, TimerService>();
+            //_container.RegisterSingleton<ITimerService, TimerService>();
             _container.RegisterSingleton<ISystemEventsService, SystemEventsService>();
             _container.RegisterSingleton<ISystemInformationService, SystemInformationService>();
             _container.RegisterSingleton<IBackupService, BackupService>();
@@ -187,8 +186,8 @@ namespace HA4IoT.Core
             _container.RegisterSingleton<ISettingsService, SettingsService>();
             _container.RegisterInitializer<SettingsService>(s => s.Initialize());
 
-            _container.RegisterSingleton<II2CBusService, I2CBusService>();
-            _container.RegisterSingleton<IGpioService, GpioService>();
+           // _container.RegisterSingleton<II2CBusService, I2CBusService>();
+            //_container.RegisterSingleton<IGpioService, GpioService>();
             _container.RegisterSingleton<IMessageBrokerService, MessageBrokerService>();
             _container.RegisterSingleton<IInterruptMonitorService, InterruptMonitorService>();
 

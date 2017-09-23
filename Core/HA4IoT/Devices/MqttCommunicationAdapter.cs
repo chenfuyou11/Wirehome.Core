@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using MQTTnet.Core.Adapter;
 using MQTTnet.Core.Client;
 using MQTTnet.Core.Packets;
+using MQTTnet.Core.Serializer;
 
 namespace HA4IoT.Devices
 {
@@ -12,6 +15,8 @@ namespace HA4IoT.Devices
         private readonly BlockingCollection<MqttBasePacket> _incomingPackets = new BlockingCollection<MqttBasePacket>();
 
         public MqttCommunicationAdapter Partner { get; set; }
+
+        public IMqttPacketSerializer PacketSerializer => throw new NotImplementedException();
 
         public async Task ConnectAsync(MqttClientOptions options, TimeSpan timeout)
         {
@@ -52,5 +57,7 @@ namespace HA4IoT.Devices
                 throw new InvalidOperationException("Partner is not set.");
             }
         }
+
+       
     }
 }

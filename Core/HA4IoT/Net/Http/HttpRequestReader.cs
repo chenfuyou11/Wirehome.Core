@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Web.Http;
 
 namespace HA4IoT.Net.Http
 {
@@ -75,7 +75,6 @@ namespace HA4IoT.Net.Http
                 case "POST": return HttpMethod.Post;
                 case "DELETE": return HttpMethod.Delete;
                 case "PUT": return HttpMethod.Put;
-                case "PATCH": return HttpMethod.Patch;
                 case "OPTIONS": return HttpMethod.Options;
                 case "HEAD": return HttpMethod.Head;
 

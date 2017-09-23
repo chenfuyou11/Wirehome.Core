@@ -31,11 +31,12 @@ namespace HA4IoT.Messaging
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
 
-            if (Controller.IsRunningInUnitTest)
-            {
-                PublishInternal(message);
-                return Task.FromResult((object)null);
-            }
+            // TODO DNF
+            //if (Controller.IsRunningInUnitTest)
+            //{
+            //    PublishInternal(message);
+            //    return Task.FromResult((object)null);
+            //}
 
             return Task.Run(() => PublishInternal(message));
         }

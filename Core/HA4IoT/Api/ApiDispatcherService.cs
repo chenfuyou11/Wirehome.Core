@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Windows.Security.Cryptography;
-using Windows.Security.Cryptography.Core;
 using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Services;
 using Newtonsoft.Json.Linq;
+using HA4IoT.Contracts.Cryptographic;
 
 namespace HA4IoT.Api
 {
     public class ApiDispatcherService : ServiceBase, IApiDispatcherService
     {
-        private static readonly HashAlgorithmProvider HashAlgorithm = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Md5);
-
         private readonly List<IApiAdapter> _adapters = new List<IApiAdapter>();
         private readonly Dictionary<string, Action<IApiCall>> _actions = new Dictionary<string, Action<IApiCall>>(StringComparer.OrdinalIgnoreCase);
         private readonly ILogger _log;
+        private readonly ICryptoService _cryptoService;
 
-        public ApiDispatcherService(ILogService logService)
+        public ApiDispatcherService(ILogService logService, ICryptoService hashingService)
         {
             if (logService == null) throw new ArgumentNullException(nameof(logService));
 
@@ -30,6 +28,7 @@ namespace HA4IoT.Api
             Route("Execute", HandleExecuteRequest);
 
             _log = logService.CreatePublisher(nameof(ApiDispatcherService));
+            _cryptoService = hashingService ?? throw new ArgumentNullException(nameof(hashingService));
         }
 
         public event EventHandler<ApiRequestReceivedEventArgs> StatusRequested;
@@ -176,7 +175,7 @@ namespace HA4IoT.Api
 
             if (apiCall.ResultHash != null)
             {
-                var newHash = GenerateHash(apiCall.Result.ToString());
+                var newHash = _cryptoService.GenerateHash(apiCall.Result.ToString());
                 if (apiCall.ResultHash.Equals(newHash))
                 {
                     apiCall.Result = new JObject();
@@ -213,12 +212,6 @@ namespace HA4IoT.Api
             }
         }
 
-        private static string GenerateHash(string input)
-        {
-            var buffer = CryptographicBuffer.ConvertStringToBinary(input, BinaryStringEncoding.Utf8);
-            var hashBuffer = HashAlgorithm.HashData(buffer);
-
-            return CryptographicBuffer.EncodeToBase64String(hashBuffer);
-        }
+        
     }
 }

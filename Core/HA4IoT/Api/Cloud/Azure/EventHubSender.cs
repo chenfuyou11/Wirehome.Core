@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Web.Http;
-using Windows.Web.Http.Headers;
 using HA4IoT.Contracts.Logging;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace HA4IoT.Api.Cloud.Azure
 {
@@ -113,16 +113,15 @@ namespace HA4IoT.Api.Cloud.Azure
         private HttpClient CreateHttpClient()
         {
             var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.TryAppendWithoutValidation("Authorization", _authorization);
-
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", _authorization);
             return httpClient;
         }
 
-        private HttpStringContent CreateContent(JObject data)
+        private StringContent CreateContent(JObject data)
         {
-            var content = new HttpStringContent(data.ToString());
-            content.Headers.ContentType = new HttpMediaTypeHeaderValue("application/atom+xml");
-            content.Headers.ContentType.Parameters.Add(new HttpNameValueHeaderValue("type", "entry"));
+            var content = new StringContent(data.ToString());
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/atom+xml");
+            content.Headers.ContentType.Parameters.Add(new NameValueHeaderValue("type", "entry"));
             content.Headers.ContentType.CharSet = "utf-8";
 
             return content;

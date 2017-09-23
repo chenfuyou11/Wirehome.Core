@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Windows.Web.Http;
+using System.Net.Http;
 
 namespace HA4IoT.Net.Http
 {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Windows.Web.Http;
 using HA4IoT.Contracts.Logging;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
 
 namespace HA4IoT.Api.Cloud.Azure
 {
@@ -40,7 +40,7 @@ namespace HA4IoT.Api.Cloud.Azure
                 {
                     httpClient.DefaultRequestHeaders.Add("BrokerProperties", brokerProperties.ToString());
 
-                    HttpResponseMessage result = await httpClient.PostAsync(_uri, content);
+                    var result = await httpClient.PostAsync(_uri, content);
                     if (result.IsSuccessStatusCode)
                     {
                         _log.Verbose("Sent message to Azure queue.");
@@ -60,14 +60,14 @@ namespace HA4IoT.Api.Cloud.Azure
         private HttpClient CreateHttpClient()
         {
             var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.TryAppendWithoutValidation("Authorization", _options.Authorization);
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", _options.Authorization);
             
             return httpClient;
         }
 
-        private HttpStringContent CreateContent(JObject body)
+        private StringContent CreateContent(JObject body)
         {
-            var content = new HttpStringContent(body.ToString());
+            var content = new StringContent(body.ToString());
             return content;
         }
     }

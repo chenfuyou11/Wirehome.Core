@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Windows.Web.Http;
+using System.Net;
 
 namespace HA4IoT.Net.Http
 {
     public class HttpResponse
     {
-        public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.Ok;
+        public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
         public Dictionary<string, string> Headers { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         public byte[] Body { get; set; } // TODO: Use stream.
         public string MimeType { get; set; }

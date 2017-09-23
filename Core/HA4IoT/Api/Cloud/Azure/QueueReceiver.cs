@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Web.Http;
-using Windows.Web.Http.Headers;
 using HA4IoT.Contracts.Logging;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HA4IoT.Api.Cloud.Azure
 {
@@ -24,7 +26,7 @@ namespace HA4IoT.Api.Cloud.Azure
 
             _log = log;
             _uri = new Uri($"https://{options.NamespaceName}.servicebus.windows.net/{options.QueueName}/messages/head?api-version=2015-01&timeout={(int)options.Timeout.TotalSeconds}");
-            _httpClient.DefaultRequestHeaders.TryAppendWithoutValidation("Authorization", options.Authorization);
+            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", options.Authorization);
         }
 
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
@@ -73,8 +75,8 @@ namespace HA4IoT.Api.Cloud.Azure
         {
             // DELETE will force a "Receive & Delete".
             // POST will force a "Peek-Lock"
-            var result = _httpClient.DeleteAsync(_uri).AsTask().Result;
-            if (result.StatusCode == HttpStatusCode.NoContent)
+            var result = _httpClient.DeleteAsync(_uri).Result;
+            if (result.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
                 _log.Verbose("Azure queue timeout reached. Reconnecting...");
                 return;
@@ -96,10 +98,9 @@ namespace HA4IoT.Api.Cloud.Azure
             }
         }
 
-        private async Task HandleQueueMessage(HttpResponseHeaderCollection headers, IHttpContent content)
+        private async Task HandleQueueMessage(HttpResponseHeaders headers, HttpContent content)
         {
-            string brokerPropertiesSource;
-            if (!headers.TryGetValue("BrokerProperties", out brokerPropertiesSource))
+            if (!headers.TryGetValues("BrokerProperties", out IEnumerable<string> brokerPropertiesSource))
             {
                 _log.Warning("Received Azure queue message without broker properties.");
                 return;
@@ -112,7 +113,8 @@ namespace HA4IoT.Api.Cloud.Azure
                 return;
             }
 
-            var brokerProperties = JObject.Parse(brokerPropertiesSource);
+            //TODO DNF brokerPropertiesSource.FirstOrDefault()
+            var brokerProperties = JObject.Parse(brokerPropertiesSource.FirstOrDefault());
             var body = JObject.Parse(bodySource);
 
             _log.Verbose("Received valid Azure queue message.");

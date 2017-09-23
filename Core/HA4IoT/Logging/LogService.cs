@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using Windows.System.Threading;
 using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Services;
@@ -31,7 +30,8 @@ namespace HA4IoT.Logging
             _adapters = adapters ?? throw new ArgumentNullException(nameof(adapters));
 
             Log.Default = CreatePublisher(null);
-            ThreadPoolTimer.CreatePeriodicTimer(ProcessPendingLogEntries, TimeSpan.FromMilliseconds(100));
+            //TODO DNF
+            //ThreadPoolTimer.CreatePeriodicTimer(ProcessPendingLogEntries, TimeSpan.FromMilliseconds(100));
         }
 
         public int ErrorsCount => _errorLogEntries.Count;
@@ -171,20 +171,20 @@ namespace HA4IoT.Logging
             apiCall.Result = JObject.FromObject(response);
         }
 
-        private void ProcessPendingLogEntries(ThreadPoolTimer timer)
-        {
-            List<LogEntry> buffer;
+        //private void ProcessPendingLogEntries(ThreadPoolTimer timer)
+        //{
+        //    List<LogEntry> buffer;
 
-            lock (_pendingLogEntries)
-            {
-                buffer = new List<LogEntry>(_pendingLogEntries);
-                _pendingLogEntries.Clear();
-            }
+        //    lock (_pendingLogEntries)
+        //    {
+        //        buffer = new List<LogEntry>(_pendingLogEntries);
+        //        _pendingLogEntries.Clear();
+        //    }
 
-            foreach (var pendingLogEntry in buffer)
-            {
-                PublishPendingLogEntry(pendingLogEntry);
-            }
-        }
+        //    foreach (var pendingLogEntry in buffer)
+        //    {
+        //        PublishPendingLogEntry(pendingLogEntry);
+        //    }
+        //}
     }
 }

@@ -113,7 +113,7 @@ namespace HA4IoT.Api.Cloud.Azure
                 return;
             }
 
-            //TODO DNF brokerPropertiesSource.FirstOrDefault()
+            //TODO brokerPropertiesSource.FirstOrDefault()
             var brokerProperties = JObject.Parse(brokerPropertiesSource.FirstOrDefault());
             var body = JObject.Parse(bodySource);
 

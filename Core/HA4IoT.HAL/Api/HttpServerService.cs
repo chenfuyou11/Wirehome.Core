@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Windows.Web.Http;
 using HA4IoT.Api.Configuration;
 using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Components;
@@ -12,7 +13,6 @@ using HA4IoT.Net.Http;
 using HA4IoT.Net.WebSockets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Net;
 
 namespace HA4IoT.Api
 {
@@ -46,14 +46,6 @@ namespace HA4IoT.Api
 
         public void NotifyStateChanged(IComponent component)
         {
-        }
-
-        public HttpServer HttpServer
-        {
-            get
-            {
-                return _httpServer;
-            }
         }
 
         private void OnHttpRequestReceived(object sender, HttpRequestReceivedEventArgs e)
@@ -93,7 +85,7 @@ namespace HA4IoT.Api
                 return;
             }
 
-            context.Response.StatusCode = HttpStatusCode.OK;
+            context.Response.StatusCode = HttpStatusCode.Ok;
             if (eventArgs.ApiContext.Result == null)
             {
                 eventArgs.ApiContext.Result = new JObject();

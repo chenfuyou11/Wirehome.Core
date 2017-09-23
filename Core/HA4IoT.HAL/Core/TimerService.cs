@@ -25,6 +25,13 @@ namespace HA4IoT.Core
 
         public event EventHandler<TimerTickEventArgs> Tick;
 
+        public void CreatePeriodicTimer(Action action, TimeSpan period)
+        {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
+            ThreadPoolTimer.CreatePeriodicTimer((timer) => { action(); }, period);
+        }
+
         private void TickInternal(object state)
         {
             try

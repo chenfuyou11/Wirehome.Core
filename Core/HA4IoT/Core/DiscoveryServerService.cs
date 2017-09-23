@@ -6,47 +6,52 @@ using HA4IoT.Contracts.Services;
 using HA4IoT.Contracts.Settings;
 using HA4IoT.Settings;
 using Newtonsoft.Json;
+using SocketLite.Services;
+using SocketLite.Model;
+using System.Linq;
 
 namespace HA4IoT.Core
 {
-    // TODO DNF
-    //public sealed class DiscoveryServerService : ServiceBase, IDisposable
-    //{
-    //    private const int Port = 19228;
+    public sealed class DiscoveryServerService : ServiceBase, IDisposable
+    {
+        private const int Port = 19228;
+        private UdpSocketReceiver _socket = new UdpSocketReceiver();
+        private IDisposable _subscriberUpdReceiver;
+        private readonly ISettingsService _settingsService;
 
-    //    private readonly DatagramSocket _socket = new DatagramSocket();
-    //    private readonly ISettingsService _settingsService;
+        public DiscoveryServerService(ISettingsService settingsService)
+        {
+            _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+        }
+
+        public override void Startup()
+        {
+            var allInterfaces = new CommunicationsInterface().GetAllInterfaces();
+            var observerUdpReceiver =_socket.CreateObservableListener(Port, allInterfaces.FirstOrDefault());
+
+            _subscriberUpdReceiver = observerUdpReceiver.Subscribe(
+            async args =>
+            {
+                var controllerSettings = _settingsService.GetSettings<ControllerSettings>();
+                var response = new DiscoveryResponse(controllerSettings.Caption, controllerSettings.Description);
+                await SendResponseAsync(args.RemoteAddress, response);
+            });
+        }
+
+        public void Dispose()
+        {
+            _subscriberUpdReceiver.Dispose();
+            _socket?.Dispose();
+        }
         
-    //    public DiscoveryServerService(ISettingsService settingsService)
-    //    {
-    //        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
-
-    //        _socket.MessageReceived += SendResponseAsync;
-    //        _socket.BindServiceNameAsync(Port.ToString()).GetAwaiter().GetResult();
-    //    }
-
-    //    public void Dispose()
-    //    {
-    //        _socket?.Dispose();
-    //    }
-
-    //    private async void SendResponseAsync(DatagramSocket sender, DatagramSocketMessageReceivedEventArgs args)
-    //    {
-    //        var controllerSettings = _settingsService.GetSettings<ControllerSettings>();
-
-    //        var response = new DiscoveryResponse(controllerSettings.Caption, controllerSettings.Description);
-    //        await SendResponseAsync(args.RemoteAddress, response);
-    //    }
-
-    //    private static async Task SendResponseAsync(HostName target, DiscoveryResponse response)
-    //    {
-    //        var buffer = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response));
-    //        using (var socket = new DatagramSocket())
-    //        {
-    //            await socket.ConnectAsync(target, Port.ToString());
-    //            await socket.OutputStream.WriteAsync(buffer.AsBuffer());
-    //            await socket.OutputStream.FlushAsync();
-    //        }
-    //    }
-    //}
+        private static async Task SendResponseAsync(string target, DiscoveryResponse response)
+        {
+            var buffer = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response));
+            using (var socket = new UdpSocketClient())
+            {
+                await socket.ConnectAsync(target, Port);
+                await socket.SendAsync(buffer);
+            }
+        }
+    }
 }

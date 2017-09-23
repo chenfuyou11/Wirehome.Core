@@ -11,7 +11,6 @@ using HA4IoT.Automations;
 using HA4IoT.Backup;
 using HA4IoT.Components;
 using HA4IoT.Configuration;
-using HA4IoT.Contracts;
 using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Automations;
@@ -24,14 +23,12 @@ using HA4IoT.Contracts.ExternalServices.TelegramBot;
 using HA4IoT.Contracts.ExternalServices.Twitter;
 using HA4IoT.Contracts.Hardware.DeviceMessaging;
 using HA4IoT.Contracts.Hardware.Interrupts;
-using HA4IoT.Contracts.Hardware.RaspberryPi;
 using HA4IoT.Contracts.Hardware.RemoteSockets;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Messaging;
 using HA4IoT.Contracts.Notifications;
 using HA4IoT.Contracts.PersonalAgent;
 using HA4IoT.Contracts.Resources;
-using HA4IoT.Contracts.Scheduling;
 using HA4IoT.Contracts.Scripting;
 using HA4IoT.Contracts.Settings;
 using HA4IoT.Contracts.Storage;
@@ -51,7 +48,6 @@ using HA4IoT.Messaging;
 using HA4IoT.Notifications;
 using HA4IoT.PersonalAgent;
 using HA4IoT.Resources;
-using HA4IoT.Scheduling;
 using HA4IoT.Scripting;
 using HA4IoT.Sensors;
 using HA4IoT.Settings;
@@ -146,7 +142,7 @@ namespace HA4IoT.Core
             return _container.GetInstance(type);
         }
 
-        //TODO DNF
+        //TODO
         public void RegisterServices()
         {
             _container.RegisterSingleton<IContainer>(() => this);
@@ -160,14 +156,14 @@ namespace HA4IoT.Core
             _container.RegisterSingleton<ILogService, LogService>();
             _container.RegisterSingleton<IHealthService, HealthService>();
             _container.RegisterSingleton<IDateTimeService, DateTimeService>();
-            //_container.RegisterSingleton<ISchedulerService, SchedulerService>();
-            //_container.RegisterSingleton<DiscoveryServerService>();
+
+            _container.RegisterSingleton<DiscoveryServerService>();
 
             _container.RegisterSingleton<IConfigurationService, ConfigurationService>();
             _container.RegisterInitializer<ConfigurationService>(s => s.Initialize());
 
             _container.RegisterSingleton<IStorageService, StorageService>();
-            //_container.RegisterSingleton<ITimerService, TimerService>();
+
             _container.RegisterSingleton<ISystemEventsService, SystemEventsService>();
             _container.RegisterSingleton<ISystemInformationService, SystemInformationService>();
             _container.RegisterSingleton<IBackupService, BackupService>();
@@ -176,7 +172,7 @@ namespace HA4IoT.Core
             _container.RegisterInitializer<ResourceService>(s => s.Initialize());
 
             _container.RegisterSingleton<IApiDispatcherService, ApiDispatcherService>();
-            _container.RegisterSingleton<HttpServerService>();
+            //_container.RegisterSingleton<HttpServerService>();
             _container.RegisterSingleton<AzureCloudService>();
             _container.RegisterSingleton<CloudConnectorService>();
 
@@ -186,8 +182,11 @@ namespace HA4IoT.Core
             _container.RegisterSingleton<ISettingsService, SettingsService>();
             _container.RegisterInitializer<SettingsService>(s => s.Initialize());
 
-           // _container.RegisterSingleton<II2CBusService, I2CBusService>();
+            //_container.RegisterSingleton<ISchedulerService, SchedulerService>();
+            //_container.RegisterSingleton<ITimerService, TimerService>();
+            // _container.RegisterSingleton<II2CBusService, I2CBusService>();
             //_container.RegisterSingleton<IGpioService, GpioService>();
+
             _container.RegisterSingleton<IMessageBrokerService, MessageBrokerService>();
             _container.RegisterSingleton<IInterruptMonitorService, InterruptMonitorService>();
 

@@ -31,7 +31,7 @@ namespace HA4IoT.Messaging
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
 
-            // TODO DNF
+            // TODO CHANGE
             //if (Controller.IsRunningInUnitTest)
             //{
             //    PublishInternal(message);

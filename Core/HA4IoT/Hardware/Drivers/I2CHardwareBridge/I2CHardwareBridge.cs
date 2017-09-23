@@ -19,7 +19,7 @@ namespace HA4IoT.Hardware.Drivers.I2CHardwareBridge
 
             Id = id ?? throw new ArgumentNullException(nameof(id));
 
-            //TODO DNF
+            //TODO
             //DHT22Accessor = new DHT22Accessor(this, schedulerService);
         }
 

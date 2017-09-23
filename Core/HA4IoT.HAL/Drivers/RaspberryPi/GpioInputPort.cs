@@ -103,7 +103,7 @@ namespace HA4IoT.Hardware.Drivers.RaspberryPi
             {
                 Log.Default.Error(exception, $"Error while reading input state of GPIO{_pin.PinNumber}.");
             }
-
+            
             return newState;
         }
     }

@@ -7,6 +7,7 @@ using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Contracts.Services;
 using Newtonsoft.Json.Linq;
+using HA4IoT.Contracts.Core;
 
 namespace HA4IoT.Logging
 {
@@ -22,16 +23,17 @@ namespace HA4IoT.Logging
         private readonly RollingCollection<LogEntry> _warningLogEntries = new RollingCollection<LogEntry>(250);
 
         private readonly IEnumerable<ILogAdapter> _adapters;
-
+        private readonly ITimerService _timerService;
         private long _id;
 
-        public LogService(IEnumerable<ILogAdapter> adapters)
+        public LogService(IEnumerable<ILogAdapter> adapters, ITimerService timerService)
         {
             _adapters = adapters ?? throw new ArgumentNullException(nameof(adapters));
-
+            _timerService = timerService ?? throw new ArgumentNullException(nameof(timerService));
             Log.Default = CreatePublisher(null);
-            //TODO DNF
-            //ThreadPoolTimer.CreatePeriodicTimer(ProcessPendingLogEntries, TimeSpan.FromMilliseconds(100));
+
+            //TODO CHECK
+            _timerService.CreatePeriodicTimer(ProcessPendingLogEntries, TimeSpan.FromMilliseconds(100));
         }
 
         public int ErrorsCount => _errorLogEntries.Count;
@@ -171,20 +173,20 @@ namespace HA4IoT.Logging
             apiCall.Result = JObject.FromObject(response);
         }
 
-        //private void ProcessPendingLogEntries(ThreadPoolTimer timer)
-        //{
-        //    List<LogEntry> buffer;
+        private void ProcessPendingLogEntries()
+        {
+            List<LogEntry> buffer;
 
-        //    lock (_pendingLogEntries)
-        //    {
-        //        buffer = new List<LogEntry>(_pendingLogEntries);
-        //        _pendingLogEntries.Clear();
-        //    }
+            lock (_pendingLogEntries)
+            {
+                buffer = new List<LogEntry>(_pendingLogEntries);
+                _pendingLogEntries.Clear();
+            }
 
-        //    foreach (var pendingLogEntry in buffer)
-        //    {
-        //        PublishPendingLogEntry(pendingLogEntry);
-        //    }
-        //}
+            foreach (var pendingLogEntry in buffer)
+            {
+                PublishPendingLogEntry(pendingLogEntry);
+            }
+        }
     }
 }

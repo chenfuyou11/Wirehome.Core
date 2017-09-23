@@ -1,5 +1,6 @@
 ﻿using System;
 using HA4IoT.Contracts.Environment;
+using Newtonsoft.Json.Linq;
 
 namespace HA4IoT.ExternalServices.OpenWeatherMap
 {
@@ -19,10 +20,10 @@ namespace HA4IoT.ExternalServices.OpenWeatherMap
 
         public void Parse(string source)
         {
-            //TODO DNF
-            //var data = JsonObject.Parse(source);
+            //TODO
+            var data = JObject.Parse(source);
 
-            //var main = data.GetNamedObject("main");
+            //var main = data["main"];
             //Temperature = (float)main.GetNamedNumber("temp", 0);
             //Humidity = (float)main.GetNamedNumber("humidity", 0);
 

@@ -28,7 +28,5 @@ namespace HA4IoT.Contracts.Cryptographic
 
             return signature;
         }
-
-        
     }
 }

@@ -84,7 +84,7 @@ namespace HA4IoT.Api
             if (adapter == null) throw new ArgumentNullException(nameof(adapter));
 
             _adapters.Add(adapter);
-            adapter.RequestReceived += RouteRequest;
+            adapter.ApiRequestReceived += RouteRequest;
         }
 
         private void Expose(string @namespace, object controller)

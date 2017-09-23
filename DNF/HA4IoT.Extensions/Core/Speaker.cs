@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Components.States;
-using Windows.Media.Playback;
-using Windows.Media.Core;
 using HA4IoT.Contracts.Components.Features;
 using HA4IoT.Components.Commands;
 using HA4IoT.Contracts.Components.Commands;
+using HA4IoT.Extensions.Contracts;
 
 namespace HA4IoT.Extensions.Core
 {
@@ -18,11 +17,11 @@ namespace HA4IoT.Extensions.Core
         private SpeakerStateValue _speakerState = SpeakerStateValue.Stopped;
         private CommandExecutor _commandExecutor;
         private Random _soundIndexGenerator;
-        private MediaPlayer _player;
         private string _nextSound;
         private object _syncRoot = new object();
-        
-        public Speaker(string id, Dictionary<Enum, string> sounds) : base(id)
+        private readonly ISoundPlayer _soundPlayer;
+
+        public Speaker(string id, Dictionary<Enum, string> sounds, ISoundPlayer soundPlayer) : base(id)
         {
             _Sounds = new SortedList<Enum, string>(sounds);
 
@@ -32,18 +31,13 @@ namespace HA4IoT.Extensions.Core
             _commandExecutor.Register<TurnOffCommand>(c => Stop());
 
             _soundIndexGenerator = new Random();
-            _player = new MediaPlayer()
+            this._soundPlayer = soundPlayer ?? throw new ArgumentNullException(nameof(soundPlayer));
+            this._soundPlayer.SoundEnd = () =>
             {
-                AutoPlay = false
+                SetInternalState(SpeakerStateValue.Stopped, true);
             };
-            _player.MediaEnded += _player_MediaEnded;
         }
-
-        private void _player_MediaEnded(MediaPlayer sender, object args)
-        {
-            SetInternalState(SpeakerStateValue.Stopped, true);
-        }
-
+        
         private void SetInternalState(SpeakerStateValue value, bool skipPlayerManipulation = false)
         {
             lock (_syncRoot)
@@ -54,7 +48,7 @@ namespace HA4IoT.Extensions.Core
                 {
                     if (value == SpeakerStateValue.Stopped)
                     {
-                        _player.Pause();
+                        _soundPlayer.Pause();
                     }
                     else if (value == SpeakerStateValue.Playing)
                     {
@@ -67,8 +61,7 @@ namespace HA4IoT.Extensions.Core
                             return;
                         }
 
-                        _player.Source = MediaSource.CreateFromUri(new Uri($"ms-appx:///{_nextSound}"));
-                        _player.Play();
+                        _soundPlayer.Play(_nextSound);
                     }
                 }
 

@@ -2,19 +2,17 @@
 using HA4IoT.Contracts.Components.Commands;
 using HA4IoT.Contracts.Components.Features;
 using HA4IoT.Contracts.Components.States;
+using HA4IoT.Contracts.Logging;
 using HA4IoT.Extensions.Devices;
-using HA4IoT.Extensions.Devices.Samsung;
 using HA4IoT.Extensions.Extensions;
-using HA4IoT.Extensions.Messaging;
 using HA4IoT.Extensions.Messaging.Core;
 using HA4IoT.Extensions.Messaging.DenonMessages;
 using HA4IoT.Extensions.Messaging.KodiMessages;
 using HA4IoT.Extensions.Messaging.Services;
 using HA4IoT.Extensions.Networking;
-using HA4IoT.Logging;
-using HA4IoT.Messaging;
 using HA4IoT.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -23,9 +21,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -39,7 +34,7 @@ namespace HA4IoT.Extensions.Tests
 
         private static EventAggregator PrepareAggregator()
         {
-            var log = new LogService(new[] { new EtwLoggingService() });
+            var log = Mock.Of<ILogService>(); ;
             var conf = new ConfigurationService(log);
             var script = new ScriptingService(conf, log);
             var eventAggregator = new EventAggregator();
@@ -86,7 +81,7 @@ namespace HA4IoT.Extensions.Tests
         [TestMethod]
         public async Task DenonControlMessage()
         {
-            var log = new LogService(new[] { new EtwLoggingService() });
+            var log = Mock.Of<ILogService>(); 
             var conf = new ConfigurationService(log);
             var script = new ScriptingService(conf, log);
 

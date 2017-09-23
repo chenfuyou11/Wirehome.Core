@@ -5,7 +5,7 @@ namespace HA4IoT.Contracts.Api
 {
     public interface IApiAdapter
     {
-        event EventHandler<ApiRequestReceivedEventArgs> RequestReceived;
+        event EventHandler<ApiRequestReceivedEventArgs> ApiRequestReceived;
 
         void NotifyStateChanged(IComponent component);
     }

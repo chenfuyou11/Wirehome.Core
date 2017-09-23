@@ -6,8 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking.Sockets;
 using Windows.Security.Cryptography.Core;
-using Windows.Web.Http;
 using HA4IoT.Contracts.Logging;
+using System.Net;
 
 namespace HA4IoT.Net.Http
 {

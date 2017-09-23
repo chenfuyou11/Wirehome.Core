@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Windows.Web.Http;
 using HA4IoT.Api.Configuration;
 using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Components;
@@ -13,10 +12,11 @@ using HA4IoT.Net.Http;
 using HA4IoT.Net.WebSockets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace HA4IoT.Api
 {
-    public class HttpServerService : ServiceBase, IApiAdapter
+    public class HttpServerService : ServiceBase, IApiAdapter, IHttpServerService
     {
         private readonly HttpServer _httpServer;
         private readonly ILogger _log;
@@ -42,7 +42,8 @@ namespace HA4IoT.Api
             apiDispatcherService.RegisterAdapter(this);
         }
 
-        public event EventHandler<ApiRequestReceivedEventArgs> RequestReceived;
+        public event EventHandler<ApiRequestReceivedEventArgs> ApiRequestReceived;
+        public event EventHandler<HttpRequestReceivedEventArgs> HTTPRequestReceived;
 
         public void NotifyStateChanged(IComponent component)
         {
@@ -65,6 +66,8 @@ namespace HA4IoT.Api
                 e.IsHandled = true;
                 OnAppRequestReceived(e.Context, StoragePath.ManagementAppRoot);
             }
+
+            HTTPRequestReceived?.Invoke(sender, e);
         }
 
         private void OnApiRequestReceived(HttpContext context)
@@ -77,7 +80,7 @@ namespace HA4IoT.Api
             }
 
             var eventArgs = new ApiRequestReceivedEventArgs(apiCall);
-            RequestReceived?.Invoke(this, eventArgs);
+            ApiRequestReceived?.Invoke(this, eventArgs);
 
             if (!eventArgs.IsHandled)
             {
@@ -85,7 +88,7 @@ namespace HA4IoT.Api
                 return;
             }
 
-            context.Response.StatusCode = HttpStatusCode.Ok;
+            context.Response.StatusCode = HttpStatusCode.OK;
             if (eventArgs.ApiContext.Result == null)
             {
                 eventArgs.ApiContext.Result = new JObject();
@@ -158,7 +161,7 @@ namespace HA4IoT.Api
             var context = new ApiCall(apiRequest.Action, apiRequest.Parameter, apiRequest.ResultHash);
 
             var eventArgs = new ApiRequestReceivedEventArgs(context);
-            RequestReceived?.Invoke(this, eventArgs);
+            ApiRequestReceived?.Invoke(this, eventArgs);
 
             if (!eventArgs.IsHandled)
             {

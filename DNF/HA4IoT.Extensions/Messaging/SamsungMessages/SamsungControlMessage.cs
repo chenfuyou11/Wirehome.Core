@@ -1,10 +1,8 @@
 ﻿using HA4IoT.Extensions.Contracts;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Linq;
-using Windows.Storage.Streams;
 
 namespace HA4IoT.Extensions.Messaging.SamsungMessages
 {
@@ -72,7 +70,7 @@ namespace HA4IoT.Extensions.Messaging.SamsungMessages
             return messageType == GetType().Name; 
         }
 
-        public object Deserialize(IDataReader reader, byte? messageSize = null)
+        public object Deserialize(IBinaryReader reader, byte? messageSize = null)
         {
             throw new NotImplementedException();
         }

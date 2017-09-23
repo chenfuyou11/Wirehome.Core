@@ -45,7 +45,7 @@ namespace HA4IoT.Api.Cloud.CloudConnector
             systemInformationService.Set("CloudConnector/IsConnected", () => _isConnected);
         }
 
-        public event EventHandler<ApiRequestReceivedEventArgs> RequestReceived;
+        public event EventHandler<ApiRequestReceivedEventArgs> ApiRequestReceived;
 
         public override void Startup()
         {
@@ -198,7 +198,7 @@ namespace HA4IoT.Api.Cloud.CloudConnector
             var apiCall = new CloudConnectorApiContext(cloudMessage);
             var eventArgs = new ApiRequestReceivedEventArgs(apiCall);
 
-            RequestReceived?.Invoke(this, eventArgs);
+            ApiRequestReceived?.Invoke(this, eventArgs);
 
             if (!eventArgs.IsHandled)
             {

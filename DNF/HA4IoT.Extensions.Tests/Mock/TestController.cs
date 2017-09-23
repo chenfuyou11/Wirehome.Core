@@ -17,18 +17,14 @@ using HA4IoT.Contracts.Settings;
 using HA4IoT.Contracts.Backup;
 using HA4IoT.Backup;
 using HA4IoT.Resources;
-using HA4IoT.Scheduling;
 using HA4IoT.Automations;
 using HA4IoT.Components;
 using HA4IoT.Areas;
-using HA4IoT.Contracts.Scheduling;
-using System.Diagnostics.CodeAnalysis;
 
 namespace HA4IoT.Extensions.Tests
 {
     public class TestController : IController
     {
-        //private readonly TestApiAdapter _apiAdapter = new TestApiAdapter();
         private readonly Container _container = new Container(new ControllerOptions());
 
         public TestController()
@@ -44,7 +40,7 @@ namespace HA4IoT.Extensions.Tests
             //_container.RegisterSingleton<IDaylightService, TestDaylightService>();
             _container.RegisterSingleton<IDateTimeService, TestDateTimeService>();
             _container.RegisterSingleton<IResourceService, ResourceService>();
-            _container.RegisterSingleton<ISchedulerService, SchedulerService>();
+           // _container.RegisterSingleton<ISchedulerService, SchedulerService>();
             _container.RegisterSingleton<INotificationService, NotificationService>();
             _container.RegisterSingleton<ISystemEventsService, SystemEventsService>();
             _container.RegisterSingleton<IAutomationRegistryService, AutomationRegistryService>();
@@ -60,13 +56,22 @@ namespace HA4IoT.Extensions.Tests
             _container.StartupServices(log);
             _container.ExposeRegistrationsToApi();
 
- 
-            //_container.GetInstance<IApiDispatcherService>().RegisterAdapter(_apiAdapter);
+            StartupCompleted?.Invoke(null, null);
+            StartupFailed?.Invoke(null, null);
+        }
+
+        private void TestController_StartupFailed(object sender, StartupFailedEventArgs e)
+        {
+            
+        }
+
+        private void TestController_StartupCompleted(object sender, StartupCompletedEventArgs e)
+        {
+            
         }
 
         public event EventHandler<StartupCompletedEventArgs> StartupCompleted;
         public event EventHandler<StartupFailedEventArgs> StartupFailed;
-       // public event EventHandler Shutdown;
 
         public TInstance GetInstance<TInstance>() where TInstance : class
         {
@@ -75,12 +80,12 @@ namespace HA4IoT.Extensions.Tests
 
         public void SetTime(TimeSpan value)
         {
-            //((TestDateTimeService)GetInstance<IDateTimeService>()).SetTime(value);
+            
         }
 
         public void Tick(TimeSpan elapsedTime)
         {
-            //((TestTimerService)GetInstance<ITimerService>()).ExecuteTick(elapsedTime);
+           
         }
 
         public void AddComponent(IComponent component)
@@ -90,9 +95,5 @@ namespace HA4IoT.Extensions.Tests
             GetInstance<IComponentRegistryService>().RegisterComponent(component);
         }
 
-        //public IApiContext InvokeApi(string action, JObject parameter)
-       // {
-            //return _apiAdapter.Invoke(action, parameter);
-       // }
     }
 }

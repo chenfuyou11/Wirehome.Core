@@ -1,22 +1,22 @@
-﻿using HA4IoT.Contracts.Api;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Net;
+using HA4IoT.Contracts.Api;
 using HA4IoT.Contracts.Areas;
 using HA4IoT.Contracts.Components;
 using HA4IoT.Contracts.Logging;
 using HA4IoT.Extensions.Exceptions;
 using HA4IoT.Extensions.MessagesModel;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Windows.Web.Http;
-using System.Text;
-using Newtonsoft.Json;
 using HA4IoT.Contracts.Components.Features;
 using HA4IoT.Net.Http;
 using HA4IoT.Contracts.Settings;
 using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Api;
 using HA4IoT.Extensions.Contracts;
+using HA4IoT.Contracts.Core;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace HA4IoT.Extensions
 {
@@ -27,7 +27,7 @@ namespace HA4IoT.Extensions
         private const string MANUFACTURE = "HA4IoT";
         private const string NAMESPACE = "Alexa.ConnectedHome.Control";
 
-        private readonly HttpServerService _httpServer;
+        private readonly IHttpServerService _httpServer;
         private readonly IAreaRegistryService _areService;
         private readonly ISettingsService _settingService;
         private readonly IComponentRegistryService _componentService;
@@ -45,11 +45,10 @@ namespace HA4IoT.Extensions
             {"TurnOffRequest", "TurnOffConfirmation" }
         };
 
-   
         private Dictionary<string, IEnumerable<IComponent>> _connectedDevices = new Dictionary<string, IEnumerable<IComponent>>();
         private Dictionary<string, IEnumerable<string>> _aliases = new Dictionary<string, IEnumerable<string>>();
 
-        public AlexaDispatcherEndpointService(HttpServerService httpServer, IAreaRegistryService areService, ISettingsService settingService, 
+        public AlexaDispatcherEndpointService(IHttpServerService httpServer, IAreaRegistryService areService, ISettingsService settingService, 
             IComponentRegistryService componentService, ILogService logService)
         {
             _httpServer = httpServer ?? throw new ArgumentNullException(nameof(httpServer));
@@ -62,7 +61,7 @@ namespace HA4IoT.Extensions
 
         public void Startup()
         {
-            _httpServer.HttpServer.HttpRequestReceived += DispatchHttpRequest;
+            _httpServer.HTTPRequestReceived += DispatchHttpRequest;
         }
 
         public void AddConnectedVivices(string friendlyName, IEnumerable<IComponent> devices)

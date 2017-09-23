@@ -10,6 +10,11 @@ namespace HA4IoT.Extensions.Tests
         public event EventHandler MotionDetectionEnd;
         public event EventHandler<MotionDetectorAdapterStateChangedEventArgs> StateChanged;
 
+        public TestMotionDetectorAdapter()
+        {
+            StateChanged?.Invoke(null, null);
+        }
+
         public void Refresh()
         {
         }

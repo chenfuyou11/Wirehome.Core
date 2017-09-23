@@ -27,7 +27,7 @@ namespace HA4IoT.Api.Cloud.Azure
             _log = logService?.CreatePublisher(nameof(AzureCloudService)) ?? throw new ArgumentNullException(nameof(logService));
         }
 
-        public event EventHandler<ApiRequestReceivedEventArgs> RequestReceived;
+        public event EventHandler<ApiRequestReceivedEventArgs> ApiRequestReceived;
 
         public override void Startup()
         {
@@ -81,7 +81,7 @@ namespace HA4IoT.Api.Cloud.Azure
             
             var context = new QueueBasedApiContext(correlationId, apiRequest.Action, apiRequest.Parameter, apiRequest.ResultHash);
             var eventArgs = new ApiRequestReceivedEventArgs(context);
-            RequestReceived?.Invoke(this, eventArgs);
+            ApiRequestReceived?.Invoke(this, eventArgs);
 
             if (!eventArgs.IsHandled)
             {

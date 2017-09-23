@@ -2,7 +2,6 @@
 using HA4IoT.Extensions.Core;
 using Newtonsoft.Json.Linq;
 using System;
-using Windows.Storage.Streams;
 
 namespace HA4IoT.Extensions.Messaging
 {
@@ -77,7 +76,7 @@ namespace HA4IoT.Extensions.Messaging
             return package;
         }
 
-        public object Deserialize(IDataReader reader, byte? messageSize = null)
+        public object Deserialize(IBinaryReader reader, byte? messageSize = null)
         {
             var code = reader.ReadUInt32();
             var bits = reader.ReadByte();

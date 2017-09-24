@@ -48,7 +48,7 @@ namespace HA4IoT.Extensions.Messaging.Core
             return await publishTask.WhenAny<R>(millisecondsTimeOut, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<R> PublishWithResultAsync<T, R>
+        public async Task<R> PublishWithExpectedResultAsync<T, R>
         (
             T message,
             R expectedResult,

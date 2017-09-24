@@ -14,6 +14,7 @@ using HA4IoT.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
+using Quartz;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,23 +33,22 @@ namespace HA4IoT.Extensions.Tests
     {
         public const string DENON_HOST = "192.168.0.101";
 
-        private static EventAggregator PrepareAggregator()
+        private (EventAggregator ev, IScheduler ch) PrepareMocks()
         {
-            var log = Mock.Of<ILogService>(); ;
-            var conf = new ConfigurationService(log);
-            var script = new ScriptingService(conf, log);
+            var log = Mock.Of<ILogService>();
+            var scheduler = Mock.Of<IScheduler>();
             var eventAggregator = new EventAggregator();
             var http = new HttpMessagingService(log, eventAggregator);
             http.Startup();
-            return eventAggregator;
+            return (eventAggregator, scheduler);
         }
 
         [TestMethod]
         public async Task DenonTurnOn()
         {
-            var eventAggregator = PrepareAggregator();
+            var mocks = PrepareMocks();
 
-            var denon = new DenonAmplifier(Guid.NewGuid().ToString(), DENON_HOST, eventAggregator);
+            var denon = new DenonAmplifier(Guid.NewGuid().ToString(), DENON_HOST, mocks.ev, mocks.ch);
 
             await denon.ExecuteAsyncCommand<TurnOnCommand>();
         }
@@ -56,9 +56,9 @@ namespace HA4IoT.Extensions.Tests
         [TestMethod]
         public async Task DenonTurnOff()
         {
-            var eventAggregator = PrepareAggregator();
+            var mocks = PrepareMocks();
 
-            var denon = new DenonAmplifier(Guid.NewGuid().ToString(), DENON_HOST, eventAggregator);
+            var denon = new DenonAmplifier(Guid.NewGuid().ToString(), DENON_HOST, mocks.ev, mocks.ch);
 
             await denon.ExecuteAsyncCommand<TurnOffCommand>();
         }

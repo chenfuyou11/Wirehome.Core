@@ -54,6 +54,7 @@ using HA4IoT.Settings;
 using HA4IoT.Status;
 using HA4IoT.Storage;
 using SimpleInjector;
+using System.Threading.Tasks;
 
 namespace HA4IoT.Core
 {
@@ -84,6 +85,23 @@ namespace HA4IoT.Core
             return _container.GetInstance<TContract>();
         }
 
+        public object GetInstance(Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            return _container.GetInstance(type);
+        }
+
+        public void RegisterFactory<T>(Func<T> factory) where T: class
+        {
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+            
+            _container.Register(factory);
+        }
+        
         public IList<TContract> GetInstances<TContract>() where TContract : class
         {
             var services = new List<TContract>();
@@ -135,12 +153,7 @@ namespace HA4IoT.Core
             _container.RegisterSingleton(instanceCreator);
         }
 
-        public object GetInstance(Type type)
-        {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-
-            return _container.GetInstance(type);
-        }
+       
 
         //TODO
         public void RegisterServices()

@@ -21,17 +21,17 @@ namespace HA4IoT.Extensions.Messaging.Core
             T message,
             MessageFilter filter = null,
             int millisecondsTimeOut = 2000,
-            CancellationToken cancellationToken = default(CancellationToken),
+            CancellationToken cancellationToken = default,
             int retryCount = 0
         ) where R : class;
 
-        Task<R> PublishWithResultAsync<T, R>
+        Task<R> PublishWithExpectedResultAsync<T, R>
         (
             T message,
             R expectedResult,
             MessageFilter filter = null,
             int millisecondsTimeOut = 2000,
-            CancellationToken cancellationToken = default(CancellationToken),
+            CancellationToken cancellationToken = default,
             int retryCount = 0
         ) where R : class;
 
@@ -40,22 +40,24 @@ namespace HA4IoT.Extensions.Messaging.Core
             T message,
             MessageFilter filter = null,
             int millisecondsTimeOut = 2000,
-            CancellationToken cancellationToken = default(CancellationToken)
+            CancellationToken cancellationToken = default
         ) where R : class;
+
+        Task PublishWithRepublishResult<T, R>
+       (
+           T message,
+           MessageFilter filter = null,
+           int millisecondsTimeOut = 2000,
+           CancellationToken cancellationToken = default
+       ) where R : class;
 
         Task Publish<T>
         (
             T message,
             MessageFilter filter = null,
-            CancellationToken cancellationToken = default(CancellationToken)
+            CancellationToken cancellationToken = default
         );
 
-        Task PublishWithRepublishResult<T, R>
-        (
-            T message,
-            MessageFilter filter = null,
-            int millisecondsTimeOut = 2000,
-            CancellationToken cancellationToken = default(CancellationToken)
-        ) where R : class;
+       
     }
 }

@@ -10,21 +10,44 @@ using HA4IoT.Extensions.Messaging.StateChangeMessages;
 using HA4IoT.Extensions.Devices.Features;
 using HA4IoT.Extensions.Devices.Commands;
 using HA4IoT.Extensions.Devices.States;
+using Quartz;
+using System.Threading.Tasks;
+using System.Threading;
+using HA4IoT.Extensions.Quartz;
 
 namespace HA4IoT.Extensions.Devices
 {
-    public class DenonAmplifier : DeviceComponent
+   
+
+    public class DenonStateLightJob : IJob
+    {
+        public Task Execute(IJobExecutionContext context)
+        {
+            return null;
+        }
+    }
+
+    public class DenonAmplifier : DeviceComponent, IDisposable
     {
         private PowerStateValue _powerState;
         private float _volume;
+        private readonly IScheduler _scheduler;
+        private CancellationTokenSource _cancelationTokenSource = new CancellationTokenSource();
+
         public string Hostname { get; set; }
-
-
-        public DenonAmplifier(string id, string hostname, IEventAggregator eventAggregator) : base(id, eventAggregator)
+        
+        public DenonAmplifier(string id, string hostname, IEventAggregator eventAggregator, IScheduler scheduler) : base(id, eventAggregator)
         {
             Hostname = hostname ?? throw new ArgumentNullException(nameof(hostname));
+            _scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
+            
             InitPowerStateFeature();
             InitVolumeFeature();
+        }
+
+        public async Task Init()
+        {
+            await _scheduler.ScheduleInterval<DenonStateLightJob>(TimeSpan.FromSeconds(5));
         }
 
         public override IComponentFeatureStateCollection GetState()
@@ -38,7 +61,7 @@ namespace HA4IoT.Extensions.Devices
             _featuresSupported.With(new PowerStateFeature());
             _commandExecutor.Register<TurnOnCommand>(async c =>
             {
-                await _eventAggregator.PublishWithResultAsync(new DenonControlMessage
+                await _eventAggregator.PublishWithExpectedResultAsync(new DenonControlMessage
                 {
                     Command = "PowerOn",
                     Api = "formiPhoneAppPower",
@@ -49,7 +72,7 @@ namespace HA4IoT.Extensions.Devices
             });
             _commandExecutor.Register<TurnOffCommand>(async c =>
             {
-                await _eventAggregator.PublishWithResultAsync(new DenonControlMessage
+                await _eventAggregator.PublishWithExpectedResultAsync(new DenonControlMessage
                 {
                     Command = "PowerStandby",
                     Api = "formiPhoneAppPower",
@@ -59,6 +82,7 @@ namespace HA4IoT.Extensions.Devices
                 SetPowerState(PowerStateValue.Off);
             }
             );
+            
         }
         private void SetPowerState(PowerStateValue powerState)
         {
@@ -74,7 +98,7 @@ namespace HA4IoT.Extensions.Devices
             _featuresSupported.With(new VolumeFeature());
             _commandExecutor.Register<VolumeUpCommand>(async c =>
             {
-                var state = await _eventAggregator.PublishWithResultAsync(new DenonControlMessage
+                var state = await _eventAggregator.PublishWithExpectedResultAsync(new DenonControlMessage
                 {
                     Command = "PowerOn",
                     Api = "formiPhoneAppPower",
@@ -85,7 +109,7 @@ namespace HA4IoT.Extensions.Devices
             });
             _commandExecutor.Register<VolumeDownCommand>(async c =>
             {
-                await _eventAggregator.PublishWithResultAsync(new DenonControlMessage
+                await _eventAggregator.PublishWithExpectedResultAsync(new DenonControlMessage
                 {
                     Command = "PowerStandby",
                     Api = "formiPhoneAppPower",
@@ -101,6 +125,11 @@ namespace HA4IoT.Extensions.Devices
             if (_volume == volume) { return; }
             _eventAggregator.Publish(new VolumeStateChangeMessage(Id, new VolumeState(_volume), new VolumeState(volume)));
             _volume = volume;
+        }
+
+        public void Dispose()
+        {
+            _cancelationTokenSource.Cancel();
         }
         #endregion
     }

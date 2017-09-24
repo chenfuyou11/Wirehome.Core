@@ -4,6 +4,16 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Quartz" Version="3.0.0-alpha3" />
+    <PackageReference Include="SimpleInjector" Version="4.0.11" />
+    <PackageReference Include="System.Reactive" Version="3.1.1" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Core\HA4IoT.Contracts\HA4IoT.Contracts.csproj" />
     <ProjectReference Include="..\..\Core\HA4IoT\HA4IoT.csproj" />

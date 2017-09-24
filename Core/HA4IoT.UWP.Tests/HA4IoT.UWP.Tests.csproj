@@ -142,7 +142,7 @@
       <Project>{cc1e1780-748e-4012-be05-7e4eb408ae29}</Project>
       <Name>HA4IoT.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HA4IoT.HAL\HA4IoT.UWP.csproj">
+    <ProjectReference Include="..\HA4IoT.UWP\HA4IoT.UWP.csproj">
       <Project>{0d7d0870-8888-4742-9cfd-f8ef2c3a50d8}</Project>
       <Name>HA4IoT.UWP</Name>
     </ProjectReference>

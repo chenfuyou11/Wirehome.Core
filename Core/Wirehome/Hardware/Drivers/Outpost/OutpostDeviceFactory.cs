@@ -1,11 +1,11 @@
 ﻿using System;
-using HA4IoT.Contracts.Devices;
-using HA4IoT.Contracts.Devices.Configuration;
-using HA4IoT.Contracts.Hardware.I2C.I2CHardwareBridge.Configuration;
-using HA4IoT.Contracts.Hardware.Outpost.Configuration;
-using HA4IoT.Hardware.Drivers.I2CHardwareBridge.Configuration;
+using Wirehome.Contracts.Devices;
+using Wirehome.Contracts.Devices.Configuration;
+using Wirehome.Contracts.Hardware.I2C.I2CHardwareBridge.Configuration;
+using Wirehome.Contracts.Hardware.Outpost.Configuration;
+using Wirehome.Hardware.Drivers.I2CHardwareBridge.Configuration;
 
-namespace HA4IoT.Hardware.Drivers.Outpost
+namespace Wirehome.Hardware.Drivers.Outpost
 {
     public class OutpostDeviceFactory : IDeviceFactory
     {

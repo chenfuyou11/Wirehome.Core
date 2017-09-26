@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Conditions;
-using HA4IoT.Contracts.Core;
+using Wirehome.Contracts.Conditions;
+using Wirehome.Contracts.Core;
 
-namespace HA4IoT.Conditions.Specialized
+namespace Wirehome.Conditions.Specialized
 {
     public class TimeRangeCondition : Condition
     {

@@ -1,8 +1,8 @@
-﻿using HA4IoT.Contracts.Components;
+﻿using Wirehome.Contracts.Components;
 using System;
 using System.Collections.Generic;
 
-namespace HA4IoT.Contracts.Actuators
+namespace Wirehome.Contracts.Actuators
 {
     public interface ILamp : IComponent
     {

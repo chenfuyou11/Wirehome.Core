@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Environment
+﻿namespace Wirehome.Environment
 {
     public class ControllerSlaveServiceSettings
     {

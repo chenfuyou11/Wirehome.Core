@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Conditions
+﻿namespace Wirehome.Conditions
 {
     public enum ConditionRelation
     {

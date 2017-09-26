@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Areas;
+using Wirehome.Contracts.Areas;
 
-namespace HA4IoT.Sensors.Windows
+namespace Wirehome.Sensors.Windows
 {
     public static class WindowExtensions
     {

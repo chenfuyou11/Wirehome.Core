@@ -1,12 +1,12 @@
-﻿using HA4IoT.Actuators.Sockets;
-using HA4IoT.Components;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Tests.Mockups;
-using HA4IoT.Tests.Mockups.Adapters;
+﻿using Wirehome.Actuators.Sockets;
+using Wirehome.Components;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Tests.Mockups;
+using Wirehome.Tests.Mockups.Adapters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Components
+namespace Wirehome.Tests.Components
 {
     [TestClass]
     public class SocketTests

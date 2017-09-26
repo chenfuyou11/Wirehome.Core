@@ -1,6 +1,6 @@
-﻿using HA4IoT.Components;
-using HA4IoT.Components.Commands;
-using HA4IoT.Contracts.Components.Commands;
+﻿using Wirehome.Components;
+using Wirehome.Components.Commands;
+using Wirehome.Contracts.Components.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Core
+namespace Wirehome.Extensions.Core
 {
     public class CommandExecutorEx
     {

@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Hardware.Outpost.Configuration
+﻿namespace Wirehome.Contracts.Hardware.Outpost.Configuration
 {
     public class LpdBridgeConfiguration
     {

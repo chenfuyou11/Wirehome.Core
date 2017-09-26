@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace HA4IoT.Logging
+namespace Wirehome.Logging
 {
     public sealed class RollingCollectionEnumerator<TItem> : IEnumerator<TItem>
     {

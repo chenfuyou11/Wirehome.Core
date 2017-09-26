@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scheduling;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scheduling;
 
-namespace HA4IoT.Scheduling
+namespace Wirehome.Scheduling
 {
     public sealed class ScheduledAction : IScheduledAction, IDisposable
     {

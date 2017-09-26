@@ -1,4 +1,4 @@
-﻿using HA4IoT.Extensions.Contracts;
+﻿using Wirehome.Extensions.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Windows.Media.Playback;
 using Windows.Media.Core;
 
-namespace HA4IoT.Extensions.UWP
+namespace Wirehome.Extensions.UWP
 {
     public class SoundPlayer : ISoundPlayer
     {

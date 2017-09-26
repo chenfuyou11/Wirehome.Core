@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Sensors.Triggers
+﻿namespace Wirehome.Sensors.Triggers
 {
     public enum SensorValueThresholdMode
     {

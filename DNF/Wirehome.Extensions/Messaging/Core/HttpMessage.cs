@@ -1,10 +1,10 @@
-﻿using HA4IoT.Extensions.Messaging.Core;
-using HA4IoT.Extensions.Messaging.Services;
+﻿using Wirehome.Extensions.Messaging.Core;
+using Wirehome.Extensions.Messaging.Services;
 using System;
 using System.Collections.Generic;
 using System.Net;
 
-namespace HA4IoT.Extensions.Messaging
+namespace Wirehome.Extensions.Messaging
 {
     public class HttpMessage : IHttpMessage
     {

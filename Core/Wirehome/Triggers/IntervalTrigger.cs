@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Triggers;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Triggers;
 
-namespace HA4IoT.Triggers
+namespace Wirehome.Triggers
 {
     public class IntervalTrigger : Trigger
     {

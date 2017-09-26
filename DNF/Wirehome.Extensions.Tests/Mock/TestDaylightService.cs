@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Environment;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Environment;
 
-namespace HA4IoT.Extensions.Tests
+namespace Wirehome.Extensions.Tests
 {
     public class TestDaylightService : ServiceBase, IDaylightService
     {

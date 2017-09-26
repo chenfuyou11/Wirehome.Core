@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Hardware.Mqtt;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Hardware.Mqtt;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.Hardware.DeviceMessaging
+namespace Wirehome.Contracts.Hardware.DeviceMessaging
 {
     public interface IDeviceMessageBrokerService : IService
     {

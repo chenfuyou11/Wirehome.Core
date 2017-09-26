@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Components
+namespace Wirehome.Tests.Components
 {
     [TestClass]
     public class TemperatureSensorTests

@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.WindowsService.Services
+﻿namespace Wirehome.WindowsService.Services
 {
     public class ProcessDetails
     {

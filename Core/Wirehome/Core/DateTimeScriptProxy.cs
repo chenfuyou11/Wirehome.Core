@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Scripting;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Scripting;
 using MoonSharp.Interpreter;
 
-namespace HA4IoT.Core
+namespace Wirehome.Core
 {
     public class DateTimeScriptProxy : IScriptProxy
     {

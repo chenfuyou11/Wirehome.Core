@@ -1,8 +1,8 @@
-﻿using HA4IoT.Contracts.Messaging;
-using HA4IoT.Tests.Mockups;
+﻿using Wirehome.Contracts.Messaging;
+using Wirehome.Tests.Mockups;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Events
+namespace Wirehome.Tests.Events
 {
     [TestClass]
     public class messageBrokerServiceTests

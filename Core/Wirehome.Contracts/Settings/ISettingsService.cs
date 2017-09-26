@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Services;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Contracts.Settings
+namespace Wirehome.Contracts.Settings
 {
     public interface ISettingsService : IService
     {

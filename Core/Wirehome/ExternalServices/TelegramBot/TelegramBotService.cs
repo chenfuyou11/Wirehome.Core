@@ -3,17 +3,17 @@ using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.ExternalServices.TelegramBot;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.PersonalAgent;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.ExternalServices.TelegramBot;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.PersonalAgent;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
 using Newtonsoft.Json.Linq;
 using HttpClient = System.Net.Http.HttpClient;
 
-namespace HA4IoT.ExternalServices.TelegramBot
+namespace Wirehome.ExternalServices.TelegramBot
 {
     public class TelegramBotService : ServiceBase, ITelegramBotService
     {

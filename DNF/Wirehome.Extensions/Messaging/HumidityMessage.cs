@@ -1,9 +1,9 @@
-﻿using HA4IoT.Extensions.Contracts;
+﻿using Wirehome.Extensions.Contracts;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
-namespace HA4IoT.Extensions.Messaging
+namespace Wirehome.Extensions.Messaging
 {
     public class HumidityMessage : IBinaryMessage
     {

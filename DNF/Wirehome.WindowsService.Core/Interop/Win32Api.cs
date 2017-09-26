@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 
 
-namespace HA4IoT.WindowsService.Interop
+namespace Wirehome.WindowsService.Interop
 {
     public static class Win32Api
     {

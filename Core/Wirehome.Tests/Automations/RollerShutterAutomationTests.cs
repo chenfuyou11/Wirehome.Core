@@ -1,21 +1,21 @@
 ﻿using System;
-using HA4IoT.Actuators.RollerShutters;
-using HA4IoT.Automations;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Notifications;
-using HA4IoT.Contracts.Resources;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Tests.Mockups;
-using HA4IoT.Tests.Mockups.Adapters;
+using Wirehome.Actuators.RollerShutters;
+using Wirehome.Automations;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Notifications;
+using Wirehome.Contracts.Resources;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
+using Wirehome.Tests.Mockups;
+using Wirehome.Tests.Mockups.Adapters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Automations
+namespace Wirehome.Tests.Automations
 {
     [TestClass]
     public class RollerShutterAutomationTests

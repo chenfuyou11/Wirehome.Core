@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Extensions.Contracts;
-using HA4IoT.Extensions.Exceptions;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Extensions.Contracts;
+using Wirehome.Extensions.Exceptions;
 
-namespace HA4IoT.Extensions.Messaging.Services
+namespace Wirehome.Extensions.Messaging.Services
 {
     public class SerialMessagingService : ISerialMessagingService
     {

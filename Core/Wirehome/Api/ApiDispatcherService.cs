@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
 using Newtonsoft.Json.Linq;
-using HA4IoT.Contracts.Cryptographic;
+using Wirehome.Contracts.Cryptographic;
 
-namespace HA4IoT.Api
+namespace Wirehome.Api
 {
     public class ApiDispatcherService : ServiceBase, IApiDispatcherService
     {

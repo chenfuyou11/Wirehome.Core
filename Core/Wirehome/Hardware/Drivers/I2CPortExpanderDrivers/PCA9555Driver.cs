@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware.I2C;
 
-namespace HA4IoT.Hardware.Drivers.I2CPortExpanderDrivers
+namespace Wirehome.Hardware.Drivers.I2CPortExpanderDrivers
 {
     public sealed class PCA9555Driver : II2CPortExpanderDriver
     {

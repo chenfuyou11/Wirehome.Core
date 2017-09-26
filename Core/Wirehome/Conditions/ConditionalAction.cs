@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Conditions;
-using HA4IoT.Contracts.Core;
+using Wirehome.Contracts.Conditions;
+using Wirehome.Contracts.Core;
 
-namespace HA4IoT.Conditions
+namespace Wirehome.Conditions
 {
     public class ConditionalAction : IAction
     {

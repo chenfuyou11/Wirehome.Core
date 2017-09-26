@@ -1,9 +1,9 @@
-﻿using HA4IoT.Contracts.Areas;
-using HA4IoT.PersonalAgent;
-using HA4IoT.Tests.Mockups;
+﻿using Wirehome.Contracts.Areas;
+using Wirehome.PersonalAgent;
+using Wirehome.Tests.Mockups;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.PersonalAgent
+namespace Wirehome.Tests.PersonalAgent
 {
     [TestClass]
     public class MessageContextTests

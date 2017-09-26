@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Services;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Contracts.Messaging
+namespace Wirehome.Contracts.Messaging
 {
     public interface IMessageBrokerService : IService
     {

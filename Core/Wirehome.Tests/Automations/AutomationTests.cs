@@ -1,20 +1,20 @@
 ﻿using System;
-using HA4IoT.Actuators.Lamps;
-using HA4IoT.Automations;
-using HA4IoT.Components;
-using HA4IoT.Conditions;
-using HA4IoT.Conditions.Specialized;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Sensors.Buttons;
-using HA4IoT.Tests.Mockups;
-using HA4IoT.Tests.Mockups.Adapters;
+using Wirehome.Actuators.Lamps;
+using Wirehome.Automations;
+using Wirehome.Components;
+using Wirehome.Conditions;
+using Wirehome.Conditions.Specialized;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Settings;
+using Wirehome.Sensors.Buttons;
+using Wirehome.Tests.Mockups;
+using Wirehome.Tests.Mockups.Adapters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Automations
+namespace Wirehome.Tests.Automations
 {
     [TestClass]
     public class AutomationTests

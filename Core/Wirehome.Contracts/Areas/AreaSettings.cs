@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Areas
+﻿namespace Wirehome.Contracts.Areas
 {
     public class AreaSettings
     {

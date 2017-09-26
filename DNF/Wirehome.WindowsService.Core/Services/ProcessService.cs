@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace HA4IoT.WindowsService.Services
+namespace Wirehome.WindowsService.Services
 {
     public static class ProcessService
     {

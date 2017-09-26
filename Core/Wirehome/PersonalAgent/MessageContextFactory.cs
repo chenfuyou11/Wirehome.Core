@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.PersonalAgent.AmazonEcho;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.PersonalAgent.AmazonEcho;
+using Wirehome.Contracts.Settings;
 
-namespace HA4IoT.PersonalAgent
+namespace Wirehome.PersonalAgent
 {
     public class MessageContextFactory
     {

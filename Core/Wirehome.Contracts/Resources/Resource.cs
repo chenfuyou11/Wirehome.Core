@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace HA4IoT.Contracts.Resources
+namespace Wirehome.Contracts.Resources
 {
     public class Resource
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HA4IoT.Status
+namespace Wirehome.Status
 {
     public class Status
     {

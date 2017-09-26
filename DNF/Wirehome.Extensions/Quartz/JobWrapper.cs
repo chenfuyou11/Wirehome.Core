@@ -1,10 +1,10 @@
 ﻿using Quartz.Spi;
 using System;
 using Quartz;
-using HA4IoT.Contracts.Core;
+using Wirehome.Contracts.Core;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Quartz
+namespace Wirehome.Extensions.Quartz
 {
     internal class JobWrapper : IJob
     {

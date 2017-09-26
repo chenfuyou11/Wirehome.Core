@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Automations
+﻿namespace Wirehome.Contracts.Automations
 {
     public class AutomationSettings
     {

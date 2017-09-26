@@ -1,10 +1,10 @@
-﻿using HA4IoT.Extensions.Contracts;
+﻿using Wirehome.Extensions.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Extensions.Messaging.SamsungMessages
+namespace Wirehome.Extensions.Messaging.SamsungMessages
 {
     public class SamsungControlMessage : IBinaryMessage
     {
@@ -12,7 +12,7 @@ namespace HA4IoT.Extensions.Messaging.SamsungMessages
         public string Code { get; set; }
 
         public int Port { get; set; } = 55000;
-        private readonly string AppKey = "Ha4Iot";
+        private readonly string AppKey = "Wirehome";
         private readonly string NullValue = char.ToString((char)0x00);
         private readonly string AppString = "samsung.remote";
 

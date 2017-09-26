@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Api
+namespace Wirehome.Contracts.Api
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class ApiMethodAttribute : Attribute

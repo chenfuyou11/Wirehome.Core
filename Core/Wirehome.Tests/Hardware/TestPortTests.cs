@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Hardware;
+﻿using Wirehome.Contracts.Hardware;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Hardware
+namespace Wirehome.Tests.Hardware
 {
     [TestClass]
     public class TestPortTests

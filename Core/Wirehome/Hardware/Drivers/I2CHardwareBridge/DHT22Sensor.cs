@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Components.Adapters;
+using Wirehome.Contracts.Components.Adapters;
 
-namespace HA4IoT.Hardware.Drivers.I2CHardwareBridge
+namespace Wirehome.Hardware.Drivers.I2CHardwareBridge
 {
     public class Dht22Sensor : INumericSensorAdapter
     {

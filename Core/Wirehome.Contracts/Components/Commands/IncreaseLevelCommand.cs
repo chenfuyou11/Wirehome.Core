@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Components.Commands
+﻿namespace Wirehome.Contracts.Components.Commands
 {
     public class IncreaseLevelCommand : ICommand
     {

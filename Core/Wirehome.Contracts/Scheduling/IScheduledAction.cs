@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Scheduling
+﻿namespace Wirehome.Contracts.Scheduling
 {
     public interface IScheduledAction
     {

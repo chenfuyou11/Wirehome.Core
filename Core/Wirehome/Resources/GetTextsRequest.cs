@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Resources
+﻿namespace Wirehome.Resources
 {
     public class GetTextsRequest
     {

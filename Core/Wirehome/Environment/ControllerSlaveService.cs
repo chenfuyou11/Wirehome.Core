@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Net.Http;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Environment
+namespace Wirehome.Environment
 {
     [ApiServiceClass(typeof(ControllerSlaveService))]
     public class ControllerSlaveService : ServiceBase

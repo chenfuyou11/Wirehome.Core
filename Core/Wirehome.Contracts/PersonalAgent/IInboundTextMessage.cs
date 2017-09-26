@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.PersonalAgent
+namespace Wirehome.Contracts.PersonalAgent
 {
     public interface IInboundTextMessage
     {

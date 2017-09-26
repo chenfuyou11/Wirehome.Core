@@ -3,20 +3,20 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Storage;
-using HA4IoT.Components;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware.Interrupts;
-using HA4IoT.Contracts.Hardware.RemoteSockets;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Notifications;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Settings;
+using Wirehome.Components;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware.Interrupts;
+using Wirehome.Contracts.Hardware.RemoteSockets;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Notifications;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Settings;
+using Wirehome.Settings;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Core
+namespace Wirehome.Core
 {
     public class Controller : IController
     {

@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Hardware.Drivers.CCTools.Configuration
+﻿namespace Wirehome.Hardware.Drivers.CCTools.Configuration
 {
     public sealed class CCToolsDeviceDriverConfiguration
     {

@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Hardware.I2C;
 
-namespace HA4IoT.Hardware.Drivers.I2CPortExpanderDrivers.Adressing
+namespace Wirehome.Hardware.Drivers.I2CPortExpanderDrivers.Adressing
 {
     public static class PCA9555DAddressGenerator
     {

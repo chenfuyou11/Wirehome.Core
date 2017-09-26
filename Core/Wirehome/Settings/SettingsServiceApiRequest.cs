@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Settings
+namespace Wirehome.Settings
 {
     public class SettingsServiceApiRequest
     {

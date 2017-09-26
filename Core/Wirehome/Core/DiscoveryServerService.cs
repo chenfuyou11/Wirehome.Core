@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Core.Discovery;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Settings;
+using Wirehome.Contracts.Core.Discovery;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
+using Wirehome.Settings;
 using Newtonsoft.Json;
 using SocketLite.Services;
 using SocketLite.Model;
 using System.Linq;
 
-namespace HA4IoT.Core
+namespace Wirehome.Core
 {
     public sealed class DiscoveryServerService : ServiceBase, IDisposable
     {

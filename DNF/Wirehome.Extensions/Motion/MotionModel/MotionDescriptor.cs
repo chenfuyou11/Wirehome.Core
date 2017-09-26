@@ -1,14 +1,14 @@
 ﻿using System;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Extensions.Core;
-using HA4IoT.Conditions;
-using HA4IoT.Contracts.Conditions;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Contracts.Components;
+using Wirehome.Extensions.Core;
+using Wirehome.Conditions;
+using Wirehome.Contracts.Conditions;
 using System.Linq;
-using HA4IoT.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.Commands;
 
-namespace HA4IoT.Extensions.MotionModel
+namespace Wirehome.Extensions.MotionModel
 {
     public class MotionDescriptor
     {

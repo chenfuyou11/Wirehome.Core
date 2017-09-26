@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Hardware.I2C.I2CHardwareBridge.Configuration
+﻿namespace Wirehome.Contracts.Hardware.I2C.I2CHardwareBridge.Configuration
 {
     public class I2CHardwareBridgeConfiguration
     {

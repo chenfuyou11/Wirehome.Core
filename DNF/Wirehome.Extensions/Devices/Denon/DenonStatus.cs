@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Extensions.Devices
+﻿namespace Wirehome.Extensions.Devices
 {
     public class DenonStatus
     {

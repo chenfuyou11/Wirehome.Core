@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace HA4IoT.Extensions.Messaging.SonyMessages
+namespace Wirehome.Extensions.Messaging.SonyMessages
 {
     class SonyControlMessage : HttpMessage
     {

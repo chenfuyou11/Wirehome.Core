@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Text;
-using HA4IoT.Contracts.Hardware.Mqtt;
-using HA4IoT.Contracts.Hardware.Outpost;
+using Wirehome.Contracts.Hardware.Mqtt;
+using Wirehome.Contracts.Hardware.Outpost;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Contracts.Hardware.DeviceMessaging
+namespace Wirehome.Contracts.Hardware.DeviceMessaging
 {
     public static class DeviceMessageBrokerServiceExtensions
     {

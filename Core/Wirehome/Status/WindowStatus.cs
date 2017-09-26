@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Status
+﻿namespace Wirehome.Status
 {
     public class WindowStatus
     {

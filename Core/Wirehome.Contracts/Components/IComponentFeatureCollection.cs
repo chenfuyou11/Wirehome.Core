@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Contracts.Components
+namespace Wirehome.Contracts.Components
 {
     public interface IComponentFeatureCollection
     {

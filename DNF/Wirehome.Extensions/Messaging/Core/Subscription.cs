@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Messaging.Core
+namespace Wirehome.Extensions.Messaging.Core
 {
     public sealed class Subscription
     {

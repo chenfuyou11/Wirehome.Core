@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Hardware.DeviceMessaging;
-using HA4IoT.Contracts.Hardware.Mqtt;
-using HA4IoT.Contracts.Scripting;
+using Wirehome.Contracts.Hardware.DeviceMessaging;
+using Wirehome.Contracts.Hardware.Mqtt;
+using Wirehome.Contracts.Scripting;
 using MoonSharp.Interpreter;
 
-namespace HA4IoT.Devices
+namespace Wirehome.Devices
 {
     public class DeviceMessageBrokerScriptProxy : IScriptProxy
     {

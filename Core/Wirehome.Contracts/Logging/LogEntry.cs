@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace HA4IoT.Contracts.Logging
+namespace Wirehome.Contracts.Logging
 {
     public sealed class LogEntry
     {

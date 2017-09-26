@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Configuration;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Scripting.Configuration;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Configuration;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Scripting.Configuration;
+using Wirehome.Contracts.Services;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Scripting
+namespace Wirehome.Scripting
 {
     [ApiServiceClass(typeof(IScriptingService))]
     public class ScriptingService : ServiceBase, IScriptingService

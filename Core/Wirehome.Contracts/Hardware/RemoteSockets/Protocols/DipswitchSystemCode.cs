@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Hardware.RemoteSockets.Protocols
+namespace Wirehome.Contracts.Hardware.RemoteSockets.Protocols
 {
     [Flags]
     public enum DipswitchSystemCode

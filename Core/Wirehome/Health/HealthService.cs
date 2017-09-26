@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Linq;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Configuration;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.RaspberryPi;
-using HA4IoT.Contracts.Health.Configuration;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Configuration;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.RaspberryPi;
+using Wirehome.Contracts.Health.Configuration;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Health
+namespace Wirehome.Health
 {
     [ApiServiceClass(typeof(HealthService))]
     public class HealthService : ServiceBase, IHealthService

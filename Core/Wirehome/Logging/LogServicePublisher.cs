@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Logging;
 
-namespace HA4IoT.Logging
+namespace Wirehome.Logging
 {
     public sealed class LogServicePublisher : ILogger
     {

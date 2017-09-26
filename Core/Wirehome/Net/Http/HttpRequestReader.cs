@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Net.Http
+namespace Wirehome.Net.Http
 {
     public sealed class HttpRequestReader : IDisposable
     {

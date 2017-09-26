@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Scheduling;
+using Wirehome.Contracts.Scheduling;
 
-namespace HA4IoT.Hardware.Drivers.I2CHardwareBridge
+namespace Wirehome.Hardware.Drivers.I2CHardwareBridge
 {
     public class DHT22Accessor
     {

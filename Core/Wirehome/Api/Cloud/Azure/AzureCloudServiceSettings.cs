@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Api.Cloud.Azure
+﻿namespace Wirehome.Api.Cloud.Azure
 {
     public class AzureCloudServiceSettings
     {

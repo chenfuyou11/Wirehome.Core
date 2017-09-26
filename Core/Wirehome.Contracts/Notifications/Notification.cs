@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace HA4IoT.Contracts.Notifications
+namespace Wirehome.Contracts.Notifications
 {
     public class Notification
     {

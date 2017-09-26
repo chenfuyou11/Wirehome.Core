@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Hardware.Drivers.I2CHardwareBridge
+﻿namespace Wirehome.Hardware.Drivers.I2CHardwareBridge
 {
     public enum DHT22SensorKind
     {

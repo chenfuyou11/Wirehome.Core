@@ -1,9 +1,9 @@
-﻿using HA4IoT.Extensions.Contracts;
-using HA4IoT.Extensions.Core;
+﻿using Wirehome.Extensions.Contracts;
+using Wirehome.Extensions.Core;
 using Newtonsoft.Json.Linq;
 using System;
 
-namespace HA4IoT.Extensions.Messaging
+namespace Wirehome.Extensions.Messaging
 {
     public class LPD433Message : IBinaryMessage
     {

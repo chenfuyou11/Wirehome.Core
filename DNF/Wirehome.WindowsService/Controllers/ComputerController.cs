@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
 
-namespace HA4IoT.WindowsService.Controllers
+namespace Wirehome.WindowsService.Controllers
 {
     [Route("api/[controller]")]
     public class ComputerController : Controller

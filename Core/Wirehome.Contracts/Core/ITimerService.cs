@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.Core
+namespace Wirehome.Contracts.Core
 {
     public interface ITimerService : IService
     {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Net.WebSockets
+namespace Wirehome.Net.WebSockets
 {
     public interface IWebSocketClientSession
     {

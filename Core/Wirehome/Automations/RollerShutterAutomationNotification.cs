@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Automations
+﻿namespace Wirehome.Automations
 {
     public enum RollerShutterAutomationNotification
     {

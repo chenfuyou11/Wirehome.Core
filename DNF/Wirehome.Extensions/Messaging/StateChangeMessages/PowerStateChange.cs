@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Components.States;
+﻿using Wirehome.Contracts.Components.States;
 
-namespace HA4IoT.Extensions.Messaging.StateChangeMessages
+namespace Wirehome.Extensions.Messaging.StateChangeMessages
 {
     public class PowerStateChangeMessage : StateChangeMessage<PowerState>
     {

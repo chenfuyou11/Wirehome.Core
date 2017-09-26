@@ -1,8 +1,8 @@
-﻿using HA4IoT.Contracts.Hardware.RemoteSockets.Protocols;
+﻿using Wirehome.Contracts.Hardware.RemoteSockets.Protocols;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace HA4IoT.Contracts.Hardware.RemoteSockets.Configuration
+namespace Wirehome.Contracts.Hardware.RemoteSockets.Configuration
 {
     public sealed class DipswitchConfiguration
     {

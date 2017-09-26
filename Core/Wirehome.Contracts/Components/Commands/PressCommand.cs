@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Sensors;
+﻿using Wirehome.Contracts.Sensors;
 
-namespace HA4IoT.Contracts.Components.Commands
+namespace Wirehome.Contracts.Components.Commands
 {
     public class PressCommand : ICommand
     {

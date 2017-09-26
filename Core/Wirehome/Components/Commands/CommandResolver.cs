@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.Commands;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Components.Commands
+namespace Wirehome.Components.Commands
 {
     public class CommandResolver
     {

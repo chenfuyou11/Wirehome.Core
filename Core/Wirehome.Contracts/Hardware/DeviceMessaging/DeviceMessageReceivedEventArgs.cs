@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Hardware.DeviceMessaging
+namespace Wirehome.Contracts.Hardware.DeviceMessaging
 {
     public class DeviceMessageReceivedEventArgs
     {

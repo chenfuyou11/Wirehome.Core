@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Exceptions;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Exceptions;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Components
+namespace Wirehome.Components
 {
     public class ComponentFeatureStateCollection : IComponentFeatureStateCollection
     {

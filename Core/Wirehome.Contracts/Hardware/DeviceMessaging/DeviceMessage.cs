@@ -1,8 +1,8 @@
-﻿using HA4IoT.Contracts.Hardware.Mqtt;
+﻿using Wirehome.Contracts.Hardware.Mqtt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace HA4IoT.Contracts.Hardware.DeviceMessaging
+namespace Wirehome.Contracts.Hardware.DeviceMessaging
 {
     public class DeviceMessage
     {

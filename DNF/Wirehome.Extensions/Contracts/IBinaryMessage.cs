@@ -1,7 +1,7 @@
-﻿using HA4IoT.Extensions.Messaging;
+﻿using Wirehome.Extensions.Messaging;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Extensions.Contracts
+namespace Wirehome.Extensions.Contracts
 {
     public interface IBinaryMessage
     {

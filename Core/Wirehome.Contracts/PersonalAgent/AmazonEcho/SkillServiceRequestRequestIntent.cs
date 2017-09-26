@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HA4IoT.Contracts.PersonalAgent.AmazonEcho
+namespace Wirehome.Contracts.PersonalAgent.AmazonEcho
 {
     public class SkillServiceRequestRequestIntent
     {

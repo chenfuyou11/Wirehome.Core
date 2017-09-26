@@ -1,8 +1,8 @@
-﻿using HA4IoT.Contracts.Automations;
-using HA4IoT.Contracts.Components;
+﻿using Wirehome.Contracts.Automations;
+using Wirehome.Contracts.Components;
 using System.Collections.Generic;
 
-namespace HA4IoT.Contracts.Areas
+namespace Wirehome.Contracts.Areas
 {
     public interface IArea
     {

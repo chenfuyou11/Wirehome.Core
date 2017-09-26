@@ -1,6 +1,6 @@
 using System;
 
-namespace HA4IoT.Hardware
+namespace Wirehome.Hardware
 {
     public static class ByteExtensions
     {

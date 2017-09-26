@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Environment;
+using Wirehome.Contracts.Environment;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.ExternalServices.OpenWeatherMap
+namespace Wirehome.ExternalServices.OpenWeatherMap
 {
     public class OpenWeatherMapResponseParser
     {

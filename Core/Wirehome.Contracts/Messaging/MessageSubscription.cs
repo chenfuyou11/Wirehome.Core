@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Contracts.Messaging
+namespace Wirehome.Contracts.Messaging
 {
     public class MessageSubscription
     {

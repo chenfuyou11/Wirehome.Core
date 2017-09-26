@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using Windows.Devices.Gpio;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.RaspberryPi;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.RaspberryPi;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Hardware.Drivers.RaspberryPi
+namespace Wirehome.Hardware.Drivers.RaspberryPi
 {
     public sealed class GpioService : ServiceBase, IGpioService
     {

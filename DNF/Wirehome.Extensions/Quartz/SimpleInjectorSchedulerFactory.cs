@@ -3,7 +3,7 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Core;
 
-namespace HA4IoT.Extensions.Quartz
+namespace Wirehome.Extensions.Quartz
 {
     public class SimpleInjectorSchedulerFactory : StdSchedulerFactory
     {

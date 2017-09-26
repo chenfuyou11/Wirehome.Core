@@ -1,6 +1,6 @@
 using System;
 
-namespace HA4IoT.Net.Http
+namespace Wirehome.Net.Http
 {
     public class HttpContext
     {

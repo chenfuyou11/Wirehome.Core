@@ -1,17 +1,17 @@
 ﻿using System;
-using HA4IoT.Components;
-using HA4IoT.Components.Commands;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Components.Features;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Contracts.Sensors.Events;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Components;
+using Wirehome.Components.Commands;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.Features;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Contracts.Sensors.Events;
+using Wirehome.Contracts.Settings;
 
-namespace HA4IoT.Sensors.Windows
+namespace Wirehome.Sensors.Windows
 {
     public class Window : ComponentBase, IWindow
     {

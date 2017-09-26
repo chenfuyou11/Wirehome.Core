@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.MessagesModel
+namespace Wirehome.Extensions.MessagesModel
 {
     public class TurnRequest
     {

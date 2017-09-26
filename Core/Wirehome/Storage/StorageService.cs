@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Storage;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Storage;
 using Newtonsoft.Json;
 
-namespace HA4IoT.Storage
+namespace Wirehome.Storage
 {
     public class StorageService : ServiceBase, IStorageService
     {

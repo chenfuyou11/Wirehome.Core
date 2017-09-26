@@ -1,4 +1,4 @@
-﻿using HA4IoT.Contracts.Core;
+﻿using Wirehome.Contracts.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace HA4IoT.Extensions.Extensions
+namespace Wirehome.Extensions.Extensions
 {
     public static class SimpleInjectorExtensions
     {

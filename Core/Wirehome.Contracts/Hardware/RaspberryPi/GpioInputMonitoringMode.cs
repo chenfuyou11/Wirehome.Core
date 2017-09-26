@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Hardware.RaspberryPi
+﻿namespace Wirehome.Contracts.Hardware.RaspberryPi
 {
     public enum GpioInputMonitoringMode
     {

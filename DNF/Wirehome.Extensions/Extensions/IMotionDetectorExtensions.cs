@@ -1,10 +1,10 @@
-﻿using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Sensors;
+﻿using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Sensors;
 using System;
 using System.Reactive.Linq;
 
 
-namespace HA4IoT.Extensions
+namespace Wirehome.Extensions
 {
     public static class IMotionDetectorExtensions
     {

@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Components;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Components;
 
-namespace HA4IoT.Areas
+namespace Wirehome.Areas
 {
     public static class AreaExtensions
     {

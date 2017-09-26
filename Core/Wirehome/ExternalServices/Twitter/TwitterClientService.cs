@@ -4,14 +4,14 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.ExternalServices.Twitter;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Contracts.Cryptographic;
+using Wirehome.Contracts.ExternalServices.Twitter;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
+using Wirehome.Contracts.Cryptographic;
 
-namespace HA4IoT.ExternalServices.Twitter
+namespace Wirehome.ExternalServices.Twitter
 {
     public class TwitterClientService : ServiceBase, ITwitterClientService
     {

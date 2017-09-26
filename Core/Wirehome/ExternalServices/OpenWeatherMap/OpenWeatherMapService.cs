@@ -1,18 +1,18 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Contracts.Storage;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
+using Wirehome.Contracts.Storage;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 
-namespace HA4IoT.ExternalServices.OpenWeatherMap
+namespace Wirehome.ExternalServices.OpenWeatherMap
 {
     [ApiServiceClass(typeof(OpenWeatherMapService))]
     public class OpenWeatherMapService : ServiceBase

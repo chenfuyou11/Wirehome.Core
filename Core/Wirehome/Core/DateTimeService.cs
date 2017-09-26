@@ -1,11 +1,11 @@
 ﻿using System;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Services;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Core
+namespace Wirehome.Core
 {
     [ApiServiceClass(typeof(IDateTimeService))]
     public class DateTimeService : ServiceBase, IDateTimeService

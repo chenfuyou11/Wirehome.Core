@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Mqtt
+namespace Wirehome.Tests.Mqtt
 {
     [TestClass]
     public class MqttTests

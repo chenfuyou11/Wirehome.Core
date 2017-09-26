@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Backup;
-using HA4IoT.Contracts.Resources;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Contracts.Storage;
-using HA4IoT.Settings;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Backup;
+using Wirehome.Contracts.Resources;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
+using Wirehome.Contracts.Storage;
+using Wirehome.Settings;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Resources
+namespace Wirehome.Resources
 {
     [ApiServiceClass(typeof(IResourceService))]
     public class ResourceService : ServiceBase, IResourceService

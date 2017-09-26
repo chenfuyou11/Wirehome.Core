@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Hardware.RemoteSockets
+﻿namespace Wirehome.Hardware.RemoteSockets
 {
     public enum RemoteSocketCommand
     {

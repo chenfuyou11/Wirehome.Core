@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Components.Commands;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Components.Exceptions;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Components.Commands;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.Exceptions;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Components
+namespace Wirehome.Components
 {
     [ApiServiceClass(typeof(IComponentRegistryService))]
     public class ComponentRegistryService : ServiceBase, IComponentRegistryService

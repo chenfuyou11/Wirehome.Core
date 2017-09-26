@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Services
+﻿namespace Wirehome.Contracts.Services
 {
     public interface IService
     {

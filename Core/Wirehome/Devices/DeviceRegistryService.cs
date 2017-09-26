@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Configuration;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Devices;
-using HA4IoT.Contracts.Devices.Configuration;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Configuration;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Devices;
+using Wirehome.Contracts.Devices.Configuration;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Devices
+namespace Wirehome.Devices
 {
     public class DeviceRegistryService : ServiceBase, IDeviceRegistryService
     {

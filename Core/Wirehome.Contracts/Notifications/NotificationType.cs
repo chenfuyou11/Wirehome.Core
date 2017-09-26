@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Notifications
+﻿namespace Wirehome.Contracts.Notifications
 {
     public enum NotificationType
     {

@@ -1,11 +1,11 @@
 ﻿using System;
 using Windows.Devices.Gpio;
 using Windows.System.Threading;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.RaspberryPi;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.RaspberryPi;
+using Wirehome.Contracts.Logging;
 
-namespace HA4IoT.Hardware.Drivers.RaspberryPi
+namespace Wirehome.Hardware.Drivers.RaspberryPi
 {
     public sealed class GpioInputPort : IBinaryInput, IDisposable
     {

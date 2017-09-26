@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Health.Configuration
+﻿namespace Wirehome.Contracts.Health.Configuration
 {
     public class HealthServiceConfiguration
     {

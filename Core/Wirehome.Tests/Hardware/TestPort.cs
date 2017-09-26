@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Tests.Hardware
+namespace Wirehome.Tests.Hardware
 {
     public class TestPort : IBinaryOutput
     {

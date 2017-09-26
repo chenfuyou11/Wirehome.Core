@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using HA4IoT.Components;
-using HA4IoT.Conditions;
-using HA4IoT.Conditions.Specialized;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Conditions;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Contracts.Sensors.Events;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Contracts.Triggers;
-using HA4IoT.Scheduling;
-using HA4IoT.Triggers;
+using Wirehome.Components;
+using Wirehome.Conditions;
+using Wirehome.Conditions.Specialized;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Conditions;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Contracts.Sensors.Events;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
+using Wirehome.Contracts.Triggers;
+using Wirehome.Scheduling;
+using Wirehome.Triggers;
 using System.Globalization;
 
-namespace HA4IoT.Automations
+namespace Wirehome.Automations
 {
     public class TurnOnAndOffAutomation : AutomationBase
     {

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 
-namespace HA4IoT.Contracts.Backup
+namespace Wirehome.Contracts.Backup
 {
     public class BackupEventArgs : EventArgs
     {

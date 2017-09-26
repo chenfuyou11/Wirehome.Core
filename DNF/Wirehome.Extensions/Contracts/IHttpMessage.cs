@@ -1,8 +1,8 @@
-﻿using HA4IoT.Extensions.Messaging.Core;
+﻿using Wirehome.Extensions.Messaging.Core;
 using System.Collections.Generic;
 using System.Net;
 
-namespace HA4IoT.Extensions.Messaging
+namespace Wirehome.Extensions.Messaging
 {
     public interface IHttpMessage : IBaseMessage
     {

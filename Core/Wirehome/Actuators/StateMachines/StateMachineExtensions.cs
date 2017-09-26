@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Core;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Core;
 
-namespace HA4IoT.Actuators.StateMachines
+namespace Wirehome.Actuators.StateMachines
 {
     public static class StateMachineExtensions
     {

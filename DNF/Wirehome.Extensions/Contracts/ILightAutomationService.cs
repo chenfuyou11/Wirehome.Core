@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Areas;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Areas;
 using System;
 
-namespace HA4IoT.Extensions.Contracts
+namespace Wirehome.Extensions.Contracts
 {
     public interface ILightAutomationService
     {

@@ -1,8 +1,8 @@
-﻿using HA4IoT.Contracts.Logging;
+﻿using Wirehome.Contracts.Logging;
 using System;
 using Windows.Foundation.Diagnostics;
 
-namespace HA4IoT.Extensions
+namespace Wirehome.Extensions
 {
     public class EtwLoggingService : ILogAdapter
     {
@@ -10,7 +10,7 @@ namespace HA4IoT.Extensions
 
         public EtwLoggingService()
         {
-            _loggingChannel = new LoggingChannel("HA4IoT", null, new Guid("4bd2826e-54a1-4ba9-bf63-92b73ea1ac4a"));
+            _loggingChannel = new LoggingChannel("Wirehome", null, new Guid("4bd2826e-54a1-4ba9-bf63-92b73ea1ac4a"));
         }
         
         public void ProcessLogEntry(LogEntry logEntry)

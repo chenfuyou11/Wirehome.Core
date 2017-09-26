@@ -8,7 +8,7 @@ using MQTTnet.Core.Client;
 using MQTTnet.Core.Packets;
 using MQTTnet.Core.Serializer;
 
-namespace HA4IoT.Devices
+namespace Wirehome.Devices
 {
     public class MqttCommunicationAdapter : IMqttCommunicationAdapter
     {

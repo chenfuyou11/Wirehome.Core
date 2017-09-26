@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Automations;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Exceptions;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Automations;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Exceptions;
+using Wirehome.Contracts.Settings;
 
-namespace HA4IoT.Areas
+namespace Wirehome.Areas
 {
     public class Area : IArea
     {

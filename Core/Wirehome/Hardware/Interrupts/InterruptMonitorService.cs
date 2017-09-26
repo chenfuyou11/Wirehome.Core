@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Configuration;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.Interrupts;
-using HA4IoT.Contracts.Hardware.Interrupts.Configuration;
-using HA4IoT.Contracts.Hardware.RaspberryPi;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Configuration;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.Interrupts;
+using Wirehome.Contracts.Hardware.Interrupts.Configuration;
+using Wirehome.Contracts.Hardware.RaspberryPi;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Hardware.Interrupts
+namespace Wirehome.Hardware.Interrupts
 {
     public sealed class InterruptMonitorService : ServiceBase, IInterruptMonitorService
     {

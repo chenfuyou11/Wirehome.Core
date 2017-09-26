@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Notifications
+namespace Wirehome.Notifications
 {
     public class NotificationServiceSettings
     {

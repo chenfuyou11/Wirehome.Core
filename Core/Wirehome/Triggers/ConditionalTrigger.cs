@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Conditions;
-using HA4IoT.Contracts.Triggers;
+using Wirehome.Contracts.Conditions;
+using Wirehome.Contracts.Triggers;
 
-namespace HA4IoT.Triggers
+namespace Wirehome.Triggers
 {
     public class ConditionalTrigger : Trigger
     {

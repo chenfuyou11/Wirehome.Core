@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Conditions
+namespace Wirehome.Conditions
 {
     public class TimeRangeChecker
     {

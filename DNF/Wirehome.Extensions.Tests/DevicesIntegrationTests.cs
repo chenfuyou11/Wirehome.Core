@@ -1,20 +1,20 @@
-﻿using HA4IoT.Configuration;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Components.Features;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Core;
-using HA4IoT.Extensions.Devices;
-using HA4IoT.Extensions.Extensions;
-using HA4IoT.Extensions.Messaging.Core;
-using HA4IoT.Extensions.Messaging.DenonMessages;
-using HA4IoT.Extensions.Messaging.KodiMessages;
-using HA4IoT.Extensions.Messaging.Services;
-using HA4IoT.Extensions.Networking;
-using HA4IoT.Extensions.Quartz;
-using HA4IoT.Extensions.Tests.Helpers;
-using HA4IoT.Scripting;
+﻿using Wirehome.Configuration;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.Features;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Core;
+using Wirehome.Extensions.Devices;
+using Wirehome.Extensions.Extensions;
+using Wirehome.Extensions.Messaging.Core;
+using Wirehome.Extensions.Messaging.DenonMessages;
+using Wirehome.Extensions.Messaging.KodiMessages;
+using Wirehome.Extensions.Messaging.Services;
+using Wirehome.Extensions.Networking;
+using Wirehome.Extensions.Quartz;
+using Wirehome.Extensions.Tests.Helpers;
+using Wirehome.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 
-namespace HA4IoT.Extensions.Tests
+namespace Wirehome.Extensions.Tests
 {
     [TestClass]
     [TestCategory("Integration")]

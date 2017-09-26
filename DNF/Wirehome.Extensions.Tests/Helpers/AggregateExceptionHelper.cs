@@ -3,7 +3,7 @@ using System;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Tests
+namespace Wirehome.Extensions.Tests
 {
     public static class AggregateExceptionHelper
     {

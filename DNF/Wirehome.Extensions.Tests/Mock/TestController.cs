@@ -1,27 +1,27 @@
 ﻿using System;
-using HA4IoT.Api;
-using HA4IoT.Core;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Automations;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Logging;
-using HA4IoT.Notifications;
-using HA4IoT.Settings;
-using HA4IoT.Contracts.Storage;
-using HA4IoT.Contracts.Notifications;
-using HA4IoT.Contracts.Resources;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Contracts.Backup;
-using HA4IoT.Backup;
-using HA4IoT.Resources;
-using HA4IoT.Automations;
-using HA4IoT.Components;
-using HA4IoT.Areas;
+using Wirehome.Api;
+using Wirehome.Core;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Automations;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Logging;
+using Wirehome.Notifications;
+using Wirehome.Settings;
+using Wirehome.Contracts.Storage;
+using Wirehome.Contracts.Notifications;
+using Wirehome.Contracts.Resources;
+using Wirehome.Contracts.Settings;
+using Wirehome.Contracts.Backup;
+using Wirehome.Backup;
+using Wirehome.Resources;
+using Wirehome.Automations;
+using Wirehome.Components;
+using Wirehome.Areas;
 
-namespace HA4IoT.Extensions.Tests
+namespace Wirehome.Extensions.Tests
 {
     public class TestController : IController
     {

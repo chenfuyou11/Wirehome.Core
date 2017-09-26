@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HA4IoT.Contracts.Components.Features
+namespace Wirehome.Contracts.Components.Features
 {
     public class StateMachineFeature : IComponentFeature
     {

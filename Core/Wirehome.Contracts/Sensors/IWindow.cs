@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Components;
+﻿using Wirehome.Contracts.Components;
 
-namespace HA4IoT.Contracts.Sensors
+namespace Wirehome.Contracts.Sensors
 {
     public interface IWindow : IComponent
     {

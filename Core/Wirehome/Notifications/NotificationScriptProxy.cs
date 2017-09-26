@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Notifications;
-using HA4IoT.Contracts.Scripting;
+using Wirehome.Contracts.Notifications;
+using Wirehome.Contracts.Scripting;
 using MoonSharp.Interpreter;
 
-namespace HA4IoT.Notifications
+namespace Wirehome.Notifications
 {
     public class NotificationScriptProxy : IScriptProxy
     {

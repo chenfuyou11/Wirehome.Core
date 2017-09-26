@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Extensions.Messaging.Core
+namespace Wirehome.Extensions.Messaging.Core
 {
     public class MessageFilter : IEquatable<MessageFilter>
     {

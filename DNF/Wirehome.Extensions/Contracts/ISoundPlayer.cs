@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HA4IoT.Extensions.Contracts
+namespace Wirehome.Extensions.Contracts
 {
     public interface ISoundPlayer
     {

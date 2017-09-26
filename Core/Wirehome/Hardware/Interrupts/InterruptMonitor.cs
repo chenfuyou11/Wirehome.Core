@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Logging;
 
-namespace HA4IoT.Hardware.Interrupts
+namespace Wirehome.Hardware.Interrupts
 {
     public sealed class InterruptMonitor
     {

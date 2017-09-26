@@ -1,8 +1,8 @@
-﻿using HA4IoT.Contracts.Scripting;
-using HA4IoT.Tests.Mockups;
+﻿using Wirehome.Contracts.Scripting;
+using Wirehome.Tests.Mockups;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Scripting
+namespace Wirehome.Tests.Scripting
 {
     [TestClass]
     public class ScriptingTests

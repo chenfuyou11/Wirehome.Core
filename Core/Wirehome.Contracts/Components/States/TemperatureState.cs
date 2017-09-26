@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Components.States
+﻿namespace Wirehome.Contracts.Components.States
 {
     public class TemperatureState : NumericBasedState
     {

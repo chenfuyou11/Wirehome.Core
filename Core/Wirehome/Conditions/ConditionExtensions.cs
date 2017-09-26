@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Conditions;
+using Wirehome.Contracts.Conditions;
 
-namespace HA4IoT.Conditions
+namespace Wirehome.Conditions
 {
     public static class ConditionExtensions
     {

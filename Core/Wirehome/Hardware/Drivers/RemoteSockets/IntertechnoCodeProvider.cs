@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Codes;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Protocols;
-using HA4IoT.Hardware.RemoteSockets;
+using Wirehome.Contracts.Hardware.RemoteSockets.Codes;
+using Wirehome.Contracts.Hardware.RemoteSockets.Protocols;
+using Wirehome.Hardware.RemoteSockets;
 
-namespace HA4IoT.Hardware.Drivers.RemoteSockets
+namespace Wirehome.Hardware.Drivers.RemoteSockets
 {
     public static class IntertechnoCodeProvider
     {

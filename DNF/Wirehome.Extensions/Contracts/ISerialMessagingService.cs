@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Services;
-using HA4IoT.Extensions.Messaging;
+﻿using Wirehome.Contracts.Services;
+using Wirehome.Extensions.Messaging;
 
-namespace HA4IoT.Extensions.Contracts
+namespace Wirehome.Extensions.Contracts
 {
     public interface ISerialMessagingService : IService
     {

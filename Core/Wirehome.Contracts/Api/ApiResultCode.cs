@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Api
+﻿namespace Wirehome.Contracts.Api
 {
     public enum ApiResultCode
     {

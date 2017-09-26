@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Contracts.Api
+namespace Wirehome.Contracts.Api
 {
     public class ApiResponse
     {

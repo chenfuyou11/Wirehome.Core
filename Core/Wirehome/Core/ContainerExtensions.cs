@@ -1,11 +1,11 @@
 ﻿using System;
-using HA4IoT.Contracts;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Core
+namespace Wirehome.Core
 {
     public static class ContainerExtensions
     {

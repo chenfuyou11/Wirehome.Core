@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
 using Newtonsoft.Json.Linq;
-using HA4IoT.Contracts.Core;
+using Wirehome.Contracts.Core;
 
-namespace HA4IoT.Logging
+namespace Wirehome.Logging
 {
     [ApiServiceClass(typeof(ILogService))]
     public sealed class LogService : ServiceBase, ILogService

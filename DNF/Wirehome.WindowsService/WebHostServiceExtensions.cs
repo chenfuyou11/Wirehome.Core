@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using System.ServiceProcess;
 
-namespace HA4IoT.WindowsService
+namespace Wirehome.WindowsService
 {
     public static class WebHostServiceExtensions
     {

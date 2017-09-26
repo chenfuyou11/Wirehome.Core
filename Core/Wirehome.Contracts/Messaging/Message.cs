@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Messaging
+namespace Wirehome.Contracts.Messaging
 {
     public class Message<TPayload> where TPayload : class
     {

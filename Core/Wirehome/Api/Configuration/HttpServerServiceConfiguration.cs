@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Api.Configuration
+﻿namespace Wirehome.Api.Configuration
 {
     public class HttpServerServiceConfiguration
     {

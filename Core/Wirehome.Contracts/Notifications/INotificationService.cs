@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.Notifications
+namespace Wirehome.Contracts.Notifications
 {
     public interface INotificationService : IService
     {

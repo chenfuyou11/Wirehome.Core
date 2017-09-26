@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HA4IoT.Contracts.Logging
+namespace Wirehome.Contracts.Logging
 {
     public class GetLogEntriesResponse
     {

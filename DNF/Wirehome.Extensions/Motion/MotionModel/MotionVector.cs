@@ -1,9 +1,9 @@
-﻿using HA4IoT.Extensions.Extensions;
+﻿using Wirehome.Extensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HA4IoT.Extensions.MotionModel
+namespace Wirehome.Extensions.MotionModel
 {
     public class MotionVector : IEquatable<MotionVector>
     {

@@ -1,4 +1,4 @@
-namespace HA4IoT.Actuators.StateMachines
+namespace Wirehome.Actuators.StateMachines
 {
     public class ApiCallRequest
     {

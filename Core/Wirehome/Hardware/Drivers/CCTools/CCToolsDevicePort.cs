@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Hardware.Drivers.CCTools
+namespace Wirehome.Hardware.Drivers.CCTools
 {
     public sealed class CCToolsDevicePort : IBinaryOutput
     {

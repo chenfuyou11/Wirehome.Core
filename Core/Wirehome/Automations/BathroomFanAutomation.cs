@@ -1,17 +1,17 @@
 ﻿using System;
-using HA4IoT.Components;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Components.Features;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Contracts.Sensors.Events;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Scheduling;
-using HA4IoT.Triggers;
+using Wirehome.Components;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Components.Features;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Contracts.Sensors.Events;
+using Wirehome.Contracts.Settings;
+using Wirehome.Scheduling;
+using Wirehome.Triggers;
 
-namespace HA4IoT.Automations
+namespace Wirehome.Automations
 {
     public class BathroomFanAutomation : AutomationBase
     {

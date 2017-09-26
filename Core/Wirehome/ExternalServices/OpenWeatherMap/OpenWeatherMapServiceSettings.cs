@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.ExternalServices.OpenWeatherMap
+﻿namespace Wirehome.ExternalServices.OpenWeatherMap
 {
     public class OpenWeatherMapServiceSettings
     {

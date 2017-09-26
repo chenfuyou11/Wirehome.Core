@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Components.Exceptions
+namespace Wirehome.Contracts.Components.Exceptions
 {
     public class ComponentFeatureNotSupportedException : Exception
     {

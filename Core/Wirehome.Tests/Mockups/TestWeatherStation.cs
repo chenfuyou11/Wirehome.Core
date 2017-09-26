@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Tests.Mockups
+namespace Wirehome.Tests.Mockups
 {
     public class TestWeatherStation : ServiceBase, IOutdoorService
     {

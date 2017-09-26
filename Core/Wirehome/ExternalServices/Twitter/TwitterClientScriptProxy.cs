@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.ExternalServices.Twitter;
-using HA4IoT.Contracts.Scripting;
+using Wirehome.Contracts.ExternalServices.Twitter;
+using Wirehome.Contracts.Scripting;
 using MoonSharp.Interpreter;
 
-namespace HA4IoT.ExternalServices.Twitter
+namespace Wirehome.ExternalServices.Twitter
 {
     public class TwitterClientScriptProxy : IScriptProxy
     {

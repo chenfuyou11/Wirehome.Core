@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Logging;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 
-namespace HA4IoT.Api.Cloud.Azure
+namespace Wirehome.Api.Cloud.Azure
 {
     public class QueueSender
     {

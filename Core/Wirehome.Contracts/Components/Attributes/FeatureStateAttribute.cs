@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace HA4IoT.Contracts.Components.Attributes
+namespace Wirehome.Contracts.Components.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class FeatureStateAttribute : Attribute, ITypeAssociation

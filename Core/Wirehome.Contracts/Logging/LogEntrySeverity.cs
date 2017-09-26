@@ -1,4 +1,4 @@
-namespace HA4IoT.Contracts.Logging
+namespace Wirehome.Contracts.Logging
 {
     public enum LogEntrySeverity
     {

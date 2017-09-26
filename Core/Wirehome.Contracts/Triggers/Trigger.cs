@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Core;
+using Wirehome.Contracts.Core;
 
-namespace HA4IoT.Contracts.Triggers
+namespace Wirehome.Contracts.Triggers
 {
     public class Trigger : ITrigger
     {

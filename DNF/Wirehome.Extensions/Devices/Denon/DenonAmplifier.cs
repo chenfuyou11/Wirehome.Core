@@ -1,21 +1,21 @@
-﻿using HA4IoT.Components;
+﻿using Wirehome.Components;
 using System;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Components.Features;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Extensions.Messaging.DenonMessages;
-using HA4IoT.Extensions.Messaging.Core;
-using HA4IoT.Extensions.Messaging.StateChangeMessages;
-using HA4IoT.Extensions.Devices.Features;
-using HA4IoT.Extensions.Devices.Commands;
-using HA4IoT.Extensions.Devices.States;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Components.Features;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Extensions.Messaging.DenonMessages;
+using Wirehome.Extensions.Messaging.Core;
+using Wirehome.Extensions.Messaging.StateChangeMessages;
+using Wirehome.Extensions.Devices.Features;
+using Wirehome.Extensions.Devices.Commands;
+using Wirehome.Extensions.Devices.States;
 using Quartz;
 using System.Threading.Tasks;
 using System.Threading;
-using HA4IoT.Extensions.Quartz;
+using Wirehome.Extensions.Quartz;
 
-namespace HA4IoT.Extensions.Devices
+namespace Wirehome.Extensions.Devices
 {
 
     public class DenonAmplifier : DeviceComponent, IDisposable

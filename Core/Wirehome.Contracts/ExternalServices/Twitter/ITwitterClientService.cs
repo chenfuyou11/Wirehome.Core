@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.ExternalServices.Twitter
+namespace Wirehome.Contracts.ExternalServices.Twitter
 {
     public interface ITwitterClientService : IService
     {

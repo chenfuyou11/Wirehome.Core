@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Scripting;
+﻿using Wirehome.Contracts.Scripting;
 
-namespace HA4IoT.Contracts.Services
+namespace Wirehome.Contracts.Services
 {
     public abstract class ServiceBase : IService
     {

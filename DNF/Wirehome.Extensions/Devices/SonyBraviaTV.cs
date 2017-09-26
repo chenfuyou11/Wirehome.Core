@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Extensions.Devices
+namespace Wirehome.Extensions.Devices
 {
     public partial class SonyBraviaTV
     {

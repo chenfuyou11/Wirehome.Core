@@ -1,12 +1,12 @@
 ﻿using System;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Contracts.Sensors.Events;
-using HA4IoT.Contracts.Triggers;
-using HA4IoT.Triggers;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Contracts.Sensors.Events;
+using Wirehome.Contracts.Triggers;
+using Wirehome.Triggers;
 
-namespace HA4IoT.Sensors.Buttons
+namespace Wirehome.Sensors.Buttons
 {
     public static class ButtonExtensions
     {

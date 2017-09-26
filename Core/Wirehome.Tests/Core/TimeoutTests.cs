@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Core;
-using HA4IoT.Tests.Mockups;
+using Wirehome.Contracts.Core;
+using Wirehome.Core;
+using Wirehome.Tests.Mockups;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Core
+namespace Wirehome.Tests.Core
 {
     [TestClass]
     public class TimeoutTests

@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Extensions.Messaging
+﻿namespace Wirehome.Extensions.Messaging
 {
     public enum MessageType
     {

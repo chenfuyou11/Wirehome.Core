@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Extensions.Contracts;
-using HA4IoT.Extensions.Messaging.Core;
+﻿using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Extensions.Contracts;
+using Wirehome.Extensions.Messaging.Core;
 using Newtonsoft.Json.Linq;
 using SocketLite.Services;
 using System;
@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Messaging.Services
+namespace Wirehome.Extensions.Messaging.Services
 {
     public class TcpMessagingService : ITcpMessagingService
     {

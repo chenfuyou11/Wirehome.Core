@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace HA4IoT.Contracts.Core
+namespace Wirehome.Contracts.Core
 {
     public interface IConfiguration
     {

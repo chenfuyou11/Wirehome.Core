@@ -1,12 +1,12 @@
-﻿using HA4IoT.Contracts.Hardware.RemoteSockets.Protocols;
-using HA4IoT.Hardware.RemoteSockets;
+﻿using Wirehome.Contracts.Hardware.RemoteSockets.Protocols;
+using Wirehome.Hardware.RemoteSockets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Core
+namespace Wirehome.Extensions.Core
 {
     public class DipswitchCode : IEquatable<DipswitchCode>
     {

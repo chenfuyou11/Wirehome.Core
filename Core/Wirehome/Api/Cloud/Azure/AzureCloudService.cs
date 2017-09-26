@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Api.Cloud.Azure
+namespace Wirehome.Api.Cloud.Azure
 {
     public class AzureCloudService : ServiceBase, IApiAdapter
     {

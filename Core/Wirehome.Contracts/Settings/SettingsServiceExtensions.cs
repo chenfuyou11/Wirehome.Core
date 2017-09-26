@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Automations;
-using HA4IoT.Contracts.Components;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Automations;
+using Wirehome.Contracts.Components;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Contracts.Settings
+namespace Wirehome.Contracts.Settings
 {
     public static class SettingsServiceExtensions
     {

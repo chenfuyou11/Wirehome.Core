@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Sensors
+﻿namespace Wirehome.Contracts.Sensors
 {
     public enum ButtonPressedDuration
     {

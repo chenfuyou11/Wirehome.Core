@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 
-namespace HA4IoT.Contracts.Api
+namespace Wirehome.Contracts.Api
 {
     public class ApiCall : IApiCall
     {

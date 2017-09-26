@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Notifications;
-using HA4IoT.Contracts.Resources;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Notifications;
+using Wirehome.Contracts.Resources;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Core
+namespace Wirehome.Core
 {
     public class SystemEventsService : ServiceBase, ISystemEventsService
     {

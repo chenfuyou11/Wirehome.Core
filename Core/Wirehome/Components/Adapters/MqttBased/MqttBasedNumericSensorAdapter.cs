@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Hardware.DeviceMessaging;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Hardware.DeviceMessaging;
+using Wirehome.Contracts.Logging;
 
-namespace HA4IoT.Components.Adapters.MqttBased
+namespace Wirehome.Components.Adapters.MqttBased
 {
     public class MqttBasedNumericSensorAdapter : INumericSensorAdapter
     {

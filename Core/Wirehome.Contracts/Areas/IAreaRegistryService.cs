@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Services;
+﻿using Wirehome.Contracts.Services;
 using System.Collections.Generic;
 
-namespace HA4IoT.Contracts.Areas
+namespace Wirehome.Contracts.Areas
 {
     public interface IAreaRegistryService : IService
     {

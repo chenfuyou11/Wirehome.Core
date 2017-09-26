@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Hardware;
+﻿using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Contracts.Actuators
+namespace Wirehome.Contracts.Actuators
 {
     public interface IStateMachineState
     {

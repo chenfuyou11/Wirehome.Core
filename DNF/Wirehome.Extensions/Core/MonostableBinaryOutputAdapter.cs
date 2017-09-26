@@ -1,14 +1,14 @@
 ﻿using System;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Contracts.Hardware;
 using System.Linq;
-using HA4IoT.Contracts.Components.States;
+using Wirehome.Contracts.Components.States;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Scheduling;
-using HA4IoT.Extensions.Contracts;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Scheduling;
+using Wirehome.Extensions.Contracts;
 
-namespace HA4IoT.Extensions.Core
+namespace Wirehome.Extensions.Core
 {
 
     public class MonostableBinaryOutputAdapter : IBinaryOutputAdapter, IMonostableLampAdapter

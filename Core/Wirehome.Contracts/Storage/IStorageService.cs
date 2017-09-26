@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Services;
+﻿using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.Storage
+namespace Wirehome.Contracts.Storage
 {
     public interface IStorageService : IService
     {

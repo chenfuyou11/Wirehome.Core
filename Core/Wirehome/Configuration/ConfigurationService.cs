@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
-using HA4IoT.Contracts.Configuration;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Configuration;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Configuration
+namespace Wirehome.Configuration
 {
     public class ConfigurationService : ServiceBase, IConfigurationService
     {

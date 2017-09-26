@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Services;
+﻿using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.ExternalServices.TelegramBot
+namespace Wirehome.Contracts.ExternalServices.TelegramBot
 {
     public interface ITelegramBotService : IService
     {

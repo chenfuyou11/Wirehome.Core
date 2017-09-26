@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Notifications
+namespace Wirehome.Contracts.Notifications
 {
     public class ApiParameterForCreate
     {

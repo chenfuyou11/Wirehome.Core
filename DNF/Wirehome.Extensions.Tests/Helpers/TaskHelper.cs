@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Tests.Helpers
+namespace Wirehome.Extensions.Tests.Helpers
 {
     public static class TaskHelper
     {

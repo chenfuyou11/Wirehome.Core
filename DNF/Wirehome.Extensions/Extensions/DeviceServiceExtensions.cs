@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Core;
-using HA4IoT.Hardware.Drivers.I2CHardwareBridge;
+﻿using Wirehome.Contracts.Core;
+using Wirehome.Hardware.Drivers.I2CHardwareBridge;
 
-namespace HA4IoT.Extensions.Extensions
+namespace Wirehome.Extensions.Extensions
 {
     public static class DeviceServiceExtensions
     {

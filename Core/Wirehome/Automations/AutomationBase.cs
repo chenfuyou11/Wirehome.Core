@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Automations;
+using Wirehome.Contracts.Automations;
 
-namespace HA4IoT.Automations
+namespace Wirehome.Automations
 {
     public abstract class AutomationBase : IAutomation
     {

@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
 using System.IO;
-using HA4IoT.Extensions.Messaging.Core;
+using Wirehome.Extensions.Messaging.Core;
 
-namespace HA4IoT.Extensions.Messaging.DenonMessages
+namespace Wirehome.Extensions.Messaging.DenonMessages
 {
     public class DenonControlMessage : HttpMessage
     {

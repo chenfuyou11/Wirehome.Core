@@ -1,13 +1,13 @@
 ﻿using System;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Environment
+namespace Wirehome.Environment
 {
     [ApiServiceClass(typeof(IOutdoorService))]
     public class OutdoorService : ServiceBase, IOutdoorService

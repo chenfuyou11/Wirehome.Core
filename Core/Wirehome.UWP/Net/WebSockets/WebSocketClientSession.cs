@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Logging;
 using Newtonsoft.Json.Linq;
 using Buffer = Windows.Storage.Streams.Buffer;
 
-namespace HA4IoT.Net.WebSockets
+namespace Wirehome.Net.WebSockets
 {
 
     public class WebSocketClientSession : IWebSocketClientSession

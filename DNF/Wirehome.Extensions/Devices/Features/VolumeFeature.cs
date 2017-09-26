@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Components;
+﻿using Wirehome.Contracts.Components;
 
-namespace HA4IoT.Extensions.Devices.Features
+namespace Wirehome.Extensions.Devices.Features
 {
     public class VolumeFeature : IComponentFeature
     {

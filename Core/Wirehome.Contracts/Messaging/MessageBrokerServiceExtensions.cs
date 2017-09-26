@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Triggers;
+using Wirehome.Contracts.Triggers;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Contracts.Messaging
+namespace Wirehome.Contracts.Messaging
 {
     public static class MessageBrokerServiceExtensions
     {

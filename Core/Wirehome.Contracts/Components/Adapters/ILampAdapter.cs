@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Contracts.Components.Adapters
+namespace Wirehome.Contracts.Components.Adapters
 {
     public interface ILampAdapter
     {

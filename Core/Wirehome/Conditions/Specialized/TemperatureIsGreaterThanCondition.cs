@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Components;
-using HA4IoT.Contracts.Components;
+using Wirehome.Components;
+using Wirehome.Contracts.Components;
 
-namespace HA4IoT.Conditions.Specialized
+namespace Wirehome.Conditions.Specialized
 {
     public class TemperatureIsGreaterThanCondition : Condition
     {

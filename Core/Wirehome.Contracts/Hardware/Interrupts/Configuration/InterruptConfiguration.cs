@@ -1,8 +1,8 @@
-﻿using HA4IoT.Contracts.Hardware.RaspberryPi;
+﻿using Wirehome.Contracts.Hardware.RaspberryPi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace HA4IoT.Contracts.Hardware.Interrupts.Configuration
+namespace Wirehome.Contracts.Hardware.Interrupts.Configuration
 {
     public class InterruptConfiguration
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Components.Attributes
+namespace Wirehome.Contracts.Components.Attributes
 {
     public interface ITypeAssociation
     {

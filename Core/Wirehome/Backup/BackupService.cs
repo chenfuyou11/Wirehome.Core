@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Backup;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Backup;
+using Wirehome.Contracts.Services;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Backup
+namespace Wirehome.Backup
 {
     [ApiServiceClass(typeof(IBackupService))]
     public class BackupService : ServiceBase, IBackupService

@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Logging;
 
-namespace HA4IoT.Components
+namespace Wirehome.Components
 {
     public static class ComponentStateExtensions
     {

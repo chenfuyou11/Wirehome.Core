@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Components.Commands;
+﻿using Wirehome.Contracts.Components.Commands;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Devices
+namespace Wirehome.Extensions.Devices
 {
     public interface ICommandExecute
     {

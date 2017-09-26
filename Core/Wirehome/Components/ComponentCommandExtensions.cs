@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Logging;
 
-namespace HA4IoT.Components
+namespace Wirehome.Components
 {
     public static class ComponentCommandExtensions
     {

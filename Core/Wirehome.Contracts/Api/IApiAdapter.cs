@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Components;
+﻿using Wirehome.Contracts.Components;
 using System;
 
-namespace HA4IoT.Contracts.Api
+namespace Wirehome.Contracts.Api
 {
     public interface IApiAdapter
     {

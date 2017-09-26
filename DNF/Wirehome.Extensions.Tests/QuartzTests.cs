@@ -1,16 +1,16 @@
-﻿using HA4IoT.Core;
-using HA4IoT.Extensions.Quartz;
+﻿using Wirehome.Core;
+using Wirehome.Extensions.Quartz;
 using Quartz;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HA4IoT.Contracts.Core;
+using Wirehome.Contracts.Core;
 using System.Threading.Tasks;
 using System;
 using System.Threading;
 using Quartz.Impl.Matchers;
-using HA4IoT.Extensions.Devices;
-using HA4IoT.Extensions.Messaging.Core;
+using Wirehome.Extensions.Devices;
+using Wirehome.Extensions.Messaging.Core;
 
-namespace HA4IoT.Extensions.Tests
+namespace Wirehome.Extensions.Tests
 {
     [TestClass]
     public class QuartzTests

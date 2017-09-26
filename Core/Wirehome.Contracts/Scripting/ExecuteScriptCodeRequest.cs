@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Scripting
+﻿namespace Wirehome.Contracts.Scripting
 {
     public class ExecuteScriptCodeRequest
     {

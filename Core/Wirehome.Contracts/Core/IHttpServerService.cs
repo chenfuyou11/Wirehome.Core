@@ -1,10 +1,10 @@
-﻿using HA4IoT.Contracts.Api;
-using HA4IoT.Net.Http;
+﻿using Wirehome.Contracts.Api;
+using Wirehome.Net.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HA4IoT.Contracts.Core
+namespace Wirehome.Contracts.Core
 {
     public interface IHttpServerService
     {

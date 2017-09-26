@@ -1,6 +1,6 @@
-﻿using HA4IoT.Extensions.Devices.States;
+﻿using Wirehome.Extensions.Devices.States;
 
-namespace HA4IoT.Extensions.Messaging.StateChangeMessages
+namespace Wirehome.Extensions.Messaging.StateChangeMessages
 {
     public class VolumeStateChangeMessage : StateChangeMessage<VolumeState>
     {

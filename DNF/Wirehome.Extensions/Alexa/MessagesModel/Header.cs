@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace HA4IoT.Extensions.MessagesModel
+namespace Wirehome.Extensions.MessagesModel
 {
 
     public class Header

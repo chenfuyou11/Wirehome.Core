@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Scripting;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Scripting;
 using MoonSharp.Interpreter;
 
-namespace HA4IoT.Components
+namespace Wirehome.Components
 {
     public class ComponentRegistryScriptProxy : IScriptProxy
     {

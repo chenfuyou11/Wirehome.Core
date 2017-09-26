@@ -1,23 +1,23 @@
 ﻿using System;
-using HA4IoT.Actuators.Lamps;
-using HA4IoT.Automations;
-using HA4IoT.Components;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Sensors.Buttons;
-using HA4IoT.Sensors.MotionDetectors;
-using HA4IoT.Tests.Mockups;
-using HA4IoT.Tests.Mockups.Adapters;
+using Wirehome.Actuators.Lamps;
+using Wirehome.Automations;
+using Wirehome.Components;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
+using Wirehome.Sensors.Buttons;
+using Wirehome.Sensors.MotionDetectors;
+using Wirehome.Tests.Mockups;
+using Wirehome.Tests.Mockups.Adapters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Actuators
+namespace Wirehome.Tests.Actuators
 {
     [TestClass]
     public class AutomaticTurnOnAndOffAutomationTests

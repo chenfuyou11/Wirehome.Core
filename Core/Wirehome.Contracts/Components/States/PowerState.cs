@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Components.Attributes;
-using HA4IoT.Contracts.Components.Features;
+﻿using Wirehome.Contracts.Components.Attributes;
+using Wirehome.Contracts.Components.Features;
 
-namespace HA4IoT.Contracts.Components.States
+namespace Wirehome.Contracts.Components.States
 {
     [Feature(typeof(PowerStateFeature))]
     public class PowerState : EnumBasedState<PowerStateValue>

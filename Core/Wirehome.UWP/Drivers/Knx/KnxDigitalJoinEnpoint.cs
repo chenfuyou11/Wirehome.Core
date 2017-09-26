@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Hardware.Drivers.Knx
+namespace Wirehome.Hardware.Drivers.Knx
 {
     public class KnxDigitalJoinEnpoint : IBinaryOutputAdapter
     {

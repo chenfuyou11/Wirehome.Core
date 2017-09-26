@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.PersonalAgent
+﻿namespace Wirehome.PersonalAgent
 {
     public enum MessageContextKind
     {

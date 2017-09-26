@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using HA4IoT.Contracts.Resources;
+using Wirehome.Contracts.Resources;
 
-namespace HA4IoT.Resources
+namespace Wirehome.Resources
 {
     public class SetTextsRequest
     {

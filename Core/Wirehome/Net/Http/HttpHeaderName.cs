@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Net.Http
+﻿namespace Wirehome.Net.Http
 {
     public static class HttpHeaderName
     {

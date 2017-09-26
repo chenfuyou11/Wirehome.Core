@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.PersonalAgent;
+﻿using Wirehome.Contracts.PersonalAgent;
 
-namespace HA4IoT.Contracts.ExternalServices.TelegramBot
+namespace Wirehome.Contracts.ExternalServices.TelegramBot
 {
     public class TelegramOutboundMessage : MessageBase, IOutboundTextMessage
     {

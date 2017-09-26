@@ -1,10 +1,10 @@
-﻿using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.I2C;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Hardware.Drivers.I2CPortExpanderDrivers;
+﻿using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Logging;
+using Wirehome.Hardware.Drivers.I2CPortExpanderDrivers;
 
-namespace HA4IoT.Hardware.Drivers.CCTools.Devices
+namespace Wirehome.Hardware.Drivers.CCTools.Devices
 {
     public class HSPE16OutputOnly : CCToolsDeviceBase
     {

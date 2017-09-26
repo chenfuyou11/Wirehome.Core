@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Logging;
 
-namespace HA4IoT.Tests.Mockups
+namespace Wirehome.Tests.Mockups
 {
     public class TestLogger : ILogger
     {

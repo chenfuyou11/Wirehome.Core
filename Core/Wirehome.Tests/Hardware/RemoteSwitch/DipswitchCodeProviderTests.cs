@@ -1,9 +1,9 @@
-﻿using HA4IoT.Contracts.Hardware.RemoteSockets.Protocols;
-using HA4IoT.Hardware.Drivers.RemoteSockets;
-using HA4IoT.Hardware.RemoteSockets;
+﻿using Wirehome.Contracts.Hardware.RemoteSockets.Protocols;
+using Wirehome.Hardware.Drivers.RemoteSockets;
+using Wirehome.Hardware.RemoteSockets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Hardware.RemoteSwitch
+namespace Wirehome.Tests.Hardware.RemoteSwitch
 {
     [TestClass]
     public class DipswitchCodeProviderTests

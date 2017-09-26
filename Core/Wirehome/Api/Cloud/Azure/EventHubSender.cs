@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Logging;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace HA4IoT.Api.Cloud.Azure
+namespace Wirehome.Api.Cloud.Azure
 {
     public class EventHubSender
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HA4IoT.Contracts.Cryptographic
+namespace Wirehome.Contracts.Cryptographic
 {
     public interface ICryptoService
     {

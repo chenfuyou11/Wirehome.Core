@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Hardware.DeviceMessaging;
-using HA4IoT.Contracts.Hardware.Mqtt;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Hardware.DeviceMessaging;
+using Wirehome.Contracts.Hardware.Mqtt;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Tests.Mockups.Services
+namespace Wirehome.Tests.Mockups.Services
 {
     public class TestDeviceMessageBrokerService : ServiceBase, IDeviceMessageBrokerService
     {

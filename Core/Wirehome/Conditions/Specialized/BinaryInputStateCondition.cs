@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Conditions;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Conditions;
+using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Conditions.Specialized
+namespace Wirehome.Conditions.Specialized
 {
     public class BinaryInputStateCondition : Condition
     {

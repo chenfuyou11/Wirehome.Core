@@ -2,11 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking.Sockets;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Net.Http;
-using HA4IoT.Net.WebSockets;
+using Wirehome.Contracts.Logging;
+using Wirehome.Net.Http;
+using Wirehome.Net.WebSockets;
 
-namespace HA4IoT.Net
+namespace Wirehome.Net
 {
     public sealed class ClientSession : IDisposable
     {

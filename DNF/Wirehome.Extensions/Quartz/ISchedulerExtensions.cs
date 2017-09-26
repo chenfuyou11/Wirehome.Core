@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Quartz
+namespace Wirehome.Extensions.Quartz
 {
     public static class ISchedulerExtensions
     {

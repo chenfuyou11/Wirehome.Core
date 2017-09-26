@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Devices.Configuration
+﻿namespace Wirehome.Contracts.Devices.Configuration
 {
     public class DeviceConfiguration
     {

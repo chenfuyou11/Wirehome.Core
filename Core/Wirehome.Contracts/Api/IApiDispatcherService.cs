@@ -1,8 +1,8 @@
-﻿using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Services;
+﻿using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Services;
 using System;
 
-namespace HA4IoT.Contracts.Api
+namespace Wirehome.Contracts.Api
 {
     public interface IApiDispatcherService : IService
     {

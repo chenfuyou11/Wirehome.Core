@@ -1,19 +1,19 @@
-﻿using HA4IoT.Actuators.Lamps;
-using HA4IoT.Components;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Contracts.Triggers;
-using HA4IoT.Sensors.Buttons;
-using HA4IoT.Sensors.TemperatureSensors;
-using HA4IoT.Tests.Mockups;
-using HA4IoT.Tests.Mockups.Adapters;
-using HA4IoT.Triggers;
+﻿using Wirehome.Actuators.Lamps;
+using Wirehome.Components;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Settings;
+using Wirehome.Contracts.Triggers;
+using Wirehome.Sensors.Buttons;
+using Wirehome.Sensors.TemperatureSensors;
+using Wirehome.Tests.Mockups;
+using Wirehome.Tests.Mockups.Adapters;
+using Wirehome.Triggers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Actuators
+namespace Wirehome.Tests.Actuators
 {
     [TestClass]
     public class TriggerTests

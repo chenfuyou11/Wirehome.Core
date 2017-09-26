@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Scheduling
+﻿namespace Wirehome.Scheduling
 {
     public enum ScheduleStatus
     {

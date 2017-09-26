@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Messaging.Core
+namespace Wirehome.Extensions.Messaging.Core
 {
     public interface IEventAggregator
     {

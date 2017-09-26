@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Hardware
+﻿namespace Wirehome.Contracts.Hardware
 {
     public interface IBinaryOutput : IBinaryInput
     {

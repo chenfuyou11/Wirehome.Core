@@ -1,15 +1,15 @@
-﻿using HA4IoT.Components;
+﻿using Wirehome.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Components.Features;
-using HA4IoT.Components.Commands;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Extensions.Contracts;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Components.Features;
+using Wirehome.Components.Commands;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Extensions.Contracts;
 
-namespace HA4IoT.Extensions.Core
+namespace Wirehome.Extensions.Core
 {
     public class Speaker : ComponentBase
     {

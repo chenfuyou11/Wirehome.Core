@@ -1,12 +1,12 @@
 ﻿using System;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Sensors.Buttons;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Sensors.Buttons;
 
-namespace HA4IoT.Actuators.Connectors
+namespace Wirehome.Actuators.Connectors
 {
     public static class RollerShutterWithRollerShutterButtonsConnector
     {

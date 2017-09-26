@@ -1,8 +1,8 @@
-﻿using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Services;
+﻿using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Services;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Extensions.Messaging.Services
+namespace Wirehome.Extensions.Messaging.Services
 {
     public interface ITcpMessagingService : IService
     {

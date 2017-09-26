@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware.I2C;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Hardware.I2C;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Services;
+using Wirehome.Hardware.I2C;
 
-namespace HA4IoT.Tests.Mockups.Services
+namespace Wirehome.Tests.Mockups.Services
 {
     public class TestI2CBusService : ServiceBase, II2CBusService
     {

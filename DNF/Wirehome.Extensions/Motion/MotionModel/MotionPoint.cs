@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Sensors;
+using Wirehome.Contracts.Sensors;
 
 
-namespace HA4IoT.Extensions.MotionModel
+namespace Wirehome.Extensions.MotionModel
 {
     public class MotionPoint : IEquatable<MotionPoint>
     {

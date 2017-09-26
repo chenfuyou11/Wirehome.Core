@@ -1,22 +1,22 @@
 ﻿using System;
-using HA4IoT.Components.Adapters;
-using HA4IoT.Components.Adapters.PortBased;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Sensors.Buttons;
-using HA4IoT.Sensors.HumiditySensors;
-using HA4IoT.Sensors.MotionDetectors;
-using HA4IoT.Sensors.TemperatureSensors;
-using HA4IoT.Sensors.Windows;
+using Wirehome.Components.Adapters;
+using Wirehome.Components.Adapters.PortBased;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Contracts.Settings;
+using Wirehome.Sensors.Buttons;
+using Wirehome.Sensors.HumiditySensors;
+using Wirehome.Sensors.MotionDetectors;
+using Wirehome.Sensors.TemperatureSensors;
+using Wirehome.Sensors.Windows;
 
-namespace HA4IoT.Sensors
+namespace Wirehome.Sensors
 {
     public class SensorFactory
     {

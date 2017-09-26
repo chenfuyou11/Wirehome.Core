@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace HA4IoT.Contracts.Core
+namespace Wirehome.Contracts.Core
 {
     public static class StoragePath
     {

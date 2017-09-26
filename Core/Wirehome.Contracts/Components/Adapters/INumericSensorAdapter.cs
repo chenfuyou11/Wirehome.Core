@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Components.Adapters
+namespace Wirehome.Contracts.Components.Adapters
 {
     public interface INumericSensorAdapter
     {

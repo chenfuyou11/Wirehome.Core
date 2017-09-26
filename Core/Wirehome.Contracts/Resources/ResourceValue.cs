@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace HA4IoT.Contracts.Resources
+namespace Wirehome.Contracts.Resources
 {
     public class ResourceValue
     {

@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Api.Cloud;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Api.Cloud;
 
-namespace HA4IoT.Api.Cloud.CloudConnector
+namespace Wirehome.Api.Cloud.CloudConnector
 {
     public class CloudConnectorApiContext : ApiCall
     {

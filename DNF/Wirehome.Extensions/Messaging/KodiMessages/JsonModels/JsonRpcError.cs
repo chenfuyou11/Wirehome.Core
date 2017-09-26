@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 
-namespace HA4IoT.Extensions.Messaging.KodiMessages
+namespace Wirehome.Extensions.Messaging.KodiMessages
 {
     public class JsonRpcError
     {

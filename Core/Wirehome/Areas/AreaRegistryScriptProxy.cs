@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Scripting;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Scripting;
 using MoonSharp.Interpreter;
 
-namespace HA4IoT.Areas
+namespace Wirehome.Areas
 {
     public class AreaRegistryScriptProxy : IScriptProxy
     {

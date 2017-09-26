@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using System.IO;
 
-namespace HA4IoT.Extensions.Messaging.DenonMessages
+namespace Wirehome.Extensions.Messaging.DenonMessages
 {
     public class DenonStatusMessage : HttpMessage
     {

@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.Commands;
 
-namespace HA4IoT.Components
+namespace Wirehome.Components
 {
     public class CommandExecutorAction<TCommand> : ICommandExecutorAction where TCommand : ICommand
     {

@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Devices;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Codes;
+using Wirehome.Contracts.Devices;
+using Wirehome.Contracts.Hardware.RemoteSockets.Codes;
 
-namespace HA4IoT.Contracts.Hardware.RemoteSockets.Adapters
+namespace Wirehome.Contracts.Hardware.RemoteSockets.Adapters
 {
     public interface ILdp433MhzBridgeAdapter : IDevice
     {

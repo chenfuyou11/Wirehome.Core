@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using HA4IoT.Contracts.Devices;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Devices;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.Core
+namespace Wirehome.Contracts.Core
 {
     public interface IDeviceRegistryService : IService
     {

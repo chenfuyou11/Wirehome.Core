@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using HA4IoT.Conditions;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Components.States;
+using Wirehome.Conditions;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Components.States;
 
-namespace HA4IoT.Automations
+namespace Wirehome.Automations
 {
     public static class TurnOnAndOffAutomationExtensions
     {

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using Quartz;
 using SimpleInjector;
-using HA4IoT.Contracts.Core;
+using Wirehome.Contracts.Core;
 using System.Globalization;
 
-namespace HA4IoT.Extensions.Quartz
+namespace Wirehome.Extensions.Quartz
 {
     public class SimpleInjectorJobFactory : IJobFactory
     {

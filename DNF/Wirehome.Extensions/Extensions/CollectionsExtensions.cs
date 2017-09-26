@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Extensions
+namespace Wirehome.Extensions.Extensions
 {
     public static class CollectionsExtensions
     {

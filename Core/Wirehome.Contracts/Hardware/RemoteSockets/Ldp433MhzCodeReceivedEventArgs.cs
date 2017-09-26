@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Codes;
+using Wirehome.Contracts.Hardware.RemoteSockets.Codes;
 
-namespace HA4IoT.Contracts.Hardware.RemoteSockets
+namespace Wirehome.Contracts.Hardware.RemoteSockets
 {
     public sealed class Ldp433MhzCodeReceivedEventArgs : EventArgs
     {

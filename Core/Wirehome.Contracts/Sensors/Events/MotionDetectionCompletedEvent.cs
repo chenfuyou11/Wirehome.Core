@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Sensors.Events
+﻿namespace Wirehome.Contracts.Sensors.Events
 {
     public class MotionDetectionCompletedEvent
     {

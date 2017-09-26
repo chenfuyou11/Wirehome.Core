@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Hardware.RemoteSockets;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Adapters;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Codes;
+using Wirehome.Contracts.Hardware.RemoteSockets;
+using Wirehome.Contracts.Hardware.RemoteSockets.Adapters;
+using Wirehome.Contracts.Hardware.RemoteSockets.Codes;
 
-namespace HA4IoT.Hardware.Drivers.I2CHardwareBridge
+namespace Wirehome.Hardware.Drivers.I2CHardwareBridge
 {
     public sealed class I2CHardwareBridgeLdp433MhzBridgeAdapter : ILdp433MhzBridgeAdapter
     {

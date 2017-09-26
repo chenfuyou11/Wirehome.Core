@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Hardware.I2C;
+﻿using Wirehome.Contracts.Hardware.I2C;
 
-namespace HA4IoT.Hardware.I2C
+namespace Wirehome.Hardware.I2C
 {
     public struct I2CTransferResult : II2CTransferResult
     {

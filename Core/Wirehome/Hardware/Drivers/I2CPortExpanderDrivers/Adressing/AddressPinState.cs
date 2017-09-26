@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Hardware.Drivers.I2CPortExpanderDrivers.Adressing
+﻿namespace Wirehome.Hardware.Drivers.I2CPortExpanderDrivers.Adressing
 {
     public enum AddressPinState
     {

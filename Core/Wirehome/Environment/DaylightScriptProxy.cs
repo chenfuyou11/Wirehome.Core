@@ -1,13 +1,13 @@
 ﻿using System;
-using HA4IoT.Conditions;
-using HA4IoT.Conditions.Specialized;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services;
+using Wirehome.Conditions;
+using Wirehome.Conditions.Specialized;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Services;
 using MoonSharp.Interpreter;
 
-namespace HA4IoT.Environment
+namespace Wirehome.Environment
 {
     public class DaylightScriptProxy : IScriptProxy
     {

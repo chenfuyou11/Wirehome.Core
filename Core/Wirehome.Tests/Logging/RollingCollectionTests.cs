@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using HA4IoT.Logging;
+using Wirehome.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Logging
+namespace Wirehome.Tests.Logging
 {
     [TestClass]
     public class RollingCollectionTests

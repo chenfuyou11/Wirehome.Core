@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 
-namespace HA4IoT.Net.Http
+namespace Wirehome.Net.Http
 {
     public class HttpRequest
     {

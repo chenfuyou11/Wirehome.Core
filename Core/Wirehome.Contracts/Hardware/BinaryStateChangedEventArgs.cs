@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Hardware
+namespace Wirehome.Contracts.Hardware
 {
     public sealed class BinaryStateChangedEventArgs : EventArgs
     {

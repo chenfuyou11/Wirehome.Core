@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Areas;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Areas;
 
-namespace HA4IoT.Actuators.Lamps
+namespace Wirehome.Actuators.Lamps
 {
     public static class LampExtensions
     {

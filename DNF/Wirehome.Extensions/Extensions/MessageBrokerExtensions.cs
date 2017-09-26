@@ -1,10 +1,10 @@
-﻿using HA4IoT.Contracts.Messaging;
-using HA4IoT.Extensions.Messaging.Core;
+﻿using Wirehome.Contracts.Messaging;
+using Wirehome.Extensions.Messaging.Core;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Extensions
+namespace Wirehome.Extensions.Extensions
 {
     //public static class MessageBrokerExtensions
     //{

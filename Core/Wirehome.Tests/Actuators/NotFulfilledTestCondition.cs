@@ -1,7 +1,7 @@
-﻿using HA4IoT.Conditions;
-using HA4IoT.Contracts.Conditions;
+﻿using Wirehome.Conditions;
+using Wirehome.Contracts.Conditions;
 
-namespace HA4IoT.Tests.Actuators
+namespace Wirehome.Tests.Actuators
 {
     public class NotFulfilledTestCondition : Condition
     {

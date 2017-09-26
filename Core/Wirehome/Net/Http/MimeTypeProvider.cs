@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace HA4IoT.Net.Http
+namespace Wirehome.Net.Http
 {
     public static class MimeTypeProvider
     {

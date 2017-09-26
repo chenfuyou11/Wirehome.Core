@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Storage;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Storage;
 
-namespace HA4IoT.Tests.Mockups.Services
+namespace Wirehome.Tests.Mockups.Services
 {
     public class TestStorageService : ServiceBase, IStorageService
     {

@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Areas;
+using Wirehome.Contracts.Areas;
 
-namespace HA4IoT.Areas
+namespace Wirehome.Areas
 {
     public static class AreaRegistryServiceExtensions
     {

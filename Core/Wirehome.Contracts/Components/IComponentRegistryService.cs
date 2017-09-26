@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.Components
+namespace Wirehome.Contracts.Components
 {
     public interface IComponentRegistryService : IService
     {

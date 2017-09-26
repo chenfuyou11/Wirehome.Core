@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.PersonalAgent;
+using Wirehome.Contracts.PersonalAgent;
 
-namespace HA4IoT.Tests.Mockups
+namespace Wirehome.Tests.Mockups
 {
     public class TestInboundMessage : IInboundTextMessage
     {

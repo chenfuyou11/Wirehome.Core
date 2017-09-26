@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Environment;
+﻿using Wirehome.Contracts.Environment;
 
-namespace HA4IoT.ExternalServices.OpenWeatherMap
+namespace Wirehome.ExternalServices.OpenWeatherMap
 {
     public static class OpenWeatherMapWeatherConditionParser
     {

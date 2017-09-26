@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Health
+namespace Wirehome.Health
 {
     public class StatusLed
     {

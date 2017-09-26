@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Hardware.Drivers.CCTools.Devices
+﻿namespace Wirehome.Hardware.Drivers.CCTools.Devices
 {
     public enum HSREL8Pin
     {

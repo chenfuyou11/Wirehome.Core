@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scripting;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scripting;
 using MoonSharp.Interpreter;
 
-namespace HA4IoT.Scripting
+namespace Wirehome.Scripting
 {
     public class ScriptingSession : IScriptingSession
     {

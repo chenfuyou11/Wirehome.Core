@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.Commands;
 
-namespace HA4IoT.Components.Commands
+namespace Wirehome.Components.Commands
 {
     public class CommandExecutor
     {

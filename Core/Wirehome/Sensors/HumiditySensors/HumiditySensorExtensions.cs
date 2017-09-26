@@ -1,12 +1,12 @@
 ﻿using System;
-using HA4IoT.Components;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Contracts.Triggers;
-using HA4IoT.Sensors.Triggers;
+using Wirehome.Components;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Contracts.Triggers;
+using Wirehome.Sensors.Triggers;
 
-namespace HA4IoT.Sensors.HumiditySensors
+namespace Wirehome.Sensors.HumiditySensors
 {
     public static class HumiditySensorExtensions
     {

@@ -1,15 +1,15 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Devices;
-using HA4IoT.Contracts.Hardware.I2C;
-using HA4IoT.Contracts.Hardware.Interrupts;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Hardware.Drivers.CCTools.Configuration;
-using HA4IoT.Hardware.Drivers.CCTools.Devices;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Devices;
+using Wirehome.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Hardware.Interrupts;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Services;
+using Wirehome.Hardware.Drivers.CCTools.Configuration;
+using Wirehome.Hardware.Drivers.CCTools.Devices;
 
-namespace HA4IoT.Hardware.Drivers.CCTools
+namespace Wirehome.Hardware.Drivers.CCTools
 {
     public sealed class CCToolsDeviceService : ServiceBase
     {

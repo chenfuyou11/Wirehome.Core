@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Hardware.DeviceMessaging;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Hardware.DeviceMessaging;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Hardware.Drivers.Sonoff
+namespace Wirehome.Hardware.Drivers.Sonoff
 {
     public class SonoffDeviceService : ServiceBase
     {

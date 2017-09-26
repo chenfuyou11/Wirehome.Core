@@ -1,20 +1,20 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using HA4IoT.Api.Configuration;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Configuration;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Net.Http;
-using HA4IoT.Net.WebSockets;
+using Wirehome.Api.Configuration;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Configuration;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
+using Wirehome.Net.Http;
+using Wirehome.Net.WebSockets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
 
-namespace HA4IoT.Api
+namespace Wirehome.Api
 {
     public class HttpServerService : ServiceBase, IApiAdapter, IHttpServerService
     {

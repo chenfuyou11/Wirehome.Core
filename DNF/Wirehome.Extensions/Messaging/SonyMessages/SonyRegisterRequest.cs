@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace HA4IoT.Extensions.Messaging.SonyMessages
+namespace Wirehome.Extensions.Messaging.SonyMessages
 {
     public class SonyRegisterRequest : HttpMessage
     {

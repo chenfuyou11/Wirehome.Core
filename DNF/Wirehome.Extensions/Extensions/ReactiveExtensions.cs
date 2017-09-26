@@ -6,7 +6,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
 
-namespace HA4IoT.Extensions.Extensions
+namespace Wirehome.Extensions.Extensions
 {
 
     public static class ReactiveExtensions

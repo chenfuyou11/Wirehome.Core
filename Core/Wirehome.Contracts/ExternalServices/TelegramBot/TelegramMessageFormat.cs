@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.ExternalServices.TelegramBot
+﻿namespace Wirehome.Contracts.ExternalServices.TelegramBot
 {
     public enum TelegramMessageFormat
     {

@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Features;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Features;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Status
+namespace Wirehome.Status
 {
     [ApiServiceClass(typeof(IStatusService))]
     public class StatusService : ServiceBase, IStatusService

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Actuators.Lamps
+namespace Wirehome.Actuators.Lamps
 {
     public static class ColorConverter
     {

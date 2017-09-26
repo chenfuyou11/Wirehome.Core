@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text;
-using HA4IoT.Net.WebSockets;
+using Wirehome.Net.WebSockets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Tests.Networking
+namespace Wirehome.Tests.Networking
 {
     [TestClass]
     public class WebSocketFrameTests

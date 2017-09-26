@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Hardware.RemoteSockets.Codes
+namespace Wirehome.Contracts.Hardware.RemoteSockets.Codes
 {
     public sealed class Lpd433MhzCodePair
     {

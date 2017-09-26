@@ -1,16 +1,16 @@
 ﻿using System;
-using HA4IoT.Components;
-using HA4IoT.Components.Commands;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Components.Features;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Components;
+using Wirehome.Components.Commands;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.Features;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Settings;
 
-namespace HA4IoT.Actuators.Fans
+namespace Wirehome.Actuators.Fans
 {
     public class Fan : ComponentBase, IFan
     {

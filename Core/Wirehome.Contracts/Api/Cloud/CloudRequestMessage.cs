@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Api.Cloud
+﻿namespace Wirehome.Contracts.Api.Cloud
 {
     public class CloudRequestMessage
     {

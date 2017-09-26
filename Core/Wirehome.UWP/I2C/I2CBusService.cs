@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Enumeration;
 using Windows.Devices.I2c;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware.I2C;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Hardware.I2C
+namespace Wirehome.Hardware.I2C
 {
     public sealed class I2CBusService : ServiceBase, II2CBusService
     {

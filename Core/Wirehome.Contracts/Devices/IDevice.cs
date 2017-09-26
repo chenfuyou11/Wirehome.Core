@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Devices
+﻿namespace Wirehome.Contracts.Devices
 {
     public interface IDevice
     {

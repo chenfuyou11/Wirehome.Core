@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Automations;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Automations;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Areas
+namespace Wirehome.Areas
 {
     [ApiServiceClass(typeof(IAreaRegistryService))]
     public class AreaRegistryService : ServiceBase, IAreaRegistryService

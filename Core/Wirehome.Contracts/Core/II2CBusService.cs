@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Hardware.I2C;
-using HA4IoT.Contracts.Services;
+﻿using Wirehome.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.Core
+namespace Wirehome.Contracts.Core
 {
     public interface II2CBusService : IService
     {

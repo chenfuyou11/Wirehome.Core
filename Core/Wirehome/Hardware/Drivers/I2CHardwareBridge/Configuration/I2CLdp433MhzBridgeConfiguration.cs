@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Hardware.Drivers.I2CHardwareBridge.Configuration
+namespace Wirehome.Hardware.Drivers.I2CHardwareBridge.Configuration
 {
     public class I2CLdp433MhzBridgeConfiguration
     {

@@ -1,18 +1,18 @@
 ﻿using System;
-using HA4IoT.Components.Adapters.MqttBased;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Devices;
-using HA4IoT.Contracts.Hardware.DeviceMessaging;
-using HA4IoT.Contracts.Hardware.I2C;
-using HA4IoT.Contracts.Hardware.Outpost;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Hardware.Drivers.I2CHardwareBridge;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Adapters;
+using Wirehome.Components.Adapters.MqttBased;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Devices;
+using Wirehome.Contracts.Hardware.DeviceMessaging;
+using Wirehome.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Hardware.Outpost;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Services;
+using Wirehome.Hardware.Drivers.I2CHardwareBridge;
+using Wirehome.Contracts.Hardware.RemoteSockets.Adapters;
 
-namespace HA4IoT.Hardware.Drivers.Outpost
+namespace Wirehome.Hardware.Drivers.Outpost
 {
     public class OutpostDeviceService : ServiceBase
     {

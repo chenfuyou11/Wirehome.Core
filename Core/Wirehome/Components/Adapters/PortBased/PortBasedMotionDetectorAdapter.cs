@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Components.Adapters.PortBased
+namespace Wirehome.Components.Adapters.PortBased
 {
     public class PortBasedMotionDetectorAdapter : IMotionDetectorAdapter
     {

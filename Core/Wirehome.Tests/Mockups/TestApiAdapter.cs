@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Components;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Components;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Tests.Mockups
+namespace Wirehome.Tests.Mockups
 {
     public class TestApiAdapter : IApiAdapter
     {

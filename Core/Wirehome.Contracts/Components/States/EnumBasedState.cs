@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace HA4IoT.Contracts.Components.States
+namespace Wirehome.Contracts.Components.States
 {
   public abstract class EnumBasedState<TEnum> : IComponentFeatureState
     {

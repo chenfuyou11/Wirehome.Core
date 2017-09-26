@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.PersonalAgent
+﻿namespace Wirehome.Contracts.PersonalAgent
 {
     public static class Emoji
     {

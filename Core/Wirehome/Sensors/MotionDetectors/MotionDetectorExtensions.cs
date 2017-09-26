@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Sensors;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Sensors;
 
-namespace HA4IoT.Sensors.MotionDetectors
+namespace Wirehome.Sensors.MotionDetectors
 {
     public static class MotionDetectorExtensions
     {

@@ -1,8 +1,8 @@
-﻿using HA4IoT.Extensions.Messaging.Services;
+﻿using Wirehome.Extensions.Messaging.Services;
 using Newtonsoft.Json;
 using System;
 
-namespace HA4IoT.Extensions.Messaging.KodiMessages
+namespace Wirehome.Extensions.Messaging.KodiMessages
 {
     public class KodiPingMessage : HttpMessage
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
-using HA4IoT.Extensions.Contracts;
+using Wirehome.Extensions.Contracts;
 
-namespace HA4IoT.Extensions.Messaging
+namespace Wirehome.Extensions.Messaging
 {
     public class DebugMessage : IBinaryMessage
     {

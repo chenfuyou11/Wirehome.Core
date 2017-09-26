@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
 using System.IO;
-using HA4IoT.Extensions.Devices;
+using Wirehome.Extensions.Devices;
 
-namespace HA4IoT.Extensions.Messaging.DenonMessages
+namespace Wirehome.Extensions.Messaging.DenonMessages
 {
     public class DenonStatusLightMessage : HttpMessage
     {

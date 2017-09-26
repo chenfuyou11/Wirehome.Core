@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Components.Adapters;
+using Wirehome.Contracts.Components.Adapters;
 
-namespace HA4IoT.Tests.Mockups.Adapters
+namespace Wirehome.Tests.Mockups.Adapters
 {
     public class TestMotionDetectorAdapter : IMotionDetectorAdapter
     {

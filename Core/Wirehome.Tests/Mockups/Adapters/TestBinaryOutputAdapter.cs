@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Tests.Mockups.Adapters
+namespace Wirehome.Tests.Mockups.Adapters
 {
     public class TestBinaryOutputAdapter : IBinaryOutputAdapter
     {

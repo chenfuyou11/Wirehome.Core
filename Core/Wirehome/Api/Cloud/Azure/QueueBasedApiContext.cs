@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Api;
+using Wirehome.Contracts.Api;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Api.Cloud.Azure
+namespace Wirehome.Api.Cloud.Azure
 {
     public class QueueBasedApiContext : ApiCall
     {

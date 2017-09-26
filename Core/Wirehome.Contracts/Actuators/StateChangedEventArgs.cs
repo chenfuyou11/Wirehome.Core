@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 
-namespace HA4IoT.Contracts.Actuators
+namespace Wirehome.Contracts.Actuators
 {
     public class StateChangedEventArgs : EventArgs
     {

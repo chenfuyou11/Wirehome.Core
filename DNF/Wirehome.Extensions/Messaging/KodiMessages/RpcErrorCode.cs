@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Extensions.Messaging.KodiMessages
+﻿namespace Wirehome.Extensions.Messaging.KodiMessages
 {
     public enum RpcErrorCode
     {

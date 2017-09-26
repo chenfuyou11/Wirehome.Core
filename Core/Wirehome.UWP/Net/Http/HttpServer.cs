@@ -3,10 +3,10 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking.Sockets;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Net.WebSockets;
+using Wirehome.Contracts.Logging;
+using Wirehome.Net.WebSockets;
 
-namespace HA4IoT.Net.Http
+namespace Wirehome.Net.Http
 {
     public sealed class HttpServer : IDisposable
     {

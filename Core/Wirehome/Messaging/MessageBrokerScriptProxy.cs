@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Scripting;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Scripting;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Messaging
+namespace Wirehome.Messaging
 {
     public class MessageBrokerScriptProxy : IScriptProxy
     {

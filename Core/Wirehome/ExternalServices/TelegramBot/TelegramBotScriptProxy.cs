@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.ExternalServices.TelegramBot;
-using HA4IoT.Contracts.Scripting;
+using Wirehome.Contracts.ExternalServices.TelegramBot;
+using Wirehome.Contracts.Scripting;
 using MoonSharp.Interpreter;
 
-namespace HA4IoT.ExternalServices.TelegramBot
+namespace Wirehome.ExternalServices.TelegramBot
 {
     public class TelegramBotScriptProxy : IScriptProxy
     {

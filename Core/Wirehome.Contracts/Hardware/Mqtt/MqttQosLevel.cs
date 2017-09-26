@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Hardware.Mqtt
+﻿namespace Wirehome.Contracts.Hardware.Mqtt
 {
     public enum MqttQosLevel
     {

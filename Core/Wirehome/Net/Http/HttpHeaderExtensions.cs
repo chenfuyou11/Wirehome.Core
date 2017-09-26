@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HA4IoT.Net.Http
+namespace Wirehome.Net.Http
 {
     public static class HttpHeaderExtensions
     {

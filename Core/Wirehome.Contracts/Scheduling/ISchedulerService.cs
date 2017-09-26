@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.Scheduling
+namespace Wirehome.Contracts.Scheduling
 {
     public interface ISchedulerService : IService
     {

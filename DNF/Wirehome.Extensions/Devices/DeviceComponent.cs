@@ -1,12 +1,12 @@
-﻿using HA4IoT.Components;
+﻿using Wirehome.Components;
 using System;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Extensions.Messaging.Core;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Extensions.Messaging.Core;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Components.States;
+using Wirehome.Contracts.Components.States;
 
-namespace HA4IoT.Extensions.Devices
+namespace Wirehome.Extensions.Devices
 {
     public abstract class DeviceComponent : ComponentBase, ICommandExecute
     {

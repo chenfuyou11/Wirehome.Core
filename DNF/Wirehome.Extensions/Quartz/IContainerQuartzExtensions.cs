@@ -1,8 +1,8 @@
 ﻿using Quartz.Spi;
 using Quartz;
-using HA4IoT.Contracts.Core;
+using Wirehome.Contracts.Core;
 
-namespace HA4IoT.Extensions.Quartz
+namespace Wirehome.Extensions.Quartz
 {
     public static class IContainerQuartzExtensions
     {

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Text;
-using HA4IoT.Contracts.Hardware.DeviceMessaging;
-using HA4IoT.Contracts.Hardware.Mqtt;
-using HA4IoT.Contracts.Hardware.Outpost;
-using HA4IoT.Contracts.Hardware.RemoteSockets;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Adapters;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Codes;
+using Wirehome.Contracts.Hardware.DeviceMessaging;
+using Wirehome.Contracts.Hardware.Mqtt;
+using Wirehome.Contracts.Hardware.Outpost;
+using Wirehome.Contracts.Hardware.RemoteSockets;
+using Wirehome.Contracts.Hardware.RemoteSockets.Adapters;
+using Wirehome.Contracts.Hardware.RemoteSockets.Codes;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Hardware.Drivers.Outpost
+namespace Wirehome.Hardware.Drivers.Outpost
 {
     public class OutpostLpdBridgeAdapter : ILdp433MhzBridgeAdapter
     {

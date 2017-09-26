@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
-namespace HA4IoT.Extensions.Networking
+namespace Wirehome.Extensions.Networking
 {
     public sealed class WakeUpOnLan
     {

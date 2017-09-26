@@ -4,16 +4,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.System.Threading;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Core;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Services;
+using Wirehome.Core;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Scheduling
+namespace Wirehome.Scheduling
 {
     [ApiServiceClass(typeof(ISchedulerService))]
     public class SchedulerService : ServiceBase, ISchedulerService

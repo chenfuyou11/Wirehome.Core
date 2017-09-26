@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Services;
+﻿using Wirehome.Contracts.Services;
 using System;
 
-namespace HA4IoT.Contracts.Backup
+namespace Wirehome.Contracts.Backup
 {
     public interface IBackupService : IService
     {

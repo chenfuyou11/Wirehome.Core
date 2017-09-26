@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Logging;
 using Windows.Networking;
 
-namespace HA4IoT.Hardware.Drivers.Knx
+namespace Wirehome.Hardware.Drivers.Knx
 {
     public class KnxController
     {

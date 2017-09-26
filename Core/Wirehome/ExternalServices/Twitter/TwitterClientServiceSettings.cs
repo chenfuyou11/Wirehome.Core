@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.ExternalServices.Twitter
+﻿namespace Wirehome.ExternalServices.Twitter
 {
     public class TwitterClientServiceSettings
     {

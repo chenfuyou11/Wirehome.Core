@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.Resources
+namespace Wirehome.Contracts.Resources
 {
     public interface IResourceService : IService
     {

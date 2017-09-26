@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
+using Wirehome.Contracts.Core;
 
-namespace HA4IoT.Contracts.Triggers
+namespace Wirehome.Contracts.Triggers
 {
     public interface ITrigger
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Hardware.Outpost
+namespace Wirehome.Contracts.Hardware.Outpost
 {
     public static class OutpostTopicBuilder
     {

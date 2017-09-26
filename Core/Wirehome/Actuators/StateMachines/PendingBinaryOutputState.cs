@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Hardware;
+﻿using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Actuators.StateMachines
+namespace Wirehome.Actuators.StateMachines
 {
     public class PendingBinaryOutputState
     {

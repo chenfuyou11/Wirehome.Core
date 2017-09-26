@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Settings
+namespace Wirehome.Contracts.Settings
 {
     public class SettingsChangedEventArgs<TSettings> : EventArgs
     {

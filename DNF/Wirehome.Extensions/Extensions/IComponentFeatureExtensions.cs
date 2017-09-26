@@ -1,8 +1,8 @@
-﻿using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Attributes;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Components.Features;
-using HA4IoT.Extensions.Contracts;
+﻿using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Attributes;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.Features;
+using Wirehome.Extensions.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Extensions
+namespace Wirehome.Extensions.Extensions
 {
     public static class IComponentFeatureExtensions
     {

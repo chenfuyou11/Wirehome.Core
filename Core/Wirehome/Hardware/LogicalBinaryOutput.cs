@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Hardware
+namespace Wirehome.Hardware
 {
     public sealed class LogicalBinaryOutput : IBinaryOutput
     {

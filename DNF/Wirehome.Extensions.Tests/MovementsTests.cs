@@ -2,22 +2,22 @@
 using Moq;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Sensors;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Sensors;
 using System.Threading.Tasks;
 using Microsoft.Reactive.Testing;
 using System.Linq;
-using HA4IoT.Sensors.MotionDetectors;
-using HA4IoT.Extensions.MotionModel;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Storage;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Contracts.Scheduling;
+using Wirehome.Sensors.MotionDetectors;
+using Wirehome.Extensions.MotionModel;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Storage;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Settings;
+using Wirehome.Contracts.Scheduling;
 
-namespace HA4IoT.Extensions.Tests
+namespace Wirehome.Extensions.Tests
 {
     [TestClass]
     public class MovementsTests : ReactiveTest

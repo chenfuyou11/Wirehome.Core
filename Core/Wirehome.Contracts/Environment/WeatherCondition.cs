@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Environment
+﻿namespace Wirehome.Contracts.Environment
 {
     public enum WeatherCondition
     {

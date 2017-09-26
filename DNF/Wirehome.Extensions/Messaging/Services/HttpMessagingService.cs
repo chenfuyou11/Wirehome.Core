@@ -2,11 +2,11 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Extensions.Contracts;
-using HA4IoT.Extensions.Messaging.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Extensions.Contracts;
+using Wirehome.Extensions.Messaging.Core;
 
-namespace HA4IoT.Extensions.Messaging.Services
+namespace Wirehome.Extensions.Messaging.Services
 {
     public class HttpMessagingService : IHttpMessagingService
     {

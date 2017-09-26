@@ -1,12 +1,12 @@
-﻿using HA4IoT.Actuators.Lamps;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Tests.Mockups;
-using HA4IoT.Tests.Mockups.Adapters;
+﻿using Wirehome.Actuators.Lamps;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Tests.Mockups;
+using Wirehome.Tests.Mockups.Adapters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Tests.Api
+namespace Wirehome.Tests.Api
 {
     [TestClass]
     public class ComponentApiTests

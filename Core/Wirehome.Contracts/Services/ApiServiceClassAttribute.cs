@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using HA4IoT.Contracts.Api;
+using Wirehome.Contracts.Api;
 
-namespace HA4IoT.Contracts.Services
+namespace Wirehome.Contracts.Services
 {
     public class ApiServiceClassAttribute : ApiClassAttribute
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using HA4IoT.Contracts.Configuration;
+using Wirehome.Contracts.Configuration;
 
-namespace HA4IoT.Contracts.Scripting.Configuration
+namespace Wirehome.Contracts.Scripting.Configuration
 {
     public class ScriptingServiceConfiguration
     {

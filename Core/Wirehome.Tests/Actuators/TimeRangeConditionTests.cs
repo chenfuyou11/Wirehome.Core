@@ -1,11 +1,11 @@
 ﻿using System;
-using HA4IoT.Conditions;
-using HA4IoT.Conditions.Specialized;
-using HA4IoT.Contracts.Conditions;
-using HA4IoT.Tests.Mockups.Services;
+using Wirehome.Conditions;
+using Wirehome.Conditions.Specialized;
+using Wirehome.Contracts.Conditions;
+using Wirehome.Tests.Mockups.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Actuators
+namespace Wirehome.Tests.Actuators
 {
     [TestClass]
     public class TimeRangeConditionTests

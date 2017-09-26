@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HA4IoT.Contracts.Hardware.Interrupts.Configuration
+namespace Wirehome.Contracts.Hardware.Interrupts.Configuration
 {
     public class InterruptMonitorServiceConfiguration
     {

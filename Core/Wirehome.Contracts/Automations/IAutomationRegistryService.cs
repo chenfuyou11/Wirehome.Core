@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Services;
+﻿using Wirehome.Contracts.Services;
 using System.Collections.Generic;
 
-namespace HA4IoT.Contracts.Automations
+namespace Wirehome.Contracts.Automations
 {
     public interface IAutomationRegistryService : IService
     {

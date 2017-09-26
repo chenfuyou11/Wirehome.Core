@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace HA4IoT.Extensions.Messaging.Core
+namespace Wirehome.Extensions.Messaging.Core
 {
     public interface IMessageEnvelope<out T>
     {

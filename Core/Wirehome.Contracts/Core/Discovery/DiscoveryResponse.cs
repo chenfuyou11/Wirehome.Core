@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Core.Discovery
+namespace Wirehome.Contracts.Core.Discovery
 {
     public class DiscoveryResponse
     {

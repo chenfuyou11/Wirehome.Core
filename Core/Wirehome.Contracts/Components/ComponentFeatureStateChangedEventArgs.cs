@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Components
+namespace Wirehome.Contracts.Components
 {
     public class ComponentFeatureStateChangedEventArgs : EventArgs
     {

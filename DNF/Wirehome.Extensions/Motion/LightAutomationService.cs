@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Contracts.Services;
 using System.Reactive.Linq;
 using System.Linq;
-using HA4IoT.Extensions.MotionModel;
-using HA4IoT.Contracts.Components.Features;
+using Wirehome.Extensions.MotionModel;
+using Wirehome.Contracts.Components.Features;
 using System.Diagnostics;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Scheduling;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Scheduling;
 
-namespace HA4IoT.Extensions
+namespace Wirehome.Extensions
 {
     public class LightAutomationService : IService, IDisposable
     {

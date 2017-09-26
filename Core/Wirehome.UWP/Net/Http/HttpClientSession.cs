@@ -6,10 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking.Sockets;
 using Windows.Security.Cryptography.Core;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Logging;
 using System.Net;
 
-namespace HA4IoT.Net.Http
+namespace Wirehome.Net.Http
 {
     public sealed class HttpClientSession : IDisposable
     {

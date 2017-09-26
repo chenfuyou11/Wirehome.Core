@@ -1,14 +1,14 @@
-﻿using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Sensors.MotionDetectors;
-using HA4IoT.Tests.Mockups;
-using HA4IoT.Tests.Mockups.Adapters;
+﻿using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Settings;
+using Wirehome.Sensors.MotionDetectors;
+using Wirehome.Tests.Mockups;
+using Wirehome.Tests.Mockups.Adapters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Components
+namespace Wirehome.Tests.Components
 {
     [TestClass]
     public class MotionDetectorTests

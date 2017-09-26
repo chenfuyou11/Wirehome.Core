@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Areas;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Areas;
 
-namespace HA4IoT.Actuators.Sockets
+namespace Wirehome.Actuators.Sockets
 {
     public static class SocketExtensions
     {

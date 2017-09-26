@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Components;
+﻿using Wirehome.Contracts.Components;
 
-namespace HA4IoT.Actuators.Fans
+namespace Wirehome.Actuators.Fans
 {
     public class FanSettings : ComponentSettings
     {

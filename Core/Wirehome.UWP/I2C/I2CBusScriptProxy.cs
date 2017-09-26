@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware.I2C;
-using HA4IoT.Contracts.Scripting;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Scripting;
 using MoonSharp.Interpreter;
 
-namespace HA4IoT.Hardware.I2C
+namespace Wirehome.Hardware.I2C
 {
     public class I2CBusScriptProxy : IScriptProxy
     {

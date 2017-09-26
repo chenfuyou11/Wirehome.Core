@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Hardware.RemoteSockets.Configuration
+﻿namespace Wirehome.Contracts.Hardware.RemoteSockets.Configuration
 {
     public sealed class RemoteSocketAdapterConfiguration
     {

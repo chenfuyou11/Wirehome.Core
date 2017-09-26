@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Actuators.RollerShutters;
-using HA4IoT.Conditions;
-using HA4IoT.Conditions.Specialized;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Notifications;
-using HA4IoT.Contracts.Resources;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Actuators.RollerShutters;
+using Wirehome.Conditions;
+using Wirehome.Conditions.Specialized;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Notifications;
+using Wirehome.Contracts.Resources;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
 
-namespace HA4IoT.Automations
+namespace Wirehome.Automations
 {
     public class RollerShutterAutomation : AutomationBase
     {

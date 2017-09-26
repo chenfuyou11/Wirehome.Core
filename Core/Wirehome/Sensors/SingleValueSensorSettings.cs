@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Components;
+﻿using Wirehome.Contracts.Components;
 
-namespace HA4IoT.Sensors
+namespace Wirehome.Sensors
 {
     public class SingleValueSensorSettings : ComponentSettings
     {

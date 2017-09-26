@@ -1,8 +1,8 @@
-﻿using HA4IoT.Conditions;
-using HA4IoT.Contracts.Conditions;
+﻿using Wirehome.Conditions;
+using Wirehome.Contracts.Conditions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Actuators
+namespace Wirehome.Tests.Actuators
 {
     [TestClass]
     public class ConditionsValidatorTests

@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Triggers;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Triggers;
 
-namespace HA4IoT.Sensors.Triggers
+namespace Wirehome.Sensors.Triggers
 {
     public class SensorValueThresholdTrigger : Trigger
     {

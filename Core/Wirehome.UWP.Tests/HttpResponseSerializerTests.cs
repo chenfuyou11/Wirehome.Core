@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using HA4IoT.Net.Http;
+using Wirehome.Net.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 
-namespace HA4IoT.Tests.Networking
+namespace Wirehome.Tests.Networking
 {
     [TestClass]
     public class HttpResponseSerializerTests

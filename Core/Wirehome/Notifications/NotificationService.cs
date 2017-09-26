@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Notifications;
-using HA4IoT.Contracts.Resources;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Contracts.Storage;
-using HA4IoT.Net.Http;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Notifications;
+using Wirehome.Contracts.Resources;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
+using Wirehome.Contracts.Storage;
+using Wirehome.Net.Http;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Notifications
+namespace Wirehome.Notifications
 {
     [ApiServiceClass(typeof(INotificationService))]
     public class NotificationService : ServiceBase, INotificationService

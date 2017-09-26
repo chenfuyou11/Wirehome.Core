@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Devices;
-using HA4IoT.Contracts.Hardware.I2C;
-using HA4IoT.Contracts.Scheduling;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Devices;
+using Wirehome.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Scheduling;
 
-namespace HA4IoT.Hardware.Drivers.I2CHardwareBridge
+namespace Wirehome.Hardware.Drivers.I2CHardwareBridge
 {
     public class I2CHardwareBridge : IDevice
     {

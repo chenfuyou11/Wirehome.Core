@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Devices
+namespace Wirehome.Contracts.Devices
 {
     public class DeviceNotRegisteredException : Exception
     {

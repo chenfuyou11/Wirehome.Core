@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HA4IoT.ExternalServices.TelegramBot
+namespace Wirehome.ExternalServices.TelegramBot
 {
     public class TelegramBotServiceSettings
     {

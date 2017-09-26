@@ -1,4 +1,4 @@
-﻿using HA4IoT.Extensions.Messaging.Core;
+﻿using Wirehome.Extensions.Messaging.Core;
 using Microsoft.Reactive.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -8,7 +8,7 @@ using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Tests
+namespace Wirehome.Extensions.Tests
 {
 
     public class DerivedTestMessage : TestMessage

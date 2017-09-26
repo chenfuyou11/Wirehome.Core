@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Conditions;
-using HA4IoT.Contracts.Conditions;
-using HA4IoT.Contracts.Triggers;
+using Wirehome.Conditions;
+using Wirehome.Contracts.Conditions;
+using Wirehome.Contracts.Triggers;
 
-namespace HA4IoT.Automations
+namespace Wirehome.Automations
 {
     public class Automation : AutomationBase
     {

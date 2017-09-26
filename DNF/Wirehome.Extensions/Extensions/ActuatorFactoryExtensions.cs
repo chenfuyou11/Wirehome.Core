@@ -1,11 +1,11 @@
 ﻿using System;
-using HA4IoT.Actuators;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Extensions.Core;
-using HA4IoT.Extensions.Contracts;
+using Wirehome.Actuators;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Areas;
+using Wirehome.Extensions.Core;
+using Wirehome.Extensions.Contracts;
 
-namespace HA4IoT.Extensions.Extensions
+namespace Wirehome.Extensions.Extensions
 {
     public static class ActuatorFactoryExtensions
     {

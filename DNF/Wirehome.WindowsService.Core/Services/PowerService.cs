@@ -1,7 +1,7 @@
-﻿using HA4IoT.WindowsService.Interop;
+﻿using Wirehome.WindowsService.Interop;
 using System.Diagnostics;
 
-namespace HA4IoT.WindowsService.Services
+namespace Wirehome.WindowsService.Services
 {
     public static class PowerService
     {

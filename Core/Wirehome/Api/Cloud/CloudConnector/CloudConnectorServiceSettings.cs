@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Api.Cloud.CloudConnector
+﻿namespace Wirehome.Api.Cloud.CloudConnector
 {
     public class CloudConnectorServiceSettings
     {

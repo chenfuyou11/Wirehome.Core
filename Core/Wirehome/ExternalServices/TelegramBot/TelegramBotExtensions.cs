@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.ExternalServices.TelegramBot;
+using Wirehome.Contracts.ExternalServices.TelegramBot;
 
-namespace HA4IoT.ExternalServices.TelegramBot
+namespace Wirehome.ExternalServices.TelegramBot
 {
     public static class TelegramBotExtensions
     {

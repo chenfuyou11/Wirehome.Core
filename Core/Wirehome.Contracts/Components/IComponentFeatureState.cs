@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Components
+﻿namespace Wirehome.Contracts.Components
 {
     public interface IComponentFeatureState
     {

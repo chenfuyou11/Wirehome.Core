@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Net.Http;
+using Wirehome.Net.Http;
 
-namespace HA4IoT.Net.WebSockets
+namespace Wirehome.Net.WebSockets
 {
     public class WebSocketConnectedEventArgs : EventArgs
     {

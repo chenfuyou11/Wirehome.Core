@@ -1,7 +1,7 @@
 ﻿using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
 
-namespace HA4IoT.Contracts.Cryptographic
+namespace Wirehome.Contracts.Cryptographic
 {
     public class CryptoService : ICryptoService
     {

@@ -1,13 +1,13 @@
-﻿using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Extensions.Contracts;
-using HA4IoT.Hardware.Drivers.I2CHardwareBridge;
+﻿using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Extensions.Contracts;
+using Wirehome.Hardware.Drivers.I2CHardwareBridge;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
-namespace HA4IoT.Extensions.Messaging.Services
+namespace Wirehome.Extensions.Messaging.Services
 {
     public class I2CMessagingService : II2CMessagingService
     {

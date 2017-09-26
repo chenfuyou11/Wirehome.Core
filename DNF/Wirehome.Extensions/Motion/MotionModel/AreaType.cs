@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Extensions.MotionModel
+﻿namespace Wirehome.Extensions.MotionModel
 {
     public enum AreaType
     {

@@ -1,10 +1,10 @@
 ﻿using System;
-using HA4IoT.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.Commands;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using HA4IoT.Extensions.Extensions;
+using Wirehome.Extensions.Extensions;
 
-namespace HA4IoT.Extensions.Devices
+namespace Wirehome.Extensions.Devices
 {
     public class AsyncCommandExecutor
     {

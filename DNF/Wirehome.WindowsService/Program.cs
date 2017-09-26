@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using System.Diagnostics;
 
-namespace HA4IoT.WindowsService
+namespace Wirehome.WindowsService
 {
     public class Program
     {

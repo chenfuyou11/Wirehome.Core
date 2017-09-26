@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Conditions;
+using Wirehome.Contracts.Conditions;
 
-namespace HA4IoT.Conditions
+namespace Wirehome.Conditions
 {
     public class ConditionsValidator
     {

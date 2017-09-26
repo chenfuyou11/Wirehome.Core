@@ -6,16 +6,16 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Api.Cloud;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Api.Cloud;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Settings;
 using Newtonsoft.Json;
 
-namespace HA4IoT.Api.Cloud.CloudConnector
+namespace Wirehome.Api.Cloud.CloudConnector
 {
     public class CloudConnectorService : ServiceBase, IApiAdapter
     {

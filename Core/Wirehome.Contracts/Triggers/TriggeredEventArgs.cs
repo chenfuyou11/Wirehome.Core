@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Triggers
+namespace Wirehome.Contracts.Triggers
 {
     public class TriggeredEventArgs : EventArgs
     {

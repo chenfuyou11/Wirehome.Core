@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HA4IoT.Contracts.Hardware.Interrupts
+namespace Wirehome.Contracts.Hardware.Interrupts
 {
     public interface IInterruptMonitorService
     {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace HA4IoT.Scheduling
+namespace Wirehome.Scheduling
 {
     public class Schedule
     {

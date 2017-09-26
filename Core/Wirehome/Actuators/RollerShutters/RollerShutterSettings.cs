@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Components;
+using Wirehome.Contracts.Components;
 
-namespace HA4IoT.Actuators.RollerShutters
+namespace Wirehome.Actuators.RollerShutters
 {
     public class RollerShutterSettings : ComponentSettings
     {

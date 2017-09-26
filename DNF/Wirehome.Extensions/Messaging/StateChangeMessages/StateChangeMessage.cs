@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Messaging.StateChangeMessages
+namespace Wirehome.Extensions.Messaging.StateChangeMessages
 {
     public class StateChangeMessage<T>
     {

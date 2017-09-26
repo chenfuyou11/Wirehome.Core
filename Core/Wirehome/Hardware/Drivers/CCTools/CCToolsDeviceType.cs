@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Hardware.Drivers.CCTools
+﻿namespace Wirehome.Hardware.Drivers.CCTools
 {
     public enum CCToolsDeviceType
     {

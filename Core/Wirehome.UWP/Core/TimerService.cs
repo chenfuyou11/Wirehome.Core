@@ -2,11 +2,11 @@
 using System.Diagnostics;
 using System.Threading;
 using Windows.System.Threading;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Core
+namespace Wirehome.Core
 {
     public sealed class TimerService : ServiceBase, ITimerService
     {

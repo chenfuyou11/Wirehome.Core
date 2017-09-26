@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace HA4IoT.Contracts.Scripting
+namespace Wirehome.Contracts.Scripting
 {
     public interface IScriptingSession
     {

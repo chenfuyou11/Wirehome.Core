@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Scripting.Configuration
+﻿namespace Wirehome.Contracts.Scripting.Configuration
 {
     public class StartupScriptConfiguration
     {

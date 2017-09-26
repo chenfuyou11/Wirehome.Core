@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Commands;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Commands;
 
-namespace HA4IoT.Components
+namespace Wirehome.Components
 {
     public class LogicalComponent : ComponentBase
     {

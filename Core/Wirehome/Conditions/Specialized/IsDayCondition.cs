@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Environment;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Conditions.Specialized
+namespace Wirehome.Conditions.Specialized
 {
     public class IsDayCondition : TimeRangeCondition
     {

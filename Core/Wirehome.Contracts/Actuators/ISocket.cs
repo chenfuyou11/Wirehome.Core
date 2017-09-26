@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Components;
+﻿using Wirehome.Contracts.Components;
 
-namespace HA4IoT.Contracts.Actuators
+namespace Wirehome.Contracts.Actuators
 {
     public interface ISocket : IComponent
     {

@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Components.Adapters;
+using Wirehome.Contracts.Components.Adapters;
 
-namespace HA4IoT.Components.Adapters
+namespace Wirehome.Components.Adapters
 {
     public class VirtualButtonAdapter : IButtonAdapter
     {

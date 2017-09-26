@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Configuration;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.RemoteSockets;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Adapters;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Codes;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Configuration;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Services;
-using HA4IoT.Hardware.Drivers.RemoteSockets;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Configuration;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.RemoteSockets;
+using Wirehome.Contracts.Hardware.RemoteSockets.Adapters;
+using Wirehome.Contracts.Hardware.RemoteSockets.Codes;
+using Wirehome.Contracts.Hardware.RemoteSockets.Configuration;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Services;
+using Wirehome.Hardware.Drivers.RemoteSockets;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Hardware.RemoteSockets
+namespace Wirehome.Hardware.RemoteSockets
 {
     [ApiServiceClass(typeof(IRemoteSocketService))]
     public sealed class RemoteSocketService : ServiceBase, IRemoteSocketService

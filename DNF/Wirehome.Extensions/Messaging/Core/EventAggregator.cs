@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using HA4IoT.Extensions.Extensions;
+using Wirehome.Extensions.Extensions;
 using System.Reactive.Linq;
 using System.Collections.Generic;
-using HA4IoT.Extensions.Exceptions;
+using Wirehome.Extensions.Exceptions;
 
-namespace HA4IoT.Extensions.Messaging.Core
+namespace Wirehome.Extensions.Messaging.Core
 {
     public sealed class EventAggregator : IEventAggregator
     {

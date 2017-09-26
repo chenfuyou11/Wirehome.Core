@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HA4IoT.Extensions.Core
+namespace Wirehome.Extensions.Core
 {
     public sealed class WriteOnce<T>
     {

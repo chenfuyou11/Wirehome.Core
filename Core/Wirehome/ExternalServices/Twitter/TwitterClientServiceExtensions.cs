@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.ExternalServices.Twitter;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.ExternalServices.Twitter;
 
-namespace HA4IoT.ExternalServices.Twitter
+namespace Wirehome.ExternalServices.Twitter
 {
     public static class TwitterClientServiceExtensions
     {

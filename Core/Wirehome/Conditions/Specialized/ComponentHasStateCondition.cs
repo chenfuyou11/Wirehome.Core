@@ -1,7 +1,7 @@
 ﻿using System;
-using HA4IoT.Contracts.Components;
+using Wirehome.Contracts.Components;
 
-namespace HA4IoT.Conditions.Specialized
+namespace Wirehome.Conditions.Specialized
 {
     public class ComponentHasStateCondition : Condition
     {

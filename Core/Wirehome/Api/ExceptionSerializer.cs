@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Api
+namespace Wirehome.Api
 {
     public static class ExceptionSerializer
     {

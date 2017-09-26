@@ -1,9 +1,9 @@
 ﻿using System;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Adapters;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Codes;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.RemoteSockets.Adapters;
+using Wirehome.Contracts.Hardware.RemoteSockets.Codes;
 
-namespace HA4IoT.Hardware.RemoteSockets
+namespace Wirehome.Hardware.RemoteSockets
 {
     public sealed class RemoteSocketOutputPort : IBinaryOutput
     {

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.DeviceMessaging;
-using HA4IoT.Contracts.Hardware.Mqtt;
-using HA4IoT.Contracts.Hardware.Outpost;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.DeviceMessaging;
+using Wirehome.Contracts.Hardware.Mqtt;
+using Wirehome.Contracts.Hardware.Outpost;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Hardware.Drivers.Outpost
+namespace Wirehome.Hardware.Drivers.Outpost
 {
     public class OutpostRgbAdapter : IBinaryOutputAdapter, ILampAdapter
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using Windows.Devices.Gpio;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Hardware.Drivers.RaspberryPi
+namespace Wirehome.Hardware.Drivers.RaspberryPi
 {
     public sealed class GpioOutputPort : IBinaryOutput, IDisposable
     {

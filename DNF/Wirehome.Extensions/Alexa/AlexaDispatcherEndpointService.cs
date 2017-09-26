@@ -3,28 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Extensions.Exceptions;
-using HA4IoT.Extensions.MessagesModel;
-using HA4IoT.Contracts.Components.Features;
-using HA4IoT.Net.Http;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Extensions.Contracts;
-using HA4IoT.Contracts.Core;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Logging;
+using Wirehome.Extensions.Exceptions;
+using Wirehome.Extensions.MessagesModel;
+using Wirehome.Contracts.Components.Features;
+using Wirehome.Net.Http;
+using Wirehome.Contracts.Settings;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Extensions.Contracts;
+using Wirehome.Contracts.Core;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
-namespace HA4IoT.Extensions
+namespace Wirehome.Extensions
 {
     public class AlexaDispatcherEndpointService : IAlexaDispatcherEndpointService
     {
-        private const string API_VERSION = "HA4IoT 1.0";
+        private const string API_VERSION = "Wirehome 1.0";
         private const string PAYLOAD_VERSION = "2";
-        private const string MANUFACTURE = "HA4IoT";
+        private const string MANUFACTURE = "Wirehome";
         private const string NAMESPACE = "Alexa.ConnectedHome.Control";
 
         private readonly IHttpServerService _httpServer;
@@ -209,7 +209,7 @@ namespace HA4IoT.Extensions
                     applianceId = componentId,
                     manufacturerName = MANUFACTURE,
                     version = API_VERSION,
-                    modelName = "Composite HA4IoT",
+                    modelName = "Composite Wirehome",
                     isReachable = true,
                     friendlyName = friendlyName,
                     friendlyDescription = friendlyName,

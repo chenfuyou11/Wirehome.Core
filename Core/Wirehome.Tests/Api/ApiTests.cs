@@ -1,9 +1,9 @@
-﻿using HA4IoT.Contracts.Api;
-using HA4IoT.Tests.Mockups;
+﻿using Wirehome.Contracts.Api;
+using Wirehome.Tests.Mockups;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Tests.Api
+namespace Wirehome.Tests.Api
 {
     [TestClass]
     public class ApiTests

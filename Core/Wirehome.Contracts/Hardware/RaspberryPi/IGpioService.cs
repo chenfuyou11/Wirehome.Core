@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Services;
+﻿using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.Hardware.RaspberryPi
+namespace Wirehome.Contracts.Hardware.RaspberryPi
 {
     public interface IGpioService : IService
     {

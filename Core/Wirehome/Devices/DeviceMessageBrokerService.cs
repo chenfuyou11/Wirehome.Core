@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Hardware.DeviceMessaging;
-using HA4IoT.Contracts.Hardware.Mqtt;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Hardware.DeviceMessaging;
+using Wirehome.Contracts.Hardware.Mqtt;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Services;
 using MQTTnet;
 using MQTTnet.Core;
 using MQTTnet.Core.Client;
@@ -16,7 +16,7 @@ using MQTTnet.Core.Protocol;
 using MQTTnet.Core.Server;
 using Newtonsoft.Json.Linq;
 
-namespace HA4IoT.Devices
+namespace Wirehome.Devices
 {
     [ApiServiceClass(typeof(IDeviceMessageBrokerService))]
     public class DeviceMessageBrokerService : ServiceBase, IDeviceMessageBrokerService

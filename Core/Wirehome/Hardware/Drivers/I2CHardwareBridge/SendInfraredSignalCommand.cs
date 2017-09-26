@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware.I2C;
 
-namespace HA4IoT.Hardware.Drivers.I2CHardwareBridge
+namespace Wirehome.Hardware.Drivers.I2CHardwareBridge
 {
     public class SendInfraredSignalCommand : I2CHardwareBridgeCommand
     {

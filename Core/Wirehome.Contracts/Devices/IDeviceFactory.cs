@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Devices.Configuration;
+﻿using Wirehome.Contracts.Devices.Configuration;
 
-namespace HA4IoT.Contracts.Devices
+namespace Wirehome.Contracts.Devices
 {
     public interface IDeviceFactory
     {

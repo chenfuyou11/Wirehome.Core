@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Contracts.Components.Features
+﻿namespace Wirehome.Contracts.Components.Features
 {
     public class PositionTrackingFeature : IComponentFeature
     {

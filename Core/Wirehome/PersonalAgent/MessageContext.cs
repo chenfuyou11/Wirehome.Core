@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using HA4IoT.Contracts.Components.Commands;
+using Wirehome.Contracts.Components.Commands;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace HA4IoT.PersonalAgent
+namespace Wirehome.PersonalAgent
 {
     public class MessageContext
     {

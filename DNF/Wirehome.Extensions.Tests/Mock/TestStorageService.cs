@@ -1,9 +1,9 @@
-﻿using HA4IoT.Contracts.Storage;
+﻿using Wirehome.Contracts.Storage;
 using System;
 using System.Collections.Generic;
 
 
-namespace HA4IoT.Extensions.Tests
+namespace Wirehome.Extensions.Tests
 {
     public class TestStorageService : IStorageService
     {

@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Components.Commands;
+﻿using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Components.Commands;
 
-namespace HA4IoT.Actuators.StateMachines
+namespace Wirehome.Actuators.StateMachines
 {
     public class PendingComponentCommand
     {

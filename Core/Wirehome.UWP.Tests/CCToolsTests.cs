@@ -1,11 +1,11 @@
-﻿using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.I2C;
-using HA4IoT.Hardware.Drivers.CCTools.Devices;
-using HA4IoT.Tests.Mockups;
-using HA4IoT.Tests.Mockups.Services;
+﻿using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.I2C;
+using Wirehome.Hardware.Drivers.CCTools.Devices;
+using Wirehome.Tests.Mockups;
+using Wirehome.Tests.Mockups.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HA4IoT.Tests.Hardware.CCTools
+namespace Wirehome.Tests.Hardware.CCTools
 {
     [TestClass]
     public class CCToolsTests

@@ -4,7 +4,7 @@ using System.IO.Compression;
 using System.Net;
 using System.Text;
 
-namespace HA4IoT.Net.Http
+namespace Wirehome.Net.Http
 {
     public class HttpResponseSerializer
     {

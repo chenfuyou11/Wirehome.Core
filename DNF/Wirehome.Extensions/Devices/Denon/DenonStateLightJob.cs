@@ -1,11 +1,11 @@
 ﻿using System;
-using HA4IoT.Extensions.Messaging.DenonMessages;
-using HA4IoT.Extensions.Messaging.Core;
+using Wirehome.Extensions.Messaging.DenonMessages;
+using Wirehome.Extensions.Messaging.Core;
 using Quartz;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Logging;
 
-namespace HA4IoT.Extensions.Devices
+namespace Wirehome.Extensions.Devices
 {
     public class DenonStateLightJob : IJob
     {

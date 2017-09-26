@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Services;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Tests.Mockups
+namespace Wirehome.Tests.Mockups
 {
     public class TestTimerService : ServiceBase, ITimerService
     {

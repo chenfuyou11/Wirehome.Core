@@ -1,7 +1,7 @@
-﻿using HA4IoT.Contracts.Components.Attributes;
-using HA4IoT.Contracts.Components.States;
+﻿using Wirehome.Contracts.Components.Attributes;
+using Wirehome.Contracts.Components.States;
 
-namespace HA4IoT.Contracts.Components.Commands
+namespace Wirehome.Contracts.Components.Commands
 {
     [FeatureState(typeof(PowerState))]
     public class TurnOnCommand : ICommand

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
-using HA4IoT.Contracts.Devices;
-using HA4IoT.Contracts.Devices.Configuration;
-using HA4IoT.Contracts.Hardware.Interrupts;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Devices;
+using Wirehome.Contracts.Devices.Configuration;
+using Wirehome.Contracts.Hardware.Interrupts;
+using Wirehome.Contracts.Logging;
 
-namespace HA4IoT.Hardware.Drivers.CCTools.Configuration
+namespace Wirehome.Hardware.Drivers.CCTools.Configuration
 {
     public sealed class CCToolsDeviceFactory : IDeviceFactory
     {

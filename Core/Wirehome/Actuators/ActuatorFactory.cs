@@ -1,20 +1,20 @@
 ﻿using System;
-using HA4IoT.Actuators.Fans;
-using HA4IoT.Actuators.Lamps;
-using HA4IoT.Actuators.RollerShutters;
-using HA4IoT.Actuators.Sockets;
-using HA4IoT.Actuators.StateMachines;
-using HA4IoT.Components;
-using HA4IoT.Components.Adapters.PortBased;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Settings;
+using Wirehome.Actuators.Fans;
+using Wirehome.Actuators.Lamps;
+using Wirehome.Actuators.RollerShutters;
+using Wirehome.Actuators.Sockets;
+using Wirehome.Actuators.StateMachines;
+using Wirehome.Components;
+using Wirehome.Components.Adapters.PortBased;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Settings;
 
-namespace HA4IoT.Actuators
+namespace Wirehome.Actuators
 {
     public class ActuatorFactory
     {

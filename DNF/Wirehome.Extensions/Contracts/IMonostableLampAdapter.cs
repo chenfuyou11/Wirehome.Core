@@ -1,8 +1,8 @@
 ﻿using System;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Components.Adapters;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Components.Adapters;
 
-namespace HA4IoT.Extensions.Contracts
+namespace Wirehome.Extensions.Contracts
 {
     public interface IMonostableLampAdapter : ILampAdapter
     {

@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.DeviceMessaging;
-using HA4IoT.Contracts.Hardware.Mqtt;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.DeviceMessaging;
+using Wirehome.Contracts.Hardware.Mqtt;
 
-namespace HA4IoT.Hardware.Drivers.Sonoff
+namespace Wirehome.Hardware.Drivers.Sonoff
 {
     public class SonoffBinaryOutputAdapter : IBinaryOutputAdapter
     {

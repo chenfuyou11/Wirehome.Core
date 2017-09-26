@@ -1,6 +1,6 @@
-﻿using HA4IoT.Contracts.Services;
+﻿using Wirehome.Contracts.Services;
 
-namespace HA4IoT.Contracts.Logging
+namespace Wirehome.Contracts.Logging
 {
     public interface ILogService : IService
     {

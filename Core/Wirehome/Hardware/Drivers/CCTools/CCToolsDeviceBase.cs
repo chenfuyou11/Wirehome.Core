@@ -2,12 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using HA4IoT.Contracts.Devices;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.I2C;
-using HA4IoT.Contracts.Logging;
+using Wirehome.Contracts.Devices;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.I2C;
+using Wirehome.Contracts.Logging;
 
-namespace HA4IoT.Hardware.Drivers.CCTools
+namespace Wirehome.Hardware.Drivers.CCTools
 {
     public abstract class CCToolsDeviceBase : IDevice
     {

@@ -1,4 +1,4 @@
-﻿using Wirehome.Contracts.Hardware.RaspberryPi;
+﻿using Wirehome.Contracts.Hardware.Gpio;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 

@@ -1,20 +1,20 @@
 ﻿using System;
-using Windows.Devices.Gpio;
+using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Hardware;
 
-namespace Wirehome.Hardware.Drivers.RaspberryPi
+namespace Wirehome.Hardware.Drivers.Gpio
 {
     public sealed class GpioOutputPort : IBinaryOutput, IDisposable
     {
         private readonly object _syncRoot = new object();
-        private readonly GpioPin _pin;
+        private readonly INativeGpio _pin;
 
         private BinaryState _latestState;
 
-        public GpioOutputPort(GpioPin pin)
+        public GpioOutputPort(INativeGpio pin)
         {
             _pin = pin ?? throw new ArgumentNullException(nameof(pin));
-            _pin.SetDriveMode(GpioPinDriveMode.Output);
+            _pin.SetDriveMode(NativeGpioPinDriveMode.Output);
         }
 
         public event EventHandler<BinaryStateChangedEventArgs> StateChanged;
@@ -40,7 +40,7 @@ namespace Wirehome.Hardware.Drivers.RaspberryPi
                     return;
                 }
 
-                _pin.Write(state == BinaryState.High ? GpioPinValue.High : GpioPinValue.Low);
+                _pin.Write(state == BinaryState.High ? NativeGpioPinValue.High : NativeGpioPinValue.Low);
 
                 oldState = _latestState;
                 _latestState = state;

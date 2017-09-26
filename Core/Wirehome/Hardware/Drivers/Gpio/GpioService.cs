@@ -1,18 +1,24 @@
 ﻿using System.Collections.Generic;
-using Windows.Devices.Gpio;
+using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Hardware;
-using Wirehome.Contracts.Hardware.RaspberryPi;
+using Wirehome.Contracts.Hardware.Gpio;
 using Wirehome.Contracts.Services;
 
-namespace Wirehome.Hardware.Drivers.RaspberryPi
+namespace Wirehome.Hardware.Drivers.Gpio
 {
     public sealed class GpioService : ServiceBase, IGpioService
     {
-        private readonly GpioController _gpioController = GpioController.GetDefault();
-
         private readonly Dictionary<int, GpioInputPort> _openInputPorts = new Dictionary<int, GpioInputPort>();
         private readonly Dictionary<int, GpioOutputPort> _openOutputPorts = new Dictionary<int, GpioOutputPort>();
+        private readonly INativeGpioController _nativeGpioController;
+        private readonly INativeTimerSerice _nativeTimerSerice;
 
+        public GpioService(INativeGpioController nativeGpioController, INativeTimerSerice nativeTimerSerice)
+        {
+            _nativeGpioController = _nativeGpioController ?? throw new System.ArgumentNullException(nameof(_nativeGpioController));
+            _nativeTimerSerice = _nativeTimerSerice ?? throw new System.ArgumentNullException(nameof(_nativeTimerSerice));
+        }
+        
         public IBinaryInput GetInput(int number, GpioPullMode pullMode, GpioInputMonitoringMode monitoringMode)
         {
             GpioInputPort port;
@@ -23,8 +29,8 @@ namespace Wirehome.Hardware.Drivers.RaspberryPi
                     return port;
                 }
 
-                var pin = _gpioController.OpenPin(number, GpioSharingMode.Exclusive);
-                port = new GpioInputPort(pin, monitoringMode, pullMode);
+                var pin = _nativeGpioController.OpenPin(number, NativeGpioSharingMode.Exclusive);
+                port = new GpioInputPort(pin, _nativeTimerSerice, monitoringMode, pullMode);
                 _openInputPorts.Add(number, port);
             }
 
@@ -41,7 +47,7 @@ namespace Wirehome.Hardware.Drivers.RaspberryPi
                     return port;
                 }
 
-                port = new GpioOutputPort(_gpioController.OpenPin(number, GpioSharingMode.Exclusive));
+                port = new GpioOutputPort(_nativeGpioController.OpenPin(number, NativeGpioSharingMode.Exclusive));
                 _openOutputPorts.Add(number, port);
             }
 

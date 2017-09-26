@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Background;
-using Windows.Storage;
 using Wirehome.Components;
 using Wirehome.Contracts.Api;
 using Wirehome.Contracts.Components;
@@ -22,28 +20,22 @@ namespace Wirehome.Core
     {
         private readonly Container _container;
         private readonly ControllerOptions _options;
-
-        private BackgroundTaskDeferral _deferral;
         private ILogger _log;
-
-        public Controller(ControllerOptions options)
-        {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
-            _container = new Container(options);
-
-            StoragePath.Initialize(ApplicationData.Current.LocalFolder.Path, ApplicationData.Current.LocalFolder.Path);
-        }
-
-        public static bool IsRunningInUnitTest { get; set; }
-
+        private INativeBackgroundTask _nativeBackgroundTask;
         public IContainer Container => _container;
 
         public event EventHandler<StartupCompletedEventArgs> StartupCompleted;
         public event EventHandler<StartupFailedEventArgs> StartupFailed;
-
-        public Task RunAsync(IBackgroundTaskInstance taskInstance)
+   
+        public Controller(ControllerOptions options)
         {
-            _deferral = taskInstance?.GetDeferral() ?? throw new ArgumentNullException(nameof(taskInstance));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _container = new Container(options);
+        }
+
+        public Task RunAsync(INativeBackgroundTask nativeBackgroundTask)
+        {
+            _nativeBackgroundTask = nativeBackgroundTask ?? throw new ArgumentNullException(nameof(nativeBackgroundTask));
             return RunAsync();
         }
 
@@ -63,7 +55,10 @@ namespace Wirehome.Core
                 _container.Verify();
 
                 _log = _container.GetInstance<ILogService>().CreatePublisher(nameof(Controller));
-                
+
+                var nativeStorage = _container.GetInstance<INativeStorage>();
+                StoragePath.Initialize(nativeStorage.LocalFolderPath(), nativeStorage.LocalFolderPath());
+
                 _container.GetInstance<IInterruptMonitorService>().RegisterInterrupts();
                 _container.GetInstance<IDeviceRegistryService>().RegisterDevices();
                 _container.GetInstance<IRemoteSocketService>().RegisterRemoteSockets();
@@ -80,7 +75,7 @@ namespace Wirehome.Core
             catch (Exception exception)
             {
                 StartupFailed?.Invoke(this, new StartupFailedEventArgs(stopwatch.Elapsed, exception));
-                _deferral?.Complete();
+                _nativeBackgroundTask.Complete();
             }
         }
 

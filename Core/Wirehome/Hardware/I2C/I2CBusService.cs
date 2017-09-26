@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Windows.Devices.Enumeration;
-using Windows.Devices.I2c;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Hardware.I2C;
 using Wirehome.Contracts.Logging;
@@ -13,16 +10,18 @@ namespace Wirehome.Hardware.I2C
 {
     public sealed class I2CBusService : ServiceBase, II2CBusService
     {
-        private readonly Dictionary<int, I2cDevice> _deviceCache = new Dictionary<int, I2cDevice>();
+        private readonly Dictionary<int, INativeI2cDevice> _deviceCache = new Dictionary<int, INativeI2cDevice>();
         private readonly string _busId;
         private readonly ILogger _log;
+        private readonly INativeI2cDevice _nativeI2CDevice;
 
-        public I2CBusService(ILogService logService, IScriptingService scriptingService)
+        public I2CBusService(ILogService logService, IScriptingService scriptingService, INativeI2cDevice nativeI2CDevice)
         {
             if (scriptingService == null) throw new ArgumentNullException(nameof(scriptingService));
             _log = logService?.CreatePublisher(nameof(I2CBusService)) ?? throw new ArgumentNullException(nameof(logService));
+            _nativeI2CDevice = nativeI2CDevice ?? throw new ArgumentNullException(nameof(nativeI2CDevice));
 
-            _busId = GetBusId();
+            _busId = _nativeI2CDevice.GetBusId();
 
             scriptingService.RegisterScriptProxy(s => new I2CBusScriptProxy(this));
         }
@@ -49,17 +48,17 @@ namespace Wirehome.Hardware.I2C
             return Execute(address, d => d.WriteReadPartial(writeBuffer, readBuffer), useCache);
         }
 
-        private II2CTransferResult Execute(I2CSlaveAddress address, Func<I2cDevice, I2cTransferResult> action, bool useCache = true)
+        private II2CTransferResult Execute(I2CSlaveAddress address, Func<INativeI2cDevice, NativeI2cTransferResult> action, bool useCache = true)
         {
             lock (_deviceCache)
             {
-                I2cDevice device = null;
+                INativeI2cDevice device = null;
                 try
                 {
                     device = GetDevice(address.Value, useCache);
                     var result = action(device);
                     
-                    if (result.Status != I2cTransferStatus.FullTransfer)
+                    if (result.Status != NativeI2cTransferStatus.FullTransfer)
                     {
                         _log.Warning($"Transfer failed. Address={address.Value} Status={result.Status} TransferredBytes={result.BytesTransferred}");
                     }
@@ -82,30 +81,30 @@ namespace Wirehome.Hardware.I2C
             }
         }
 
-        private static II2CTransferResult WrapResult(I2cTransferResult result)
+        private static II2CTransferResult WrapResult(NativeI2cTransferResult result)
         {
             var status = I2CTransferStatus.UnknownError;
             switch (result.Status)
             {
-                case I2cTransferStatus.FullTransfer:
+                case NativeI2cTransferStatus.FullTransfer:
                     {
                         status = I2CTransferStatus.FullTransfer;
                         break;
                     }
 
-                case I2cTransferStatus.PartialTransfer:
+                case NativeI2cTransferStatus.PartialTransfer:
                     {
                         status = I2CTransferStatus.PartialTransfer;
                         break;
                     }
 
-                case I2cTransferStatus.ClockStretchTimeout:
+                case NativeI2cTransferStatus.ClockStretchTimeout:
                     {
                         status = I2CTransferStatus.ClockStretchTimeout;
                         break;
                     }
 
-                case I2cTransferStatus.SlaveAddressNotAcknowledged:
+                case NativeI2cTransferStatus.SlaveAddressNotAcknowledged:
                     {
                         status = I2CTransferStatus.SlaveAddressNotAcknowledged;
                         break;
@@ -115,7 +114,7 @@ namespace Wirehome.Hardware.I2C
             return new I2CTransferResult(status, (int)result.BytesTransferred);
         }
 
-        private I2cDevice GetDevice(int address, bool useCache)
+        private INativeI2cDevice GetDevice(int address, bool useCache)
         {
             // The Arduino Nano T&H bridge does not work correctly when reusing the device. More investigation is required!
             // At this time, the cache can be disabled for certain devices.
@@ -124,8 +123,7 @@ namespace Wirehome.Hardware.I2C
                 return CreateDevice(address);
             }
 
-            I2cDevice device;
-            if (!_deviceCache.TryGetValue(address, out device))
+            if (!_deviceCache.TryGetValue(address, out INativeI2cDevice device))
             {
                 device = CreateDevice(address);
                 _deviceCache.Add(address, device);
@@ -134,31 +132,10 @@ namespace Wirehome.Hardware.I2C
             return device;
         }
 
-        private I2cDevice CreateDevice(int slaveAddress)
+        private INativeI2cDevice CreateDevice(int slaveAddress)
         {
-            var settings = new I2cConnectionSettings(slaveAddress)
-            {
-                BusSpeed = I2cBusSpeed.StandardMode,
-                SharingMode = I2cSharingMode.Exclusive
-            };
-
-            return I2cDevice.FromIdAsync(_busId, settings).GetAwaiter().GetResult();
+            return _nativeI2CDevice.CreateDevice(_busId, slaveAddress);
         }
-
-        private string GetBusId()
-        {
-            var deviceSelector = I2cDevice.GetDeviceSelector();
-            var deviceInformation = DeviceInformation.FindAllAsync(deviceSelector).GetAwaiter().GetResult();
-
-            if (deviceInformation.Count == 0)
-            {
-                _log.Warning("No I2C bus found.");
-                // TODO: Allow local controller to replace this. Then throw exception again.
-                //throw new InvalidOperationException("I2C bus not found.");
-                return null;
-            }
-
-            return deviceInformation.First().Id;
-        }
+        
     }
 }

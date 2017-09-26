@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.System.Threading;
 using Wirehome.Contracts.Api;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Logging;
@@ -20,17 +19,18 @@ namespace Wirehome.Scheduling
     {
         private readonly List<Schedule> _schedules = new List<Schedule>();
         private readonly IDateTimeService _dateTimeService;
+        private readonly INativeTimerSerice _nativeTimerSerice;
         private readonly ILogger _log;
 
-        public SchedulerService(IDateTimeService dateTimeService, ILogService logService, IScriptingService scriptingService)
+        public SchedulerService(IDateTimeService dateTimeService, ILogService logService, IScriptingService scriptingService, INativeTimerSerice nativeTimerSerice)
         {
             if (scriptingService == null) throw new ArgumentNullException(nameof(scriptingService));
             _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
-
+            _nativeTimerSerice = nativeTimerSerice ?? throw new ArgumentNullException(nameof(nativeTimerSerice));
             _log = logService?.CreatePublisher(nameof(SchedulerService)) ?? throw new ArgumentNullException(nameof(logService));
             scriptingService.RegisterScriptProxy(s => new SchedulerScriptProxy(this, s));
 
-            ThreadPoolTimer.CreatePeriodicTimer(ExecuteSchedules, TimeSpan.FromMilliseconds(250));
+            _nativeTimerSerice.CreatePeriodicTimer(ExecuteSchedules, TimeSpan.FromMilliseconds(250));
         }
 
         [ApiMethod]
@@ -82,7 +82,7 @@ namespace Wirehome.Scheduling
             }
         }
 
-        private void ExecuteSchedules(ThreadPoolTimer timer)
+        private void ExecuteSchedules()
         {
             var now = _dateTimeService.Now;
 

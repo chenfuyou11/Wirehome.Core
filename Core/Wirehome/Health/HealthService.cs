@@ -4,7 +4,7 @@ using Wirehome.Contracts.Api;
 using Wirehome.Contracts.Configuration;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Hardware;
-using Wirehome.Contracts.Hardware.RaspberryPi;
+using Wirehome.Contracts.Hardware.Gpio;
 using Wirehome.Contracts.Health.Configuration;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Services;

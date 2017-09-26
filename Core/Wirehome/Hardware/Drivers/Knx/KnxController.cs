@@ -1,17 +1,16 @@
 ﻿using System;
 using Wirehome.Contracts.Logging;
-using Windows.Networking;
 
 namespace Wirehome.Hardware.Drivers.Knx
 {
     public class KnxController
     {
         private readonly object _syncRoot = new object();
-        private readonly HostName _hostName;
+        private readonly string _hostName;
         private readonly int _port;
         private readonly string _password;
 
-        public KnxController(HostName hostName, int port, string password = "")
+        public KnxController(string hostName, int port, string password = "")
         {
             if (hostName == null) throw new ArgumentNullException(nameof(hostName));
 

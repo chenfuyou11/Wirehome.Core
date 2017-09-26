@@ -1,6 +1,6 @@
 ﻿using Wirehome.Contracts.Services;
 
-namespace Wirehome.Contracts.Hardware.RaspberryPi
+namespace Wirehome.Contracts.Hardware.Gpio
 {
     public interface IGpioService : IService
     {

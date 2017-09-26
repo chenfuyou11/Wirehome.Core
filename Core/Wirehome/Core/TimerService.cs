@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using Windows.System.Threading;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Services;
@@ -15,12 +14,14 @@ namespace Wirehome.Core
         private readonly ILogger _log;
         
         private int _runningThreads;
+        private readonly INativeTimerSerice _nativeTimerSerice;
 
-        public TimerService(ILogService logService)
+        public TimerService(ILogService logService, INativeTimerSerice nativeTimerSerice)
         {
             _log = logService?.CreatePublisher(nameof(TimerService)) ?? throw new ArgumentNullException(nameof(logService));
-            
-            ThreadPoolTimer.CreatePeriodicTimer(TickInternal, TimeSpan.FromMilliseconds(50));
+            _nativeTimerSerice = nativeTimerSerice ?? throw new ArgumentNullException(nameof(nativeTimerSerice));
+
+            _nativeTimerSerice.CreatePeriodicTimer(TickInternal, TimeSpan.FromMilliseconds(50));
         }
 
         public event EventHandler<TimerTickEventArgs> Tick;
@@ -29,10 +30,10 @@ namespace Wirehome.Core
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
 
-            ThreadPoolTimer.CreatePeriodicTimer((timer) => { action(); }, period);
+            _nativeTimerSerice.CreatePeriodicTimer(action, period);
         }
 
-        private void TickInternal(object state)
+        private void TickInternal()
         {
             try
             {

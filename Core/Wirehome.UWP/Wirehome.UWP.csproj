@@ -106,26 +106,20 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Api\HttpServerService.cs" />
-    <Compile Include="Core\Controller.cs" />
-    <Compile Include="Core\TimerService.cs" />
-    <Compile Include="Cryptographic\CryptoService.cs" />
-    <Compile Include="Drivers\Knx\KnxClient.cs" />
-    <Compile Include="Drivers\Knx\KnxController.cs" />
-    <Compile Include="Drivers\Knx\KnxDigitalJoinEnpoint.cs" />
-    <Compile Include="Drivers\RaspberryPi\GpioInputPort.cs" />
-    <Compile Include="Drivers\RaspberryPi\GpioOutputPort.cs" />
-    <Compile Include="Drivers\RaspberryPi\GpioService.cs" />
-    <Compile Include="I2C\I2CBusScriptProxy.cs" />
-    <Compile Include="I2C\I2CBusService.cs" />
-    <Compile Include="I2C\I2CTransferResult.cs" />
+    <Compile Include="NativeBackgroundTask.cs" />
+    <Compile Include="NativeGpio.cs" />
+    <Compile Include="NativeGpioController.cs" />
+    <Compile Include="NativeI2cDevice.cs" />
+    <Compile Include="NativeStorage.cs" />
+    <Compile Include="NativeTimerSerice.cs" />
+    <Compile Include="Net\HttpServerService.cs" />
+    <Compile Include="!Deprecated\CryptoService.cs" />
     <Compile Include="Net\ClientSession.cs" />
-    <Compile Include="Net\Http\HttpClientSession.cs" />
-    <Compile Include="Net\Http\HttpResponseSerializer.cs" />
-    <Compile Include="Net\Http\HttpServer.cs" />
-    <Compile Include="Net\WebSockets\WebSocketClientSession.cs" />
+    <Compile Include="Net\HttpClientSession.cs" />
+    <Compile Include="Net\HttpResponseSerializer.cs" />
+    <Compile Include="Net\HttpServer.cs" />
+    <Compile Include="Net\WebSocketClientSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scheduling\SchedulerService.cs" />
     <EmbeddedResource Include="Properties\HA4IoT.HAL.rd.xml" />
   </ItemGroup>
   <ItemGroup>

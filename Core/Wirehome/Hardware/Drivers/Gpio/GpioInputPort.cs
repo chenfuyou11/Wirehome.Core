@@ -1,41 +1,43 @@
 ﻿using System;
-using Windows.Devices.Gpio;
-using Windows.System.Threading;
+using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Hardware;
-using Wirehome.Contracts.Hardware.RaspberryPi;
+using Wirehome.Contracts.Hardware.Gpio;
 using Wirehome.Contracts.Logging;
 
-namespace Wirehome.Hardware.Drivers.RaspberryPi
+namespace Wirehome.Hardware.Drivers.Gpio
 {
     public sealed class GpioInputPort : IBinaryInput, IDisposable
     {
         private const int PollInterval = 15; // TODO: Set from constructor. Consider two classes with "IGpioMonitoringStrategy".
 
-        private readonly GpioPin _pin;
+        private readonly INativeGpio _pin;
+        private readonly INativeTimerSerice _nativeTimerSerice;
+
         // ReSharper disable once NotAccessedField.Local
         //private readonly Timer _timer;
 
         private BinaryState _latestState;
 
-        public GpioInputPort(GpioPin pin, GpioInputMonitoringMode mode, GpioPullMode pullMode)
+        public GpioInputPort(INativeGpio pin, INativeTimerSerice nativeTimerSerice, GpioInputMonitoringMode mode, GpioPullMode pullMode)
         {
             _pin = pin ?? throw new ArgumentNullException(nameof(pin));
+            _nativeTimerSerice = nativeTimerSerice ?? throw new ArgumentNullException(nameof(nativeTimerSerice));
             if (pullMode == GpioPullMode.High)
             {
-                _pin.SetDriveMode(GpioPinDriveMode.InputPullUp);
+                _pin.SetDriveMode(NativeGpioPinDriveMode.InputPullUp);
             }
             else if (pullMode == GpioPullMode.Low)
             {
-                _pin.SetDriveMode(GpioPinDriveMode.InputPullDown);
+                _pin.SetDriveMode(NativeGpioPinDriveMode.InputPullDown);
             }
             else
             {
-                _pin.SetDriveMode(GpioPinDriveMode.Input);
+                _pin.SetDriveMode(NativeGpioPinDriveMode.Input);
             }
             
             if (mode == GpioInputMonitoringMode.Polling)
             {
-                ThreadPoolTimer.CreatePeriodicTimer(PollState, TimeSpan.FromMilliseconds(PollInterval));
+                _nativeTimerSerice.CreatePeriodicTimer(PollState, TimeSpan.FromMilliseconds(PollInterval));
             }
             else if (mode == GpioInputMonitoringMode.Interrupt)
             {
@@ -59,7 +61,7 @@ namespace Wirehome.Hardware.Drivers.RaspberryPi
             _pin?.Dispose();
         }
 
-        private void HandleInterrupt(GpioPin sender, GpioPinValueChangedEventArgs args)
+        private void HandleInterrupt()
         {
             var newState = ReadAndConvert();
 
@@ -67,7 +69,7 @@ namespace Wirehome.Hardware.Drivers.RaspberryPi
             Update(newState);
         }
 
-        private void PollState(object state)
+        private void PollState()
         {
             try
             {
@@ -81,7 +83,7 @@ namespace Wirehome.Hardware.Drivers.RaspberryPi
 
         private BinaryState ReadAndConvert()
         {
-            return _pin.Read() == GpioPinValue.High ? BinaryState.High : BinaryState.Low;
+            return _pin.Read() == NativeGpioPinValue.High ? BinaryState.High : BinaryState.Low;
         }
 
         private BinaryState Update(BinaryState newState)

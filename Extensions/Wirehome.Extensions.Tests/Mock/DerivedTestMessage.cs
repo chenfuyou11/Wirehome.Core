@@ -1,4 +1,4 @@
-﻿using Wirehome.Extensions.Messaging.Core;
+﻿
 using Microsoft.Reactive.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

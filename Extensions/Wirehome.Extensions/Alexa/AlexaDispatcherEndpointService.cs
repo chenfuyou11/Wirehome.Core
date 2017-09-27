@@ -10,13 +10,13 @@ using Wirehome.Contracts.Logging;
 using Wirehome.Extensions.Exceptions;
 using Wirehome.Extensions.MessagesModel;
 using Wirehome.Contracts.Components.Features;
-using Wirehome.Net.Http;
 using Wirehome.Contracts.Settings;
 using Wirehome.Contracts.Components.Commands;
 using Wirehome.Extensions.Contracts;
-using Wirehome.Contracts.Core;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Network.Http;
 
 namespace Wirehome.Extensions
 {

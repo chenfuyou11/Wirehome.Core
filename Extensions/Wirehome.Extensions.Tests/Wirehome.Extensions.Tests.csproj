@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Wirehome.Contracts\Wirehome.Contracts.csproj" />
     <ProjectReference Include="..\..\Core\Wirehome\Wirehome.csproj" />
+    <ProjectReference Include="..\Wirehome.Extensions\Wirehome.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

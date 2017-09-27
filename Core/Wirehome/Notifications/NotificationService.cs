@@ -10,7 +10,6 @@ using Wirehome.Contracts.Scripting;
 using Wirehome.Contracts.Services;
 using Wirehome.Contracts.Settings;
 using Wirehome.Contracts.Storage;
-using Wirehome.Net.Http;
 using Newtonsoft.Json.Linq;
 
 namespace Wirehome.Notifications
@@ -118,7 +117,8 @@ namespace Wirehome.Notifications
             var notificationUid = (string)apiCall.Parameter["Uid"];
             if (string.IsNullOrEmpty(notificationUid))
             {
-                throw new BadRequestException("Parameter 'Uid' is not specified.");
+                // TODO BadRequestException
+                throw new Exception("Parameter 'Uid' is not specified.");
             }
 
             lock (_syncRoot)

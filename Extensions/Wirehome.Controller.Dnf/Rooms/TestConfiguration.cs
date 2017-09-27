@@ -1,23 +1,20 @@
-﻿using System;
-using HA4IoT.Actuators;
-using HA4IoT.Automations;
-using HA4IoT.Sensors;
-using HA4IoT.Controller.Dnf.Enums;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Extensions.Core;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Areas;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Protocols;
-using HA4IoT.Hardware.Drivers.RemoteSockets;
-using HA4IoT.Contracts.Hardware.RemoteSockets;
-using HA4IoT.Contracts.Messaging;
-using System.Threading.Tasks;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Extensions.Messaging;
-using HA4IoT.Extensions.Contracts;
-using HA4IoT.Extensions.Messaging.Services;
+﻿using Wirehome.Controller.Dnf.Enums;
+using System;
+using Wirehome.Actuators;
+using Wirehome.Automations;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware.RemoteSockets;
+using Wirehome.Contracts.Hardware.RemoteSockets.Protocols;
+using Wirehome.Hardware.Drivers.RemoteSockets;
+using Wirehome.Sensors;
+using Wirehome.Areas;
+using Wirehome.Extensions.Contracts;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Extensions.Messaging;
 
-namespace HA4IoT.Controller.Dnf.Rooms
+namespace Wirehome.Controller.Dnf.Rooms
 {
     internal partial class TestConfiguration
     {
@@ -110,48 +107,48 @@ namespace HA4IoT.Controller.Dnf.Rooms
             //});
 
 
-            _messageBroker.Subscribe<LPD433Message>("SerialService", x =>
-            {
-                if
-                (
-                    x.Payload.Content.DipswitchCode?.Command == Hardware.RemoteSockets.RemoteSocketCommand.TurnOff
-                    && x.Payload.Content.DipswitchCode?.System == DipswitchSystemCode.AllOn
-                    && x.Payload.Content.DipswitchCode?.Unit == DipswitchUnitCode.A
-                )
-                {
-                    //_messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage
-                    //{
-                    //    ParamName = "cmd0",
-                    //    ParamValue = "PutZone_OnOff/OFF",
-                    //    DeviceAddress = "192.168.0.101"
-                    //});
-                }
+            //_messageBroker.Subscribe<LPD433Message>("SerialService", x =>
+            //{
+            //    if
+            //    (
+            //        x.Payload.Content.DipswitchCode?.Command == Hardware.RemoteSockets.RemoteSocketCommand.TurnOff
+            //        && x.Payload.Content.DipswitchCode?.System == DipswitchSystemCode.AllOn
+            //        && x.Payload.Content.DipswitchCode?.Unit == DipswitchUnitCode.A
+            //    )
+            //    {
+            //        //_messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage
+            //        //{
+            //        //    ParamName = "cmd0",
+            //        //    ParamValue = "PutZone_OnOff/OFF",
+            //        //    DeviceAddress = "192.168.0.101"
+            //        //});
+            //    }
 
-                if
-               (
-                   x.Payload.Content.DipswitchCode?.Command == Hardware.RemoteSockets.RemoteSocketCommand.TurnOn &&
-                   x.Payload.Content.DipswitchCode?.System == DipswitchSystemCode.AllOn &&
-                   x.Payload.Content.DipswitchCode?.Unit == DipswitchUnitCode.A
-               )
-                {
-                    //_messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage
-                    //{
-                    //    ParamName = "cmd0",
-                    //    ParamValue = "PutZone_OnOff/ON",
-                    //    DeviceAddress = "192.168.0.101"
-                    //});
-                }
+            //    if
+            //   (
+            //       x.Payload.Content.DipswitchCode?.Command == Hardware.RemoteSockets.RemoteSocketCommand.TurnOn &&
+            //       x.Payload.Content.DipswitchCode?.System == DipswitchSystemCode.AllOn &&
+            //       x.Payload.Content.DipswitchCode?.Unit == DipswitchUnitCode.A
+            //   )
+            //    {
+            //        //_messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage
+            //        //{
+            //        //    ParamName = "cmd0",
+            //        //    ParamValue = "PutZone_OnOff/ON",
+            //        //    DeviceAddress = "192.168.0.101"
+            //        //});
+            //    }
 
-                //_messageBroker.Publish(typeof(II2CMessagingService).Name, new LPD433Message
-                //{
-                //    Pin = 7,
-                //    Code = last ? codePair.OnCode.Value : codePair.OffCode.Value
+            //    //_messageBroker.Publish(typeof(II2CMessagingService).Name, new LPD433Message
+            //    //{
+            //    //    Pin = 7,
+            //    //    Code = last ? codePair.OnCode.Value : codePair.OffCode.Value
 
-                //});
+            //    //});
 
-                //last = !last;
-            }
-            );
+            //    //last = !last;
+            //}
+            //);
 
         }
 

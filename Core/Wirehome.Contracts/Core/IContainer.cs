@@ -20,9 +20,9 @@ namespace Wirehome.Contracts.Core
         void RegisterSingleton<TContract, TImplementation>() where TContract : class
             where TImplementation : class, TContract;
 
-        void RegisterSingletonCollection<TItem>(IEnumerable<TItem> items) where TItem : class;
+        void RegisterCollection<TItem>(IEnumerable<TItem> items) where TItem : class;
 
-        void RegisterSingletonCollection<TItem>(IEnumerable<Assembly> assemblies) where TItem : class;
+        void RegisterCollection<TItem>(IEnumerable<Assembly> assemblies) where TItem : class;
 
         void RegisterSingleton(Type service, Type implementation);
 
@@ -30,6 +30,8 @@ namespace Wirehome.Contracts.Core
 
         void RegisterType<T>() where T : class;
 
+        void RegisterInitializer<T>(Action<T> initializer) where T : class;
 
+        void RegisterSingleton<T>(T service) where T : class;
     }
 }

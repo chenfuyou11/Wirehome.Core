@@ -1,14 +1,14 @@
-﻿using HA4IoT.Actuators;
-using HA4IoT.Automations;
-using HA4IoT.Sensors;
-using HA4IoT.Controller.Dnf.Enums;
-using HA4IoT.Extensions.Extensions;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Areas;
-using HA4IoT.Hardware.Drivers.CCTools.Devices;
+﻿using Wirehome.Controller.Dnf.Enums;
+using Wirehome.Actuators;
+using Wirehome.Automations;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Core;
+using Wirehome.Hardware.Drivers.CCTools.Devices;
+using Wirehome.Sensors;
+using Wirehome.Extensions.Extensions;
+using Wirehome.Areas;
 
-namespace HA4IoT.Controller.Dnf.Rooms
+namespace Wirehome.Controller.Dnf.Rooms
 {
     internal partial class BedroomConfiguration 
     {

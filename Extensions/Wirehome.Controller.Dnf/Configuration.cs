@@ -1,10 +1,11 @@
-﻿using HA4IoT.Contracts.Core;
+﻿
 using System.Threading.Tasks;
-using HA4IoT.Controller.Dnf.Rooms;
+using Wirehome.Controller.Dnf.Rooms;
 using System;
-using HA4IoT.ExternalServices.OpenWeatherMap;
+using Wirehome.Contracts.Core;
+using Wirehome.ExternalServices.OpenWeatherMap;
 
-namespace HA4IoT.Controller.Dnf
+namespace Wirehome.Controller.Dnf
 {
     internal class Configuration : IConfiguration
     {

@@ -1,8 +1,8 @@
-﻿using HA4IoT.Core;
-using Windows.ApplicationModel.Background;
-using HA4IoT.Extensions;
+﻿using Windows.ApplicationModel.Background;
+using Wirehome.Core;
+using Wirehome.Raspberry.Core;
 
-namespace HA4IoT.Controller.Dnf
+namespace Wirehome.Controller.Dnf
 {
     public sealed class StartupTask : IBackgroundTask
     {
@@ -14,10 +14,15 @@ namespace HA4IoT.Controller.Dnf
                 ContainerConfigurator = new ContainerConfigurator()
             };
 
-            options.LogAdapters.Add(new EtwLoggingService());
-
-            var controller = new Core.Controller(options);
-            controller.RunAsync(taskInstance);
+            var controller = new Wirehome.Core.Controller(options);
+            controller.RunAsync(new RaspberryBackgroundTask(taskInstance));
+            // 
+            // TODO: Insert code to perform background work
+            //
+            // If you start any asynchronous methods here, prevent the task
+            // from closing prematurely by using BackgroundTaskDeferral as
+            // described in http://aka.ms/backgroundtaskdeferral
+            //
         }
     }
 }

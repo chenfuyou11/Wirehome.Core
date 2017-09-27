@@ -1,13 +1,13 @@
-﻿using HA4IoT.Actuators;
-using HA4IoT.Automations;
-using HA4IoT.Sensors;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Components;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Extensions.Contracts;
+﻿using Wirehome.Actuators;
+using Wirehome.Automations;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Core;
+using Wirehome.Sensors;
+using Wirehome.Extensions.Contracts;
+using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Actuators;
 
-namespace HA4IoT.Controller.Dnf.Rooms
+namespace Wirehome.Controller.Dnf.Rooms
 {
 
     internal partial class HouseConfiguration 

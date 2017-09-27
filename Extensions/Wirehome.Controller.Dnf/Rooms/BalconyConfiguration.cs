@@ -1,23 +1,19 @@
-﻿using System;
-using HA4IoT.Actuators;
-using HA4IoT.Automations;
-using HA4IoT.Sensors;
-using HA4IoT.Controller.Dnf.Enums;
-using HA4IoT.Extensions.Extensions;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Extensions.Core;
-using HA4IoT.Contracts.Components.States;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Hardware.RemoteSockets;
-using HA4IoT.Areas;
-using HA4IoT.Contracts.Hardware.RemoteSockets.Protocols;
-using HA4IoT.Hardware.Drivers.CCTools;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Hardware.Drivers.CCTools.Devices;
-using HA4IoT.Hardware.Drivers.RemoteSockets;
-using HA4IoT.Contracts.Hardware.RemoteSockets;
+﻿using Wirehome.Controller.Dnf.Enums;
+using System;
+using Wirehome.Actuators;
+using Wirehome.Automations;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware.RemoteSockets;
+using Wirehome.Contracts.Hardware.RemoteSockets.Protocols;
+using Wirehome.Hardware.Drivers.CCTools.Devices;
+using Wirehome.Hardware.Drivers.RemoteSockets;
+using Wirehome.Raspberry.Core;
+using Wirehome.Sensors;
+using Wirehome.Extensions.Extensions;
+using Wirehome.Areas;
 
-namespace HA4IoT.Controller.Dnf.Rooms
+namespace Wirehome.Controller.Dnf.Rooms
 {
     internal partial class BalconyConfiguration
     {
@@ -30,7 +26,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
         private const int TIME_TO_ON = 30;
         private const int TIME_WHILE_ON = 5;
-        private Speaker _speaker;
+        //private RaspberrySoundPlayer _speaker;
 
 
         public BalconyConfiguration(IDeviceRegistryService deviceService, 
@@ -48,20 +44,21 @@ namespace HA4IoT.Controller.Dnf.Rooms
             _automationFactory = automationFactory ?? throw new ArgumentNullException(nameof(automationFactory));
             _remoteSocketService = remoteSocketService ?? throw new ArgumentNullException(nameof(remoteSocketService));
 
-            _speaker = new Speaker("speaker", new System.Collections.Generic.Dictionary<Enum, string>
-                {
-                    { BirdSounds.Eagle, "Assets/eagle.mp3" },
-                    { BirdSounds.EagleBad, "Assets/eagle_bad.mp3" },
-                    { BirdSounds.Falcon, "Assets/falcon.mp3" },
-                    { BirdSounds.Falcon2, "Assets/falcon_2.mp3" },
-                    { BirdSounds.Hawk, "Assets/hawk.mp3" },
-                    { BirdSounds.Hawk2, "Assets/hawk_2.mp3" },
-                    { BirdSounds.Owl, "Assets/owl.mp3" },
-                    { BirdSounds.Owl2, "Assets/owl_2.mp3" },
-                    { BirdSounds.Owl3, "Assets/owl_3.mp3" },
-                    { BirdSounds.Owl4, "Assets/owl_4.mp3" }
-                }
-           );
+            //TODO
+            //_speaker = new RaspberrySoundPlayer("speaker", new System.Collections.Generic.Dictionary<Enum, string>
+            //    {
+            //        { BirdSounds.Eagle, "Assets/eagle.mp3" },
+            //        { BirdSounds.EagleBad, "Assets/eagle_bad.mp3" },
+            //        { BirdSounds.Falcon, "Assets/falcon.mp3" },
+            //        { BirdSounds.Falcon2, "Assets/falcon_2.mp3" },
+            //        { BirdSounds.Hawk, "Assets/hawk.mp3" },
+            //        { BirdSounds.Hawk2, "Assets/hawk_2.mp3" },
+            //        { BirdSounds.Owl, "Assets/owl.mp3" },
+            //        { BirdSounds.Owl2, "Assets/owl_2.mp3" },
+            //        { BirdSounds.Owl3, "Assets/owl_3.mp3" },
+            //        { BirdSounds.Owl4, "Assets/owl_4.mp3" }
+            //    }
+           //);
         }
 
         public void Apply()
@@ -79,7 +76,7 @@ namespace HA4IoT.Controller.Dnf.Rooms
 
             var md =_sensorFactory.RegisterMotionDetector(room, BalconyElements.MotionDetector, input[HSPE16Pin.GPIO7]);
             var md2 = _sensorFactory.RegisterMotionDetector(room, BalconyElements.BirdMotionDetector, input_2[HSPE16Pin.GPIO2]);
-            md2.StateChanged += Md_StateChanged;
+           
 
             _actuatorFactory.RegisterLamp(room, BalconyElements.Light, relays[HSREL8Pin.Relay0]);
 
@@ -97,13 +94,13 @@ namespace HA4IoT.Controller.Dnf.Rooms
             .WithTarget(socket);
         }
 
-        private void Md_StateChanged(object sender, Contracts.Components.ComponentFeatureStateChangedEventArgs e)
-        {
+        //private void Md_StateChanged(object sender, Contracts.Components.ComponentFeatureStateChangedEventArgs e)
+       // {
             //var state = e.NewState.Extract<MotionDetectionState>();
             //if (state.Value == MotionDetectionStateValue.MotionDetected)
             //{
             //    _speaker.PlayRandom();
             //}
-        }
+      //  }
     } 
 }

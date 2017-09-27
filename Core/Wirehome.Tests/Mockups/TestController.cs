@@ -45,7 +45,7 @@ namespace Wirehome.Tests.Mockups
         {
             var options = new ControllerOptions();
             _container = new Container(options);
-            _container.RegisterSingletonCollection(options.LogAdapters);
+            _container.RegisterCollection(options.LogAdapters);
             _container.RegisterSingleton<IController>(() => this);
             _container.RegisterSingleton<ILogService, LogService>();
             _container.RegisterSingleton<IBackupService, BackupService>();

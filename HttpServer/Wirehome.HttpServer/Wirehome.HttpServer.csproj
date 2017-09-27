@@ -120,7 +120,6 @@
     <Compile Include="WebSockets\WebSocketFrame.cs" />
     <Compile Include="WebSockets\WebSocketFrameParseResult.cs" />
     <Compile Include="WebSockets\WebSocketOpcode.cs" />
-    <Compile Include="WebSockets\WebSocketTextMessage.cs" />
     <EmbeddedResource Include="Properties\Wirehome.HttpServer.rd.xml" />
   </ItemGroup>
   <ItemGroup>

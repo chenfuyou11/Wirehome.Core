@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Wirehome.Extensions.Contracts
+namespace Wirehome.Contracts.Core
 {
-    public interface ISoundPlayer
+    public interface INativeSoundPlayer
     {
         Action SoundEnd { get; set; }
         void Pause();

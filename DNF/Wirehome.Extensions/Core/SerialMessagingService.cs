@@ -1,52 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Devices.Enumeration;
-using Windows.Devices.SerialCommunication;
-using Windows.Storage.Streams;
+using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Messaging;
 using Wirehome.Extensions.Contracts;
-using Wirehome.Extensions.Exceptions;
 
 namespace Wirehome.Extensions.Messaging.Services
 {
     public class SerialMessagingService : ISerialMessagingService
-    {
-        private SerialDevice serialPort = null;
-        private CancellationTokenSource ReadCancellationTokenSource;
-        private DataReader dataReaderObject = null;
+    {        
+        private CancellationTokenSource _readCancellationTokenSource = new CancellationTokenSource();
+        private IBinaryReader _dataReader;
+
         private readonly ILogger _logService;
+        private readonly INativeSerialDevice _serialDevice;
+        private readonly IBinaryReader _binaryReader;
         private readonly IMessageBrokerService _messageBroker;
         private readonly List<IBinaryMessage> _messageHandlers = new List<IBinaryMessage>();
 
-        public SerialMessagingService(ILogService logService, IMessageBrokerService messageBroker, IEnumerable<IBinaryMessage> handlers)
+        public SerialMessagingService(INativeSerialDevice serialDevice, IBinaryReader binaryReader, ILogService logService, 
+            IMessageBrokerService messageBroker, IEnumerable<IBinaryMessage> handlers)
         {
             _logService = logService.CreatePublisher(nameof(SerialMessagingService));
+            _serialDevice = serialDevice ?? throw new ArgumentNullException(nameof(serialDevice));
+            _binaryReader = binaryReader;
             _messageBroker = messageBroker;
             _messageHandlers.AddRange(handlers);
         }
 
         public async void Startup()
         {
-            var devices = await DeviceInformation.FindAllAsync(SerialDevice.GetDeviceSelector());
-            var firstDevice = devices.FirstOrDefault();
-
-            serialPort = await SerialDevice.FromIdAsync(firstDevice.Id);
-            if (serialPort == null) throw new NotFoundException("UART port not found on device");
-
-            serialPort.WriteTimeout = TimeSpan.FromMilliseconds(1000);
-            serialPort.ReadTimeout = TimeSpan.FromMilliseconds(1000);
-            serialPort.BaudRate = 115200;
-            serialPort.Parity = SerialParity.None;
-            serialPort.StopBits = SerialStopBitCount.One;
-            serialPort.DataBits = 8;
-            serialPort.Handshake = SerialHandshake.None;
-
-            ReadCancellationTokenSource = new CancellationTokenSource();
-
+            await _serialDevice.Init();
+            _dataReader = _serialDevice.GetBinaryReader();
+            
             Listen();
         }
 
@@ -54,15 +42,9 @@ namespace Wirehome.Extensions.Messaging.Services
         {
             try
             {
-                if (serialPort != null)
+                while (true)
                 {
-                    dataReaderObject = new DataReader(serialPort.InputStream);
-                    dataReaderObject.ByteOrder = ByteOrder.LittleEndian;
-
-                    while (true)
-                    {
-                        await ReadAsync(ReadCancellationTokenSource.Token);
-                    }
+                    await ReadAsync(_readCancellationTokenSource.Token);
                 }
             }
             catch (TaskCanceledException)
@@ -75,11 +57,7 @@ namespace Wirehome.Extensions.Messaging.Services
             }
             finally
             {
-                if (dataReaderObject != null)
-                {
-                    dataReaderObject.DetachStream();
-                    dataReaderObject = null;
-                }
+                _dataReader.Dispose();
             }
         }
 
@@ -98,20 +76,16 @@ namespace Wirehome.Extensions.Messaging.Services
 
         private void CloseDevice()
         {
-            if (serialPort != null)
-            {
-                serialPort.Dispose();
-            }
-            serialPort = null;
+            _serialDevice.Dispose();
         }
 
         private void CancelReadTask()
         {
-            if (ReadCancellationTokenSource != null)
+            if (_readCancellationTokenSource != null)
             {
-                if (!ReadCancellationTokenSource.IsCancellationRequested)
+                if (!_readCancellationTokenSource.IsCancellationRequested)
                 {
-                    ReadCancellationTokenSource.Cancel();
+                    _readCancellationTokenSource.Cancel();
                 }
             }
         }
@@ -120,17 +94,16 @@ namespace Wirehome.Extensions.Messaging.Services
         {
             const uint messageHeaderSize = 2;
             cancellationToken.ThrowIfCancellationRequested();
-            dataReaderObject.InputStreamOptions = InputStreamOptions.Partial;
-
+            
             using (var childCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
-                var headerBytesRead = await dataReaderObject.LoadAsync(messageHeaderSize).AsTask(childCancellationTokenSource.Token);
+                var headerBytesRead = await _dataReader.LoadAsync(messageHeaderSize, childCancellationTokenSource.Token);
                 if (headerBytesRead > 0)
                 {
-                    var messageBodySize = dataReaderObject.ReadByte();
-                    var messageType = dataReaderObject.ReadByte();
+                    var messageBodySize = _dataReader.ReadByte();
+                    var messageType = _dataReader.ReadByte();
 
-                    var bodyBytesReaded = await dataReaderObject.LoadAsync(messageBodySize).AsTask(childCancellationTokenSource.Token);
+                    var bodyBytesReaded = await _dataReader.LoadAsync(messageBodySize, childCancellationTokenSource.Token);
                     if (bodyBytesReaded > 0)
                     {
                         foreach(var handler in _messageHandlers)

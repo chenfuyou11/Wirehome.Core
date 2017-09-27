@@ -8,6 +8,7 @@ using Wirehome.Contracts.Components.Features;
 using Wirehome.Components.Commands;
 using Wirehome.Contracts.Components.Commands;
 using Wirehome.Extensions.Contracts;
+using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Core
 {
@@ -19,9 +20,9 @@ namespace Wirehome.Extensions.Core
         private Random _soundIndexGenerator;
         private string _nextSound;
         private object _syncRoot = new object();
-        private readonly ISoundPlayer _soundPlayer;
+        private readonly INativeSoundPlayer _soundPlayer;
 
-        public Speaker(string id, Dictionary<Enum, string> sounds, ISoundPlayer soundPlayer) : base(id)
+        public Speaker(string id, Dictionary<Enum, string> sounds, INativeSoundPlayer soundPlayer) : base(id)
         {
             _Sounds = new SortedList<Enum, string>(sounds);
 

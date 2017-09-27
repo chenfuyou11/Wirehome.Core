@@ -4,13 +4,13 @@ using Windows.Devices.Enumeration;
 using Windows.Devices.I2c;
 using Wirehome.Contracts.Core;
 
-namespace Wirehome.UWP
+namespace Wirehome.Raspberry
 {
-    public class NativeI2cDevice : INativeI2cDevice
+    public class RaspberryI2cDevice : INativeI2cDevice
     {
         private readonly I2cDevice _i2CDevice;
 
-        public NativeI2cDevice(I2cDevice i2CDevice)
+        public RaspberryI2cDevice(I2cDevice i2CDevice)
         {
             _i2CDevice = i2CDevice ?? throw new ArgumentNullException(nameof(i2CDevice));
         }
@@ -27,7 +27,7 @@ namespace Wirehome.UWP
 
             if (device == null) throw new Exception($"Device {deviceId} was not found on I2C bus");
 
-            return new NativeI2cDevice(device);
+            return new RaspberryI2cDevice(device);
         }
 
         public void Dispose()

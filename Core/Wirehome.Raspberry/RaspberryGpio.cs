@@ -2,15 +2,15 @@
 using Windows.Devices.Gpio;
 using Wirehome.Contracts.Core;
 
-namespace Wirehome.UWP
+namespace Wirehome.Raspberry
 {
-    public class NativeGpio : INativeGpio
+    public class RaspberryGpio : INativeGpio
     {
         private readonly GpioPin _gpioPin;
         public event Action ValueChanged;
         public int PinNumber => _gpioPin.PinNumber;
         
-        public NativeGpio(GpioPin gpioPin)
+        public RaspberryGpio(GpioPin gpioPin)
         {
             _gpioPin = gpioPin ?? throw new ArgumentNullException(nameof(gpioPin));
             gpioPin.ValueChanged += GpioPin_ValueChanged;

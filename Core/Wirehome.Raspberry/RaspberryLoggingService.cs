@@ -4,11 +4,11 @@ using Windows.Foundation.Diagnostics;
 
 namespace Wirehome.Extensions
 {
-    public class EtwLoggingService : ILogAdapter
+    public class RaspberryLoggingService : ILogAdapter
     {
         LoggingChannel _loggingChannel;
 
-        public EtwLoggingService()
+        public RaspberryLoggingService()
         {
             _loggingChannel = new LoggingChannel("Wirehome", null, new Guid("4bd2826e-54a1-4ba9-bf63-92b73ea1ac4a"));
         }

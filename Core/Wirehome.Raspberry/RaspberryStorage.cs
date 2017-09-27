@@ -1,9 +1,9 @@
 ﻿using Windows.Storage;
 using Wirehome.Contracts.Core;
 
-namespace Wirehome.UWP.Core
+namespace Wirehome.Raspberry.Core
 {
-    public class NativeStorage : INativeStorage
+    public class RaspberryStorage : INativeStorage
     {
         public string LocalFolderPath()
         {

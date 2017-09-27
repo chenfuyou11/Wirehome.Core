@@ -2,9 +2,9 @@
 using Windows.System.Threading;
 using Wirehome.Contracts.Core;
 
-namespace Wirehome.UWP.Core
+namespace Wirehome.Raspberry.Core
 {
-    public class NativeTimerSerice : INativeTimerSerice
+    public class RaspberryTimerSerice : INativeTimerSerice
     {
         public void CreatePeriodicTimer(Action action, TimeSpan interval)
         {

@@ -1,5 +1,6 @@
 ﻿using Wirehome.Extensions.Messaging;
 using Newtonsoft.Json.Linq;
+using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Contracts
 {

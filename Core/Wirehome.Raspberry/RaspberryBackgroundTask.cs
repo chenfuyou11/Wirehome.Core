@@ -2,13 +2,13 @@
 using Windows.ApplicationModel.Background;
 using Wirehome.Contracts.Core;
 
-namespace Wirehome.UWP.Core
+namespace Wirehome.Raspberry.Core
 {
-    public class NativeBackgroundTask : INativeBackgroundTask
+    public class RaspberryBackgroundTask : INativeBackgroundTask
     {
         private BackgroundTaskDeferral _deferral;
 
-        public NativeBackgroundTask(IBackgroundTaskInstance taskInstance)
+        public RaspberryBackgroundTask(IBackgroundTaskInstance taskInstance)
         {
             _deferral = taskInstance?.GetDeferral() ?? throw new ArgumentNullException(nameof(taskInstance));
         }

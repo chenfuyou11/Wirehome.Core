@@ -1,20 +1,20 @@
 ﻿using Windows.Devices.Gpio;
 using Wirehome.Contracts.Core;
 
-namespace Wirehome.UWP
+namespace Wirehome.Raspberry
 {
-    public class NativeGpioController : INativeGpioController
+    public class RaspberryGpioController : INativeGpioController
     {
         private readonly GpioController _gpioController;
 
-        public NativeGpioController()
+        public RaspberryGpioController()
         {
             _gpioController = GpioController.GetDefault();
         }
 
         public INativeGpio OpenPin(int pinNumber, NativeGpioSharingMode sharingMode)
         {
-            return new NativeGpio(_gpioController.OpenPin(pinNumber, (GpioSharingMode)sharingMode));
+            return new RaspberryGpio(_gpioController.OpenPin(pinNumber, (GpioSharingMode)sharingMode));
         }
     }
 }

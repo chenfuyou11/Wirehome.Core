@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging.SamsungMessages
 {

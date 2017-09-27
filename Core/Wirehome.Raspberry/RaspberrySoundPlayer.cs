@@ -1,20 +1,16 @@
-﻿using Wirehome.Extensions.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Media.Playback;
+﻿using Windows.Media.Playback;
 using Windows.Media.Core;
+using Wirehome.Contracts.Core;
+using System;
 
-namespace Wirehome.Extensions.UWP
+namespace Wirehome.Raspberry.Core
 {
-    public class SoundPlayer : ISoundPlayer
+    public class RaspberrySoundPlayer : INativeSoundPlayer
     {
         MediaPlayer _player;
         public Action SoundEnd { get; set; }
 
-        public SoundPlayer()
+        public RaspberrySoundPlayer()
         {
             _player = new MediaPlayer()
             {

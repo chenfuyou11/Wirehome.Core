@@ -2,6 +2,7 @@
 using Wirehome.Extensions.Core;
 using Newtonsoft.Json.Linq;
 using System;
+using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {

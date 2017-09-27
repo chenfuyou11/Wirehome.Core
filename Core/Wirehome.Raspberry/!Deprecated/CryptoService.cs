@@ -3,6 +3,7 @@ using Windows.Security.Cryptography.Core;
 
 namespace Wirehome.Contracts.Cryptographic
 {
+    //Leave for test result with new implementation
     public class CryptoService_OLD
     {
         private static readonly HashAlgorithmProvider HashAlgorithm = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Md5);

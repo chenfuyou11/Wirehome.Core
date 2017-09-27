@@ -1,0 +1,16 @@
+{
+  "DeviceRegistryService": {
+    "Devices": {
+  
+      // Bridge
+      "I2CHardwareBridge": {
+        "Driver": {
+          "Type": "I2CHardwareBridge",
+          "Parameters": {
+            "Address": 50
+          }
+        }
+      }
+    }
+  }
+}

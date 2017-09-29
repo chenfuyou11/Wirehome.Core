@@ -5,6 +5,7 @@ using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Services;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace Wirehome.Configuration
 {
@@ -21,10 +22,12 @@ namespace Wirehome.Configuration
             _log = logService?.CreatePublisher(nameof(ConfigurationService)) ?? throw new ArgumentNullException(nameof(logService));
         }
         
-        public void Initialize()
+        public override Task Initialize()
         {
             _log.Verbose("Reading configuration.");
             _configuration = Read() ?? new JObject();
+
+            return Task.CompletedTask;
         }
 
         public JObject GetSection(string name)

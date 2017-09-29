@@ -1,5 +1,6 @@
 ﻿using Windows.ApplicationModel.Background;
 using Wirehome.Core;
+using Wirehome.Raspberry;
 
 namespace Wirehome.Controller.Dnf
 {

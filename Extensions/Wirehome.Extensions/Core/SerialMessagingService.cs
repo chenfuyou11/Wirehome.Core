@@ -16,16 +16,14 @@ namespace Wirehome.Extensions.Messaging.Services
 
         private readonly ILogger _logService;
         private readonly INativeSerialDevice _serialDevice;
-        private readonly IBinaryReader _binaryReader;
         private readonly IMessageBrokerService _messageBroker;
         private readonly List<IBinaryMessage> _messageHandlers = new List<IBinaryMessage>();
 
-        public SerialMessagingService(INativeSerialDevice serialDevice, IBinaryReader binaryReader, ILogService logService, 
+        public SerialMessagingService(INativeSerialDevice serialDevice, ILogService logService, 
             IMessageBrokerService messageBroker, IEnumerable<IBinaryMessage> handlers)
         {
             _logService = logService.CreatePublisher(nameof(SerialMessagingService));
             _serialDevice = serialDevice ?? throw new ArgumentNullException(nameof(serialDevice));
-            _binaryReader = binaryReader;
             _messageBroker = messageBroker;
             _messageHandlers.AddRange(handlers);
         }

@@ -1,20 +1,23 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Logging;
 
 namespace Wirehome.Hardware.Drivers.Knx
 {
     public class KnxController
     {
-        private readonly object _syncRoot = new object();
         private readonly string _hostName;
         private readonly int _port;
         private readonly string _password;
+        private readonly INativeTCPSocket _nativeTCPSocket;
+        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public KnxController(string hostName, int port, string password = "")
+        public KnxController(string hostName, int port, INativeTCPSocket nativeTCPSocket, string password = "")
         {
-            if (hostName == null) throw new ArgumentNullException(nameof(hostName));
-
-            _hostName = hostName;
+            _nativeTCPSocket = nativeTCPSocket ?? throw new ArgumentNullException(nameof(nativeTCPSocket));
+            _hostName = hostName ?? throw new ArgumentNullException(nameof(hostName));
             _port = port;
             _password = password;
         }
@@ -24,47 +27,58 @@ namespace Wirehome.Hardware.Drivers.Knx
             return new KnxDigitalJoinEnpoint(identifier, this);
         }
 
-        private void Initialization()
+        private async Task Initialization()
         {
-            using (var knxClient = new KnxClient(_hostName, _port, _password))
+            using (var knxClient = new KnxClient(_hostName, _port, _password, _nativeTCPSocket))
             {
-                knxClient.Connect();
-                string response = knxClient.SendRequestAndWaitForResponse("i=1");
+                await knxClient.Connect();
+                string response = await knxClient.SendRequestAndWaitForResponse("i=1");
 
                 Log.Default.Verbose("knx-init-answer: " + response);
             }
         }
 
-        public void SendDigitalJoinOn(string identifier)
+        public async Task SendDigitalJoinOn(string identifier)
         {
             if (identifier == null) throw new ArgumentNullException(nameof(identifier));
 
-            lock (_syncRoot)
+            await semaphoreSlim.WaitAsync().ConfigureAwait(false);
+            try
             {
-                using (var knxClient = new KnxClient(_hostName, _port, _password))
+                using (var knxClient = new KnxClient(_hostName, _port, _password, _nativeTCPSocket))
                 {
-                    knxClient.Connect();
-                    string response = knxClient.SendRequestAndWaitForResponse(identifier + "=1");
+                    await knxClient.Connect().ConfigureAwait(false);
+                    string response = await knxClient.SendRequestAndWaitForResponse(identifier + "=1");
 
                     Log.Default.Verbose("KnxClient: send-digitalJoinOn: " + response);
                 }
             }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
         }
 
-        public void SendDigitalJoinOff(string identifier)
+        public async Task SendDigitalJoinOff(string identifier)
         {
             if (identifier == null) throw new ArgumentNullException(nameof(identifier));
 
-            lock (_syncRoot)
+            await semaphoreSlim.WaitAsync().ConfigureAwait(false);
+            try
             {
-                using (var knxClient = new KnxClient(_hostName, _port, _password))
+                using (var knxClient = new KnxClient(_hostName, _port, _password, _nativeTCPSocket))
                 {
-                    knxClient.Connect();
-                    string response = knxClient.SendRequestAndWaitForResponse(identifier + "=0");
+                    await knxClient.Connect();
+                    string response = await knxClient.SendRequestAndWaitForResponse(identifier + "=0");
 
                     Log.Default.Verbose("KnxClient: send-digitalJoinOff: " + response);
                 }
             }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
+            
         }
 
         public void SendAnalogJoin(string identifier, double value)

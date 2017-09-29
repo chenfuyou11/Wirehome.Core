@@ -13,17 +13,23 @@ namespace Wirehome.Hardware.I2C
         private readonly Dictionary<int, INativeI2cDevice> _deviceCache = new Dictionary<int, INativeI2cDevice>();
         private readonly string _busId;
         private readonly ILogger _log;
-        private readonly INativeI2cDevice _nativeI2CDevice;
+        private readonly INativeI2cBus _nativeI2CBus;
 
-        public I2CBusService(ILogService logService, IScriptingService scriptingService, INativeI2cDevice nativeI2CDevice)
+        public I2CBusService(ILogService logService, IScriptingService scriptingService, INativeI2cBus nativeI2CBus)
         {
             if (scriptingService == null) throw new ArgumentNullException(nameof(scriptingService));
             _log = logService?.CreatePublisher(nameof(I2CBusService)) ?? throw new ArgumentNullException(nameof(logService));
-            _nativeI2CDevice = nativeI2CDevice ?? throw new ArgumentNullException(nameof(nativeI2CDevice));
+            _nativeI2CBus = nativeI2CBus ?? throw new ArgumentNullException(nameof(nativeI2CBus));
 
-            _busId = _nativeI2CDevice.GetBusId();
-
+            _busId = _nativeI2CBus.GetBusId();
             scriptingService.RegisterScriptProxy(s => new I2CBusScriptProxy(this));
+        }
+
+
+
+        private INativeI2cDevice CreateDevice(int slaveAddress)
+        {
+            return _nativeI2CBus.CreateDevice(_busId, slaveAddress);
         }
 
         public II2CTransferResult Write(I2CSlaveAddress address, byte[] buffer, bool useCache = true)
@@ -132,10 +138,7 @@ namespace Wirehome.Hardware.I2C
             return device;
         }
 
-        private INativeI2cDevice CreateDevice(int slaveAddress)
-        {
-            return _nativeI2CDevice.CreateDevice(_busId, slaveAddress);
-        }
+      
         
     }
 }

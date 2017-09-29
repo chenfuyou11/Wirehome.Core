@@ -9,6 +9,7 @@ using Wirehome.Contracts.Services;
 using Wirehome.Contracts.Settings;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace Wirehome.Environment
 {
@@ -22,27 +23,32 @@ namespace Wirehome.Environment
 
         private DateTime? _lastPull;
         private DateTime? _lastSuccessfulPull;
+        private readonly ISettingsService _settingsService;
+        private readonly ISchedulerService _schedulerService;
 
         public ControllerSlaveService(
             ISettingsService settingsService,
-            ISchedulerService scheduler,
+            ISchedulerService schedulerService,
             IDateTimeService dateTimeService,
             IOutdoorService outdoorService,
             IDaylightService daylightService,
             ILogService logService)
         {
-            if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
-            if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
-
+            
             _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
             _outdoorService = outdoorService ?? throw new ArgumentNullException(nameof(outdoorService));
             _daylightService = daylightService ?? throw new ArgumentNullException(nameof(daylightService));
-
+            _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
             _log = logService?.CreatePublisher(nameof(ControllerSlaveService)) ?? throw new ArgumentNullException(nameof(logService));
+            _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
+        }
 
-            settingsService.CreateSettingsMonitor<ControllerSlaveServiceSettings>(s => Settings = s.NewSettings);
-
-            scheduler.Register("ControllerSlavePolling", TimeSpan.FromMinutes(5), () => PullValues());
+        public override Task Initialize()
+        {
+            //TODO Moved to init
+            _settingsService.CreateSettingsMonitor<ControllerSlaveServiceSettings>(s => Settings = s.NewSettings);
+            _schedulerService.Register("ControllerSlavePolling", TimeSpan.FromMinutes(5), () => PullValues());
+            return Task.CompletedTask;
         }
 
         public ControllerSlaveServiceSettings Settings { get; private set; }

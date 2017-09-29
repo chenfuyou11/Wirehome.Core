@@ -1,80 +1,71 @@
-﻿using SocketLite.Services;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
+using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Logging;
 
 namespace Wirehome.Hardware.Drivers.Knx
 {
     public sealed class KnxClient : IDisposable
     {
-        private readonly TcpSocketClient _socket = new TcpSocketClient();
-        private readonly string _hostName;
         private readonly int _port;
         private readonly string _password;
-
+        private readonly string _hostName;
         private bool _isConnected;
         private bool _isDisposed;
+        private readonly INativeTCPSocket _nativeTCPSocket;
 
-        public KnxClient(string hostName, int port, string password)
+        public KnxClient(string hostName, int port, string password, INativeTCPSocket nativeTCPSocket)
         {
-            if (hostName == null) throw new ArgumentNullException(nameof(hostName));
-
-            _hostName = hostName;
+            _hostName = hostName ?? throw new ArgumentNullException(nameof(hostName));
             _port = port;
             _password = password;
-
-            //TODO CHECK
-            //_socket.Control.KeepAlive = true;
-            //_socket.Control.NoDelay = true;
+;
+            _nativeTCPSocket = nativeTCPSocket;
         }
 
         public int Timeout { get; set; } = 150;
 
-        public void Connect()
+        public async Task Connect()
         {
             ThrowIfDisposed();
 
             Log.Default.Verbose($"KnxClient: Connecting with {_hostName}...");
 
-            var connectTask = _socket.ConnectAsync(_hostName, _port.ToString());
-            connectTask.ConfigureAwait(false);
-            if (!connectTask.Wait(Timeout))
-            {
-                throw new TimeoutException("Timeout while connecting KNX Client.");
-            }
-
+            await _nativeTCPSocket.ConnectAsync(_hostName, _port, Timeout).ConfigureAwait(false);
+            
             _isConnected = true;
 
-            Authenticate();
+            await Authenticate().ConfigureAwait(false);
 
             Log.Default.Verbose("KnxClient: Connected");
         }
 
-        public void SendRequest(string request)
+        public async Task SendRequest(string request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
             ThrowIfDisposed();
             ThrowIfNotConnected();
 
-            WriteToSocket(request);
+            await WriteToSocket(request).ConfigureAwait(false);
         }
 
-        public string SendRequestAndWaitForResponse(string request)
+        public async Task<string> SendRequestAndWaitForResponse(string request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
             ThrowIfDisposed();
             ThrowIfNotConnected();
 
-            WriteToSocket(request);
-            return ReadFromSocket();
+            await WriteToSocket(request).ConfigureAwait(false);
+            return await ReadFromSocket();
         }
 
-        private void Authenticate()
+        private async Task Authenticate()
         {
             Log.Default.Verbose("KnxClient: Authenticating...");
-            string response = SendRequestAndWaitForResponse($"p={_password}");
+            string response = await SendRequestAndWaitForResponse($"p={_password}").ConfigureAwait(false);
 
             ThrowIfNotAuthenticated(response);
         }
@@ -95,36 +86,21 @@ namespace Wirehome.Hardware.Drivers.Knx
             }
         }
 
-        private void WriteToSocket(string request)
+        private async Task WriteToSocket(string request)
         {
             byte[] payload = Encoding.UTF8.GetBytes(request + "\x03");
-
-            var writeTask = _socket.WriteStream.WriteAsync(payload, 0, payload.Length);
-            writeTask.ConfigureAwait(false);
-            if (!writeTask.Wait(Timeout))
-            {
-                throw new TimeoutException("Timeout while sending KNX Client request.");
-            }
+            await _nativeTCPSocket.SendDataAsync(payload, Timeout).ConfigureAwait(false);
 
             Log.Default.Verbose($"KnxClient: Sent {request}");
         }
 
-        private string ReadFromSocket()
+        private async Task<string> ReadFromSocket()
         {
             Log.Default.Verbose("KnxClient: Waiting for response...");
 
             var buffer = new byte[64];
-
-            //TODO CHECK
-            var readTask = _socket.ReadStream.ReadAsync(buffer, buffer.Length, buffer.Length);
-            //var readTask = _socket.InputStream.ReadAsync(buffer, buffer.Capacity, InputStreamOptions.Partial).AsTask();
-
-            readTask.ConfigureAwait(false);
-            if (!readTask.Wait(Timeout))
-            {
-                throw new TimeoutException("Timeout while reading KNX Client response.");
-            }
-
+            await _nativeTCPSocket.ReadDataAsync(buffer, Timeout).ConfigureAwait(false);
+            
             var response = Encoding.UTF8.GetString(buffer);
             Log.Default.Verbose($"KnxClient: Received {response}");
 
@@ -139,7 +115,7 @@ namespace Wirehome.Hardware.Drivers.Knx
         public void Dispose()
         {
             _isDisposed = true;
-            _socket.Dispose();
+            _nativeTCPSocket.Dispose();
         }
     }
 }

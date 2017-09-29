@@ -29,8 +29,13 @@ namespace Wirehome.Scheduling
             _nativeTimerSerice = nativeTimerSerice ?? throw new ArgumentNullException(nameof(nativeTimerSerice));
             _log = logService?.CreatePublisher(nameof(SchedulerService)) ?? throw new ArgumentNullException(nameof(logService));
             scriptingService.RegisterScriptProxy(s => new SchedulerScriptProxy(this, s));
+        }
 
+        public override Task Initialize()
+        {
+            //TODO Moved to Init
             _nativeTimerSerice.CreatePeriodicTimer(ExecuteSchedules, TimeSpan.FromMilliseconds(250));
+            return Task.CompletedTask;
         }
 
         [ApiMethod]

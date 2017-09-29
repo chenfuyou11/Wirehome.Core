@@ -22,6 +22,8 @@ namespace Wirehome.ExternalServices.OpenWeatherMap
         private readonly IDateTimeService _dateTimeService;
         private readonly ISystemInformationService _systemInformationService;
         private readonly ILogger _log;
+        private readonly ISettingsService _settingsService;
+        private readonly ISchedulerService _schedulerService;
 
         public float Temperature { get; private set; }
         public float Humidity { get; private set; }
@@ -35,25 +37,29 @@ namespace Wirehome.ExternalServices.OpenWeatherMap
             IDateTimeService dateTimeService, 
             ISchedulerService schedulerService, 
             ISystemInformationService systemInformationService,
-            ISettingsService settingsService, 
-            IStorageService storageService,
+            ISettingsService settingsService,
             ILogService logService)
         {
-            if (schedulerService == null) throw new ArgumentNullException(nameof(schedulerService));
-            if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
             _outdoorService = outdoorService ?? throw new ArgumentNullException(nameof(outdoorService));
             _daylightService = daylightService ?? throw new ArgumentNullException(nameof(daylightService));
             _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
             _systemInformationService = systemInformationService ?? throw new ArgumentNullException(nameof(systemInformationService));
-            
+            _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
             _log = logService?.CreatePublisher(nameof(OpenWeatherMapService)) ?? throw new ArgumentNullException(nameof(logService));
-
-            settingsService.CreateSettingsMonitor<OpenWeatherMapServiceSettings>(s => Settings = s.NewSettings);
-
-            schedulerService.Register("OpenWeatherMapServiceUpdater", TimeSpan.FromMinutes(5), RefreshAsync);
+            _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
         }
 
         public OpenWeatherMapServiceSettings Settings { get; private set; }
+
+
+        public override Task Initialize()
+        {
+            //TODO Moved to Init
+            _settingsService.CreateSettingsMonitor<OpenWeatherMapServiceSettings>(s => Settings = s.NewSettings);
+            _schedulerService.Register("OpenWeatherMapServiceUpdater", TimeSpan.FromMinutes(5), RefreshAsync);
+
+            return Task.CompletedTask;
+        }
 
         [ApiMethod]
         public void Status(IApiCall apiCall)

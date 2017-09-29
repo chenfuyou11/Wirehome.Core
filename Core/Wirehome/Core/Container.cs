@@ -27,7 +27,7 @@ namespace Wirehome.Core
         public bool ChackNativeImpelentationExists()
         {
             var registrations =_container.GetCurrentRegistrations();
-            if(!registrations.Any(x => x.ServiceType == typeof(INativeGpio)))
+            if(!registrations.Any(x => x.ServiceType == typeof(INativeI2cBus)))
             {
                 return false;
             }

@@ -26,26 +26,24 @@ namespace Wirehome.Api
         private const string ApiBaseUri = "/api/";
         private const string AppBaseUri = "/app/";
         private const string ManagementAppBaseUri = "/managementApp/";
-        
+        private readonly IApiDispatcherService _apiDispatcherService;
 
         public HttpServerService(IConfigurationService configurationService, IApiDispatcherService apiDispatcherService, ILogService logService, IHttpServer httpServer)
         {
-            if (apiDispatcherService == null) throw new ArgumentNullException(nameof(apiDispatcherService));
-
             _log = logService.CreatePublisher(nameof(HttpServerService)) ?? throw new ArgumentNullException(nameof(logService));
             _configurationService = configurationService ?? throw new ArgumentNullException(nameof(configurationService));
             _httpServer = httpServer ?? throw new ArgumentNullException(nameof(httpServer));
-
-            _httpServer.HttpRequestReceived += OnHttpRequestReceived;
-            _httpServer.WebSocketConnected += AttachWebSocket;
-            
-            apiDispatcherService.RegisterAdapter(this);
+            _apiDispatcherService = apiDispatcherService ?? throw new ArgumentNullException(nameof(apiDispatcherService));
         }
 
         public override async Task Initialize()
         {
+            _httpServer.HttpRequestReceived += OnHttpRequestReceived;
+            _httpServer.WebSocketConnected += AttachWebSocket;
+            _apiDispatcherService.RegisterAdapter(this);
+
             var configuration = _configurationService.GetConfiguration<HttpServerServiceConfiguration>("HttpServerService");
-            await _httpServer.BindAsync(configuration.Port);
+            await _httpServer.BindAsync(configuration.Port).ConfigureAwait(false);
         }
 
         public event EventHandler<ApiRequestReceivedEventArgs> ApiRequestReceived;

@@ -25,13 +25,7 @@ namespace Wirehome.Core
         }
 
         public event EventHandler<TimerTickEventArgs> Tick;
-
-        public void CreatePeriodicTimer(Action action, TimeSpan period)
-        {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-
-            _nativeTimerSerice.CreatePeriodicTimer(action, period);
-        }
+          
 
         private void TickInternal()
         {

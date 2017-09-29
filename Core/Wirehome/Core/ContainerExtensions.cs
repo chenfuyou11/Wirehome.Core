@@ -30,10 +30,11 @@ namespace Wirehome.Core
             {
                 try
                 {
-                    await service.Initialize();
+                    await service.Initialize().ConfigureAwait(false);
                 }
                 catch (Exception exception)
                 {
+                    var test = exception.ToString();
                     log.Error(exception, $"Error while starting service '{service.GetType().Name}'. " + exception.Message);
                 }
             }

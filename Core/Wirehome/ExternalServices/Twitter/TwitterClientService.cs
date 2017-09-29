@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Wirehome.Contracts.ExternalServices.Twitter;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Scripting;
 using Wirehome.Contracts.Services;
 using Wirehome.Contracts.Settings;
-using Wirehome.Contracts.Cryptographic;
 
 namespace Wirehome.ExternalServices.Twitter
 {
@@ -19,20 +19,25 @@ namespace Wirehome.ExternalServices.Twitter
 
         private string _nonce;
         private string _timestamp;
-        private readonly ICryptoService _cryptoService;
+        private readonly ISettingsService _settingsService;
 
-        public TwitterClientService(ISettingsService settingsService, ILogService logService, IScriptingService scriptingService, ICryptoService cryptoService)
+        public TwitterClientService(ISettingsService settingsService, ILogService logService, IScriptingService scriptingService)
         {
-            if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
             if (logService == null) throw new ArgumentNullException(nameof(logService));
             if (scriptingService == null) throw new ArgumentNullException(nameof(scriptingService));
-
-            settingsService.CreateSettingsMonitor<TwitterClientServiceSettings>(s => Settings = s.NewSettings);
-
+            _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+            
             _log = logService.CreatePublisher(nameof(TwitterClientService));
 
-            scriptingService.RegisterScriptProxy(s => new TwitterClientScriptProxy(this));
-            this._cryptoService = cryptoService ?? throw new ArgumentNullException(nameof(cryptoService));
+            scriptingService.RegisterScriptProxy(s => new TwitterClientScriptProxy(this));   
+        }
+
+        public override Task Initialize()
+        {
+            //TODO Moved to Init
+            _settingsService.CreateSettingsMonitor<TwitterClientServiceSettings>(s => Settings = s.NewSettings);
+
+            return Task.CompletedTask;
         }
 
         public TwitterClientServiceSettings Settings { get; private set; }
@@ -106,7 +111,17 @@ namespace Wirehome.ExternalServices.Twitter
 
             var key = Uri.EscapeDataString(Settings.ConsumerSecret) + "&" + Uri.EscapeDataString(Settings.AccessTokenSecret);
 
-            return _cryptoService.GenerateSignature(key, signingContent);
+            return GenerateSignature(key, signingContent);
+        }
+
+        private string GenerateSignature(string key, string content)
+        {
+            var hmac = new System.Security.Cryptography.HMACSHA1()
+            {
+                Key = Encoding.UTF8.GetBytes(key)
+            };
+
+            return Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(content)));
         }
 
         private string GetAuthorizationToken(string signature)

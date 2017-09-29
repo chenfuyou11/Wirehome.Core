@@ -62,7 +62,8 @@ namespace Wirehome.Storage
 
             lock (_syncRoot)
             {
-                File.WriteAllText(absoluteFilename, json);
+                //TODO Comment becouse of bug in UWP
+                //File.WriteAllText(absoluteFilename, json);
             }
         }
     }

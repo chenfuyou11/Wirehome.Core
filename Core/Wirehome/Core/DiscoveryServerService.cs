@@ -1,60 +1,55 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using Wirehome.Contracts.Core.Discovery;
-using Wirehome.Contracts.Services;
-using Wirehome.Contracts.Settings;
-using Wirehome.Settings;
 using Newtonsoft.Json;
-using SocketLite.Services;
-using SocketLite.Model;
-using System.Linq;
+using Wirehome.Contracts.Settings;
+using Wirehome.Contracts.Services;
+using Wirehome.Contracts.Core;
+using Wirehome.Settings;
+using Wirehome.Contracts.Core.Discovery;
 
 namespace Wirehome.Core
 {
     public sealed class DiscoveryServerService : ServiceBase, IDisposable
     {
         private const int Port = 19228;
-        private UdpSocketReceiver _socket = new UdpSocketReceiver();
-        private IDisposable _subscriberUpdReceiver;
-        private readonly ISettingsService _settingsService;
 
-        public DiscoveryServerService(ISettingsService settingsService)
+        private readonly ISettingsService _settingsService;
+        private readonly INativeUDPSocket _nativeUDPSocket;
+
+        public DiscoveryServerService(ISettingsService settingsService, INativeUDPSocket nativeUDPSocket)
         {
             _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+            _nativeUDPSocket = nativeUDPSocket ?? throw new ArgumentNullException(nameof(nativeUDPSocket));
         }
 
-        public override Task Initialize()
+        public override async Task Initialize()
         {
-            var allInterfaces = new CommunicationsInterface().GetAllInterfaces();
-            var observerUdpReceiver =_socket.CreateObservableListener(Port, allInterfaces.FirstOrDefault());
+            _nativeUDPSocket.OnMessageRecived += _nativeUDPSocket_OnMessageRecived;
+            await _nativeUDPSocket.BindServiceNameAsync(Port).ConfigureAwait(false);
+        }
 
-            _subscriberUpdReceiver = observerUdpReceiver.Subscribe(
-                async args =>
-                {
-                    var controllerSettings = _settingsService.GetSettings<ControllerSettings>();
-                    var response = new DiscoveryResponse(controllerSettings.Caption, controllerSettings.Description);
-                    await SendResponseAsync(args.RemoteAddress, response);
-                }
-            );
-
-            return Task.CompletedTask;
+        private async void _nativeUDPSocket_OnMessageRecived(string remoteAddress)
+        {
+            await SendResponseAsync(remoteAddress);
         }
 
         public void Dispose()
         {
-            _subscriberUpdReceiver.Dispose();
-            _socket?.Dispose();
+            _nativeUDPSocket?.Dispose();
         }
-        
-        private static async Task SendResponseAsync(string target, DiscoveryResponse response)
+
+        private async Task SendResponseAsync(string remoteAddress)
         {
+            //TODO Why not in constructor
+            var controllerSettings = _settingsService.GetSettings<ControllerSettings>();
+
+            var response = new DiscoveryResponse(controllerSettings.Caption, controllerSettings.Description);
             var buffer = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response));
-            using (var socket = new UdpSocketClient())
-            {
-                await socket.ConnectAsync(target, Port);
-                await socket.SendAsync(buffer);
-            }
+
+            await _nativeUDPSocket.SendResponse(remoteAddress, Port, buffer).ConfigureAwait(false);
         }
+
+   
     }
 }

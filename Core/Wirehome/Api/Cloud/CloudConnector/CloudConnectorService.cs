@@ -22,33 +22,39 @@ namespace Wirehome.Api.Cloud.CloudConnector
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         private readonly StringContent _emptyContent = new StringContent(string.Empty);
-        private readonly string _receiveRequestsUri;
-        private readonly string _sendResponseUri;
+        private string _receiveRequestsUri;
+        private string _sendResponseUri;
 
-        private readonly CloudConnectorServiceSettings _settings;
+        private CloudConnectorServiceSettings _settings;
         private readonly IApiDispatcherService _apiDispatcherService;
         private readonly ILogger _log;
 
         private bool _isConnected;
+        private readonly ISettingsService _settingsService;
+        private readonly ISystemInformationService _systemInformationService;
 
         public CloudConnectorService(IApiDispatcherService apiDispatcherService, ISettingsService settingsService, ISystemInformationService systemInformationService, ILogService logService)
         {
-            if (systemInformationService == null) throw new ArgumentNullException(nameof(systemInformationService));
             _log = logService?.CreatePublisher(nameof(CloudConnectorService)) ?? throw new ArgumentNullException(nameof(logService));
             _apiDispatcherService = apiDispatcherService ?? throw new ArgumentNullException(nameof(apiDispatcherService));
-
-            _settings = settingsService?.GetSettings<CloudConnectorServiceSettings>() ?? throw new ArgumentNullException(nameof(settingsService));
-
-            _receiveRequestsUri = $"{_settings.ServerAddress}/api/ControllerProxy/ReceiveRequests";
-            _sendResponseUri = $"{_settings.ServerAddress}/api/ControllerProxy/SendResponse";
-
-            systemInformationService.Set("CloudConnector/IsConnected", () => _isConnected);
+            _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+            _systemInformationService = systemInformationService ?? throw new ArgumentNullException(nameof(systemInformationService));
         }
 
         public event EventHandler<ApiRequestReceivedEventArgs> ApiRequestReceived;
 
         public override Task Initialize()
         {
+            //TODO moved to INIT
+            _settings = _settingsService?.GetSettings<CloudConnectorServiceSettings>();
+
+            _receiveRequestsUri = $"{_settings.ServerAddress}/api/ControllerProxy/ReceiveRequests";
+            _sendResponseUri = $"{_settings.ServerAddress}/api/ControllerProxy/SendResponse";
+
+            _systemInformationService.Set("CloudConnector/IsConnected", () => _isConnected);
+            //
+
+
             if (!_settings.IsEnabled)
             {
                 _log.Info("Cloud Connector service is disabled.");

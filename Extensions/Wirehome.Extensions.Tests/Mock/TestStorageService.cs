@@ -9,11 +9,11 @@ namespace Wirehome.Extensions.Tests
     {
         private readonly Dictionary<string, object> _files = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
-        public Task Startup()
+        public Task Initialize()
         {
             return Task.CompletedTask;
         }
-
+        
         public bool TryRead<TData>(string filename, out TData data)
         {
             object buffer;

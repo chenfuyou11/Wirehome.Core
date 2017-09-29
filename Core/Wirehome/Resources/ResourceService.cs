@@ -10,6 +10,7 @@ using Wirehome.Contracts.Settings;
 using Wirehome.Contracts.Storage;
 using Wirehome.Settings;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace Wirehome.Resources
 {
@@ -39,7 +40,7 @@ namespace Wirehome.Resources
             backupService.RestoringBackup += (s, e) => RestoreBackup(e);
         }
 
-        public void Initialize()
+        public override Task Initialize()
         {
             _controllerSettings = _settingsService.GetSettings<ControllerSettings>();
 
@@ -47,6 +48,8 @@ namespace Wirehome.Resources
             {
                 TryLoadResources();
             }
+
+            return Task.CompletedTask;
         }
 
         public void RegisterText(Enum id, string value)

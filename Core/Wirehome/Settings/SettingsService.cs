@@ -6,6 +6,7 @@ using Wirehome.Contracts.Services;
 using Wirehome.Contracts.Settings;
 using Wirehome.Contracts.Storage;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace Wirehome.Settings
 {
@@ -28,12 +29,14 @@ namespace Wirehome.Settings
             backupService.RestoringBackup += (s, e) => RestoreBackup(e);
         }
 
-        public void Initialize()
+        public override Task Initialize()
         {
             lock (_syncRoot)
             {
                 TryLoadSettings();
             }
+
+            return Task.CompletedTask;
         }
 
         public event EventHandler<SettingsChangedEventArgs> SettingsChanged;

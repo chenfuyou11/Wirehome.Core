@@ -15,6 +15,7 @@ using MQTTnet.Core.Packets;
 using MQTTnet.Core.Protocol;
 using MQTTnet.Core.Server;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace Wirehome.Devices
 {
@@ -60,8 +61,8 @@ namespace Wirehome.Devices
         }
 
         public event EventHandler<DeviceMessageReceivedEventArgs> MessageReceived;
-
-        public void Initialize()
+        
+        public override Task Initialize()
         {
             _server.Start();
             _server.InjectClient("HA4IoT.Loopback", _clientCommunicationAdapter);
@@ -70,6 +71,8 @@ namespace Wirehome.Devices
             _client.SubscribeAsync(new TopicFilter("#", MqttQualityOfServiceLevel.AtMostOnce)).Wait();
 
             _log.Info("MQTT client (loopback) connected.");
+
+            return Task.CompletedTask;
         }
 
         [ApiMethod]

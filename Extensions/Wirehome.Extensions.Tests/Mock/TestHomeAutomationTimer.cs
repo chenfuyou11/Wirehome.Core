@@ -19,9 +19,10 @@ namespace Wirehome.Extensions.Tests
             Tick?.Invoke(this, new TimerTickEventArgs { ElapsedTime = elapsedTime });
         }
 
-        public Task Startup()
+        public Task Initialize()
         {
             return Task.CompletedTask;
         }
+        
     }
 }

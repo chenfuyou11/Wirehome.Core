@@ -11,6 +11,7 @@ using Wirehome.Contracts.Services;
 using Wirehome.Contracts.Settings;
 using Wirehome.Contracts.Storage;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace Wirehome.Notifications
 {
@@ -25,53 +26,56 @@ namespace Wirehome.Notifications
         private readonly IStorageService _storageService;
         private readonly IResourceService _resourceService;
         private readonly ILogger _log;
+        private readonly ISettingsService _settingsService;
+        private readonly IApiDispatcherService _apiService;
+        private readonly ISchedulerService _schedulerService;
+        private readonly IScriptingService _scriptingService;
 
         public NotificationService(
             IDateTimeService dateTimeService, 
             IApiDispatcherService apiService, 
-            ISchedulerService schedulerService, 
+            ISchedulerService schedulerService,
             ISettingsService settingsService,
             IStorageService storageService,
             IResourceService resourceService,
             IScriptingService scriptingService,
             ILogService logService)
         {
-            if (apiService == null) throw new ArgumentNullException(nameof(apiService));
-            if (schedulerService == null) throw new ArgumentNullException(nameof(schedulerService));
-            if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
-            if (scriptingService == null) throw new ArgumentNullException(nameof(scriptingService));
-
             _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
             _resourceService = resourceService ?? throw new ArgumentNullException(nameof(resourceService));
-
+            _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+            _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
+            _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
+            _scriptingService = scriptingService ?? throw new ArgumentNullException(nameof(scriptingService));
             _log = logService.CreatePublisher(nameof(NotificationService));
-            settingsService.CreateSettingsMonitor<NotificationServiceSettings>(s => Settings = s.NewSettings);
-
-            apiService.StatusRequested += HandleApiStatusRequest;
-
-            schedulerService.Register("NotificationCleanup", TimeSpan.FromMinutes(15), () => Cleanup());
-
-            scriptingService.RegisterScriptProxy(s => new NotificationScriptProxy(this));
         }
 
         public NotificationServiceSettings Settings { get; private set; }
 
-        public void Initialize()
+        public override Task Initialize()
         {
+            // TODO moved to init
+            _apiService.StatusRequested += HandleApiStatusRequest;
+            _schedulerService.Register("NotificationCleanup", TimeSpan.FromMinutes(15), () => Cleanup());
+            _scriptingService.RegisterScriptProxy(s => new NotificationScriptProxy(this));
+            _settingsService.CreateSettingsMonitor<NotificationServiceSettings>(s => Settings = s.NewSettings);
+
             lock (_syncRoot)
             {
                 TryLoadNotifications();
             }
+
+            return Task.CompletedTask;
         }
 
-        public void Create(NotificationType type, string message, TimeSpan timeToLive)
+        public void Create(NotificationType type, string text, TimeSpan timeToLive)
         {
-            if (message == null) throw new ArgumentNullException(nameof(message));
+            if (text == null) throw new ArgumentNullException(nameof(text));
 
             lock (_syncRoot)
             {
-                var notification = new Notification(Guid.NewGuid(), type, _dateTimeService.Now, message, timeToLive);
+                var notification = new Notification(Guid.NewGuid(), type, _dateTimeService.Now, text, timeToLive);
                 _notifications.Add(notification);
 
                 SaveNotifications();

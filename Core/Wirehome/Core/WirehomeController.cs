@@ -55,6 +55,9 @@ using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using Wirehome.Contracts.Scheduling;
 using Wirehome.Scheduling;
+using Wirehome.Contracts.Hardware.Gpio;
+using Wirehome.Hardware.Drivers.Gpio;
+using Wirehome.Hardware.I2C;
 
 namespace Wirehome.Core
 {
@@ -74,7 +77,7 @@ namespace Wirehome.Core
             _container = new Container(options);
         }
 
-        public Task<bool> RunAsync() => Task.Run(async () => await RunAsyncInternal());
+        public Task<bool> RunAsync() => Task.Run(() => RunAsyncInternal());
 
         private async Task<bool> RunAsyncInternal()
         {
@@ -89,11 +92,11 @@ namespace Wirehome.Core
 
                 RegisterDevices();
 
-                await _container.StartupServices(_log);
+                await _container.StartupServices(_log).ConfigureAwait(false);
 
                 _container.ExposeRegistrationsToApi();
 
-                await TryConfigureAsync();
+                await TryConfigureAsync().ConfigureAwait(false);
 
                 StartupCompleted?.Invoke(this, new StartupCompletedEventArgs(stopwatch.Elapsed));
 
@@ -149,7 +152,7 @@ namespace Wirehome.Core
                     e.ApiContext.Result["Controller"] = JObject.FromObject(_container.GetInstance<ISettingsService>().GetSettings<ControllerSettings>());
                 };
 
-                await TryApplyCodeConfigurationAsync();
+                await TryApplyCodeConfigurationAsync().ConfigureAwait(false);
 
                 _log.Info("Resetting all components");
                 var componentRegistry = _container.GetInstance<IComponentRegistryService>();
@@ -206,11 +209,12 @@ namespace Wirehome.Core
             _container.RegisterSingleton<ILogService, LogService>();
             _container.RegisterSingleton<IHealthService, HealthService>();
             _container.RegisterSingleton<IDateTimeService, DateTimeService>();
+            _container.RegisterSingleton<ITimerService, TimerService>();
 
             _container.RegisterSingleton<DiscoveryServerService>();
 
             _container.RegisterSingleton<IConfigurationService, ConfigurationService>();
-            _container.RegisterInitializer<ConfigurationService>(s => s.Initialize());
+           // _container.RegisterInitializer<ConfigurationService>(s => s.Initialize());
 
             _container.RegisterSingleton<IStorageService, StorageService>();
 
@@ -219,24 +223,26 @@ namespace Wirehome.Core
             _container.RegisterSingleton<IBackupService, BackupService>();
 
             _container.RegisterSingleton<IResourceService, ResourceService>();
-            _container.RegisterInitializer<ResourceService>(s => s.Initialize());
+            //_container.RegisterInitializer<ResourceService>(s => s.Initialize());
 
             _container.RegisterSingleton<IApiDispatcherService, ApiDispatcherService>();
             _container.RegisterSingleton<AzureCloudService>();
             _container.RegisterSingleton<CloudConnectorService>();
 
             _container.RegisterSingleton<INotificationService, NotificationService>();
-            _container.RegisterInitializer<NotificationService>(s => s.Initialize());
+            //_container.RegisterInitializer<NotificationService>(s => s.Initialize());
 
             _container.RegisterSingleton<ISettingsService, SettingsService>();
-            _container.RegisterInitializer<SettingsService>(s => s.Initialize());
+            //_container.RegisterInitializer<SettingsService>(s => s.Initialize());
             _container.RegisterSingleton<ISchedulerService, SchedulerService>();
 
             _container.RegisterSingleton<IMessageBrokerService, MessageBrokerService>();
             _container.RegisterSingleton<IInterruptMonitorService, InterruptMonitorService>();
-
+            _container.RegisterSingleton<IGpioService, GpioService>();
+            _container.RegisterSingleton<II2CBusService, I2CBusService>();
+            
             _container.RegisterSingleton<IDeviceMessageBrokerService, DeviceMessageBrokerService>();
-            _container.RegisterInitializer<DeviceMessageBrokerService>(s => s.Initialize());
+            //_container.RegisterInitializer<DeviceMessageBrokerService>(s => s.Initialize());
 
             _container.RegisterSingleton<IRemoteSocketService, RemoteSocketService>();
 
@@ -265,6 +271,8 @@ namespace Wirehome.Core
             _container.RegisterSingleton<ITelegramBotService, TelegramBotService>();
 
             _container.RegisterSingleton<IStatusService, StatusService>();
+            _container.RegisterSingleton<IHttpServerService, HttpServerService>();
+            
         }
     }
 }

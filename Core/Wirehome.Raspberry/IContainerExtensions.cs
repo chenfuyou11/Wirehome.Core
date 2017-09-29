@@ -7,14 +7,15 @@ namespace Wirehome.Raspberry
     {
         public static void RegisterRaspberryServices(this IContainer container)
         {
-            container.RegisterSingleton<IBinaryReader, BinaryReader>();
-            container.RegisterSingleton<INativeGpio, RaspberryGpio>();
             container.RegisterSingleton<INativeGpioController, RaspberryGpioController>();
-            container.RegisterSingleton<INativeI2cDevice, RaspberryI2cDevice>();
+            container.RegisterSingleton<INativeI2cBus, RaspberryI2cBus>();
             container.RegisterSingleton<INativeSerialDevice, RaspberrySerialDevice>();
             container.RegisterSingleton<INativeSoundPlayer, RaspberrySoundPlayer>();
             container.RegisterSingleton<INativeStorage, RaspberryStorage>();
             container.RegisterSingleton<INativeTimerSerice, RaspberryTimerSerice>();
+            container.RegisterSingleton<INativeUDPSocket, RaspberryUDPSocket>();
+            container.RegisterSingleton<INativeTCPSocket, RaspberryTCPSocket>();
+            
         }
     }
 }

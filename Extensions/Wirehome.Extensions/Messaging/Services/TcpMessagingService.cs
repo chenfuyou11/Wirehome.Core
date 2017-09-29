@@ -3,7 +3,6 @@ using Wirehome.Contracts.Messaging;
 using Wirehome.Extensions.Contracts;
 using Wirehome.Extensions.Messaging.Core;
 using Newtonsoft.Json.Linq;
-using SocketLite.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -54,21 +53,23 @@ namespace Wirehome.Extensions.Messaging.Services
                 try
                 {
                     var tcpMessage = message.Payload.Content.ToObject<IBaseMessage>();
-                    using(var socket = new TcpSocketClient())
-                    {
-                        Uri uri = new Uri($"tcp://{tcpMessage.Address}");
 
-                        await socket.ConnectAsync(uri.Host, uri.Port.ToString());
-                        var messageBytes = handler.Serialize(message.Payload.Content);
-                        await socket.WriteStream.WriteAsync(messageBytes, 0, messageBytes.Length);
-                        //TODO CHECK
-                        await socket.WriteStream.FlushAsync();
+                    //TODO
+                    //using(var socket = new TcpSocketClient())
+                    //{
+                    //    Uri uri = new Uri($"tcp://{tcpMessage.Address}");
+
+                    //    await socket.ConnectAsync(uri.Host, uri.Port.ToString());
+                    //    var messageBytes = handler.Serialize(message.Payload.Content);
+                    //    await socket.WriteStream.WriteAsync(messageBytes, 0, messageBytes.Length);
+                    //    //TODO CHECK
+                    //    await socket.WriteStream.FlushAsync();
                         
-                        var reader = new StreamReader(socket.ReadStream);
-                        string response = await reader.ReadLineAsync();
+                    //    var reader = new StreamReader(socket.ReadStream);
+                    //    string response = await reader.ReadLineAsync();
 
-                        socket.Disconnect();
-                    }
+                    //    socket.Disconnect();
+                    //}
                 }
                 catch (Exception ex)
                 {

@@ -6,7 +6,8 @@ using Wirehome.Contracts.Components;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Services;
 using Newtonsoft.Json.Linq;
-using Wirehome.Contracts.Cryptographic;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Wirehome.Api
 {
@@ -15,9 +16,8 @@ namespace Wirehome.Api
         private readonly List<IApiAdapter> _adapters = new List<IApiAdapter>();
         private readonly Dictionary<string, Action<IApiCall>> _actions = new Dictionary<string, Action<IApiCall>>(StringComparer.OrdinalIgnoreCase);
         private readonly ILogger _log;
-        private readonly ICryptoService _cryptoService;
 
-        public ApiDispatcherService(ILogService logService, ICryptoService hashingService)
+        public ApiDispatcherService(ILogService logService)
         {
             if (logService == null) throw new ArgumentNullException(nameof(logService));
 
@@ -28,7 +28,6 @@ namespace Wirehome.Api
             Route("Execute", HandleExecuteRequest);
 
             _log = logService.CreatePublisher(nameof(ApiDispatcherService));
-            _cryptoService = hashingService ?? throw new ArgumentNullException(nameof(hashingService));
         }
 
         public event EventHandler<ApiRequestReceivedEventArgs> StatusRequested;
@@ -175,13 +174,17 @@ namespace Wirehome.Api
 
             if (apiCall.ResultHash != null)
             {
-                var newHash = _cryptoService.GenerateHash(apiCall.Result.ToString());
-                if (apiCall.ResultHash.Equals(newHash))
+                using (var md5 = MD5.Create())
                 {
-                    apiCall.Result = new JObject();
-                }
+                    var newHash = Convert.ToBase64String(md5.ComputeHash(Encoding.UTF8.GetBytes(apiCall.Result.ToString())));
 
-                apiCall.ResultHash = newHash;
+                    if (apiCall.ResultHash.Equals(newHash))
+                    {
+                        apiCall.Result = new JObject();
+                    }
+
+                    apiCall.ResultHash = newHash;
+                }
             }
         }
 

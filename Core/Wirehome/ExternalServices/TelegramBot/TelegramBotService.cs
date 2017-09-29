@@ -25,24 +25,22 @@ namespace Wirehome.ExternalServices.TelegramBot
 
         private int _latestUpdateId;
         private bool _isConnected;
+        private readonly ISettingsService _settingsService;
 
         public TelegramBotService(
-            ISettingsService settingsService, 
+            ISettingsService settingsService,
             IPersonalAgentService personalAgentService,
             ISystemInformationService systemInformationService,
             ILogService logService,
             IScriptingService scriptingService)
         {
-            if (settingsService == null) throw new ArgumentNullException(nameof(settingsService));
             if (scriptingService == null) throw new ArgumentNullException(nameof(scriptingService));
-
+            _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
             _personalAgentService = personalAgentService ?? throw new ArgumentNullException(nameof(personalAgentService));
 
             _log = logService.CreatePublisher(nameof(TelegramBotService));
-
-            settingsService.CreateSettingsMonitor<TelegramBotServiceSettings>(s => Settings = s.NewSettings);
+            
             systemInformationService.Set("TelegramBotService/IsConnected", () => _isConnected);
-
             scriptingService.RegisterScriptProxy(s => new TelegramBotScriptProxy(this));
         }
 
@@ -50,6 +48,9 @@ namespace Wirehome.ExternalServices.TelegramBot
 
         public override Task Initialize()
         {
+            //TODO Moved to Init
+            _settingsService.CreateSettingsMonitor<TelegramBotServiceSettings>(s => Settings = s.NewSettings);
+
             Task.Run(ProcessPendingMessagesAsync);
             Task.Run(WaitForUpdates);
 

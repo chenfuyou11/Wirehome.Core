@@ -15,8 +15,8 @@ namespace Wirehome.Hardware.Drivers.Gpio
 
         public GpioService(INativeGpioController nativeGpioController, INativeTimerSerice nativeTimerSerice)
         {
-            _nativeGpioController = _nativeGpioController ?? throw new System.ArgumentNullException(nameof(_nativeGpioController));
-            _nativeTimerSerice = _nativeTimerSerice ?? throw new System.ArgumentNullException(nameof(_nativeTimerSerice));
+            _nativeGpioController = nativeGpioController ?? throw new System.ArgumentNullException(nameof(nativeGpioController));
+            _nativeTimerSerice = nativeTimerSerice ?? throw new System.ArgumentNullException(nameof(nativeTimerSerice));
         }
         
         public IBinaryInput GetInput(int number, GpioPullMode pullMode, GpioInputMonitoringMode monitoringMode)

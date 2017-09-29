@@ -29,7 +29,7 @@ namespace Wirehome.Raspberry
         public float ReadSingle() => _dataReader.ReadSingle();
         public string ReadString(byte size) =>_dataReader.ReadString(size);
         public uint ReadUInt32() => _dataReader.ReadUInt32();
-        public async Task<uint> LoadAsync(uint count, CancellationToken cancellationToken) => await _dataReader.LoadAsync(count).AsTask(cancellationToken);
+        public Task<uint> LoadAsync(uint count, CancellationToken cancellationToken) => _dataReader.LoadAsync(count).AsTask(cancellationToken);
         
     }
 }

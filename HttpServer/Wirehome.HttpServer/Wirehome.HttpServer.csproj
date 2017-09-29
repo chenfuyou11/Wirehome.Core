@@ -114,6 +114,7 @@
     <Compile Include="Http\HttpHeaderExtensions.cs" />
     <Compile Include="Http\HttpHeaderName.cs" />
     <Compile Include="Http\HttpRequestReader.cs" />
+    <Compile Include="IContainerExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebSocketClientSession.cs" />
     <Compile Include="WebSockets\WebSocketBinaryMessage.cs" />

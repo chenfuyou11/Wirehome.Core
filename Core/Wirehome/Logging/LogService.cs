@@ -23,10 +23,10 @@ namespace Wirehome.Logging
         private readonly RollingCollection<LogEntry> _warningLogEntries = new RollingCollection<LogEntry>(250);
 
         private readonly IEnumerable<ILogAdapter> _adapters;
-        private readonly ITimerService _timerService;
+        private readonly INativeTimerSerice _timerService;
         private long _id;
 
-        public LogService(IEnumerable<ILogAdapter> adapters, ITimerService timerService)
+        public LogService(IEnumerable<ILogAdapter> adapters, INativeTimerSerice timerService)
         {
             _adapters = adapters ?? throw new ArgumentNullException(nameof(adapters));
             _timerService = timerService ?? throw new ArgumentNullException(nameof(timerService));

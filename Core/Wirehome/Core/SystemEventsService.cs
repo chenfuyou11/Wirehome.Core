@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Notifications;
 using Wirehome.Contracts.Resources;
@@ -9,6 +10,7 @@ namespace Wirehome.Core
     public class SystemEventsService : ServiceBase, ISystemEventsService
     {
         private readonly INotificationService _notificationService;
+        private readonly IResourceService _resourceService;
 
         public SystemEventsService(IController controller, INotificationService notificationService, IResourceService resourceService)
         {
@@ -17,8 +19,13 @@ namespace Wirehome.Core
 
             controller.StartupCompleted += OnStartupCompleted;
             controller.StartupFailed += (s, e) => StartupFailed?.Invoke(this, EventArgs.Empty);
+            _resourceService = resourceService ?? throw new ArgumentNullException(nameof(resourceService));
+        }
 
-            resourceService.RegisterText(SystemEventNotification.Booted, "System is booted.");
+        public override Task Initialize()
+        {
+            _resourceService.RegisterText(SystemEventNotification.Booted, "System is booted.");
+            return Task.CompletedTask;
         }
 
         public event EventHandler StartupCompleted;

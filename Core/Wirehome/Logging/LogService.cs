@@ -32,7 +32,6 @@ namespace Wirehome.Logging
             _timerService = timerService ?? throw new ArgumentNullException(nameof(timerService));
             Log.Default = CreatePublisher(null);
 
-            //TODO CHECK
             _timerService.CreatePeriodicTimer(ProcessPendingLogEntries, TimeSpan.FromMilliseconds(100));
         }
 

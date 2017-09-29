@@ -4,15 +4,15 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
-using HA4IoT.CloudApi.Services;
-using HA4IoT.CloudApi.Services.Exceptions;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.PersonalAgent.AmazonEcho;
+using Wirehome.CloudApi.Services;
+using Wirehome.CloudApi.Services.Exceptions;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.PersonalAgent.AmazonEcho;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace HA4IoT.CloudApi.Controllers
+namespace Wirehome.CloudApi.Controllers
 {
     [ExceptionFilter]
     public class AmazonEchoController : ApiController

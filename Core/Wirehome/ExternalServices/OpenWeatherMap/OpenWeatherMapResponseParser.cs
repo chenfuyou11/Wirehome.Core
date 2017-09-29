@@ -20,23 +20,22 @@ namespace Wirehome.ExternalServices.OpenWeatherMap
 
         public void Parse(string source)
         {
-            //TODO
+            //TODO Check
             var data = JObject.Parse(source);
 
-            //var main = data["main"];
-            //Temperature = (float)main.GetNamedNumber("temp", 0);
-            //Humidity = (float)main.GetNamedNumber("humidity", 0);
+            var main = data["main"];
+            Temperature = (float)main["temp"];
+            Humidity = (float)main["humidity"];
 
-            //var sys = data.GetNamedObject("sys");
-            //var sunriseValue = sys.GetNamedNumber("sunrise", 0);
-            //var sunsetValue = sys.GetNamedNumber("sunset", 0);
-            //Sunrise = UnixTimeStampToDateTime(sunriseValue).TimeOfDay;
-            //Sunset = UnixTimeStampToDateTime(sunsetValue).TimeOfDay;
+            var sys = data["sys"];
+            var sunriseValue = (float)sys["sunrise"];
+            var sunsetValue = (float)sys["sunset"];
+            Sunrise = UnixTimeStampToDateTime(sunriseValue).TimeOfDay;
+            Sunset = UnixTimeStampToDateTime(sunsetValue).TimeOfDay;
 
-            //var weather = data.GetNamedArray("weather");
-            //var weatherId = (int)weather.GetObjectAt(0).GetNamedNumber("id");
-            //ConditionCode = weatherId;
-            //Condition = OpenWeatherMapWeatherConditionParser.Parse(ConditionCode);
+            var weather = data["weather"];
+            ConditionCode = (int)weather["id"];
+            Condition = OpenWeatherMapWeatherConditionParser.Parse(ConditionCode);
         }
 
         private static DateTime UnixTimeStampToDateTime(double unixTimeStamp)

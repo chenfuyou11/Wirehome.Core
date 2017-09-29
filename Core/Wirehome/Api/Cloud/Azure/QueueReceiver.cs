@@ -113,7 +113,6 @@ namespace Wirehome.Api.Cloud.Azure
                 return;
             }
 
-            //TODO brokerPropertiesSource.FirstOrDefault()
             var brokerProperties = JObject.Parse(brokerPropertiesSource.FirstOrDefault());
             var body = JObject.Parse(bodySource);
 

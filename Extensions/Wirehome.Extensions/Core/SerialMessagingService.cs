@@ -42,7 +42,7 @@ namespace Wirehome.Extensions.Messaging.Services
             {
                 while (true)
                 {
-                    await ReadAsync(_readCancellationTokenSource.Token);
+                    await ReadAsync(_readCancellationTokenSource.Token).ConfigureAwait(false);
                 }
             }
             catch (TaskCanceledException)
@@ -59,19 +59,7 @@ namespace Wirehome.Extensions.Messaging.Services
             }
         }
 
-        // DNF TODO
-
-        //public void RegisterHandler(IBinaryMessage handler)
-        //{
-        //    _messageHandlers.Add(handler);
-        //}
-
-        //public void Close()
-        //{
-        //    CancelReadTask();
-        //    CloseDevice();  
-        //}
-
+    
         private void CloseDevice()
         {
             _serialDevice.Dispose();
@@ -79,12 +67,9 @@ namespace Wirehome.Extensions.Messaging.Services
 
         private void CancelReadTask()
         {
-            if (_readCancellationTokenSource != null)
+            if (_readCancellationTokenSource != null && !_readCancellationTokenSource.IsCancellationRequested)
             {
-                if (!_readCancellationTokenSource.IsCancellationRequested)
-                {
-                    _readCancellationTokenSource.Cancel();
-                }
+                _readCancellationTokenSource.Cancel();
             }
         }
 

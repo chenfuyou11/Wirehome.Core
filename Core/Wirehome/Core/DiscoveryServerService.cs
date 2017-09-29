@@ -41,7 +41,7 @@ namespace Wirehome.Core
 
         private async Task SendResponseAsync(string remoteAddress)
         {
-            //TODO Why not in constructor
+            //TODO Why not in constructor??
             var controllerSettings = _settingsService.GetSettings<ControllerSettings>();
 
             var response = new DiscoveryResponse(controllerSettings.Caption, controllerSettings.Description);

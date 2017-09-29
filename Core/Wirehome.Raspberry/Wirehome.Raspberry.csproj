@@ -115,6 +115,7 @@
     <Compile Include="RaspberryI2cDevice.cs" />
     <Compile Include="RaspberrySerialDevice.cs" />
     <Compile Include="RaspberryStorage.cs" />
+    <Compile Include="RaspberryTCPSocketFactory.cs" />
     <Compile Include="RaspberryTimerSerice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RaspberrySoundPlayer.cs" />

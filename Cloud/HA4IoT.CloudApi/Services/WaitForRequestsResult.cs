@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.CloudApi.Services
+﻿namespace Wirehome.CloudApi.Services
 {
     public enum WaitForRequestsResult
     {

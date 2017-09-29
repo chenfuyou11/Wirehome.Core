@@ -19,7 +19,7 @@ namespace Wirehome.Hardware.Drivers.I2CHardwareBridge
 
             Id = id ?? throw new ArgumentNullException(nameof(id));
 
-            //TODO
+            //TODO Commented for Extensions to work
             //DHT22Accessor = new DHT22Accessor(this, schedulerService);
         }
 

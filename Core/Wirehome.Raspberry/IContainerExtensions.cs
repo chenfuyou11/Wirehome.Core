@@ -14,7 +14,7 @@ namespace Wirehome.Raspberry
             container.RegisterSingleton<INativeStorage, RaspberryStorage>();
             container.RegisterSingleton<INativeTimerSerice, RaspberryTimerSerice>();
             container.RegisterSingleton<INativeUDPSocket, RaspberryUDPSocket>();
-            container.RegisterSingleton<INativeTCPSocket, RaspberryTCPSocket>();
+            container.RegisterSingleton<INativeTCPSocketFactory, RaspberryTCPSocketFactory>();
             
         }
     }

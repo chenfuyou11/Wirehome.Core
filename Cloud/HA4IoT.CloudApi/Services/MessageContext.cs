@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Api.Cloud;
+using Wirehome.Contracts.Api.Cloud;
 
-namespace HA4IoT.CloudApi.Services
+namespace Wirehome.CloudApi.Services
 {
     public class MessageContext
     {

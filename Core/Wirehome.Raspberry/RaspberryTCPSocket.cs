@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,10 +12,12 @@ namespace Wirehome.Raspberry
 {
     public class RaspberryTCPSocket : INativeTCPSocket
     {
-        private readonly StreamSocket _socket = new StreamSocket();
+        private readonly StreamSocket _socket;
 
-        public RaspberryTCPSocket()
+        public RaspberryTCPSocket(StreamSocket socket)
         {
+            _socket = socket;
+
             _socket.Control.KeepAlive = true;
             _socket.Control.NoDelay = true;
         }
@@ -34,7 +37,7 @@ namespace Wirehome.Raspberry
             }
         }
 
-        public async Task SendDataAsync(byte[] data, int timeout)
+        public async Task SendDataAsync(byte[] data, int timeout, bool autoflush)
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(timeout);
@@ -42,6 +45,10 @@ namespace Wirehome.Raspberry
             try
             {
                 await _socket.OutputStream.WriteAsync(data.AsBuffer()).AsTask(cts.Token).ConfigureAwait(false);
+                if(autoflush)
+                {
+                    await _socket.OutputStream.FlushAsync();
+                }
             }
             catch (TaskCanceledException)
             {
@@ -62,6 +69,14 @@ namespace Wirehome.Raspberry
             catch (TaskCanceledException)
             {
                 throw new TimeoutException("Timeout while reading KNX Client response.");
+            }
+        }
+
+        public async Task<string> ReadLineAsync()
+        {
+            using (var reader = new StreamReader(_socket.InputStream.AsStreamForRead()))
+            {
+                return await reader.ReadLineAsync().ConfigureAwait(false);
             }
         }
 

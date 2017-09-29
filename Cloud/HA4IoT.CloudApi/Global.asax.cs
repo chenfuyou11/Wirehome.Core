@@ -2,13 +2,13 @@
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
-using HA4IoT.CloudApi.Services;
+using Wirehome.CloudApi.Services;
 using SimpleInjector;
 using SimpleInjector.Integration.Web;
 using SimpleInjector.Integration.Web.Mvc;
 using SimpleInjector.Integration.WebApi;
 
-namespace HA4IoT.CloudApi
+namespace Wirehome.CloudApi
 {
     public class WebApiApplication : HttpApplication
     {

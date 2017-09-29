@@ -1,6 +1,6 @@
 ﻿using Owin;
 
-namespace HA4IoT.CloudApi
+namespace Wirehome.CloudApi
 {
     public partial class Startup
     {

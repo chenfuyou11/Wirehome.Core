@@ -92,15 +92,15 @@ namespace Wirehome.Core
 
                 RegisterDevices();
 
-                await _container.StartupServices(_log).ConfigureAwait(false);
+                await InitializeServices().ConfigureAwait(false);
 
-                _container.ExposeRegistrationsToApi();
+                ExposeRegistrationsToApi();
 
                 await TryConfigureAsync().ConfigureAwait(false);
 
                 StartupCompleted?.Invoke(this, new StartupCompletedEventArgs(stopwatch.Elapsed));
 
-                _container.GetInstance<IScriptingService>().TryExecuteStartupScripts();
+                ExecuteStartupScripts();
             }
             catch (Exception exception)
             {
@@ -109,6 +109,21 @@ namespace Wirehome.Core
             }
 
             return true;
+        }
+
+        private void ExecuteStartupScripts()
+        {
+            _container.GetInstance<IScriptingService>().TryExecuteStartupScripts();
+        }
+
+        private void ExposeRegistrationsToApi()
+        {
+            _container.ExposeRegistrationsToApi();
+        }
+
+        private async Task InitializeServices()
+        {
+            await _container.StartupServices(_log).ConfigureAwait(false);
         }
 
         private void RegisterDevices()

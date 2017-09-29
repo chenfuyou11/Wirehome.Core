@@ -1,8 +1,9 @@
-﻿namespace Wirehome.Contracts.Core
+﻿using System;
+
+namespace Wirehome.Contracts.Core
 {
-    public interface INativeI2cDevice
+    public interface INativeI2cDevice : IDisposable
     {
-        void Dispose();
         NativeI2cTransferResult WritePartial(byte[] buffer);
         NativeI2cTransferResult ReadPartial(byte[] buffer);
         NativeI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer);

@@ -15,13 +15,13 @@ namespace Wirehome.Hardware.Drivers.Knx
         private bool _isDisposed;
         private readonly INativeTCPSocket _nativeTCPSocket;
 
-        public KnxClient(string hostName, int port, string password, INativeTCPSocket nativeTCPSocket)
+        public KnxClient(string hostName, int port, string password, INativeTCPSocketFactory nativeTCPSocket)
         {
             _hostName = hostName ?? throw new ArgumentNullException(nameof(hostName));
             _port = port;
             _password = password;
 ;
-            _nativeTCPSocket = nativeTCPSocket;
+            _nativeTCPSocket = nativeTCPSocket.Create();
         }
 
         public int Timeout { get; set; } = 150;
@@ -89,7 +89,7 @@ namespace Wirehome.Hardware.Drivers.Knx
         private async Task WriteToSocket(string request)
         {
             byte[] payload = Encoding.UTF8.GetBytes(request + "\x03");
-            await _nativeTCPSocket.SendDataAsync(payload, Timeout).ConfigureAwait(false);
+            await _nativeTCPSocket.SendDataAsync(payload, Timeout, true).ConfigureAwait(false);
 
             Log.Default.Verbose($"KnxClient: Sent {request}");
         }

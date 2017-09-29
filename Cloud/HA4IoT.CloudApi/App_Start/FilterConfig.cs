@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace HA4IoT.CloudApi
+namespace Wirehome.CloudApi
 {
     public class FilterConfig
     {

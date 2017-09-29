@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace HA4IoT.CloudApi
+namespace Wirehome.CloudApi
 {
     public class RouteConfig
     {

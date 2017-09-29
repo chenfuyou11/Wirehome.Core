@@ -1,6 +1,6 @@
 ﻿using System.Web.Http;
 
-namespace HA4IoT.CloudApi
+namespace Wirehome.CloudApi
 {
     public static class WebApiConfig
     {

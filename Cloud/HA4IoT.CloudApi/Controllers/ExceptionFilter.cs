@@ -4,9 +4,9 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Filters;
-using HA4IoT.CloudApi.Services.Exceptions;
+using Wirehome.CloudApi.Services.Exceptions;
 
-namespace HA4IoT.CloudApi.Controllers
+namespace Wirehome.CloudApi.Controllers
 {
     public class ExceptionFilter : ExceptionFilterAttribute
     {

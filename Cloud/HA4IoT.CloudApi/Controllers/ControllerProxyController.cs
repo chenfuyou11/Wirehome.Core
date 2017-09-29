@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using HA4IoT.CloudApi.Services;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Api.Cloud;
+using Wirehome.CloudApi.Services;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Api.Cloud;
 
-namespace HA4IoT.CloudApi.Controllers
+namespace Wirehome.CloudApi.Controllers
 {
     [ExceptionFilter]
     public class ControllerProxyController : ApiController

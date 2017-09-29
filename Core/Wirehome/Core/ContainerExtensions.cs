@@ -34,7 +34,6 @@ namespace Wirehome.Core
                 }
                 catch (Exception exception)
                 {
-                    var test = exception.ToString();
                     log.Error(exception, $"Error while starting service '{service.GetType().Name}'. " + exception.Message);
                 }
             }

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using HA4IoT.CloudApi.Services.Exceptions;
-using HA4IoT.Contracts.Api;
-using HA4IoT.Contracts.Api.Cloud;
+using Wirehome.CloudApi.Services.Exceptions;
+using Wirehome.Contracts.Api;
+using Wirehome.Contracts.Api.Cloud;
 
-namespace HA4IoT.CloudApi.Services
+namespace Wirehome.CloudApi.Services
 {
     public class ControllermessageBroker
     {

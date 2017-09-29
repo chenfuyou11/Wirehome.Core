@@ -1,9 +1,9 @@
 ﻿using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartup(typeof(HA4IoT.CloudApi.Startup))]
+[assembly: OwinStartup(typeof(Wirehome.CloudApi.Startup))]
 
-namespace HA4IoT.CloudApi
+namespace Wirehome.CloudApi
 {
     public partial class Startup
     {

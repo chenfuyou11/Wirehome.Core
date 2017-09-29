@@ -57,8 +57,7 @@ namespace Wirehome.Tests.Mockups
             _container.RegisterSingleton<IDaylightService, TestDaylightService>();
             _container.RegisterSingleton<IDateTimeService, TestDateTimeService>();
             _container.RegisterSingleton<IResourceService, ResourceService>();
-            //TODO
-            //_container.RegisterSingleton<ISchedulerService, SchedulerService>();
+            _container.RegisterSingleton<ISchedulerService, SchedulerService>();
             _container.RegisterSingleton<INotificationService, NotificationService>();
             _container.RegisterSingleton<ISystemEventsService, SystemEventsService>();
             _container.RegisterSingleton<IAutomationRegistryService, AutomationRegistryService>();

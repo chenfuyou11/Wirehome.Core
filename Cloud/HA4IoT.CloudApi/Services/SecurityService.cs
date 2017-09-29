@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using Newtonsoft.Json;
 
-namespace HA4IoT.CloudApi.Services
+namespace Wirehome.CloudApi.Services
 {
     public class SecurityService
     {

@@ -48,10 +48,12 @@ namespace Wirehome.ExternalServices.TelegramBot
 
         public TelegramBotServiceSettings Settings { get; private set; }
 
-        public override void Startup()
+        public override Task Initialize()
         {
             Task.Run(ProcessPendingMessagesAsync);
             Task.Run(WaitForUpdates);
+
+            return Task.CompletedTask;
         }
 
         public void EnqueueMessage(TelegramOutboundMessage message)

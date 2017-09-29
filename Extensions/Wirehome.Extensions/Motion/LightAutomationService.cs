@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Environment;
 using Wirehome.Contracts.Scheduling;
+using System.Threading.Tasks;
 
 namespace Wirehome.Extensions
 {
@@ -42,13 +43,15 @@ namespace Wirehome.Extensions
             _logger = logService.CreatePublisher(nameof(LightAutomationService));
          }
 
-        public void Startup()
+        public Task Initialize()
         {
             _hasStarted = true;
 
             _motionDescriptors.Values.ToList().ForEach(x => x.InitDescriptor());
 
             _schedulerService.Register(MOTION_TIMER, TimeSpan.FromSeconds(1), (Action)MotionScheduler);
+
+            return Task.CompletedTask;
         }
 
         public void MotionScheduler()

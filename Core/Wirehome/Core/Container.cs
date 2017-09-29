@@ -24,6 +24,16 @@ namespace Wirehome.Core
             _container.Verify();
         }
 
+        public bool ChackNativeImpelentationExists()
+        {
+            var registrations =_container.GetCurrentRegistrations();
+            if(!registrations.Any(x => x.ServiceType == typeof(INativeGpio)))
+            {
+                return false;
+            }
+            return true;
+        }
+
         public IList<InstanceProducer> GetCurrentRegistrations()
         {
             return _container.GetCurrentRegistrations().ToList();

@@ -109,7 +109,6 @@
     <Compile Include="BinaryReader.cs" />
     <Compile Include="IContainerExtensions.cs" />
     <Compile Include="RaspberryLoggingService.cs" />
-    <Compile Include="RaspberryBackgroundTask.cs" />
     <Compile Include="RaspberryGpio.cs" />
     <Compile Include="RaspberryGpioController.cs" />
     <Compile Include="RaspberryI2cDevice.cs" />

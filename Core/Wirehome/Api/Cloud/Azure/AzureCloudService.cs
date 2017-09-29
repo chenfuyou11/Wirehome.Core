@@ -29,18 +29,20 @@ namespace Wirehome.Api.Cloud.Azure
 
         public event EventHandler<ApiRequestReceivedEventArgs> ApiRequestReceived;
 
-        public override void Startup()
+        public override Task Initialize()
         {
             _apiService.RegisterAdapter(this);
 
             var settings = _settingsService.GetSettings<AzureCloudServiceSettings>();
             if (!settings.IsEnabled || !string.IsNullOrEmpty(settings.ControllerId))
             {
-                return;
+                return Task.CompletedTask;
             }
 
             SetupOutboundQueue(settings);
             SetupInboundQueue(settings);
+
+            return Task.CompletedTask;
         }
 
         private void SetupOutboundQueue(AzureCloudServiceSettings settings)

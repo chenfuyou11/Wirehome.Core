@@ -58,54 +58,39 @@ using Wirehome.Scheduling;
 
 namespace Wirehome.Core
 {
-    public class Controller : IController
+    public class WirehomeController : IController
     {
         private readonly Container _container;
         private readonly ControllerOptions _options;
         private ILogger _log;
-        private INativeBackgroundTask _nativeBackgroundTask;
-        public IContainer Container => _container;
+        private IContainer Container => _container;
 
         public event EventHandler<StartupCompletedEventArgs> StartupCompleted;
         public event EventHandler<StartupFailedEventArgs> StartupFailed;
    
-        public Controller(ControllerOptions options)
+        public WirehomeController(ControllerOptions options)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _container = new Container(options);
         }
 
-        public Task RunAsync(INativeBackgroundTask nativeBackgroundTask)
-        {
-            _nativeBackgroundTask = nativeBackgroundTask ?? throw new ArgumentNullException(nameof(nativeBackgroundTask));
-            return RunAsync();
-        }
+        public Task<bool> RunAsync() => Task.Run(async () => await RunAsyncInternal());
 
-        public Task RunAsync()
-        {
-            return Task.Run(RunAsyncInternal);
-        }
-
-        private async Task RunAsyncInternal()
+        private async Task<bool> RunAsyncInternal()
         {
             var stopwatch = Stopwatch.StartNew();
             try
             {
-                _container.RegisterSingleton<IController>(() => this);
-                RegisterServices();
-                _options.ContainerConfigurator?.ConfigureContainer(_container);
-                _container.Verify();
+                InitializeContainer();
 
-                _log = _container.GetInstance<ILogService>().CreatePublisher(nameof(Controller));
+                InitializeLogger();
 
-                var nativeStorage = _container.GetInstance<INativeStorage>();
-                StoragePath.Initialize(nativeStorage.LocalFolderPath(), nativeStorage.LocalFolderPath());
+                InitializeStorage();
 
-                _container.GetInstance<IInterruptMonitorService>().RegisterInterrupts();
-                _container.GetInstance<IDeviceRegistryService>().RegisterDevices();
-                _container.GetInstance<IRemoteSocketService>().RegisterRemoteSockets();
+                RegisterDevices();
 
-                _container.StartupServices(_log);
+                await _container.StartupServices(_log);
+
                 _container.ExposeRegistrationsToApi();
 
                 await TryConfigureAsync();
@@ -117,84 +102,43 @@ namespace Wirehome.Core
             catch (Exception exception)
             {
                 StartupFailed?.Invoke(this, new StartupFailedEventArgs(stopwatch.Elapsed, exception));
-                _nativeBackgroundTask.Complete();
+                return false;
             }
+
+            return true;
         }
 
-        public void RegisterServices()
+        private void RegisterDevices()
         {
-            _container.RegisterSingleton<IContainer>(() => _container);
-
-            foreach (var customService in _options.CustomServices)
-            {
-                _container.RegisterSingleton(customService);
-            }
-
-            _container.RegisterCollection<ILogAdapter>(_options.LogAdapters);
-            _container.RegisterSingleton<ILogService, LogService>();
-            _container.RegisterSingleton<IHealthService, HealthService>();
-            _container.RegisterSingleton<IDateTimeService, DateTimeService>();
-
-            _container.RegisterSingleton<DiscoveryServerService>();
-
-            _container.RegisterSingleton<IConfigurationService, ConfigurationService>();
-            _container.RegisterInitializer<ConfigurationService>(s => s.Initialize());
-
-            _container.RegisterSingleton<IStorageService, StorageService>();
-
-            _container.RegisterSingleton<ISystemEventsService, SystemEventsService>();
-            _container.RegisterSingleton<ISystemInformationService, SystemInformationService>();
-            _container.RegisterSingleton<IBackupService, BackupService>();
-
-            _container.RegisterSingleton<IResourceService, ResourceService>();
-            _container.RegisterInitializer<ResourceService>(s => s.Initialize());
-
-            _container.RegisterSingleton<IApiDispatcherService, ApiDispatcherService>();
-            _container.RegisterSingleton<AzureCloudService>();
-            _container.RegisterSingleton<CloudConnectorService>();
-
-            _container.RegisterSingleton<INotificationService, NotificationService>();
-            _container.RegisterInitializer<NotificationService>(s => s.Initialize());
-
-            _container.RegisterSingleton<ISettingsService, SettingsService>();
-            _container.RegisterInitializer<SettingsService>(s => s.Initialize());
-            _container.RegisterSingleton<ISchedulerService, SchedulerService>();
-  
-            _container.RegisterSingleton<IMessageBrokerService, MessageBrokerService>();
-            _container.RegisterSingleton<IInterruptMonitorService, InterruptMonitorService>();
-
-            _container.RegisterSingleton<IDeviceMessageBrokerService, DeviceMessageBrokerService>();
-            _container.RegisterInitializer<DeviceMessageBrokerService>(s => s.Initialize());
-
-            _container.RegisterSingleton<IRemoteSocketService, RemoteSocketService>();
-
-            _container.RegisterSingleton<CCToolsDeviceService>();
-            _container.RegisterSingleton<SonoffDeviceService>();
-            _container.RegisterSingleton<OutpostDeviceService>();
-
-            _container.RegisterSingleton<IDeviceRegistryService, DeviceRegistryService>();
-            _container.RegisterSingleton<IAreaRegistryService, AreaRegistryService>();
-            _container.RegisterSingleton<IComponentRegistryService, ComponentRegistryService>();
-            _container.RegisterSingleton<IAutomationRegistryService, AutomationRegistryService>();
-            _container.RegisterSingleton<IScriptingService, ScriptingService>();
-
-            _container.RegisterSingleton<ActuatorFactory>();
-            _container.RegisterSingleton<SensorFactory>();
-            _container.RegisterSingleton<AutomationFactory>();
-
-            _container.RegisterSingleton<IPersonalAgentService, PersonalAgentService>();
-
-            _container.RegisterSingleton<IOutdoorService, OutdoorService>();
-            _container.RegisterSingleton<IDaylightService, DaylightService>();
-            _container.RegisterSingleton<OpenWeatherMapService>();
-            _container.RegisterSingleton<ControllerSlaveService>();
-
-            _container.RegisterSingleton<ITwitterClientService, TwitterClientService>();
-            _container.RegisterSingleton<ITelegramBotService, TelegramBotService>();
-
-            _container.RegisterSingleton<IStatusService, StatusService>();
+            _container.GetInstance<IInterruptMonitorService>().RegisterInterrupts();
+            _container.GetInstance<IDeviceRegistryService>().RegisterDevices();
+            _container.GetInstance<IRemoteSocketService>().RegisterRemoteSockets();
         }
 
+        private void InitializeStorage()
+        {
+            var nativeStorage = _container.GetInstance<INativeStorage>();
+            StoragePath.Initialize(nativeStorage.LocalFolderPath(), nativeStorage.LocalFolderPath());
+        }
+
+        private void InitializeLogger()
+        {
+            _log = _container.GetInstance<ILogService>().CreatePublisher(nameof(WirehomeController));
+        }
+
+        private void InitializeContainer()
+        {
+            _container.RegisterSingleton<IController>(() => this);
+            RegisterServices();
+            _options.ContainerConfigurator?.ConfigureContainer(_container);
+
+            if (!_container.ChackNativeImpelentationExists())
+            {
+                throw new Exception("Containter don't have implementations for native devices");
+            }
+            
+            _container.Verify();
+        }
 
         private async Task TryConfigureAsync()
         {
@@ -247,6 +191,80 @@ namespace Wirehome.Core
                 _log.Error(exception, "Error while applying code configuration");
                 _container.GetInstance<INotificationService>().CreateError("Configuration code has failed.");
             }
+        }
+
+        public void RegisterServices()
+        {
+            _container.RegisterSingleton<IContainer>(() => _container);
+
+            foreach (var customService in _options.CustomServices)
+            {
+                _container.RegisterSingleton(customService);
+            }
+
+            _container.RegisterCollection<ILogAdapter>(_options.LogAdapters);
+            _container.RegisterSingleton<ILogService, LogService>();
+            _container.RegisterSingleton<IHealthService, HealthService>();
+            _container.RegisterSingleton<IDateTimeService, DateTimeService>();
+
+            _container.RegisterSingleton<DiscoveryServerService>();
+
+            _container.RegisterSingleton<IConfigurationService, ConfigurationService>();
+            _container.RegisterInitializer<ConfigurationService>(s => s.Initialize());
+
+            _container.RegisterSingleton<IStorageService, StorageService>();
+
+            _container.RegisterSingleton<ISystemEventsService, SystemEventsService>();
+            _container.RegisterSingleton<ISystemInformationService, SystemInformationService>();
+            _container.RegisterSingleton<IBackupService, BackupService>();
+
+            _container.RegisterSingleton<IResourceService, ResourceService>();
+            _container.RegisterInitializer<ResourceService>(s => s.Initialize());
+
+            _container.RegisterSingleton<IApiDispatcherService, ApiDispatcherService>();
+            _container.RegisterSingleton<AzureCloudService>();
+            _container.RegisterSingleton<CloudConnectorService>();
+
+            _container.RegisterSingleton<INotificationService, NotificationService>();
+            _container.RegisterInitializer<NotificationService>(s => s.Initialize());
+
+            _container.RegisterSingleton<ISettingsService, SettingsService>();
+            _container.RegisterInitializer<SettingsService>(s => s.Initialize());
+            _container.RegisterSingleton<ISchedulerService, SchedulerService>();
+
+            _container.RegisterSingleton<IMessageBrokerService, MessageBrokerService>();
+            _container.RegisterSingleton<IInterruptMonitorService, InterruptMonitorService>();
+
+            _container.RegisterSingleton<IDeviceMessageBrokerService, DeviceMessageBrokerService>();
+            _container.RegisterInitializer<DeviceMessageBrokerService>(s => s.Initialize());
+
+            _container.RegisterSingleton<IRemoteSocketService, RemoteSocketService>();
+
+            _container.RegisterSingleton<CCToolsDeviceService>();
+            _container.RegisterSingleton<SonoffDeviceService>();
+            _container.RegisterSingleton<OutpostDeviceService>();
+
+            _container.RegisterSingleton<IDeviceRegistryService, DeviceRegistryService>();
+            _container.RegisterSingleton<IAreaRegistryService, AreaRegistryService>();
+            _container.RegisterSingleton<IComponentRegistryService, ComponentRegistryService>();
+            _container.RegisterSingleton<IAutomationRegistryService, AutomationRegistryService>();
+            _container.RegisterSingleton<IScriptingService, ScriptingService>();
+
+            _container.RegisterSingleton<ActuatorFactory>();
+            _container.RegisterSingleton<SensorFactory>();
+            _container.RegisterSingleton<AutomationFactory>();
+
+            _container.RegisterSingleton<IPersonalAgentService, PersonalAgentService>();
+
+            _container.RegisterSingleton<IOutdoorService, OutdoorService>();
+            _container.RegisterSingleton<IDaylightService, DaylightService>();
+            _container.RegisterSingleton<OpenWeatherMapService>();
+            _container.RegisterSingleton<ControllerSlaveService>();
+
+            _container.RegisterSingleton<ITwitterClientService, TwitterClientService>();
+            _container.RegisterSingleton<ITelegramBotService, TelegramBotService>();
+
+            _container.RegisterSingleton<IStatusService, StatusService>();
         }
     }
 }

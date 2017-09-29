@@ -24,18 +24,21 @@ namespace Wirehome.Core
             _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
         }
 
-        public override void Startup()
+        public override Task Initialize()
         {
             var allInterfaces = new CommunicationsInterface().GetAllInterfaces();
             var observerUdpReceiver =_socket.CreateObservableListener(Port, allInterfaces.FirstOrDefault());
 
             _subscriberUpdReceiver = observerUdpReceiver.Subscribe(
-            async args =>
-            {
-                var controllerSettings = _settingsService.GetSettings<ControllerSettings>();
-                var response = new DiscoveryResponse(controllerSettings.Caption, controllerSettings.Description);
-                await SendResponseAsync(args.RemoteAddress, response);
-            });
+                async args =>
+                {
+                    var controllerSettings = _settingsService.GetSettings<ControllerSettings>();
+                    var response = new DiscoveryResponse(controllerSettings.Caption, controllerSettings.Description);
+                    await SendResponseAsync(args.RemoteAddress, response);
+                }
+            );
+
+            return Task.CompletedTask;
         }
 
         public void Dispose()

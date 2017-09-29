@@ -1,7 +1,9 @@
-﻿namespace Wirehome.Contracts.Services
+﻿using System.Threading.Tasks;
+
+namespace Wirehome.Contracts.Services
 {
     public interface IService
     {
-        void Startup(); // TODO: Rename to Initialize and support multiple calls.
+        Task Initialize(); // TODO: Support multiple calls.
     }
 }

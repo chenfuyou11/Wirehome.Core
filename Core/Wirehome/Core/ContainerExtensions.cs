@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Wirehome.Contracts;
 using Wirehome.Contracts.Api;
 using Wirehome.Contracts.Core;
@@ -20,7 +21,7 @@ namespace Wirehome.Core
             }
         }
 
-        public static void StartupServices(this IContainer container, ILogger log)
+        public static async Task StartupServices(this IContainer container, ILogger log)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (log == null) throw new ArgumentNullException(nameof(log));
@@ -29,7 +30,7 @@ namespace Wirehome.Core
             {
                 try
                 {
-                    service.Startup();
+                    await service.Initialize();
                 }
                 catch (Exception exception)
                 {

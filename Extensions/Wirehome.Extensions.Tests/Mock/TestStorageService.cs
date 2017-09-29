@@ -1,7 +1,7 @@
 ﻿using Wirehome.Contracts.Storage;
 using System;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -9,8 +9,9 @@ namespace Wirehome.Extensions.Tests
     {
         private readonly Dictionary<string, object> _files = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
-        public void Startup()
+        public Task Startup()
         {
+            return Task.CompletedTask;
         }
 
         public bool TryRead<TData>(string filename, out TData data)

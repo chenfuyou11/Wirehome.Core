@@ -51,7 +51,7 @@ namespace Wirehome.Extensions.Tests
             var eventAggregator = container.GetInstance<IEventAggregator>();
 
             var http = new HttpMessagingService(log, eventAggregator);
-            http.Startup();
+            http.Initialize();
             
             return (eventAggregator, scheduler);
         }

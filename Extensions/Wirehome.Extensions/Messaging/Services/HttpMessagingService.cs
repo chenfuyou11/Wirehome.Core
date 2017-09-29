@@ -20,9 +20,11 @@ namespace Wirehome.Extensions.Messaging.Services
         }
 
         //Add Dispose - maybe to all IService
-        public void Startup()
+        public Task Initialize()
         {
             _eventAggregator.SubscribeForAsyncResult<IHttpMessage>(MessageHandler);
+
+            return Task.CompletedTask;
         }
 
         public async Task<object> MessageHandler(IMessageEnvelope<IHttpMessage> message)

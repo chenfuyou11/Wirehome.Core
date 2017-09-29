@@ -47,12 +47,12 @@ namespace Wirehome.Api.Cloud.CloudConnector
 
         public event EventHandler<ApiRequestReceivedEventArgs> ApiRequestReceived;
 
-        public override void Startup()
+        public override Task Initialize()
         {
             if (!_settings.IsEnabled)
             {
                 _log.Info("Cloud Connector service is disabled.");
-                return;
+                return Task.CompletedTask;
             }
 
             _log.Info("Starting Cloud Connector service.");
@@ -60,6 +60,7 @@ namespace Wirehome.Api.Cloud.CloudConnector
             _apiDispatcherService.RegisterAdapter(this);
 
             Task.Run(ReceivePendingMessagesAsyncLoop, _cancellationTokenSource.Token);
+            return Task.CompletedTask;
         }
 
         public void NotifyStateChanged(IComponent component)

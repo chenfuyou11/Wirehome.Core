@@ -30,7 +30,7 @@ namespace Wirehome.Extensions.Messaging.Services
             _messageHandlers.AddRange(handlers);
         }
 
-        public async void Startup()
+        public async Task Initialize()
         {
             await _serialDevice.Init();
             _dataReader = _serialDevice.GetBinaryReader();

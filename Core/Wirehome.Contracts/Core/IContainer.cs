@@ -33,5 +33,7 @@ namespace Wirehome.Contracts.Core
         void RegisterInitializer<T>(Action<T> initializer) where T : class;
 
         void RegisterSingleton<T>(T service) where T : class;
+
+        bool ChackNativeImpelentationExists();
     }
 }

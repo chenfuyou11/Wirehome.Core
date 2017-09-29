@@ -6,6 +6,7 @@ using Wirehome.Hardware.Drivers.I2CHardwareBridge;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Wirehome.Extensions.Messaging.Services
 {
@@ -27,7 +28,7 @@ namespace Wirehome.Extensions.Messaging.Services
             _messageHandlers.AddRange(handlers);
         }
 
-        public void Startup()
+        public Task Initialize()
         {
             _bridge = _deviceService.GetDevice<I2CHardwareBridge>();
    
@@ -41,6 +42,8 @@ namespace Wirehome.Extensions.Messaging.Services
                     Callback = MessageHandler
                 });
             });
+
+            return Task.CompletedTask;
         }
 
         private void MessageHandler(Message<JObject> message)

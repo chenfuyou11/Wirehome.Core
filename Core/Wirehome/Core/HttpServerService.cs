@@ -13,12 +13,14 @@ using Newtonsoft.Json.Linq;
 using System.Net;
 using Wirehome.Contracts.Network.Http;
 using Wirehome.Contracts.Network.Websockets;
+using System.Threading.Tasks;
 
 namespace Wirehome.Api
 {
     public class HttpServerService : ServiceBase, IApiAdapter, IHttpServerService
     {
         private readonly ILogger _log;
+        private readonly IConfigurationService _configurationService;
         private readonly IHttpServer _httpServer;
 
         private const string ApiBaseUri = "/api/";
@@ -28,19 +30,22 @@ namespace Wirehome.Api
 
         public HttpServerService(IConfigurationService configurationService, IApiDispatcherService apiDispatcherService, ILogService logService, IHttpServer httpServer)
         {
-            if (configurationService == null) throw new ArgumentNullException(nameof(configurationService));
             if (apiDispatcherService == null) throw new ArgumentNullException(nameof(apiDispatcherService));
+
             _log = logService.CreatePublisher(nameof(HttpServerService)) ?? throw new ArgumentNullException(nameof(logService));
+            _configurationService = configurationService ?? throw new ArgumentNullException(nameof(configurationService));
             _httpServer = httpServer ?? throw new ArgumentNullException(nameof(httpServer));
 
             _httpServer.HttpRequestReceived += OnHttpRequestReceived;
             _httpServer.WebSocketConnected += AttachWebSocket;
-
-            var configuration = configurationService.GetConfiguration<HttpServerServiceConfiguration>("HttpServerService");
-            _httpServer.BindAsync(configuration.Port).GetAwaiter().GetResult();
-
-            apiDispatcherService.RegisterAdapter(this);
             
+            apiDispatcherService.RegisterAdapter(this);
+        }
+
+        public override async Task Initialize()
+        {
+            var configuration = _configurationService.GetConfiguration<HttpServerServiceConfiguration>("HttpServerService");
+            await _httpServer.BindAsync(configuration.Port);
         }
 
         public event EventHandler<ApiRequestReceivedEventArgs> ApiRequestReceived;

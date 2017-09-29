@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Wirehome.Contracts.Core;
 
 
@@ -18,8 +19,9 @@ namespace Wirehome.Extensions.Tests
             Tick?.Invoke(this, new TimerTickEventArgs { ElapsedTime = elapsedTime });
         }
 
-        public void Startup()
+        public Task Startup()
         {
+            return Task.CompletedTask;
         }
     }
 }

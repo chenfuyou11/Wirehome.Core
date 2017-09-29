@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Network.Http;
+using System.Threading.Tasks;
 
 namespace Wirehome.Extensions
 {
@@ -59,9 +60,11 @@ namespace Wirehome.Extensions
             _log = logService.CreatePublisher(nameof(AlexaDispatcherEndpointService));
         }
 
-        public void Startup()
+        public Task Initialize()
         {
             _httpServer.HTTPRequestReceived += DispatchHttpRequest;
+
+            return Task.CompletedTask;
         }
 
         public void AddConnectedVivices(string friendlyName, IEnumerable<IComponent> devices)

@@ -25,7 +25,7 @@ namespace Wirehome.Extensions.Messaging.Services
             _messageHandlers.AddRange(handlers);
         }
 
-        public void Startup()
+        public Task Initialize()
         {
             _messageHandlers.ForEach(handler =>
             {
@@ -37,6 +37,8 @@ namespace Wirehome.Extensions.Messaging.Services
                     Callback = MessageHandler
                 });
             });
+
+            return Task.CompletedTask;
         }
 
         private async void MessageHandler(Message<JObject> message)

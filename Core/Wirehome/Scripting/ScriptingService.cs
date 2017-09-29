@@ -11,6 +11,7 @@ using Wirehome.Contracts.Scripting.Configuration;
 using Wirehome.Contracts.Services;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace Wirehome.Scripting
 {
@@ -31,12 +32,14 @@ namespace Wirehome.Scripting
             RegisterScriptProxy(s => new DebuggingScriptProxy(_log, s));
         }
 
-        public override void Startup()
+        public override Task Initialize()
         {
             if (!Directory.Exists(StoragePath.ScriptsRoot))
             {
                 Directory.CreateDirectory(StoragePath.ScriptsRoot);
             }
+
+            return Task.CompletedTask;
         }
 
         public ScriptExecutionResult ExecuteScriptFile(string name, string entryFunctionName)

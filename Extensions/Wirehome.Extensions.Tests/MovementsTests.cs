@@ -30,7 +30,7 @@ namespace Wirehome.Extensions.Tests
             var setupResult = SetupAutomationServiceAndAreas();
             var automationService = setupResult.automationService;
 
-            automationService.Startup();
+            automationService.Initialize();
 
             var toiletDescriptor = automationService.RegisterMotionDescriptor(new MotionDescriptor(setupResult.toiletDetector, new[] { setupResult.hallwayDetectorToilet }, null));
             var hallwayToiletDetector = automationService.RegisterMotionDescriptor(new MotionDescriptor(setupResult.hallwayDetectorToilet, new[] { setupResult.hallwayDetectorLivingRoom }, null));

@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("HA4IoT.Simulator")]
+[assembly: AssemblyTitle("Wirehome.Simulator")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HA4IoT")]
+[assembly: AssemblyProduct("Wirehome")]
 [assembly: AssemblyCopyright("Copyright © Christian Kratky 2015-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

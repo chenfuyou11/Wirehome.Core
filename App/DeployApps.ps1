@@ -172,10 +172,10 @@ function ShowInitialInfo
 	Clear-Host
 
 	Write-Host "----------------------------------";
-	Write-Host "--- HA4IoT App deployment tool ---";
+	Write-Host "--- Wirehome App deployment tool ---";
 	Write-Host "----------------------------------";
 	Write-Host "";
-	Write-Host "This script will help deploy HA4IoT Webbased App and Management App." -ForegroundColor DarkGray;
+	Write-Host "This script will help deploy Wirehome Webbased App and Management App." -ForegroundColor DarkGray;
 	Write-Host "To have success please ensure:" -ForegroundColor DarkGray;
 	Write-Host "";
 	Write-Host "1. The controller should already be deployed to the device" -ForegroundColor DarkGray;
@@ -211,8 +211,8 @@ $isStaging = GetIsStaging
 
 while($true)
 {
-	# Example path: \\minwinpc\c$\Data\Users\DefaultAccount\AppData\Local\Packages\HA4IoT.Controller.Demo-uwp_1.0.0.0_arm__p2wxv0ry6mv8g
-	$package = Get-ChildItem("\\$ipAddress\c$\Data\Users\DefaultAccount\AppData\Local\Packages\HA4IoT.Controller*") 
+	# Example path: \\minwinpc\c$\Data\Users\DefaultAccount\AppData\Local\Packages\Wirehome.Controller.Demo-uwp_1.0.0.0_arm__p2wxv0ry6mv8g
+	$package = Get-ChildItem("\\$ipAddress\c$\Data\Users\DefaultAccount\AppData\Local\Packages\Wirehome.Controller*") 
 	
 	if (!$package)
 	{
@@ -229,7 +229,7 @@ while($true)
 	$clearRemoteDirectory = Confirm(">> Clear remote directory (y/n)?")
 	
 	# Deploy regular app.
-	$sourceDir = ".\HA4IoT.WebApp"
+	$sourceDir = ".\Wirehome.WebApp"
 	$remoteDir = "$package\LocalState\App"
 
 	if ($isStaging)
@@ -237,10 +237,10 @@ while($true)
 		$remoteDir = "$remoteDir\STAGING"
 	}
 
-	Deploy -Source ".\HA4IoT.WebApp" -Target "$remoteDir" -Clear $clearRemoteDirectory -Name "App"
+	Deploy -Source ".\Wirehome.WebApp" -Target "$remoteDir" -Clear $clearRemoteDirectory -Name "App"
 
 	# Deploy management app.
-	$sourceDir = ".\HA4IoT.ManagementApp"
+	$sourceDir = ".\Wirehome.ManagementApp"
 	$remoteDir = "$package\LocalState\ManagementApp"
 
 	if ($isStaging)
@@ -248,7 +248,7 @@ while($true)
 		$remoteDir = "$remoteDir\STAGING"
 	}
 
-	Deploy -Source ".\HA4IoT.ManagementApp" -Target "$remoteDir" -Clear $clearRemoteDirectory -Name "ManagementApp"
+	Deploy -Source ".\Wirehome.ManagementApp" -Target "$remoteDir" -Clear $clearRemoteDirectory -Name "ManagementApp"
 
 	if (-Not (Confirm(">> Deployment completed. Repeat deploy (y/n)?")))
 	{

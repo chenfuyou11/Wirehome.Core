@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HA4IoT.Contracts;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Controller.Main.Main.Rooms;
+using Wirehome.Contracts;
+using Wirehome.Contracts.Core;
+using Wirehome.Controller.Main.Main.Rooms;
 
-namespace HA4IoT.Controller.Main.Main
+namespace Wirehome.Controller.Main.Main
 {
     internal sealed class Configuration : IConfiguration
     {

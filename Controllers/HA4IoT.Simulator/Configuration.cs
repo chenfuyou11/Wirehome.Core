@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HA4IoT.Actuators.Lamps;
-using HA4IoT.Actuators.Sockets;
-using HA4IoT.Components;
-using HA4IoT.Components.Adapters;
-using HA4IoT.Contracts;
-using HA4IoT.Contracts.Actuators;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware.DeviceMessaging;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Contracts.Scheduling;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Contracts.Settings;
-using HA4IoT.Hardware.Drivers.Outpost;
-using HA4IoT.Hardware.Drivers.Sonoff;
-using HA4IoT.Sensors.Buttons;
-using HA4IoT.Sensors.MotionDetectors;
-using HA4IoT.Scripting;
+using Wirehome.Actuators.Lamps;
+using Wirehome.Actuators.Sockets;
+using Wirehome.Components;
+using Wirehome.Components.Adapters;
+using Wirehome.Contracts;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware.DeviceMessaging;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Contracts.Settings;
+using Wirehome.Hardware.Drivers.Outpost;
+using Wirehome.Hardware.Drivers.Sonoff;
+using Wirehome.Sensors.Buttons;
+using Wirehome.Sensors.MotionDetectors;
+using Wirehome.Scripting;
 
-namespace HA4IoT.Simulator
+namespace Wirehome.Simulator
 {
     public class Configuration : IConfiguration
     {

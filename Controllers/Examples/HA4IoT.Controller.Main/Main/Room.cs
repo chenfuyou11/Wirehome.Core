@@ -1,4 +1,4 @@
-﻿namespace HA4IoT.Controller.Main.Main
+﻿namespace Wirehome.Controller.Main.Main
 {
     internal enum Room
     {

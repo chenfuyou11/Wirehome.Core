@@ -12,11 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{20B098BA-1C6
 		App\DeployApps.ps1 = App\DeployApps.ps1
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Controller.Main", "Controllers\Examples\HA4IoT.Controller.Main\HA4IoT.Controller.Main.csproj", "{D3634558-2746-441F-BC09-454B1EC7DC1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WirehomeT.Controller.Main", "Controllers\Examples\HA4IoT.Controller.Main\WirehomeT.Controller.Main.csproj", "{D3634558-2746-441F-BC09-454B1EC7DC1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Service", "Controllers\HA4IoT.Controller\HA4IoT.Service.csproj", "{56F4E6B0-8C46-4715-A9F3-00A6573C2CF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wirehome.Service", "Controllers\HA4IoT.Controller\Wirehome.Service.csproj", "{56F4E6B0-8C46-4715-A9F3-00A6573C2CF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HA4IoT.Simulator", "Controllers\HA4IoT.Simulator\HA4IoT.Simulator.csproj", "{F46489CF-4D81-40DD-8EFB-9B4073898A85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wirehome.Simulator", "Controllers\HA4IoT.Simulator\Wirehome.Simulator.csproj", "{F46489CF-4D81-40DD-8EFB-9B4073898A85}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cloud", "Cloud", "{AF6D96DE-60FE-4711-A888-3F6A06AF1628}"
 EndProject

@@ -90,7 +90,7 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(true, await tcs.Task);
         }
 
-        
+
 
         //[TestMethod]
         //public async Task DenonControlMessage()
@@ -114,7 +114,7 @@ namespace Wirehome.Extensions.Tests
 
         //    var test = new Stopwatch();
         //    test.Start();
-            
+
         //    var result = await brokre.PublishWithResultAsync<DenonControlMessage, string>(message, millisecondsTimeOut: 999999);
 
         //    test.Stop();
@@ -184,10 +184,10 @@ namespace Wirehome.Extensions.Tests
         //        var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
         //        var result = JsonConvert.DeserializeObject<JsonRpcResponse<JsonPausePlayResult>>(responseBody);
-                
+
         //    }
         //}
-    
+
 
         //[TestMethod]
         //public async Task SendRequest()
@@ -225,7 +225,7 @@ namespace Wirehome.Extensions.Tests
         //    //http://192.168.0.101/goform/formiPhoneAppTuner.xml?1+PRESETUP 
 
         //    //CHANGE PLAYBACK(FastForward, Next, Pause, Play, Previous, Rewind, StartOver, Stop)
-            
+
         //    // Surround Mode
         //    // http://192.168.0.101/goform/formiPhoneAppDirect.xml?MSMCH%20STEREO 
         //    // http://192.168.0.101/goform/formiPhoneAppDirect.xml?MSDIRECT 
@@ -239,7 +239,7 @@ namespace Wirehome.Extensions.Tests
         //    //var masterVolume = xml.Descendants("MasterVolume").FirstOrDefault()?.Value?.Trim();
         //    //var mute = xml.Descendants("Mute").FirstOrDefault()?.Value?.Trim();
         //    //var model = xml.Descendants("Model").FirstOrDefault()?.Value?.Trim();
-            
+
         //    //http://192.168.0.101/goform/formMainZone_MainZoneXml.xml
         //    //var friendlyName = xml.Descendants("FriendlyName").FirstOrDefault()?.Value?.Trim();
         //    //var inputsMap = xml.Descendants("VideoSelectLists").Descendants("value").Select(x =>
@@ -283,14 +283,14 @@ namespace Wirehome.Extensions.Tests
         //            }); 
         //        }
         //    }
-            
+
         //    Assert.AreEqual(1, 1);
         //}
 
         //[TestMethod]
         //public void SendSamsung()
         //{ 
-        //    //var remote = new SamsungTV("192.168.0.104", 55000, "Ha4Iot");
+        //    //var remote = new SamsungTV("192.168.0.104", 55000, "Wirehome");
 
         //    //remote.Send("KEY_VOLDOWN");
 
@@ -337,7 +337,7 @@ namespace Wirehome.Extensions.Tests
         //[TestMethod]
         //public void SendSony()
         //{
-        //    //var sony = new SonyBraviaTV("192.168.0.107", "8d76d476-4e75-4891-8888-22ffe33a3ef8", "Ha4IoT", 
+        //    //var sony = new SonyBraviaTV("192.168.0.107", "8d76d476-4e75-4891-8888-22ffe33a3ef8", "Wirehome", 
         //    //    "13d2af6b9430422c41980548d64dd6cdf61e9b5e20325a9bbba29894b666c9fe");
 
         //    //sony.SendIrccAsync(RemoteControllerKeys.WakeUp);

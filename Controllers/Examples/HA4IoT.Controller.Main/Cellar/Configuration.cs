@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HA4IoT.Actuators;
-using HA4IoT.Actuators.Lamps;
-using HA4IoT.Actuators.StateMachines;
-using HA4IoT.Areas;
-using HA4IoT.Automations;
-using HA4IoT.Components;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Components.Commands;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Hardware.RaspberryPi;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Hardware;
-using HA4IoT.Hardware.Drivers.CCTools.Devices;
-using HA4IoT.Sensors;
-using HA4IoT.Sensors.Buttons;
+using Wirehome.Actuators;
+using Wirehome.Actuators.Lamps;
+using Wirehome.Actuators.StateMachines;
+using Wirehome.Areas;
+using Wirehome.Automations;
+using Wirehome.Components;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Hardware.RaspberryPi;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Hardware;
+using Wirehome.Hardware.Drivers.CCTools.Devices;
+using Wirehome.Sensors;
+using Wirehome.Sensors.Buttons;
 
-namespace HA4IoT.Controller.Main.Cellar
+namespace Wirehome.Controller.Main.Cellar
 {
     internal sealed class Configuration : IConfiguration
     {

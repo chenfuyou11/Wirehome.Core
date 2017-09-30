@@ -49,7 +49,7 @@ namespace Wirehome.Devices
             channelA.Partner = _clientCommunicationAdapter;
             _clientCommunicationAdapter.Partner = channelA;
 
-            var mqttClientOptions = new MqttClientOptions { ClientId = "HA4IoT.Loopback", KeepAlivePeriod = TimeSpan.FromHours(1) };
+            var mqttClientOptions = new MqttClientOptions { ClientId = "Wirehome.Loopback", KeepAlivePeriod = TimeSpan.FromHours(1) };
             _client = new MqttClient(mqttClientOptions, channelA);
             _client.ApplicationMessageReceived += ProcessIncomingMessage;
 
@@ -65,7 +65,7 @@ namespace Wirehome.Devices
         public override Task Initialize()
         {
             _server.Start();
-            _server.InjectClient("HA4IoT.Loopback", _clientCommunicationAdapter);
+            _server.InjectClient("Wirehome.Loopback", _clientCommunicationAdapter);
 
             _client.ConnectAsync().Wait();
             _client.SubscribeAsync(new TopicFilter("#", MqttQualityOfServiceLevel.AtMostOnce)).Wait();

@@ -1,8 +1,8 @@
 ﻿using System;
 using Windows.ApplicationModel.Background;
-using HA4IoT.Core;
+using Wirehome.Core;
 
-namespace HA4IoT.Controller.Main
+namespace Wirehome.Controller.Main
 {
     public sealed class StartupTask : IBackgroundTask
     {
@@ -11,11 +11,11 @@ namespace HA4IoT.Controller.Main
             var hostname = global::System.Net.Dns.GetHostName();
 
             Type configurationType;
-            if (hostname == "HA4IoT-Main")
+            if (hostname == "Wirehome-Main")
             {
                 configurationType = typeof(Main.Configuration);
             }
-            else if (hostname == "HA4IoT-Cellar")
+            else if (hostname == "Wirehome-Cellar")
             {
                 configurationType = typeof(Cellar.Configuration);
             }

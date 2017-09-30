@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Hardware;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Hardware;
 
-namespace HA4IoT.Simulator.Controls
+namespace Wirehome.Simulator.Controls
 {
     public class UIBinaryOutputAdapter : IBinaryOutputAdapter, ILampAdapter
     {

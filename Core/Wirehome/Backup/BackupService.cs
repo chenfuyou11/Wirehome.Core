@@ -17,7 +17,7 @@ namespace Wirehome.Backup
         {
             var backup = new JObject
             {
-                ["Type"] = "HA4IoT.Backup",
+                ["Type"] = "Wirehome.Backup",
                 ["Timestamp"] = DateTime.Now.ToString("O"),
                 ["Version"] = 1
             };

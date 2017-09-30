@@ -3,7 +3,7 @@ using Windows.UI;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
-namespace HA4IoT.Simulator.Converter
+namespace Wirehome.Simulator.Converter
 {
     public class LampStateToColorConverter : IValueConverter
     {

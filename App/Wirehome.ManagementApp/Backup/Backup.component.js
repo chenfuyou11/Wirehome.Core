@@ -11,7 +11,7 @@
                 null,
                 function (response) {
                     var link = document.createElement("a");
-                    link.download = "HA4IoT-Backup-" + ctrl.generateTimestamp() + ".json";
+                    link.download = "Wirehome-Backup-" + ctrl.generateTimestamp() + ".json";
                     link.href = "data:," + JSON.stringify(response);
                     link.click();
                 });

@@ -1,22 +1,22 @@
 ﻿using System;
-using HA4IoT.Actuators;
-using HA4IoT.Actuators.Connectors;
-using HA4IoT.Actuators.Lamps;
-using HA4IoT.Actuators.RollerShutters;
-using HA4IoT.Areas;
-using HA4IoT.Automations;
-using HA4IoT.Components;
-using HA4IoT.Components.Adapters.PortBased;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Messaging;
-using HA4IoT.Hardware.Drivers.CCTools;
-using HA4IoT.Hardware.Drivers.CCTools.Devices;
-using HA4IoT.Hardware.Drivers.I2CHardwareBridge;
-using HA4IoT.Sensors;
-using HA4IoT.Sensors.Buttons;
+using Wirehome.Actuators;
+using Wirehome.Actuators.Connectors;
+using Wirehome.Actuators.Lamps;
+using Wirehome.Actuators.RollerShutters;
+using Wirehome.Areas;
+using Wirehome.Automations;
+using Wirehome.Components;
+using Wirehome.Components.Adapters.PortBased;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Hardware.Drivers.CCTools;
+using Wirehome.Hardware.Drivers.CCTools.Devices;
+using Wirehome.Hardware.Drivers.I2CHardwareBridge;
+using Wirehome.Sensors;
+using Wirehome.Sensors.Buttons;
 
-namespace HA4IoT.Controller.Main.Main.Rooms
+namespace Wirehome.Controller.Main.Main.Rooms
 {
     internal class ChildrensRoomRoomConfiguration
     {

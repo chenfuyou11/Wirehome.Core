@@ -11,7 +11,7 @@ namespace Wirehome.Api.Cloud.Azure
 {
     public class AzureCloudService : ServiceBase, IApiAdapter
     {
-        private const string NamespaceName = "ha4iot";
+        private const string NamespaceName = "Wirehome";
 
         private readonly IApiDispatcherService _apiService;
         private readonly ISettingsService _settingsService;

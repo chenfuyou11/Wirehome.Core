@@ -2,7 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace HA4IoT.Simulator
+namespace Wirehome.Simulator
 {
     sealed partial class App
     {

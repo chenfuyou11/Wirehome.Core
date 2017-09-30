@@ -7,8 +7,8 @@
     <ProjectGuid>{56F4E6B0-8C46-4715-A9F3-00A6573C2CF4}</ProjectGuid>
     <OutputType>winmdobj</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HA4IoT.Controller</RootNamespace>
-    <AssemblyName>HA4IoT.Controller</AssemblyName>
+    <RootNamespace>Wirehome.Controller</RootNamespace>
+    <AssemblyName>Wirehome.Controller</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>

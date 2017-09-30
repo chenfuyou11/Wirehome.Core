@@ -76,7 +76,7 @@ function createAppController($http, $scope, modalService, apiService, localizati
     c.showInfoPopover = function () {
         $("#infoIcon").popover({
             html: true,
-            title: "HA4IoT",
+            title: "Wirehome",
             placement: "top",
             content: function () {
                 return $('#infoPopoverContent').html();

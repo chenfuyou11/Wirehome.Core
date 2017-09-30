@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("HA4IoT.Controller.Main")]
+[assembly: AssemblyTitle("Wirehome.Controller.Main")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Christian Kratky")]
-[assembly: AssemblyProduct("HA4IoT")]
-[assembly: AssemblyCopyright("Copyright © Christian Kratky 2016")]
+[assembly: AssemblyProduct("Wirehome")]
+[assembly: AssemblyCopyright("Copyright © Christian Kratky 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]

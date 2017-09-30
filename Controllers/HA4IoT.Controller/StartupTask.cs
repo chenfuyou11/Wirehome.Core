@@ -1,7 +1,7 @@
 ﻿using Windows.ApplicationModel.Background;
-using HA4IoT.Core;
+using Wirehome.Core;
 
-namespace HA4IoT.Controller
+namespace Wirehome.Controller
 {
     public sealed class StartupTask : IBackgroundTask
     {

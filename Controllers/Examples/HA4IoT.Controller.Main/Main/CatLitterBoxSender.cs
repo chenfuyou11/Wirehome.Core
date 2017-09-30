@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.ExternalServices.Twitter;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Sensors;
-using HA4IoT.Core;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.ExternalServices.Twitter;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Sensors;
+using Wirehome.Core;
 
-namespace HA4IoT.Controller.Main.Main
+namespace Wirehome.Controller.Main.Main
 {
     internal class CatLitterBoxTwitterSender
     {

@@ -3,15 +3,15 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using HA4IoT.Contracts;
-using HA4IoT.Contracts.Components.Adapters;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Contracts.Scripting;
-using HA4IoT.Core;
-using HA4IoT.Simulator.Controls;
+using Wirehome.Contracts;
+using Wirehome.Contracts.Components.Adapters;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Core;
+using Wirehome.Simulator.Controls;
 
-namespace HA4IoT.Simulator
+namespace Wirehome.Simulator
 {
     public sealed partial class MainPage : ILogAdapter
     {

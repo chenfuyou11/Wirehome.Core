@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
-using HA4IoT.Contracts.Components.Adapters;
+using Wirehome.Contracts.Components.Adapters;
 
-namespace HA4IoT.Simulator.Controls
+namespace Wirehome.Simulator.Controls
 {
     public class UIButtonAdapter : IButtonAdapter
     {

@@ -1,20 +1,20 @@
 ﻿using System;
-using HA4IoT.Actuators;
-using HA4IoT.Actuators.Lamps;
-using HA4IoT.Actuators.Sockets;
-using HA4IoT.Areas;
-using HA4IoT.Automations;
-using HA4IoT.Contracts.Areas;
-using HA4IoT.Contracts.Core;
-using HA4IoT.Contracts.ExternalServices.Twitter;
-using HA4IoT.Contracts.Hardware;
-using HA4IoT.Contracts.Logging;
-using HA4IoT.Hardware.Drivers.CCTools;
-using HA4IoT.Hardware.Drivers.CCTools.Devices;
-using HA4IoT.Sensors;
-using HA4IoT.Sensors.MotionDetectors;
+using Wirehome.Actuators;
+using Wirehome.Actuators.Lamps;
+using Wirehome.Actuators.Sockets;
+using Wirehome.Areas;
+using Wirehome.Automations;
+using Wirehome.Contracts.Areas;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.ExternalServices.Twitter;
+using Wirehome.Contracts.Hardware;
+using Wirehome.Contracts.Logging;
+using Wirehome.Hardware.Drivers.CCTools;
+using Wirehome.Hardware.Drivers.CCTools.Devices;
+using Wirehome.Sensors;
+using Wirehome.Sensors.MotionDetectors;
 
-namespace HA4IoT.Controller.Main.Main.Rooms
+namespace Wirehome.Controller.Main.Main.Rooms
 {
     internal class StoreroomConfiguration
     {

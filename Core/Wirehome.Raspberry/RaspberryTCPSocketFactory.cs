@@ -1,10 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.Networking;
-using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
+﻿using Windows.Networking.Sockets;
 using Wirehome.Contracts.Core;
 
 namespace Wirehome.Raspberry

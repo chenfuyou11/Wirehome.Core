@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using Wirehome.Contracts.Core;
 using Wirehome.Extensions;
 using Wirehome.Extensions.Contracts;
@@ -15,23 +13,21 @@ namespace Wirehome.Controller.Dnf
 {
     internal class ContainerConfigurator : IContainerConfigurator
     {
-        public void ConfigureContainer(IContainer containerService)
+        public void ConfigureContainer(IContainer container)
         {
-            if (containerService == null) throw new ArgumentNullException(nameof(containerService));
+            if (container == null) throw new ArgumentNullException(nameof(container));
 
-            containerService.RegisterRaspberryServices();
-            containerService.RegisterHttpServer();
+            var projectAssemblies = AssemblyHelper.GetProjectAssemblies();
+            var messagingServicesTypes = typeof(HttpMessagingService); // all Wirehome.Extensions.Messaging.Services
 
-            // register all Wirehome.Extensions.Messaging.Services
-            var baseTypeForRegister = typeof(HttpMessagingService);
-            var extensionsAssemblie = new[] { baseTypeForRegister.GetTypeInfo().Assembly };
+            container.RegisterRaspberryServices();
+            container.RegisterHttpServer();
 
-            containerService.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
-            containerService.RegisterSingleton<IEventAggregator, EventAggregator>();
-            containerService.RegisterServicesInNamespace(extensionsAssemblie.FirstOrDefault(), baseTypeForRegister.Namespace);
-            
-            containerService.RegisterCollection<IBinaryMessage>(extensionsAssemblie);
-            containerService.RegisterCollection<IHttpMessage>(extensionsAssemblie);
+            container.RegisterServicesInNamespace(projectAssemblies, messagingServicesTypes.Namespace);
+            container.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
+            container.RegisterSingleton<IEventAggregator, EventAggregator>();
+            container.RegisterCollection<IBinaryMessage>(projectAssemblies);
+            container.RegisterCollection<IHttpMessage>(projectAssemblies);
         }
     }
 

@@ -1,6 +1,5 @@
 ﻿using Windows.ApplicationModel.Background;
-using Wirehome.Core;
-using Wirehome.Raspberry;
+using Wirehome.Extensions;
 
 namespace Wirehome.Controller.Dnf
 {
@@ -17,7 +16,7 @@ namespace Wirehome.Controller.Dnf
             };
 
             var controller = new WirehomeController(options);
-            if(!await controller.RunAsync())
+            if(!await controller.RunAsync().ConfigureAwait(false))
             {
                 deferral.Complete();
             }

@@ -6,7 +6,8 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {
-    public class HumidityMessage : IBinaryMessage
+    //TODO
+    public class HumidityMessage //: IBinaryMessage
     {
         public HumidityMessage()
         {

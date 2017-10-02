@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
 using System.IO;
+using Wirehome.Extensions.Devices;
 
 namespace Wirehome.Extensions.Messaging.DenonMessages
 {
@@ -16,21 +17,17 @@ namespace Wirehome.Extensions.Messaging.DenonMessages
             return $"http://{Address}/goform/formMainZone_MainZoneXml.xml";
         }
 
-        public override object ParseResult(string responseBody)
+        public override object ParseResult(string responseData)
         {
-            using (var reader = new StringReader(responseBody))
+            using (var reader = new StringReader(responseData))
             {
-                var xml = XDocument.Load(responseBody);
-                var friendlyName = xml.Descendants("FriendlyName").FirstOrDefault()?.Value?.Trim();
-                var inputsMap = xml.Descendants("VideoSelectLists").Descendants("value").Select(x =>
-                new
-                {
-                    Name = x.Attribute("index").Value,
-                    Value = x.Attribute("index").Value
-                });
+                var xml = XDocument.Parse(responseData);
 
-                //TODO
-                return "";
+                return new DenonDeviceInfo
+                {
+                    FriendlyName = xml.Descendants("FriendlyName").FirstOrDefault()?.Value?.Trim(),
+                    InputMap = xml.Descendants("VideoSelectLists").Descendants("value").ToDictionary(y => y.Attribute("table").Value, x => x.Attribute("index").Value)
+                };
             }
         } 
     }

@@ -5,7 +5,7 @@ namespace Wirehome.Extensions.Devices
 {
     public interface ICommandExecute
     {
-        Task ExecuteAsyncCommand<T>() where T : ICommand;
+        Task ExecuteAsyncCommand<T>(T command = default) where T : ICommand;
     }
 
 }

@@ -5,10 +5,10 @@ namespace Wirehome.Extensions.Tests.Helpers
 {
     public static class TaskHelper
     {
-        public static TaskCompletionSource<bool> GenerateTimeoutTaskSource()
+        public static TaskCompletionSource<T> GenerateTimeoutTaskSource<T>(int millisecondsDelay = 1000)
         {
-            var ts = new CancellationTokenSource(millisecondsDelay: 1000);
-            var tcs = new TaskCompletionSource<bool>();
+            var ts = new CancellationTokenSource(millisecondsDelay);
+            var tcs = new TaskCompletionSource<T>();
             ts.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
             return tcs;
         }

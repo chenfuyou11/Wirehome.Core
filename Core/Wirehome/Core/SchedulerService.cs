@@ -9,7 +9,6 @@ using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Scheduling;
 using Wirehome.Contracts.Scripting;
 using Wirehome.Contracts.Services;
-using Wirehome.Core;
 using Newtonsoft.Json.Linq;
 
 namespace Wirehome.Scheduling

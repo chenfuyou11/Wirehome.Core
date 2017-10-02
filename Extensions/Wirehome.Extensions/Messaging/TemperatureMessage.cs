@@ -6,7 +6,8 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {
-    public class TemperatureMessage : IBinaryMessage
+    //TODO
+    public class TemperatureMessage //: IBinaryMessage
     {
         public float Temperature { get; set; }
         public byte Pin { get; set; } = 1;

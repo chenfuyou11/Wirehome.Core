@@ -6,7 +6,8 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {
-    public class InfraredMessage : IBinaryMessage
+    //TODO
+    public class InfraredMessage //: IBinaryMessage
     {
         public byte Repeats { get; set; } = 1;
         public byte System { get; set; }

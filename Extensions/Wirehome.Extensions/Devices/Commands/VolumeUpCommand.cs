@@ -7,5 +7,6 @@ namespace Wirehome.Extensions.Devices.Commands
     [FeatureState(typeof(VolumeState))]
     public class VolumeUpCommand : ICommand
     {
+        public float DefaultChangeFactor { get; set; } = 10.0f;
     }
 }

@@ -6,7 +6,8 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {
-    public class LPD433Message : IBinaryMessage
+    //TODO
+    public class LPD433Message //: IBinaryMessage
     {
 
         public uint Code { get; set; }

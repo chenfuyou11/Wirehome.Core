@@ -5,7 +5,8 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {
-    public class DebugMessage : IBinaryMessage
+    //TODO
+    public class DebugMessage //: IBinaryMessage
     {
         public string Message { get; set; }
 

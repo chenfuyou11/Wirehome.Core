@@ -1,8 +1,8 @@
 ﻿using System;
 using Wirehome.Contracts.Core;
-using Wirehome.Core;
 using Wirehome.Tests.Mockups;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Wirehome.Core;
 
 namespace Wirehome.Tests.Core
 {

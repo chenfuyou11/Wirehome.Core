@@ -6,7 +6,8 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {
-    public class CurrentMessage : IBinaryMessage
+    //TODO
+    public class CurrentMessage //: IBinaryMessage
     {
         public byte Pin { get; set; }
         public byte State { get; set; }

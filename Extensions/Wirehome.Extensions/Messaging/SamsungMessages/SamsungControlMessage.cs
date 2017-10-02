@@ -11,17 +11,30 @@ namespace Wirehome.Extensions.Messaging.SamsungMessages
     {
         public string Address { get; set; }
         public string Code { get; set; }
-
         public int Port { get; set; } = 55000;
+
         private readonly string AppKey = "Wirehome";
         private readonly string NullValue = char.ToString((char)0x00);
         private readonly string AppString = "samsung.remote";
 
         private byte[] CreateIdentifier()
         {
+            var myIpBase64 = Base64Encode("192.168.1.35");
+            var myMacBase64 = Base64Encode("0C-89-10-CD-43-28");
             var nameBase64 = Base64Encode(AppKey);
 
-            var message = char.ToString((char)0x64) + NullValue + Format(nameBase64.Length) + NullValue + nameBase64;
+            var message =
+                char.ToString((char)0x64) +
+                NullValue +
+                Format(myIpBase64.Length) +
+                NullValue +
+                myIpBase64 +
+                Format(myMacBase64.Length) +
+                NullValue +
+                myMacBase64 +
+                Format(nameBase64.Length) +
+                NullValue +
+                nameBase64;
             var wrappedMessage = NullValue + Format(AppString.Length) + NullValue + AppString + Format(message.Length) + NullValue + message;
 
             return ConvertToBytes(wrappedMessage);
@@ -76,10 +89,8 @@ namespace Wirehome.Extensions.Messaging.SamsungMessages
             throw new NotImplementedException();
         }
 
-        public byte[] Serialize(JObject message)
+        public byte[] Serialize()
         {
-            var samsungMessage = message.ToObject<SamsungControlMessage>();
-
             var identifier = CreateIdentifier();
             var secondParameter = CreateSecondParameter();
             var command = CreateCommand(Code);
@@ -97,11 +108,9 @@ namespace Wirehome.Extensions.Messaging.SamsungMessages
             return MessageType.Samsung;
         }
 
-        public string MessageAddress(JObject message)
+        public string MessageAddress()
         {
-            var samsungMessage = message.ToObject<SamsungControlMessage>();
-
-            return $"{samsungMessage.Address}:{samsungMessage.Port}";
+            return $"{Address}:{Port}";
         }
     }
 }

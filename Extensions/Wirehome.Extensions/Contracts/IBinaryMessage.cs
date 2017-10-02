@@ -8,9 +8,9 @@ namespace Wirehome.Extensions.Contracts
     {
         bool CanDeserialize(byte messageType, byte messageSize);
         bool CanSerialize(string messageType);
-        object Deserialize(IBinaryReader reader, byte? messageSize = default(byte?));
-        byte[] Serialize(JObject message);
+        object Deserialize(IBinaryReader reader, byte? messageSize = default);
+        byte[] Serialize();
         MessageType Type();
-        string MessageAddress(JObject message);
+        string MessageAddress();
     }
 }

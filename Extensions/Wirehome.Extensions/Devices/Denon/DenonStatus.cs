@@ -1,10 +1,12 @@
-﻿namespace Wirehome.Extensions.Devices
+﻿using Wirehome.Contracts.Components.States;
+
+namespace Wirehome.Extensions.Devices
 {
     public class DenonStatus
     {
         public string ActiveInput { get; set; }
-        public string PowerStatus { get; set; }
-        public string MasterVolume { get; set; }
-        public string Mute { get; set; }
+        public PowerStateValue PowerStatus { get; set; }
+        public float? MasterVolume { get; set; }
+        public bool Mute { get; set; }
     }
 }

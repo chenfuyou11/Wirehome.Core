@@ -1,78 +1,75 @@
-﻿using Wirehome.Contracts.Logging;
-using Wirehome.Contracts.Messaging;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Net.Sockets;
+using System.Linq;
+using Wirehome.Contracts.Logging;
 using Wirehome.Extensions.Contracts;
 using Wirehome.Extensions.Messaging.Core;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Wirehome.Contracts.Core;
+
 
 namespace Wirehome.Extensions.Messaging.Services
 {
     public class TcpMessagingService : ITcpMessagingService
     {
         private readonly ILogger _logService;
-        private readonly IMessageBrokerService _messageBroker;
-        private readonly List<IBinaryMessage> _messageHandlers = new List<IBinaryMessage>();
-        private readonly INativeTCPSocketFactory _nativeTCPSocketFactory;
+        private readonly IEventAggregator _eventAggregator;
 
-        private const int TIMEOUT = 500;
-
-        public TcpMessagingService(ILogService logService, IMessageBrokerService messageBroker, IEnumerable<IBinaryMessage> handlers, INativeTCPSocketFactory nativeTCPSocketFactory)
+        public TcpMessagingService(ILogService logService, IEventAggregator eventAggregator)
         {
             _logService = logService.CreatePublisher(nameof(TcpMessagingService));
-            _messageBroker = messageBroker;
-            _messageHandlers.AddRange(handlers);
-            _nativeTCPSocketFactory = nativeTCPSocketFactory ?? throw new ArgumentNullException(nameof(nativeTCPSocketFactory));
+            _eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
         }
 
         public Task Initialize()
         {
-            _messageHandlers.ForEach(handler =>
-            {
-                _messageBroker.Subscribe(new MessageSubscription
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    PayloadType = handler.GetType().Name,
-                    Topic = typeof(TcpMessagingService).Name,
-                    Callback = MessageHandler
-                });
-            });
-
+            // Add filteringto this service
+            _eventAggregator.SubscribeForAsyncResult<IBinaryMessage>(MessageHandler);
             return Task.CompletedTask;
         }
-
-        private async void MessageHandler(Message<JObject> message)
+        
+        private Task<object> MessageHandler(IMessageEnvelope<IBinaryMessage> message)
         {
-            var tasks = _messageHandlers.Select(i => SendMessage(message, i));
-            await Task.WhenAll(tasks);
+            return SendMessage(message);
         }
 
-        private async Task SendMessage(Message<JObject> message, IBinaryMessage handler)
+        private async Task<object> SendMessage(IMessageEnvelope<IBinaryMessage> message)
         {
-            if (handler.CanSerialize(message.Payload.Type))
+            try
             {
-                try
+                using (var socket = new TcpClient())
                 {
-                    var tcpMessage = message.Payload.Content.ToObject<IBaseMessage>();
-
-                    using (var socket = _nativeTCPSocketFactory.Create())
+                    var uri = new Uri($"tcp://{message.Message.MessageAddress()}");
+                    await socket.ConnectAsync(uri.Host, uri.Port).ConfigureAwait(false);
+                    using (var stream = socket.GetStream())
                     {
-                        var uri = new Uri($"tcp://{tcpMessage.Address}");
-
-                        await socket.ConnectAsync(uri.Host, uri.Port, TIMEOUT).ConfigureAwait(false);
-                        var messageBytes = handler.Serialize(message.Payload.Content);
-                        await socket.SendDataAsync(messageBytes, TIMEOUT, true).ConfigureAwait(false);
-                        var response = await socket.ReadLineAsync().ConfigureAwait(false);
+                        var messageBytes = message.Message.Serialize();
+                        await stream.WriteAsync(messageBytes, 0, messageBytes.Length, message.CancellationToken).ConfigureAwait(false);
+                        return await ReadString(stream).ConfigureAwait(false);
                     }
                 }
-                catch (Exception ex)
-                {
-                    _logService.Error(ex, $"Handler of type {handler.GetType().Name} failed to process message");
-                }
             }
+            catch (Exception ex)
+            {
+                _logService.Error(ex, $"Message {message.GetType().Name} failed during send TCP message");
+            }
+            return null;
+        }
+
+        private static async Task<string> ReadString(NetworkStream stream)
+        {
+            var bytesRead = 0;
+            var buffer = new byte[256];
+            var result = new List<byte>();
+
+            do
+            {
+                bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                result.AddRange(buffer.Take(bytesRead));
+            }
+            while (bytesRead == buffer.Length);
+
+            return System.Text.Encoding.UTF8.GetString(result.ToArray());
         }
     }
 

@@ -3,7 +3,7 @@ using System.Net;
 
 namespace Wirehome.Extensions.Messaging.SonyMessages
 {
-    class SonyControlMessage : HttpMessage
+    public class SonyControlMessage : HttpMessage
     {
         public string Code { get; set; }
         public string AuthorisationKey { get; set; }
@@ -16,6 +16,7 @@ namespace Wirehome.Extensions.Messaging.SonyMessages
 
         public override string MessageAddress()
         {
+            Cookies = new CookieContainer();
             Cookies.Add(new Uri($"http://{Address}/sony/"), new Cookie("auth", AuthorisationKey, "/sony", Address));
             return $"http://{Address}/sony/IRCC";
         }
@@ -30,6 +31,11 @@ namespace Wirehome.Extensions.Messaging.SonyMessages
                         </u:X_SendIRCC>
                         </s:Body>
                     </s:Envelope>";
+        }
+
+        public override object ParseResult(string responseData)
+        {
+            return string.Empty;
         }
     }
 }

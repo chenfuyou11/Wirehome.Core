@@ -14,6 +14,9 @@ namespace Wirehome.Extensions.Devices
         protected readonly IEventAggregator _eventAggregator;
         protected readonly IComponentFeatureCollection _featuresSupported;
         protected readonly IComponentFeatureStateCollection _componentStates;
+        protected bool _isInitialized;
+
+        public bool IsInitialized => _isInitialized;
 
         public DeviceComponent(string id, IEventAggregator eventAggregator) : base(id)
         {
@@ -22,7 +25,7 @@ namespace Wirehome.Extensions.Devices
             _featuresSupported = new ComponentFeatureCollection();
         }
 
-        public async Task ExecuteAsyncCommand<T>() where T : ICommand => await _commandExecutor.Execute<T>().ConfigureAwait(false);
+        public async Task ExecuteAsyncCommand<T>(T command = default) where T : ICommand => await _commandExecutor.Execute<T>(command).ConfigureAwait(false);
 
         public override IComponentFeatureCollection GetFeatures() => _featuresSupported;
         

@@ -23,7 +23,6 @@ using Wirehome.Contracts.Scripting;
 using Wirehome.Contracts.Services;
 using Wirehome.Contracts.Settings;
 using Wirehome.Contracts.Storage;
-using Wirehome.Core;
 using Wirehome.Logging;
 using Wirehome.Messaging;
 using Wirehome.Notifications;
@@ -33,6 +32,7 @@ using Wirehome.Scripting;
 using Wirehome.Settings;
 using Wirehome.Tests.Mockups.Services;
 using Newtonsoft.Json.Linq;
+using Wirehome.Core;
 
 namespace Wirehome.Tests.Mockups
 {

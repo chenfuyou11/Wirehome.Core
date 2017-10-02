@@ -1,6 +1,6 @@
 ﻿using System;
 using Wirehome.Api;
-using Wirehome.Core;
+using Wirehome.Extensions;
 using Wirehome.Contracts.Api;
 using Wirehome.Contracts.Areas;
 using Wirehome.Contracts.Automations;
@@ -20,6 +20,7 @@ using Wirehome.Resources;
 using Wirehome.Automations;
 using Wirehome.Components;
 using Wirehome.Areas;
+using Wirehome.Core;
 
 namespace Wirehome.Extensions.Tests
 {

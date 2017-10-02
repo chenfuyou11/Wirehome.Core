@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Quartz;
 using Wirehome.Extensions.Messaging.DenonMessages;
 using Wirehome.Extensions.Messaging.Core;
-using Quartz;
-using System.Threading.Tasks;
 using Wirehome.Contracts.Logging;
+using Wirehome.Extensions.Devices.Denon;
 
 namespace Wirehome.Extensions.Devices
 {
@@ -23,17 +24,21 @@ namespace Wirehome.Extensions.Devices
             try
             {
                 if (context.CancellationToken.IsCancellationRequested) return;
-                
-                await _eventAggregator.PublishWithRepublishResult<DenonStatusLightMessage, DenonStatus>(new DenonStatusLightMessage
+
+                if(context.JobDetail.JobDataMap.TryGetValue("context", out object contextData))
                 {
-                    Address = context.JobDetail.JobDataMap.GetString("context")
-                }).ConfigureAwait(false);
+                    var denonStateJobContext = contextData as DenonStateJobContext;
+                    await _eventAggregator.PublishWithRepublishResult<DenonStatusLightMessage, DenonStatus>(new DenonStatusLightMessage
+                    {
+                        Address = denonStateJobContext.Hostname,
+                        Zone = denonStateJobContext.Zone
+                    }).ConfigureAwait(false);
+                }
             }
             catch (Exception ee)
             {
                 _logger.Error(ee, $"Unhandled exception in {nameof(DenonStateLightJob)}");
             }
-            
         }
     }
 }

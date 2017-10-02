@@ -68,6 +68,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wirehome.ManagementApp", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wirehome.WebApp", "App\Wirehome.WebApp\Wirehome.WebApp.csproj", "{0E8A3855-D428-4CA2-B752-486B61056933}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{5147FD81-1D79-47C4-B5D3-9A5965CDED1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonyBraviaRegisterTool", "SonyBraviaRegisterTool\SonyBraviaRegisterTool.csproj", "{A182BC6B-AE95-4817-8D70-DB0634FCD969}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -584,6 +588,34 @@ Global
 		{0E8A3855-D428-4CA2-B752-486B61056933}.Release|x86.Build.0 = Release|x86
 		{0E8A3855-D428-4CA2-B752-486B61056933}.Release|x86 (For local).ActiveCfg = Release|Any CPU
 		{0E8A3855-D428-4CA2-B752-486B61056933}.Release|x86 (For local).Build.0 = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|Any CPU (For Cloud Components).ActiveCfg = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|Any CPU (For Cloud Components).Build.0 = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|ARM.Build.0 = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|x64.Build.0 = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|x86.Build.0 = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|x86 (For local).ActiveCfg = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Debug|x86 (For local).Build.0 = Debug|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|Any CPU (For Cloud Components).ActiveCfg = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|Any CPU (For Cloud Components).Build.0 = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|ARM.ActiveCfg = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|ARM.Build.0 = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|ARM (For Raspberry Pi).ActiveCfg = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|ARM (For Raspberry Pi).Build.0 = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|x64.ActiveCfg = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|x64.Build.0 = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|x86.ActiveCfg = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|x86.Build.0 = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|x86 (For local).ActiveCfg = Release|Any CPU
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969}.Release|x86 (For local).Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -609,6 +641,8 @@ Global
 		{3B74528D-2D22-406E-AA43-DC2F47CDC5C1} = {FC699828-F953-4DA6-978B-EE8BFB988390}
 		{F931A02F-DCAD-4301-8DAD-B7D722A9C410} = {20B098BA-1C68-4602-8BBA-902E7E3CA0B4}
 		{0E8A3855-D428-4CA2-B752-486B61056933} = {20B098BA-1C68-4602-8BBA-902E7E3CA0B4}
+		{5147FD81-1D79-47C4-B5D3-9A5965CDED1A} = {FC699828-F953-4DA6-978B-EE8BFB988390}
+		{A182BC6B-AE95-4817-8D70-DB0634FCD969} = {5147FD81-1D79-47C4-B5D3-9A5965CDED1A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67048500-54F1-4071-B01E-6215AD81A909}

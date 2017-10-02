@@ -6,7 +6,6 @@ using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Messaging;
 using Wirehome.Contracts.Scripting;
 using Wirehome.Contracts.Services;
-using Wirehome.Core;
 using Newtonsoft.Json.Linq;
 
 namespace Wirehome.Messaging

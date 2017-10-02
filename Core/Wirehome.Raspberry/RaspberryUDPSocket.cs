@@ -6,6 +6,7 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Raspberry
 {
+    // TODO Rewrite to .NET Standard
     public class RaspberryUDPSocket : INativeUDPSocket
     {
         private readonly DatagramSocket _socket = new DatagramSocket();

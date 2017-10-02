@@ -54,10 +54,11 @@ namespace Wirehome.Extensions.Messaging.Services
                 {
                     try
                     {
-                        var package = handler.Serialize(message.Payload.Content);
-                        _i2cServiceBus.Write(_bridge.Address, package);
+                        //TODO
+                        //var package = handler.Serialize(message.Payload.Content);
+                        //_i2cServiceBus.Write(_bridge.Address, package);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         _logService.Error(ex, $"Handler of type {handler.GetType().Name} failed to process message");
                     }

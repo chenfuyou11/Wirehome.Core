@@ -10,6 +10,7 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Raspberry
 {
+    // TODO Rewrite to .NET Standard
     public class RaspberryTCPSocket : INativeTCPSocket
     {
         private readonly StreamSocket _socket;

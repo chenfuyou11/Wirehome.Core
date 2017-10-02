@@ -1,4 +1,4 @@
-﻿using Wirehome.Core;
+﻿using Wirehome.Extensions;
 using Wirehome.Extensions.Quartz;
 using Quartz;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,6 +9,7 @@ using System.Threading;
 using Quartz.Impl.Matchers;
 using Wirehome.Extensions.Devices;
 using Wirehome.Extensions.Messaging.Core;
+using Wirehome.Core;
 
 namespace Wirehome.Extensions.Tests
 {

@@ -1,6 +1,5 @@
 ﻿using Quartz;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Wirehome.Components;
@@ -13,14 +12,13 @@ using Wirehome.Extensions.Devices.Features;
 using Wirehome.Extensions.Devices.States;
 using Wirehome.Extensions.Exceptions;
 using Wirehome.Extensions.Messaging.Core;
-using Wirehome.Extensions.Messaging.SonyMessages;
+using Wirehome.Extensions.Messaging.KodiMessages;
 using Wirehome.Extensions.Messaging.StateChangeMessages;
 using Wirehome.Extensions.Quartz;
 
-namespace Wirehome.Extensions.Devices.Sony
+namespace Wirehome.Extensions.Devices.Kodi
 {
-    // TODO test when power off
-    public class SonyBraviaTV : DeviceComponent, IDisposable
+    public class KodiDevice : DeviceComponent, IDisposable
     {
         private PowerStateValue _powerState;
         private float _volume;
@@ -29,15 +27,9 @@ namespace Wirehome.Extensions.Devices.Sony
         private TimeSpan _statusInterval { get; set; } = TimeSpan.FromSeconds(3);
         private readonly CancellationTokenSource _cancelationTokenSource = new CancellationTokenSource();
         private string _hostname;
-        private string _authorisationKey;
+        private string _userName;
+        private string _Password;
 
-        public Dictionary<string, string> _inputSourceMap = new Dictionary<string, string>
-        {
-            { "HDMI1", "AAAAAgAAABoAAABaAw==" },
-            { "HDMI2", "AAAAAgAAABoAAABbAw==" },
-            { "HDMI3", "AAAAAgAAABoAAABcAw==" },
-            { "HDMI4", "AAAAAgAAABoAAABdAw==" }
-        };
         private readonly IScheduler _scheduler;
 
         public string Hostname
@@ -49,17 +41,7 @@ namespace Wirehome.Extensions.Devices.Sony
                 _hostname = value;
             }
         }
-
-        public string AuthorisationKey
-        {
-            get => _authorisationKey;
-            set
-            {
-                if (_isInitialized) throw new PropertySetAfterInitializationExcption();
-                _authorisationKey = value;
-            }
-        }
-
+        
         public TimeSpan StatusInterval
         {
             get => _statusInterval;
@@ -70,7 +52,28 @@ namespace Wirehome.Extensions.Devices.Sony
             }
         }
 
-        public SonyBraviaTV(string id, IEventAggregator eventAggregator, IScheduler scheduler) : base(id, eventAggregator) {
+        public string UserName
+        {
+            get => _userName;
+            set
+            {
+                if (_isInitialized) throw new PropertySetAfterInitializationExcption();
+                _userName = value;
+            }
+        }
+
+        public string Password
+        {
+            get => _Password;
+            set
+            {
+                if (_isInitialized) throw new PropertySetAfterInitializationExcption();
+                _Password = value;
+            }
+        }
+
+        public KodiDevice(string id, IEventAggregator eventAggregator, IScheduler scheduler) : base(id, eventAggregator)
+        {
             _scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
         }
 
@@ -81,14 +84,13 @@ namespace Wirehome.Extensions.Devices.Sony
             InitMuteFeature();
             InitInputSourceFeature();
 
-            var context = new SonyStateJobContext
+            var context = new KodiStateJobContext
             {
-                Hostname = Hostname,
-                AuthKey = AuthorisationKey
+                Hostname = Hostname
             };
 
             // TODO silent errors when check status wile turned off
-            await _scheduler.ScheduleIntervalWithContext<SonyStateJob, SonyStateJobContext>(StatusInterval, context, _cancelationTokenSource.Token).ConfigureAwait(false);
+            await _scheduler.ScheduleIntervalWithContext<KodiStateJob, KodiStateJobContext>(StatusInterval, context, _cancelationTokenSource.Token).ConfigureAwait(false);
             await _scheduler.Start().ConfigureAwait(false);
 
             //TODO Get some state info
@@ -99,7 +101,7 @@ namespace Wirehome.Extensions.Devices.Sony
         public void Dispose()
         {
             _cancelationTokenSource.Cancel();
-           // _eventAggregator.UnSubscribe(_statusSubscription);
+            // _eventAggregator.UnSubscribe(_statusSubscription);
             _scheduler.Shutdown();
         }
 
@@ -118,22 +120,18 @@ namespace Wirehome.Extensions.Devices.Sony
 
             _commandExecutor.Register<TurnOnCommand>(async c =>
             {
-                var result = await _eventAggregator.PublishWithResultAsync<SonyControlMessage, string>(new SonyControlMessage
+                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
                 {
                     Address = Hostname,
-                    AuthorisationKey = AuthorisationKey,
-                    Code = "AAAAAQAAAAEAAAAuAw=="
+                    UserName = UserName,
+                    Password = Password,
+                    Method = "JSONRPC.Ping"
                 }).ConfigureAwait(false);
             }
            );
             _commandExecutor.Register<TurnOffCommand>(async c =>
             {
-                var result = await _eventAggregator.PublishWithResultAsync<SonyControlMessage, string>(new SonyControlMessage
-                {
-                    Address = Hostname,
-                    AuthorisationKey = AuthorisationKey,
-                    Code = "AAAAAQAAAAEAAAAvAw=="
-                }).ConfigureAwait(false);
+              
             }
             );
         }
@@ -148,14 +146,7 @@ namespace Wirehome.Extensions.Devices.Sony
                 if (c == null) throw new ArgumentNullException();
                 var volume = _volume + c.DefaultChangeFactor;
 
-                await _eventAggregator.PublishWithResultAsync<SonyJsonMessage, string>(new SonyJsonMessage
-                {
-                    Address = Hostname,
-                    AuthorisationKey = AuthorisationKey,
-                    Path = "audio",
-                    Method = "setAudioVolume",
-                    Params = new SonyAudioVolumeRequest("speaker", ((int)volume).ToString())
-                }).ConfigureAwait(false);
+               
 
                 SetVolumeState(volume);
             }
@@ -165,14 +156,7 @@ namespace Wirehome.Extensions.Devices.Sony
                 if (c == null) throw new ArgumentNullException();
                 var volume = _volume - c.DefaultChangeFactor;
 
-                await _eventAggregator.PublishWithResultAsync<SonyJsonMessage, string>(new SonyJsonMessage
-                {
-                    Address = Hostname,
-                    AuthorisationKey = AuthorisationKey,
-                    Path = "audio",
-                    Method = "setAudioVolume",
-                    Params = new SonyAudioVolumeRequest("speaker", ((int)volume).ToString())
-                }).ConfigureAwait(false);
+               
 
                 SetVolumeState(volume);
             }
@@ -181,15 +165,8 @@ namespace Wirehome.Extensions.Devices.Sony
             _commandExecutor.Register<SetVolumeCommand>(async c =>
             {
                 if (c == null) throw new ArgumentNullException();
-                
-                await _eventAggregator.PublishWithResultAsync<SonyJsonMessage, string>(new SonyJsonMessage
-                {
-                    Address = Hostname,
-                    AuthorisationKey = AuthorisationKey,
-                    Path = "audio",
-                    Method = "setAudioVolume",
-                    Params = new SonyAudioVolumeRequest("speaker", ((int)c.Volume).ToString())
-                }).ConfigureAwait(false);
+
+               
 
                 SetVolumeState(c.Volume);
             });
@@ -211,28 +188,14 @@ namespace Wirehome.Extensions.Devices.Sony
 
             _commandExecutor.Register<MuteOnCommand>(async c =>
             {
-                await _eventAggregator.PublishWithResultAsync<SonyJsonMessage, string>(new SonyJsonMessage
-                {
-                    Address = Hostname,
-                    AuthorisationKey = AuthorisationKey,
-                    Path = "audio",
-                    Method = "setAudioMute",
-                    Params = new SonyAudioMuteRequest(true)
-                }).ConfigureAwait(false);
+                
 
                 SetMuteState(true);
             });
 
             _commandExecutor.Register<MuteOffCommand>(async c =>
             {
-                await _eventAggregator.PublishWithResultAsync<SonyJsonMessage, string>(new SonyJsonMessage
-                {
-                    Address = Hostname,
-                    AuthorisationKey = AuthorisationKey,
-                    Path = "audio",
-                    Method = "setAudioMute",
-                    Params = new SonyAudioMuteRequest(false)
-                }).ConfigureAwait(false);
+              
 
                 SetMuteState(false);
             });
@@ -256,17 +219,7 @@ namespace Wirehome.Extensions.Devices.Sony
             {
                 if (c == null) throw new ArgumentNullException();
 
-                if(!_inputSourceMap.ContainsKey(c.InputName)) throw new Exception($"Input {c.InputName} was not found on available device input sources");
-
-                var cmd = _inputSourceMap[c.InputName];
-
-                var result = await _eventAggregator.PublishWithResultAsync<SonyControlMessage, string>(new SonyControlMessage
-                {
-                    Address = Hostname,
-                    AuthorisationKey = AuthorisationKey,
-                    Code = cmd
-                }).ConfigureAwait(false);
-
+                
                 SetInputSource(c.InputName);
             });
         }

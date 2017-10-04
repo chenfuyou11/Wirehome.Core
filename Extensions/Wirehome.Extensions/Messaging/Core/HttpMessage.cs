@@ -20,6 +20,6 @@ namespace Wirehome.Extensions.Messaging
 
         public virtual string MessageAddress() { return string.Empty; }
         public virtual string Serialize() { return string.Empty; }
-        public virtual object ParseResult(string responseData) { return null; }  
+        public virtual object ParseResult(string responseData, Type responseType) { return null; }  
     }
 }

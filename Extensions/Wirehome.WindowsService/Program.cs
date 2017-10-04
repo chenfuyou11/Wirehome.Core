@@ -24,6 +24,7 @@ namespace Wirehome.WindowsService
             }
 
             var host = new WebHostBuilder()
+                
             .UseKestrel()
             .UseContentRoot(pathToContentRoot)
             .UseIISIntegration()

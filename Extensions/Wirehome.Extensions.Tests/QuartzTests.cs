@@ -56,7 +56,7 @@ namespace Wirehome.Extensions.Tests
 
             var scheduler = container.GetInstance<IScheduler>();
 
-            await scheduler.ScheduleIntervalWithContext<DenonStateLightJob, string>(TimeSpan.FromSeconds(1), "192.168.0.101", _cancelationTokenSource.Token);
+            await scheduler.ScheduleIntervalWithContext<DenonStateJob, string>(TimeSpan.FromSeconds(1), "192.168.0.101", _cancelationTokenSource.Token);
 
             await scheduler.Start();
 

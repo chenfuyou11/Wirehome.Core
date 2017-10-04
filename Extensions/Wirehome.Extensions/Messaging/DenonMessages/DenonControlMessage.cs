@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
 using System.IO;
+using System;
 
 namespace Wirehome.Extensions.Messaging.DenonMessages
 {
@@ -18,7 +19,7 @@ namespace Wirehome.Extensions.Messaging.DenonMessages
 
         public override string MessageAddress() => $"http://{Address}/goform/{Api}.xml?{Zone}{(Zone?.Length == 0 ? "" : "+")}{Command}";
 
-        public override object ParseResult(string responseData)
+        public override object ParseResult(string responseData, Type responseType = null)
         {
             using (var reader = new StringReader(responseData))
             {

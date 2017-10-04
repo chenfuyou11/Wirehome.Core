@@ -2,7 +2,7 @@
 
 namespace Wirehome.Extensions.Messaging.KodiMessages
 {
-    public class JsonRpcResponse<T>
+    public class JsonRpcResponse
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
@@ -11,7 +11,7 @@ namespace Wirehome.Extensions.Messaging.KodiMessages
         public string JsonRpc { get; set; }
 
         [JsonProperty(PropertyName = "result")]
-        public T Result { get; set; }
+        public object Result { get; set; }
 
         [JsonProperty(PropertyName = "error")]
         public JsonRpcError Error { get; set; }

@@ -33,7 +33,7 @@ namespace Wirehome.Extensions.Tests
             container.RegisterSingleton<IContainer>(() => container);
             container.RegisterSingleton<IEventAggregator, EventAggregator>();
             container.RegisterSingleton(log);
-            container.RegisterSingleton<DenonStateLightJob>();
+            container.RegisterSingleton<DenonStateJob>();
             container.RegisterQuartz();
             
             var scheduler = container.GetInstance<IScheduler>();

@@ -31,66 +31,67 @@ namespace Wirehome.Extensions.Messaging.Services
 
             if (httpMessage.RequestType == "POST")
             {
-                return await SendPostRequest(httpMessage).ConfigureAwait(false);
+                return await SendPostRequest(message).ConfigureAwait(false);
             }
             else
             if (httpMessage.RequestType == "GET")
             {
-                return await SendGetRequest(httpMessage).ConfigureAwait(false);
+                return await SendGetRequest(message).ConfigureAwait(false);
             }
 
             return null;
         }
 
-        public async Task<object> SendGetRequest(IHttpMessage httpMessage)
+        public async Task<object> SendGetRequest(IMessageEnvelope<IHttpMessage> message)
         {
             using (var httpClient = new HttpClient())
             {
-                var address = httpMessage.MessageAddress();
+                var address = message.Message.MessageAddress();
                 var httpResponse = await httpClient.GetAsync(address).ConfigureAwait(false);
                 httpResponse.EnsureSuccessStatusCode();
                 var responseBody = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                return httpMessage.ParseResult(responseBody);
+                return message.Message.ParseResult(responseBody);
             }
         }
 
-        public async Task<object> SendPostRequest(IHttpMessage httpMessage)
+        public async Task<object> SendPostRequest(IMessageEnvelope<IHttpMessage> message)
         {
-            var address = httpMessage.MessageAddress();
+            var address = message.Message.MessageAddress();
             var httpClientHandler = new HttpClientHandler();
-            if (httpMessage.Cookies != null)
+            if (message.Message.Cookies != null)
             {
-                httpClientHandler.CookieContainer = httpMessage.Cookies;
+                httpClientHandler.CookieContainer = message.Message.Cookies;
                 httpClientHandler.UseCookies = true;
             }
 
-            if (httpMessage.Creditionals != null)
+            if (message.Message.Creditionals != null)
             {
-                httpClientHandler.Credentials = httpMessage.Creditionals;
+                httpClientHandler.Credentials = message.Message.Creditionals;
             }
             
             using (var httpClient = new HttpClient(httpClientHandler))
             {
-                foreach (var header in httpMessage.DefaultHeaders)
+                foreach (var header in message.Message.DefaultHeaders)
                 {
                     httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
                 }
-
-                if (!string.IsNullOrWhiteSpace(httpMessage.AuthorisationHeader.Key))
+                
+                if (!string.IsNullOrWhiteSpace(message.Message.AuthorisationHeader.Key))
                 {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(httpMessage.AuthorisationHeader.Key, httpMessage.AuthorisationHeader.Value);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(message.Message.AuthorisationHeader.Key, message.Message.AuthorisationHeader.Value);
                 }
 
-                var content = new StringContent(httpMessage.Serialize());
-                if (!string.IsNullOrWhiteSpace(httpMessage.ContentType))
+                var content = new StringContent(message.Message.Serialize());
+                if (!string.IsNullOrWhiteSpace(message.Message.ContentType))
                 {
-                    content.Headers.ContentType = new MediaTypeHeaderValue(httpMessage.ContentType);
+                    content.Headers.ContentType = new MediaTypeHeaderValue(message.Message.ContentType);
                 }
                 var response = await httpClient.PostAsync(address, content).ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
                 var responseBody = await response.Content.ReadAsStringAsync(Encoding.UTF8).ConfigureAwait(false);
 
-                return httpMessage.ParseResult(responseBody);
+                return message.Message.ParseResult(responseBody, message.ResponseType);
             }
         }
     }

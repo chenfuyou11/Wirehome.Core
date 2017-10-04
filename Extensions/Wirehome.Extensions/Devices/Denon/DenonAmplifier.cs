@@ -87,7 +87,7 @@ namespace Wirehome.Extensions.Devices
                 Hostname = Hostname,
                 Zone = Zone.ToString()
             };
-            await _scheduler.ScheduleIntervalWithContext<DenonStateLightJob, DenonStateJobContext>(StatusInterval, context, _cancelationTokenSource.Token).ConfigureAwait(false);
+            await _scheduler.ScheduleIntervalWithContext<DenonStateJob, DenonStateJobContext>(StatusInterval, context, _cancelationTokenSource.Token).ConfigureAwait(false);
             await _scheduler.Start().ConfigureAwait(false);
             await RefreshDeviceState().ConfigureAwait(false);
 
@@ -261,6 +261,8 @@ namespace Wirehome.Extensions.Devices
                     Address = Hostname,
                     Zone = Zone.ToString()
                 }, "on").ConfigureAwait(false);
+
+                SetMuteState(true);
             });
 
             _commandExecutor.Register<MuteOffCommand>(async c =>
@@ -273,6 +275,8 @@ namespace Wirehome.Extensions.Devices
                     Address = Hostname,
                     Zone = Zone.ToString()
                 }, "off").ConfigureAwait(false);
+
+                SetMuteState(false);
             });
         }
 
@@ -306,6 +310,9 @@ namespace Wirehome.Extensions.Devices
                     Zone= "",
                     Address = Hostname
                 }, "").ConfigureAwait(false);
+
+                //TODO Check if this value is ok - confront with pooled state
+                SetInputSource(input);
             });
         }
 
@@ -341,6 +348,9 @@ namespace Wirehome.Extensions.Devices
                     Zone = "",
                     Address = Hostname
                 }, "").ConfigureAwait(false);
+
+                //TODO Check if this value is ok - confront with pooled state
+                SetSurroundMode(mode);
             });
         }
 

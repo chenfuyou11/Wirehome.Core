@@ -33,9 +33,17 @@ namespace Wirehome.Extensions.Messaging.SonyMessages
                     </s:Envelope>";
         }
 
-        public override object ParseResult(string responseData)
+        public override object ParseResult(string responseData, Type responseType = null)
         {
             return string.Empty;
+
+            //< s:Envelope xmlns:s = "http://schemas.xmlsoap.org/soap/envelope/" s: encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/" xmlns: xsi = "http://www.w3.org/2001/XMLSchema-instance/" xmlns: xsd = "http://www.w3.org/2001/XMLSchema" >
+            //  < s:Body >
+            //       < u:X_SendIRCCResponse xmlns:u = "urn:schemas-sony-com:service:IRCC:1" >
+            //        </ u:X_SendIRCCResponse >
+            //     </ s:Body >
+            //  </ s:Envelope >
+
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Wirehome.Extensions.Messaging.Core;
 using System.Collections.Generic;
 using System.Net;
+using System;
 
 namespace Wirehome.Extensions.Messaging
 {
@@ -15,6 +16,6 @@ namespace Wirehome.Extensions.Messaging
 
         string MessageAddress();
         string Serialize();
-        object ParseResult(string responseData);
+        object ParseResult(string responseData, Type responseType = null);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace Wirehome.Extensions.Messaging.Core
 {
@@ -6,5 +7,6 @@ namespace Wirehome.Extensions.Messaging.Core
     {
         CancellationToken CancellationToken { get;  }
         T Message { get; }
+        Type ResponseType { get; }
     }
 }

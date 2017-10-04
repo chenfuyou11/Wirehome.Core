@@ -29,9 +29,9 @@ namespace Wirehome.Extensions.Messaging.Core
         {
             var localSubscriptions = GetSubscriptors<T>(filter);
 
-            if (localSubscriptions.Count == 0) return default(R);
+            if (localSubscriptions.Count == 0) return default;
 
-            var messageEnvelope = new MessageEnvelope<T>(message, cancellationToken);
+            var messageEnvelope = new MessageEnvelope<T>(message, cancellationToken, typeof(R));
 
             var publishTask = localSubscriptions.Select(x => Task.Run(async () =>
             {

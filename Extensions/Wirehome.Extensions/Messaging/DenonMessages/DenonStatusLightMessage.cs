@@ -4,6 +4,7 @@ using System.IO;
 using Wirehome.Extensions.Devices;
 using Wirehome.Contracts.Components.States;
 using Wirehome.Extensions.Extensions;
+using System;
 
 namespace Wirehome.Extensions.Messaging.DenonMessages
 {
@@ -25,7 +26,7 @@ namespace Wirehome.Extensions.Messaging.DenonMessages
             return $"http://{Address}/goform/formZone{Zone}_Zone{Zone}XmlStatusLite.xml";
         }
 
-        public override object ParseResult(string responseData)
+        public override object ParseResult(string responseData, Type responseType = null)
         {
             using (var reader = new StringReader(responseData))
             {

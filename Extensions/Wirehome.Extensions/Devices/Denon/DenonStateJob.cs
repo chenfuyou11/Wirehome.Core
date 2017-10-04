@@ -8,15 +8,15 @@ using Wirehome.Extensions.Devices.Denon;
 
 namespace Wirehome.Extensions.Devices
 {
-    public class DenonStateLightJob : IJob
+    public class DenonStateJob : IJob
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly ILogger _logger;
 
-        public DenonStateLightJob(IEventAggregator eventAggregator, ILogService logService)
+        public DenonStateJob(IEventAggregator eventAggregator, ILogService logService)
         {
             _eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
-            _logger = (logService ?? throw new ArgumentNullException(nameof(logService))).CreatePublisher(nameof(DenonStateLightJob));
+            _logger = (logService ?? throw new ArgumentNullException(nameof(logService))).CreatePublisher(nameof(DenonStateJob));
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -37,7 +37,7 @@ namespace Wirehome.Extensions.Devices
             }
             catch (Exception ee)
             {
-                _logger.Error(ee, $"Unhandled exception in {nameof(DenonStateLightJob)}");
+                _logger.Error(ee, $"Unhandled exception in {nameof(DenonStateJob)}");
             }
         }
     }

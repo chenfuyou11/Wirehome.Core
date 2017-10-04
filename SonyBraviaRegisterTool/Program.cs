@@ -21,24 +21,27 @@ namespace SonyBraviaRegisterTool
 
                 var address = Console.ReadLine();
                 request.Address = address?.Length == 0 ? "192.168.0.107" : address;
-                
-                await http.SendPostRequest(request).ConfigureAwait(false);
+
+                await http.SendPostRequest(new MessageEnvelope<SonyRegisterRequest>(request)).ConfigureAwait(false);
 
                 Console.WriteLine("Enter PIN from TV:");
 
                 request.PIN = Console.ReadLine();
 
-                await http.SendPostRequest(request).ConfigureAwait(false);
+                await http.SendPostRequest(new MessageEnvelope<SonyRegisterRequest>(request)).ConfigureAwait(false);
 
                 var key = request.ReadAuthKey();
 
                 Console.WriteLine("Device was registered successfully. Applicaction hash:");
                 Console.WriteLine(key);
-                Console.ReadLine();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
+            }
+            finally
+            {
+                Console.ReadLine();
             }
         }
     }

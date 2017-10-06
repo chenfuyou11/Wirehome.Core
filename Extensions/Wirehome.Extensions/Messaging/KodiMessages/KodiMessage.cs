@@ -4,6 +4,11 @@ using System;
 
 namespace Wirehome.Extensions.Messaging.KodiMessages
 {
+    //https://github.com/FabienLavocat/kodi-remote/tree/master/src/KodiRemote.Core
+    //https://github.com/akshay2000/XBMCRemoteRT/blob/master/XBMCRemoteRT/XBMCRemoteRT.Shared/RPCWrappers/Player.cs
+    //http://kodi.wiki/view/JSON-RPC_API/Examples
+    //http://kodi.wiki/view/JSON-RPC_API/v8#Notifications_2
+    
     public class KodiMessage : HttpMessage
     {
         public string UserName { get; set; }

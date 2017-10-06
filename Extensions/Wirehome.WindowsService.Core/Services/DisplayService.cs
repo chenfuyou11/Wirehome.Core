@@ -6,7 +6,7 @@ namespace Wirehome.WindowsService.Core
     //https://stackoverflow.com/questions/6590939/how-to-set-display-settings-to-extend-mode-in-windows-7-using-c
     //https://stackoverflow.com/questions/16790287/programmatically-changing-the-presentation-display-mode
 
-    public static class MonitorHelper
+    public static class DisplayService
     {
         public static void SetDisplayMode(DisplayMode mode)
         {
@@ -30,13 +30,5 @@ namespace Wirehome.WindowsService.Core
             proc.Start();
         }
        
-    }
-
-    public enum DisplayMode
-    {
-        Internal,
-        External,
-        Extend,
-        Duplicate
     }
 }

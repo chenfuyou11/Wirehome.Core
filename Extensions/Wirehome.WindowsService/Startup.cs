@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
+using Microsoft.AspNetCore.Http;
+using NLog.Extensions.Logging;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using NSwag.AspNetCore;
+using System.Reflection;
 
 namespace Wirehome.WindowsService
 {
@@ -20,22 +23,47 @@ namespace Wirehome.WindowsService
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            env.ConfigureNLog("nlog.config");
         }
 
         public IConfigurationRoot Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
             services.AddMvc();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            //loggerFactory.AddDebug();
+
+            loggerFactory.AddNLog();
+            app.AddNLogWeb();
+
+            app.UseSwaggerUi(typeof(Startup).GetTypeInfo().Assembly, new SwaggerUiSettings());
+
+            app.UseExceptionHandler(options =>
+            {
+                 options.Run(
+                 async context =>
+                 {
+                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                     context.Response.ContentType = "text/html";
+                     var ex = context.Features.Get<IExceptionHandlerFeature>();
+                     if (ex != null)
+                     {
+                         var err = $"<h1>Error: {ex.Error.Message}</h1>{ex.Error.StackTrace }";
+                         await context.Response.WriteAsync(err).ConfigureAwait(false);
+                     }
+
+                     var logger = loggerFactory.CreateLogger("GlobalExceptionHandler");
+                     logger.LogError(ex.Error, "Unhandled Excteption");
+                 });
+             }
+            );
 
             app.UseMvc();
         }

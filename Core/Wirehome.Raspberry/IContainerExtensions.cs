@@ -13,8 +13,6 @@ namespace Wirehome.Raspberry
             container.RegisterSingleton<INativeSoundPlayer, RaspberrySoundPlayer>();
             container.RegisterSingleton<INativeStorage, RaspberryStorage>();
             container.RegisterSingleton<INativeTimerSerice, RaspberryTimerSerice>();
-            container.RegisterSingleton<INativeUDPSocket, RaspberryUDPSocket>();
-            container.RegisterSingleton<INativeTCPSocketFactory, RaspberryTCPSocketFactory>();
         }
     }
 }

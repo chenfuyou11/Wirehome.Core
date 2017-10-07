@@ -12,14 +12,12 @@ namespace Wirehome.Hardware.Drivers.Knx
         private readonly int _port;
         private readonly string _password;
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
-        private readonly INativeTCPSocketFactory _nativeTCPSocketFactory;
 
-        public KnxController(string hostName, int port, INativeTCPSocketFactory nativeTCPSocketFactory, string password = "")
+        public KnxController(string hostName, int port, string password = "")
         {
             _hostName = hostName ?? throw new ArgumentNullException(nameof(hostName));
             _port = port;
             _password = password;
-            _nativeTCPSocketFactory = nativeTCPSocketFactory ?? throw new ArgumentNullException(nameof(nativeTCPSocketFactory));
         }
 
         public KnxDigitalJoinEnpoint CreateDigitalJoinEndpoint(string identifier)
@@ -29,7 +27,7 @@ namespace Wirehome.Hardware.Drivers.Knx
 
         private async Task Initialization()
         {
-            using (var knxClient = new KnxClient(_hostName, _port, _password, _nativeTCPSocketFactory))
+            using (var knxClient = new KnxClient(_hostName, _port, _password))
             {
                 await knxClient.Connect();
                 string response = await knxClient.SendRequestAndWaitForResponse("i=1");
@@ -45,7 +43,7 @@ namespace Wirehome.Hardware.Drivers.Knx
             await semaphoreSlim.WaitAsync().ConfigureAwait(false);
             try
             {
-                using (var knxClient = new KnxClient(_hostName, _port, _password, _nativeTCPSocketFactory))
+                using (var knxClient = new KnxClient(_hostName, _port, _password))
                 {
                     await knxClient.Connect().ConfigureAwait(false);
                     string response = await knxClient.SendRequestAndWaitForResponse(identifier + "=1");
@@ -66,7 +64,7 @@ namespace Wirehome.Hardware.Drivers.Knx
             await semaphoreSlim.WaitAsync().ConfigureAwait(false);
             try
             {
-                using (var knxClient = new KnxClient(_hostName, _port, _password, _nativeTCPSocketFactory))
+                using (var knxClient = new KnxClient(_hostName, _port, _password))
                 {
                     await knxClient.Connect();
                     string response = await knxClient.SendRequestAndWaitForResponse(identifier + "=0");

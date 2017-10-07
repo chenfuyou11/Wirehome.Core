@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Wirehome.Contracts.Core;
@@ -6,6 +7,7 @@ using Wirehome.Contracts.Logging;
 
 namespace Wirehome.Hardware.Drivers.Knx
 {
+    //TODO Test after migrate to .NET Standard
     public sealed class KnxClient : IDisposable
     {
         private readonly int _port;
@@ -13,15 +15,20 @@ namespace Wirehome.Hardware.Drivers.Knx
         private readonly string _hostName;
         private bool _isConnected;
         private bool _isDisposed;
-        private readonly INativeTCPSocket _nativeTCPSocket;
+        private readonly TcpClient _socket;
+        private NetworkStream _stream;
 
-        public KnxClient(string hostName, int port, string password, INativeTCPSocketFactory nativeTCPSocket)
+        public KnxClient(string hostName, int port, string password)
         {
             _hostName = hostName ?? throw new ArgumentNullException(nameof(hostName));
             _port = port;
             _password = password;
 ;
-            _nativeTCPSocket = nativeTCPSocket.Create();
+            _socket = new TcpClient();
+
+            //TODO??
+            //_socket.Control.KeepAlive = true;
+            //_socket.Control.NoDelay = true;
         }
 
         public int Timeout { get; set; } = 150;
@@ -32,7 +39,7 @@ namespace Wirehome.Hardware.Drivers.Knx
 
             Log.Default.Verbose($"KnxClient: Connecting with {_hostName}...");
 
-            await _nativeTCPSocket.ConnectAsync(_hostName, _port, Timeout).ConfigureAwait(false);
+            await _socket.ConnectAsync(_hostName, _port).ConfigureAwait(false);
             
             _isConnected = true;
 
@@ -59,7 +66,7 @@ namespace Wirehome.Hardware.Drivers.Knx
             ThrowIfNotConnected();
 
             await WriteToSocket(request).ConfigureAwait(false);
-            return await ReadFromSocket();
+            return await ReadFromSocket().ConfigureAwait(false);
         }
 
         private async Task Authenticate()
@@ -89,17 +96,21 @@ namespace Wirehome.Hardware.Drivers.Knx
         private async Task WriteToSocket(string request)
         {
             byte[] payload = Encoding.UTF8.GetBytes(request + "\x03");
-            await _nativeTCPSocket.SendDataAsync(payload, Timeout, true).ConfigureAwait(false);
+            _stream = _socket.GetStream();
+            _stream.WriteTimeout = Timeout;
 
+            await _stream.WriteAsync(payload, 0, payload.Length).ConfigureAwait(false);
+            await _stream.FlushAsync().ConfigureAwait(false);
+            
             Log.Default.Verbose($"KnxClient: Sent {request}");
         }
 
         private async Task<string> ReadFromSocket()
         {
             Log.Default.Verbose("KnxClient: Waiting for response...");
-
+            
             var buffer = new byte[64];
-            await _nativeTCPSocket.ReadDataAsync(buffer, Timeout).ConfigureAwait(false);
+            await _stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
             
             var response = Encoding.UTF8.GetString(buffer);
             Log.Default.Verbose($"KnxClient: Received {response}");
@@ -115,7 +126,8 @@ namespace Wirehome.Hardware.Drivers.Knx
         public void Dispose()
         {
             _isDisposed = true;
-            _nativeTCPSocket.Dispose();
+            _stream.Dispose();
+            _socket.Dispose();
         }
     }
 }

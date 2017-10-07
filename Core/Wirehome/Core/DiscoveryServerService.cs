@@ -4,42 +4,51 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Wirehome.Contracts.Settings;
 using Wirehome.Contracts.Services;
-using Wirehome.Contracts.Core;
 using Wirehome.Settings;
 using Wirehome.Contracts.Core.Discovery;
+using System.Net.Sockets;
+using System.Net;
+using System.Threading;
 
 namespace Wirehome.Core
 {
+    //TODO Test after migrate to .NET Standard 2.0
     public sealed class DiscoveryServerService : ServiceBase, IDisposable
     {
         private const int Port = 19228;
-
+        private readonly CancellationTokenSource _cancelationToken;
         private readonly ISettingsService _settingsService;
-        private readonly INativeUDPSocket _nativeUDPSocket;
-
-        public DiscoveryServerService(ISettingsService settingsService, INativeUDPSocket nativeUDPSocket)
+        private readonly UdpClient _socket;
+        
+        public DiscoveryServerService(ISettingsService settingsService)
         {
             _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
-            _nativeUDPSocket = nativeUDPSocket ?? throw new ArgumentNullException(nameof(nativeUDPSocket));
+            _socket = new UdpClient(Port);
         }
 
-        public override async Task Initialize()
+        public override Task Initialize()
         {
-            _nativeUDPSocket.OnMessageRecived += _nativeUDPSocket_OnMessageRecived;
-            await _nativeUDPSocket.BindServiceNameAsync(Port).ConfigureAwait(false);
-        }
+            Task.Run(async () =>
+            {
+                var token = _cancelationToken.Token;
+                while (true)
+                {
+                    if (_cancelationToken.IsCancellationRequested) break;
+                    var result = await _socket.ReceiveAsync().ConfigureAwait(false);
+                    await SendResponseAsync(result.RemoteEndPoint).ConfigureAwait(false);
+                }
+            });
 
-        private async void _nativeUDPSocket_OnMessageRecived(string remoteAddress)
-        {
-            await SendResponseAsync(remoteAddress);
+            return Task.CompletedTask;
         }
-
+        
         public void Dispose()
         {
-            _nativeUDPSocket?.Dispose();
+            _cancelationToken.Cancel();
+            _socket.Dispose();
         }
 
-        private async Task SendResponseAsync(string remoteAddress)
+        private async Task SendResponseAsync(IPEndPoint remoteAddress )
         {
             //TODO Why not in constructor??
             var controllerSettings = _settingsService.GetSettings<ControllerSettings>();
@@ -47,7 +56,7 @@ namespace Wirehome.Core
             var response = new DiscoveryResponse(controllerSettings.Caption, controllerSettings.Description);
             var buffer = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response));
 
-            await _nativeUDPSocket.SendResponse(remoteAddress, Port, buffer).ConfigureAwait(false);
+            await _socket.SendAsync(buffer, buffer.Length, remoteAddress);
         }
 
    

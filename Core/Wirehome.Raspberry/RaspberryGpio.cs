@@ -40,6 +40,5 @@ namespace Wirehome.Raspberry
         {
             _gpioPin.Write((GpioPinValue)pinValue);
         }
-
     }
 }

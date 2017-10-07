@@ -39,7 +39,9 @@ namespace Wirehome.Extensions.Messaging.Core
         {
             var handler = Handler as Func<IMessageEnvelope<T>, Task<object>>;
             if(handler == null) throw new InvalidCastException($"Invalid cast from {Handler.GetType()} to Func<IMessageEnvelope<{typeof(T).Name}>, Task<object>>");
-            return await handler(message).ConfigureAwait(false) as R;
+            var result = await handler(message).ConfigureAwait(false);
+
+            return result as R;
         }
 
         public void Handle<T>(IMessageEnvelope<T> message)

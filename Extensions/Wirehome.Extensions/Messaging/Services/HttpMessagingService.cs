@@ -51,7 +51,7 @@ namespace Wirehome.Extensions.Messaging.Services
                 httpResponse.EnsureSuccessStatusCode();
                 var responseBody = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                return message.Message.ParseResult(responseBody);
+                return message.Message.ParseResult(responseBody, message.ResponseType);
             }
         }
 

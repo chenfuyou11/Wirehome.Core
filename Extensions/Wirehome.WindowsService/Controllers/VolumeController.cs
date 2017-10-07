@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Wirehome.Extensions.Devices.Computer;
 using Wirehome.WindowsService.Core;
 
 namespace Wirehome.WindowsService.Controllers
@@ -20,11 +21,12 @@ namespace Wirehome.WindowsService.Controllers
         }
         
         [HttpPost]
-        public IActionResult Post(float value)
+        public IActionResult Post([FromBody] VolumePost volume)
         {
-            _audioService.SetMasterVolume(value);
-
+            _audioService.SetMasterVolume(volume.Volume);
             return Ok();
         }
     }
+
+   
 }

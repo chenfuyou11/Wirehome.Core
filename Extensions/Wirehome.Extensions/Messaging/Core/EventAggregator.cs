@@ -78,7 +78,7 @@ namespace Wirehome.Extensions.Messaging.Core
 
             if (localSubscriptions.Count == 0) return Observable.Empty<R>();
 
-            var messageEnvelope = new MessageEnvelope<T>(message, cancellationToken);
+            var messageEnvelope = new MessageEnvelope<T>(message, cancellationToken, typeof(R));
 
             return localSubscriptions.Select(x => Task.Run(() => x.HandleAsync<T, R>(messageEnvelope)))
                                      .ToObservable()
@@ -119,7 +119,7 @@ namespace Wirehome.Extensions.Messaging.Core
 
             if (localSubscriptions.Count == 0) return;
 
-            var messageEnvelope = new MessageEnvelope<T>(message, cancellationToken);
+            var messageEnvelope = new MessageEnvelope<T>(message, cancellationToken, typeof(R));
 
             var publishTask = localSubscriptions.Select(x => Task.Run(async () =>
             {

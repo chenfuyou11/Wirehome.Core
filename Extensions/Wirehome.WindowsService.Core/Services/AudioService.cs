@@ -9,7 +9,7 @@ namespace Wirehome.WindowsService.Core
     {
         private readonly IMMDeviceEnumerator _deviceEnumerator = (IMMDeviceEnumerator)new MMDeviceEnumerator();
 
-        public AudioDeviceCollection GetAudioDevices(AudioDeviceKind kind, AudioDeviceState state)
+        public AudioDeviceCollection GetAudioDevices(AudioDeviceKind kind = AudioDeviceKind.Playback, AudioDeviceState state = AudioDeviceState.Active)
         {
             int hr = _deviceEnumerator.EnumAudioEndpoints(kind, state, out IMMDeviceCollection underlyingCollection);
             if (hr == HResult.OK)  return new AudioDeviceCollection(underlyingCollection);
@@ -26,7 +26,7 @@ namespace Wirehome.WindowsService.Core
             SetDefaultAudioDevice(device, AudioDeviceRole.Console);
         }
 
-        public void SetDefaultAudioDevice(AudioDevice device, AudioDeviceRole role)
+        public void SetDefaultAudioDevice(AudioDevice device, AudioDeviceRole role = AudioDeviceRole.Multimedia)
         {
             if (device == null)  throw new ArgumentNullException(nameof(device));
 
@@ -46,7 +46,7 @@ namespace Wirehome.WindowsService.Core
                 throw Marshal.GetExceptionForHR(hr);
         }
 
-        public bool IsDefaultAudioDevice(AudioDevice device, AudioDeviceRole role)
+        public bool IsDefaultAudioDevice(AudioDevice device, AudioDeviceRole role = AudioDeviceRole.Multimedia)
         {
             if (device == null)  throw new ArgumentNullException(nameof(device));
 
@@ -56,7 +56,7 @@ namespace Wirehome.WindowsService.Core
             return String.Equals(defaultDevice.Id, device.Id, StringComparison.OrdinalIgnoreCase);
         }
 
-        public AudioDevice GetDefaultAudioDevice(AudioDeviceKind kind, AudioDeviceRole role)
+        public AudioDevice GetDefaultAudioDevice(AudioDeviceKind kind = AudioDeviceKind.Playback, AudioDeviceRole role = AudioDeviceRole.Multimedia)
         {
             int hr = _deviceEnumerator.GetDefaultAudioEndpoint(kind, role, out IMMDevice underlyingDevice);
             if (hr == HResult.OK)  return new AudioDevice(underlyingDevice);

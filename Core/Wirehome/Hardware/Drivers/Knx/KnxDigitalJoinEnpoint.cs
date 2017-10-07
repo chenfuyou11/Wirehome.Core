@@ -20,18 +20,16 @@ namespace Wirehome.Hardware.Drivers.Knx
             _knxController = knxController ?? throw new ArgumentNullException(nameof(knxController));
         }
 
-        public Task SetState(AdapterPowerState powerState, params IHardwareParameter[] parameters)
+        public async Task SetState(AdapterPowerState powerState, params IHardwareParameter[] parameters)
         {
             if (powerState == AdapterPowerState.On)
             {
-                _knxController.SendDigitalJoinOn(_identifier);
+                await _knxController.SendDigitalJoinOn(_identifier);
             }
             else
             {
-                _knxController.SendDigitalJoinOff(_identifier);
+                await _knxController.SendDigitalJoinOff(_identifier);
             }
-
-            return Task.FromResult(0);
         }
 
         private bool ValidationJoin(string join)

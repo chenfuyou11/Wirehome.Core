@@ -79,7 +79,6 @@ namespace Wirehome.Extensions.Messaging.SonyMessages
                 //return response.GetValue("result").First.ToObject(responseType);
                 //}
             }
-            return "";
         }
 
         

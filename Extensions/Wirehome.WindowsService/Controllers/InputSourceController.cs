@@ -3,6 +3,7 @@ using Wirehome.WindowsService.Core;
 using System.Linq;
 using System.Collections.Generic;
 using Wirehome.Extensions.Core;
+using Wirehome.Extensions.Devices.Computer;
 
 namespace Wirehome.WindowsService.Controllers
 {
@@ -24,10 +25,10 @@ namespace Wirehome.WindowsService.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(string id)
+        public IActionResult Post([FromBody] InputSourcePost inputSource)
         {
-            var device = _audioService.GetAudioDevices(Interop.AudioDeviceKind.Playback, Interop.AudioDeviceState.Active).FirstOrDefault(x => x.Id == id);
-            if (device == null) throw new System.Exception($"Device {id} was not found");
+            var device = _audioService.GetAudioDevices(Interop.AudioDeviceKind.Playback, Interop.AudioDeviceState.Active).FirstOrDefault(x => x.ToString() == inputSource.Input);
+            if (device == null) throw new System.Exception($"Device {inputSource.Input} was not found oncomputer");
             
             _audioService.SetDefaultAudioDevice(device);
             return Ok();

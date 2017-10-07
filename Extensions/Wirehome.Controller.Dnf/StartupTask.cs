@@ -1,5 +1,5 @@
 ﻿using Windows.ApplicationModel.Background;
-using Wirehome.Extensions;
+using Wirehome.Core;
 
 namespace Wirehome.Controller.Dnf
 {

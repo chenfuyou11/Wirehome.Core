@@ -1,7 +1,9 @@
-﻿namespace Wirehome.WindowsService.Services
+﻿using Wirehome.Extensions.Core;
+
+namespace Wirehome.WindowsService.Services
 {
     public interface IPowerService
     {
-        void SetPowerMode(PowerState powerState);
+        void SetPowerMode(ComputerPowerState powerState);
     }
 }

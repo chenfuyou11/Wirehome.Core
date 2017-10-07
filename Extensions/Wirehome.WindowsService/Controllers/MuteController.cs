@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Wirehome.Extensions.Devices.Computer;
 using Wirehome.WindowsService.Core;
 
 namespace Wirehome.WindowsService.Controllers
@@ -20,9 +21,9 @@ namespace Wirehome.WindowsService.Controllers
         }
         
         [HttpPost]
-        public IActionResult Post(bool value)
+        public IActionResult Post([FromBody] MutePost value)
         {
-            _audioService.SetMasterVolumeMute(value);
+            _audioService.SetMasterVolumeMute(value.Mute);
 
             return Ok();
         }

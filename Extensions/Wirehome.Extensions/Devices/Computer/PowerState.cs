@@ -1,6 +1,6 @@
-﻿namespace Wirehome.WindowsService.Services
+﻿namespace Wirehome.Extensions.Core
 {
-    public enum PowerState
+    public enum ComputerPowerState
     {
         Hibernate = 0,
         Sleep = 1,

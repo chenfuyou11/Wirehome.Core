@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Wirehome.Extensions.Core;
+using Wirehome.Extensions.Devices.Computer;
 using Wirehome.WindowsService.Services;
 
 namespace Wirehome.WindowsService.Controllers
@@ -20,9 +22,9 @@ namespace Wirehome.WindowsService.Controllers
         }
         
         [HttpPost]
-        public IActionResult Post(PowerState value)
+        public IActionResult Post([FromBody] PowerPost value)
         {
-            _powerService.SetPowerMode(value);
+            _powerService.SetPowerMode(value.State);
             return Ok();
         }
     }

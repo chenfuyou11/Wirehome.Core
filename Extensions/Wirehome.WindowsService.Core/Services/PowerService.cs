@@ -1,30 +1,31 @@
 ﻿using Wirehome.WindowsService.Interop;
 using System.Diagnostics;
+using Wirehome.Extensions.Core;
 
 namespace Wirehome.WindowsService.Services
 {
     public class PowerService : IPowerService
     {
-        public void SetPowerMode(PowerState powerState)
+        public void SetPowerMode(ComputerPowerState powerState)
         {
             switch (powerState)
             {
-                case PowerState.Hibernate:
+                case ComputerPowerState.Hibernate:
                     Win32Api.SetSuspendState(true, true, true);
                     break;
-                case PowerState.Sleep:
+                case ComputerPowerState.Sleep:
                     Win32Api.SetSuspendState(false, true, true);
                     break;
-                case PowerState.Shutdown:
+                case ComputerPowerState.Shutdown:
                     Process.Start("shutdown", "/s /t 0");
                     break;
-                case PowerState.Restart:
+                case ComputerPowerState.Restart:
                     Process.Start("shutdown", "/r /t 0");
                     break;
-                case PowerState.LogOff:
+                case ComputerPowerState.LogOff:
                     Win32Api.ExitWindowsEx(0, 0);
                     break;
-                case PowerState.Lock:
+                case ComputerPowerState.Lock:
                     Win32Api.LockWorkStation();
                     break;
             }

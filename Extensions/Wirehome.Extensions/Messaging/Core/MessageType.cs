@@ -9,6 +9,7 @@
         Current = 5,
         Humidity = 6,
         Debug = 10,
-        Samsung = 20
+        TCP = 20,
+        UDP = 30
     }
 }

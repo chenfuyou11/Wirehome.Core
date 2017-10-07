@@ -105,7 +105,7 @@ namespace Wirehome.Extensions.Messaging.SamsungMessages
 
         public MessageType Type()
         {
-            return MessageType.Samsung;
+            return MessageType.TCP;
         }
 
         public string MessageAddress()

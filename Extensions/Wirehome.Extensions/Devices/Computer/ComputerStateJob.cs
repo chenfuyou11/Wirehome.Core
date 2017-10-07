@@ -41,7 +41,7 @@ namespace Wirehome.Extensions.Devices
             }
             catch (Exception ee)
             {
-                //_logger.Error(ee, $"Unhandled exception in {nameof(DenonStateJob)}");
+                _logger.Error(ee, $"Unhandled exception in {nameof(DenonStateJob)}");
             }
         }
     }

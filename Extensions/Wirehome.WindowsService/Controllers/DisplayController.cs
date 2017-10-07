@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using Wirehome.WindowsService.Core;
 
 namespace Wirehome.WindowsService.Controllers
@@ -6,16 +7,23 @@ namespace Wirehome.WindowsService.Controllers
     [Route("api/[controller]")]
     public class DisplayController : Controller
     {
-        //[HttpGet]
-        //public bool Get()
-        //{
-        //    return true;
-        //}
+        private readonly IDisplayService _displayService;
 
+        public DisplayController(IDisplayService displayService)
+        {
+            _displayService = displayService;
+        }
+
+        [HttpGet]
+        public IEnumerable<IDisplay> Get()
+        {
+            return _displayService.GetActiveMonitors();
+        }
+        
         [HttpPost]
         public IActionResult Post(DisplayMode displayMode)
         {
-            DisplayService.SetDisplayMode(displayMode);
+            _displayService.SetDisplayMode(displayMode);
 
             return Ok();
         }

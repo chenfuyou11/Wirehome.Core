@@ -6,6 +6,13 @@ namespace Wirehome.WindowsService.Controllers
     [Route("api/[controller]")]
     public class PowerController : Controller
     {
+        private readonly IPowerService _powerService;
+
+        public PowerController(IPowerService powerService)
+        {
+            _powerService = powerService;
+        }
+
         [HttpGet]
         public bool Get()
         {
@@ -15,7 +22,7 @@ namespace Wirehome.WindowsService.Controllers
         [HttpPost]
         public IActionResult Post(PowerState value)
         {
-            PowerService.SetPowerMode(value);
+            _powerService.SetPowerMode(value);
             return Ok();
         }
     }

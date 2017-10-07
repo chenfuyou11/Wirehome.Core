@@ -7,9 +7,9 @@ using Wirehome.WindowsService.Interop;
 
 namespace Wirehome.WindowsService.Services
 {
-    public static class ProcessService
+    public class ProcessService : IProcessService
     {
-        public static void StartProcess(string path, bool restoreWhenRunning = true)
+        public void StartProcess(string path, bool restoreWhenRunning = true)
         {
             if(!File.Exists(path)) throw new Exception($"Process {path} cannot be found on PC");
 
@@ -25,7 +25,7 @@ namespace Wirehome.WindowsService.Services
             Process.Start(path);
         }
 
-        public static void StopProcess(string name)
+        public void StopProcess(string name)
         {
             var active = GetActiveProcess(Path.GetFileNameWithoutExtension(name));
 
@@ -35,12 +35,12 @@ namespace Wirehome.WindowsService.Services
             }
         }
 
-        public static bool IsProcessStarted(string processName)
+        public bool IsProcessStarted(string processName)
         {
             return GetActiveProcess(Path.GetFileNameWithoutExtension(processName)).Any();
         }
      
-        private static IEnumerable<ProcessDetails> GetActiveProcess(string processIndicator)
+        private IEnumerable<ProcessDetails> GetActiveProcess(string processIndicator)
         {
             var activeProcess = Process.GetProcesses().Select(x => new ProcessDetails
                                                                    {

@@ -13,10 +13,12 @@ namespace Wirehome.WindowsService.Controllers
     public class ProcessController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IProcessService _processService;
 
-        public ProcessController(IHostingEnvironment hostingEnvironment)
+        public ProcessController(IHostingEnvironment hostingEnvironment, IProcessService processService)
         {
             _hostingEnvironment = hostingEnvironment;
+            _processService = processService;
         }
 
         private string ReadProcessPath(string processName)
@@ -37,7 +39,7 @@ namespace Wirehome.WindowsService.Controllers
         [HttpGet]
         public bool Get(string processName)
         {
-            return ProcessService.IsProcessStarted(ReadProcessPath(processName));
+            return _processService.IsProcessStarted(ReadProcessPath(processName));
         }
         
         [HttpPost]
@@ -47,11 +49,11 @@ namespace Wirehome.WindowsService.Controllers
 
             if (start)
             {
-                ProcessService.StartProcess(processPath);
+                _processService.StartProcess(processPath);
             }
             else
             {
-                ProcessService.StopProcess(processPath);
+                _processService.StopProcess(processPath);
             }
 
             return Ok();

@@ -10,6 +10,8 @@ using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using NSwag.AspNetCore;
 using System.Reflection;
+using Wirehome.WindowsService.Core;
+using Wirehome.WindowsService.Services;
 
 namespace Wirehome.WindowsService
 {
@@ -33,6 +35,10 @@ namespace Wirehome.WindowsService
         {
             services.AddMvc();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IAudioService, AudioService>();
+            services.AddSingleton<IPowerService, PowerService>();
+            services.AddSingleton<IProcessService, ProcessService>();
+            services.AddSingleton<IDisplayService, DisplayService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

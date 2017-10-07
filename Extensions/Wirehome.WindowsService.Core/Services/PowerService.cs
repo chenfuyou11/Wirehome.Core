@@ -3,9 +3,9 @@ using System.Diagnostics;
 
 namespace Wirehome.WindowsService.Services
 {
-    public static class PowerService
+    public class PowerService : IPowerService
     {
-        public static void SetPowerMode(PowerState powerState)
+        public void SetPowerMode(PowerState powerState)
         {
             switch (powerState)
             {

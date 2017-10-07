@@ -1,159 +1,206 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Wirehome.WindowsService.Audio;
 using Wirehome.WindowsService.Interop;
 
 namespace Wirehome.WindowsService.Core
 {
-
-    public static class AudioService
+    public class AudioService : IAudioService
     {
-        #region Master Volume Manipulation
+        private readonly IMMDeviceEnumerator _deviceEnumerator = (IMMDeviceEnumerator)new MMDeviceEnumerator();
 
-        public static float GetMasterVolume()
+        public AudioDeviceCollection GetAudioDevices(AudioDeviceKind kind, AudioDeviceState state)
+        {
+            int hr = _deviceEnumerator.EnumAudioEndpoints(kind, state, out IMMDeviceCollection underlyingCollection);
+            if (hr == HResult.OK)  return new AudioDeviceCollection(underlyingCollection);
+
+            throw Marshal.GetExceptionForHR(hr);
+        }
+
+        public void SetDefaultAudioDevice(AudioDevice device)
+        {
+            if (device == null)  throw new ArgumentNullException(nameof(device));
+
+            SetDefaultAudioDevice(device, AudioDeviceRole.Multimedia);
+            SetDefaultAudioDevice(device, AudioDeviceRole.Communications);
+            SetDefaultAudioDevice(device, AudioDeviceRole.Console);
+        }
+
+        public void SetDefaultAudioDevice(AudioDevice device, AudioDeviceRole role)
+        {
+            if (device == null)  throw new ArgumentNullException(nameof(device));
+
+            var config = new PolicyConfig();
+
+            int hr;
+            if (config is IPolicyConfig2 config2)
+            {   // Windows 7 -> Windows 8.1
+                hr = config2.SetDefaultEndpoint(device.Id, role);
+            }
+            else
+            {   // Windows 10+
+                hr = ((IPolicyConfig3)config).SetDefaultEndpoint(device.Id, role);
+            }
+
+            if (hr != HResult.OK)
+                throw Marshal.GetExceptionForHR(hr);
+        }
+
+        public bool IsDefaultAudioDevice(AudioDevice device, AudioDeviceRole role)
+        {
+            if (device == null)  throw new ArgumentNullException(nameof(device));
+
+            AudioDevice defaultDevice = GetDefaultAudioDevice(device.Kind, role);
+            if (defaultDevice == null)  return false;
+
+            return String.Equals(defaultDevice.Id, device.Id, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public AudioDevice GetDefaultAudioDevice(AudioDeviceKind kind, AudioDeviceRole role)
+        {
+            int hr = _deviceEnumerator.GetDefaultAudioEndpoint(kind, role, out IMMDevice underlyingDevice);
+            if (hr == HResult.OK)  return new AudioDevice(underlyingDevice);
+
+            if (hr == HResult.NotFound || hr == HResult.FileNotFound) return null;
+
+            throw Marshal.GetExceptionForHR(hr);
+        }
+
+        public AudioDevice GetDevice(string id)
+        {
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
+            int hr = _deviceEnumerator.GetDevice(id, out IMMDevice underlyingDevice);
+            if (hr == HResult.OK) return new AudioDevice(underlyingDevice);
+
+            if (hr == HResult.NotFound) return null;
+
+            throw Marshal.GetExceptionForHR(hr);
+        }
+ 
+        public float GetMasterVolume()
         {
             IAudioEndpointVolume masterVol = null;
             try
             {
                 masterVol = GetMasterVolumeObject();
-                if (masterVol == null)
-                    return -1;
+                if (masterVol == null) return -1;
 
-                float volumeLevel;
-                masterVol.GetMasterVolumeLevelScalar(out volumeLevel);
+                masterVol.GetMasterVolumeLevelScalar(out float volumeLevel);
                 return volumeLevel * 100;
             }
             finally
             {
-                if (masterVol != null)
-                    Marshal.ReleaseComObject(masterVol);
+                if (masterVol != null)  Marshal.ReleaseComObject(masterVol);
             }
         }
 
-        public static bool GetMasterVolumeMute()
+        public bool GetMasterVolumeMute()
         {
             IAudioEndpointVolume masterVol = null;
             try
             {
                 masterVol = GetMasterVolumeObject();
-                if (masterVol == null)
-                    return false;
+                if (masterVol == null) return false;
 
-                bool isMuted;
-                masterVol.GetMute(out isMuted);
+                masterVol.GetMute(out bool isMuted);
                 return isMuted;
             }
             finally
             {
-                if (masterVol != null)
-                    Marshal.ReleaseComObject(masterVol);
+                if (masterVol != null) Marshal.ReleaseComObject(masterVol);
             }
         }
 
-        public static void SetMasterVolume(float newLevel)
+        public void SetMasterVolume(float newLevel)
         {
             IAudioEndpointVolume masterVol = null;
             try
             {
                 masterVol = GetMasterVolumeObject();
-                if (masterVol == null)
-                    return;
+                if (masterVol == null) return;
 
                 masterVol.SetMasterVolumeLevelScalar(newLevel / 100, Guid.Empty);
             }
             finally
             {
-                if (masterVol != null)
-                    Marshal.ReleaseComObject(masterVol);
+                if (masterVol != null) Marshal.ReleaseComObject(masterVol);
             }
         }
 
-        public static float StepMasterVolume(float stepAmount)
+        public float StepMasterVolume(float stepAmount)
         {
             IAudioEndpointVolume masterVol = null;
             try
             {
                 masterVol = GetMasterVolumeObject();
-                if (masterVol == null)
-                    return -1;
+                if (masterVol == null) return -1;
 
                 float stepAmountScaled = stepAmount / 100;
 
-                // Get the level
-                float volumeLevel;
-                masterVol.GetMasterVolumeLevelScalar(out volumeLevel);
+                masterVol.GetMasterVolumeLevelScalar(out float volumeLevel);
 
-                // Calculate the new level
                 float newLevel = volumeLevel + stepAmountScaled;
                 newLevel = Math.Min(1, newLevel);
                 newLevel = Math.Max(0, newLevel);
 
                 masterVol.SetMasterVolumeLevelScalar(newLevel, Guid.Empty);
 
-                // Return the new volume level that was set
                 return newLevel * 100;
             }
             finally
             {
-                if (masterVol != null)
-                    Marshal.ReleaseComObject(masterVol);
+                if (masterVol != null) Marshal.ReleaseComObject(masterVol);
             }
         }
 
-        public static void SetMasterVolumeMute(bool isMuted)
+        public void SetMasterVolumeMute(bool isMuted)
         {
             IAudioEndpointVolume masterVol = null;
             try
             {
                 masterVol = GetMasterVolumeObject();
-                if (masterVol == null)
-                    return;
+                if (masterVol == null) return;
 
                 masterVol.SetMute(isMuted, Guid.Empty);
             }
             finally
             {
-                if (masterVol != null)
-                    Marshal.ReleaseComObject(masterVol);
+                if (masterVol != null) Marshal.ReleaseComObject(masterVol);
             }
         }
 
-        public static bool ToggleMasterVolumeMute()
+        public bool ToggleMasterVolumeMute()
         {
             IAudioEndpointVolume masterVol = null;
             try
             {
                 masterVol = GetMasterVolumeObject();
-                if (masterVol == null)
-                    return false;
+                if (masterVol == null) return false;
 
-                bool isMuted;
-                masterVol.GetMute(out isMuted);
+                masterVol.GetMute(out bool isMuted);
                 masterVol.SetMute(!isMuted, Guid.Empty);
 
                 return !isMuted;
             }
             finally
             {
-                if (masterVol != null)
-                    Marshal.ReleaseComObject(masterVol);
+                if (masterVol != null) Marshal.ReleaseComObject(masterVol);
             }
         }
 
-        private static IAudioEndpointVolume GetMasterVolumeObject()
+        private IAudioEndpointVolume GetMasterVolumeObject()
         {
             IMMDeviceEnumerator deviceEnumerator = null;
             IMMDevice speakers = null;
             try
             {
                 deviceEnumerator = (IMMDeviceEnumerator)(new MMDeviceEnumerator());
-                deviceEnumerator.GetDefaultAudioEndpoint(EDataFlow.eRender, ERole.eMultimedia, out speakers);
+                deviceEnumerator.GetDefaultAudioEndpoint(AudioDeviceKind.Playback, AudioDeviceRole.Multimedia, out speakers);
 
-                Guid IID_IAudioEndpointVolume = typeof(IAudioEndpointVolume).GUID;
-                object o;
-                speakers.Activate(ref IID_IAudioEndpointVolume, 0, IntPtr.Zero, out o);
-                IAudioEndpointVolume masterVol = (IAudioEndpointVolume)o;
-
-                return masterVol;
+                var IID_IAudioEndpointVolume = typeof(IAudioEndpointVolume).GUID;
+                speakers.Activate(ref IID_IAudioEndpointVolume, 0, IntPtr.Zero, out object o);
+                return (IAudioEndpointVolume)o;
             }
             finally
             {
@@ -161,58 +208,48 @@ namespace Wirehome.WindowsService.Core
                 if (deviceEnumerator != null) Marshal.ReleaseComObject(deviceEnumerator);
             }
         }
-
-        #endregion
-
-        #region Individual Application Volume Manipulation
-
-        public static float? GetApplicationVolume(int pid)
+        
+        public float? GetApplicationVolume(int pid)
         {
-            ISimpleAudioVolume volume = GetVolumeObject(pid);
-            if (volume == null)
-                return null;
+            var volume = GetVolumeObject(pid);
+            if (volume == null) return null;
 
-            float level;
-            volume.GetMasterVolume(out level);
+            volume.GetMasterVolume(out float level);
             Marshal.ReleaseComObject(volume);
             return level * 100;
         }
 
-        public static bool? GetApplicationMute(int pid)
+        public bool? GetApplicationMute(int pid)
         {
-            ISimpleAudioVolume volume = GetVolumeObject(pid);
-            if (volume == null)
-                return null;
+            var volume = GetVolumeObject(pid);
+            if (volume == null) return null;
 
-            bool mute;
-            volume.GetMute(out mute);
+            volume.GetMute(out bool mute);
             Marshal.ReleaseComObject(volume);
             return mute;
         }
 
-        public static void SetApplicationVolume(int pid, float level)
+        public void SetApplicationVolume(int pid, float level)
         {
-            ISimpleAudioVolume volume = GetVolumeObject(pid);
-            if (volume == null)
-                return;
+            var volume = GetVolumeObject(pid);
+            if (volume == null) return;
 
             Guid guid = Guid.Empty;
             volume.SetMasterVolume(level / 100, ref guid);
             Marshal.ReleaseComObject(volume);
         }
 
-        public static void SetApplicationMute(int pid, bool mute)
+        public void SetApplicationMute(int pid, bool mute)
         {
             ISimpleAudioVolume volume = GetVolumeObject(pid);
-            if (volume == null)
-                return;
+            if (volume == null)  return;
 
             Guid guid = Guid.Empty;
             volume.SetMute(mute, ref guid);
             Marshal.ReleaseComObject(volume);
         }
 
-        private static ISimpleAudioVolume GetVolumeObject(int pid)
+        private ISimpleAudioVolume GetVolumeObject(int pid)
         {
             IMMDeviceEnumerator deviceEnumerator = null;
             IAudioSessionEnumerator sessionEnumerator = null;
@@ -222,18 +259,16 @@ namespace Wirehome.WindowsService.Core
             {
                 // get the speakers (1st render + multimedia) device
                 deviceEnumerator = (IMMDeviceEnumerator)(new MMDeviceEnumerator());
-                deviceEnumerator.GetDefaultAudioEndpoint(EDataFlow.eRender, ERole.eMultimedia, out speakers);
+                deviceEnumerator.GetDefaultAudioEndpoint(AudioDeviceKind.Playback, AudioDeviceRole.Multimedia, out speakers);
 
                 // activate the session manager. we need the enumerator
                 Guid IID_IAudioSessionManager2 = typeof(IAudioSessionManager2).GUID;
-                object o;
-                speakers.Activate(ref IID_IAudioSessionManager2, 0, IntPtr.Zero, out o);
+                speakers.Activate(ref IID_IAudioSessionManager2, 0, IntPtr.Zero, out object o);
                 mgr = (IAudioSessionManager2)o;
 
                 // enumerate sessions for on this device
                 mgr.GetSessionEnumerator(out sessionEnumerator);
-                int count;
-                sessionEnumerator.GetCount(out count);
+                sessionEnumerator.GetCount(out int count);
 
                 // search for an audio session with the required process-id
                 ISimpleAudioVolume volumeControl = null;
@@ -245,8 +280,7 @@ namespace Wirehome.WindowsService.Core
                         sessionEnumerator.GetSession(i, out ctl);
 
                         // NOTE: we could also use the app name from ctl.GetDisplayName()
-                        int cpid;
-                        ctl.GetProcessId(out cpid);
+                        ctl.GetProcessId(out int cpid);
 
                         if (cpid == pid)
                         {
@@ -270,10 +304,5 @@ namespace Wirehome.WindowsService.Core
                 if (deviceEnumerator != null) Marshal.ReleaseComObject(deviceEnumerator);
             }
         }
-
-        #endregion
-
     }
-
-
 }

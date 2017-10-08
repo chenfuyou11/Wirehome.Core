@@ -22,8 +22,8 @@ namespace Wirehome.Devices
     [ApiServiceClass(typeof(IDeviceMessageBrokerService))]
     public class DeviceMessageBrokerService : ServiceBase, IDeviceMessageBrokerService
     {
-        private readonly MqttServer _server;
-        private readonly MqttClient _client;
+        private readonly IMqttServer _server;
+        private readonly IMqttClient _client;
         private readonly ILogger _log;
         private readonly MqttCommunicationAdapter _clientCommunicationAdapter;
 
@@ -51,13 +51,27 @@ namespace Wirehome.Devices
 
             var mqttClientOptions = new MqttClientOptions { ClientId = "Wirehome.Loopback", KeepAlivePeriod = TimeSpan.FromHours(1) };
             _client = new MqttClient(mqttClientOptions, channelA);
-            _client.ApplicationMessageReceived += ProcessIncomingMessage;
+            _client.ApplicationMessageReceived += ProcessIncomingMessage; 
 
             var mqttServerOptions = new MqttServerOptions();
             _server = new MqttServerFactory().CreateMqttServer(mqttServerOptions);
             _server.ClientConnected += (s, e) => _log.Info($"MQTT client '{e.Identifier}' connected.");
 
             scriptingService.RegisterScriptProxy(s => new DeviceMessageBrokerScriptProxy(this, s));
+        }
+
+        private void ProcessIncomingMessage(object sender, MQTTnet.Core.Client.MqttApplicationMessageReceivedEventArgs e)
+        {
+            _log.Verbose($"Broker received message '{e.ApplicationMessage.Topic}' [{Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}].");
+
+            var message = new DeviceMessage
+            {
+                Topic = e.ApplicationMessage.Topic,
+                Payload = e.ApplicationMessage.Payload,
+                QosLevel = (MqttQosLevel)e.ApplicationMessage.QualityOfServiceLevel
+            };
+
+            MessageReceived?.Invoke(this, new DeviceMessageReceivedEventArgs(message));
         }
 
         public event EventHandler<DeviceMessageReceivedEventArgs> MessageReceived;
@@ -118,18 +132,6 @@ namespace Wirehome.Devices
             };
         }
 
-        private void ProcessIncomingMessage(object sender, MqttApplicationMessageReceivedEventArgs e)
-        {
-            _log.Verbose($"Broker received message '{e.ApplicationMessage.Topic}' [{Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}].");
-
-            var message = new DeviceMessage
-            {
-                Topic = e.ApplicationMessage.Topic,
-                Payload = e.ApplicationMessage.Payload,
-                QosLevel = (MqttQosLevel)e.ApplicationMessage.QualityOfServiceLevel
-            };
-
-            MessageReceived?.Invoke(this, new DeviceMessageReceivedEventArgs(message));
-        }
+      
     }
 }

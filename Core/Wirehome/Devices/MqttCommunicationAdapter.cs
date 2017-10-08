@@ -17,32 +17,7 @@ namespace Wirehome.Devices
         public MqttCommunicationAdapter Partner { get; set; }
 
         public IMqttPacketSerializer PacketSerializer => throw new NotImplementedException();
-
-        public async Task ConnectAsync(MqttClientOptions options, TimeSpan timeout)
-        {
-            await Task.FromResult(0);
-        }
-
-        public async Task DisconnectAsync()
-        {
-            await Task.FromResult(0);
-        }
-
-        public async Task SendPacketAsync(MqttBasePacket packet, TimeSpan timeout)
-        {
-            ThrowIfPartnerIsNull();
-
-            Partner.SendPacketInternal(packet);
-            await Task.FromResult(0);
-        }
-
-        public async Task<MqttBasePacket> ReceivePacketAsync(TimeSpan timeout)
-        {
-            ThrowIfPartnerIsNull();
-
-            return await Task.Run(() => _incomingPackets.Take());
-        }
-
+        
         private void SendPacketInternal(MqttBasePacket packet)
         {
             if (packet == null) throw new ArgumentNullException(nameof(packet));
@@ -58,6 +33,35 @@ namespace Wirehome.Devices
             }
         }
 
-       
+        public Task ConnectAsync(TimeSpan timeout, MqttClientOptions options)
+        {
+            return Task.FromResult(0);
+        }
+
+        public Task DisconnectAsync(TimeSpan timeout)
+        {
+            return Task.FromResult(0);
+        }
+
+        public async Task SendPacketsAsync(TimeSpan timeout, CancellationToken cancellationToken, IEnumerable<MqttBasePacket> packets)
+        {
+            ThrowIfPartnerIsNull();
+
+            //TODO Test after migrate - add timeout
+            foreach (var packet in packets)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Partner.SendPacketInternal(packet);
+            }
+            await Task.FromResult(0).ConfigureAwait(false);
+        }
+
+        public Task<MqttBasePacket> ReceivePacketAsync(TimeSpan timeout, CancellationToken cancellationToken)
+        {
+            // TODOadd timeout and token support
+            ThrowIfPartnerIsNull();
+
+            return Task.Run(() => _incomingPackets.Take());
+        }
     }
 }

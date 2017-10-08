@@ -16,7 +16,7 @@ namespace Wirehome.Core
     public sealed class DiscoveryServerService : ServiceBase, IDisposable
     {
         private const int Port = 19228;
-        private readonly CancellationTokenSource _cancelationToken;
+        private readonly CancellationTokenSource _cancelationToken = new CancellationTokenSource();
         private readonly ISettingsService _settingsService;
         private readonly UdpClient _socket;
         

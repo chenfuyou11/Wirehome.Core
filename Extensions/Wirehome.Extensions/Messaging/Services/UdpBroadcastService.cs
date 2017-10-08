@@ -8,7 +8,7 @@ using Wirehome.Extensions.Messaging.Core;
 
 namespace Wirehome.Extensions.Messaging.Services
 {
-    public class UdpBroadcastService : ITcpMessagingService
+    public class UdpBroadcastService : IUdpBroadcastService
     {
         private readonly ILogger _logService;
         private readonly IEventAggregator _eventAggregator;

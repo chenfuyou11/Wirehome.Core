@@ -6,20 +6,19 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {
-    //TODO
-    public class TemperatureMessage //: IBinaryMessage
+    public class CurrentMessage : IBinaryMessage
     {
-        public float Temperature { get; set; }
-        public byte Pin { get; set; } = 1;
+        public byte Pin { get; set; }
+        public byte State { get; set; }
 
         public MessageType Type()
         {
-            return MessageType.Temperature;
+            return MessageType.Current;
         }
 
         public override string ToString()
         {
-            return $"New temperature {Temperature} on pin {Pin}";
+            return $"New Current state {State} on Pin {Pin}";
         }
         
         public bool CanSerialize(string messageType)
@@ -29,7 +28,7 @@ namespace Wirehome.Extensions.Messaging
 
         public bool CanDeserialize(byte messageType, byte messageSize)
         {
-            if (messageType == (byte)Type() && messageSize == 5)
+            if (messageType == (byte)Type() && messageSize == 2)
             {
                 return true;
             }
@@ -39,32 +38,27 @@ namespace Wirehome.Extensions.Messaging
 
         public byte[] Serialize(JObject message)
         {
-            var currentMessage = message.ToObject<TemperatureMessage>();
+            var currentMessage = message.ToObject<CurrentMessage>();
 
             var package = new List<byte>
             {
                 (byte)Type(),
                 currentMessage.Pin
             };
-
+            
             return package.ToArray();
         }
 
         public object Deserialize(IBinaryReader reader, byte? messageSize = null)
         {
             var pin = reader.ReadByte();
-            var temp = reader.ReadSingle();
+            var state = reader.ReadByte();
 
-            return new TemperatureMessage
+            return new CurrentMessage
             {
                 Pin = pin,
-                Temperature = temp
+                State = state
             };
-        }
-
-        public string MessageAddress(JObject message)
-        {
-            throw new NotImplementedException();
         }
     }
 }

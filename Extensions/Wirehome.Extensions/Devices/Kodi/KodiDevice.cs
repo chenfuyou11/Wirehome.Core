@@ -8,9 +8,11 @@ using Wirehome.Contracts.Components.Commands;
 using Wirehome.Contracts.Components.Features;
 using Wirehome.Contracts.Components.States;
 using Wirehome.Extensions.Devices.Commands;
+using Wirehome.Extensions.Devices.Computer;
 using Wirehome.Extensions.Devices.Features;
 using Wirehome.Extensions.Devices.States;
 using Wirehome.Extensions.Exceptions;
+using Wirehome.Extensions.Messaging.ComputerMessages;
 using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Extensions.Messaging.KodiMessages;
 using Wirehome.Extensions.Messaging.StateChangeMessages;
@@ -27,6 +29,7 @@ namespace Wirehome.Extensions.Devices.Kodi
         private TimeSpan _statusInterval { get; set; } = TimeSpan.FromSeconds(3);
         private readonly CancellationTokenSource _cancelationTokenSource = new CancellationTokenSource();
         private string _hostname;
+        private int _port;
         private string _userName;
         private string _Password;
 
@@ -41,7 +44,17 @@ namespace Wirehome.Extensions.Devices.Kodi
                 _hostname = value;
             }
         }
-        
+
+        public int Port
+        {
+            get => _port;
+            set
+            {
+                if (_isInitialized) throw new PropertySetAfterInitializationExcption();
+                _port = value;
+            }
+        }
+
         public TimeSpan StatusInterval
         {
             get => _statusInterval;
@@ -120,18 +133,27 @@ namespace Wirehome.Extensions.Devices.Kodi
 
             _commandExecutor.Register<TurnOnCommand>(async c =>
             {
+                await _eventAggregator.PublishWithResultAsync<ComputerControlMessage, string>(new ComputerControlMessage
+                {
+                    Address = Hostname,
+                    Service = "Process",
+                    Message = new ProcessPost { ProcessName = "kodi", Start = true },
+                    Port = 5000
+                }).ConfigureAwait(false);
+            }
+           );
+            _commandExecutor.Register<TurnOffCommand>(async c =>
+
+
+            {
                 var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
                 {
                     Address = Hostname,
                     UserName = UserName,
                     Password = Password,
+                    Port = Port,
                     Method = "JSONRPC.Ping"
                 }).ConfigureAwait(false);
-            }
-           );
-            _commandExecutor.Register<TurnOffCommand>(async c =>
-            {
-              
             }
             );
         }

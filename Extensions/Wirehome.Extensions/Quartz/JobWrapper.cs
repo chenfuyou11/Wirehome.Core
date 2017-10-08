@@ -8,13 +8,13 @@ namespace Wirehome.Extensions.Quartz
 {
     internal class JobWrapper : IJob
     {
-        private readonly TriggerFiredBundle bundle;
-        private readonly IContainer container;
+        private readonly TriggerFiredBundle _bundle;
+        private readonly IContainer _container;
 
         public JobWrapper(TriggerFiredBundle bundle, IContainer container)
         {
-            this.bundle = bundle;
-            this.container = container;
+            _bundle = bundle;
+            _container = container;
         }
 
         protected IJob RunningJob { get; private set; }
@@ -23,7 +23,7 @@ namespace Wirehome.Extensions.Quartz
         {
             try
             {
-                RunningJob = container.GetInstance(bundle.JobDetail.JobType) as IJob;
+                RunningJob = _container.GetInstance(_bundle.JobDetail.JobType) as IJob;
                 return RunningJob.Execute(context);
             }
             catch (JobExecutionException)
@@ -32,16 +32,12 @@ namespace Wirehome.Extensions.Quartz
             }
             catch (Exception ex)
             {
-                throw new JobExecutionException($"Failed to execute Job '{bundle.JobDetail.Key}' of type '{bundle.JobDetail.JobType}'", ex);
+                throw new JobExecutionException($"Failed to execute Job '{_bundle.JobDetail.Key}' of type '{_bundle.JobDetail.JobType}'", ex);
             }
             finally
             {
                 RunningJob = null;
             }
         }
-
     }
-
-   
-
 }

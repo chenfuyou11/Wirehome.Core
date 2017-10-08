@@ -5,8 +5,7 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {
-    //TODO
-    public class DebugMessage //: IBinaryMessage
+    public class DebugMessage : IBinaryMessage
     {
         public string Message { get; set; }
 
@@ -48,11 +47,6 @@ namespace Wirehome.Extensions.Messaging
         public override string ToString()
         {
             return $"Debug message: {Message}";
-        }
-
-        public string MessageAddress(JObject message)
-        {
-            throw new NotImplementedException();
         }
     }
 }

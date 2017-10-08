@@ -2,29 +2,13 @@
 using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
-using Wirehome.Contracts.Core;
 using Wirehome.Extensions.Contracts;
 
 namespace Wirehome.Extensions.Messaging
 {
-    public class WakeOnLanMessage : IBinaryMessage
+    public class WakeOnLanMessage : IUdpBroadcastMessage
     {
         public string MAC { get; set; }
-
-        public bool CanDeserialize(byte messageType, byte messageSize)
-        {
-            return false;
-        }
-
-        public bool CanSerialize(string messageType)
-        {
-            return true;
-        }
-
-        public object Deserialize(IBinaryReader reader, byte? messageSize = 0)
-        {
-            throw new NotImplementedException();
-        }
 
         public string MessageAddress()
         {
@@ -59,11 +43,6 @@ namespace Wirehome.Extensions.Messaging
                 }
             }
             return bytes;
-        }
-
-        public MessageType Type()
-        {
-            return MessageType.UDP;
         }
     }
 }

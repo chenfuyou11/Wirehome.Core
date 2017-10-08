@@ -1,6 +1,6 @@
 ﻿using Wirehome.Extensions.Messaging;
-using Newtonsoft.Json.Linq;
 using Wirehome.Contracts.Core;
+using Newtonsoft.Json.Linq;
 
 namespace Wirehome.Extensions.Contracts
 {
@@ -9,8 +9,7 @@ namespace Wirehome.Extensions.Contracts
         bool CanDeserialize(byte messageType, byte messageSize);
         bool CanSerialize(string messageType);
         object Deserialize(IBinaryReader reader, byte? messageSize = default);
-        byte[] Serialize();
+        byte[] Serialize(JObject message);
         MessageType Type();
-        string MessageAddress();
     }
 }

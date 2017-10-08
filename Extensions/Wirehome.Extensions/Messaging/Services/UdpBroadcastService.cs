@@ -21,17 +21,16 @@ namespace Wirehome.Extensions.Messaging.Services
 
         public Task Initialize()
         {
-            // Add filteringto this service
-            _eventAggregator.SubscribeForAsyncResult<IBinaryMessage>(MessageHandler);
+            _eventAggregator.SubscribeForAsyncResult<IUdpBroadcastMessage>(MessageHandler);
             return Task.CompletedTask;
         }
         
-        private Task<object> MessageHandler(IMessageEnvelope<IBinaryMessage> message)
+        private Task<object> MessageHandler(IMessageEnvelope<IUdpBroadcastMessage> message)
         {
             return SendMessage(message);
         }
 
-        private async Task<object> SendMessage(IMessageEnvelope<IBinaryMessage> message)
+        private async Task<object> SendMessage(IMessageEnvelope<IUdpBroadcastMessage> message)
         {
             try
             {

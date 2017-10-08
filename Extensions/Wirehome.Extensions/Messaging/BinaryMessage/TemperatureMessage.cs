@@ -6,24 +6,19 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {
-    //TODO
-    public class HumidityMessage //: IBinaryMessage
+    public class TemperatureMessage : IBinaryMessage
     {
-        public HumidityMessage()
-        {
-        }
-
-        public float Humidity { get; set; }
+        public float Temperature { get; set; }
         public byte Pin { get; set; } = 1;
 
         public MessageType Type()
         {
-            return MessageType.Humidity;
+            return MessageType.Temperature;
         }
 
         public override string ToString()
         {
-            return $"New humidity {Humidity} on pin {Pin}";
+            return $"New temperature {Temperature} on pin {Pin}";
         }
         
         public bool CanSerialize(string messageType)
@@ -57,18 +52,13 @@ namespace Wirehome.Extensions.Messaging
         public object Deserialize(IBinaryReader reader, byte? messageSize = null)
         {
             var pin = reader.ReadByte();
-            var humidity = reader.ReadSingle();
+            var temp = reader.ReadSingle();
 
-            return new HumidityMessage
+            return new TemperatureMessage
             {
                 Pin = pin,
-                Humidity = humidity
+                Temperature = temp
             };
-        }
-
-        public string MessageAddress(JObject message)
-        {
-            throw new NotImplementedException();
         }
     }
 }

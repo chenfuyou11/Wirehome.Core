@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Wirehome.Extensions.Devices.Computer;
 using Wirehome.WindowsService.Services;
 
 namespace Wirehome.WindowsService.Controllers
@@ -43,11 +44,11 @@ namespace Wirehome.WindowsService.Controllers
         }
         
         [HttpPost]
-        public IActionResult Post(string processName, bool start)
+        public IActionResult Post([FromBody] ProcessPost processPost)
         {
-            var processPath = ReadProcessPath(processName);
+            var processPath = ReadProcessPath(processPost.ProcessName);
 
-            if (start)
+            if (processPost.Start)
             {
                 _processService.StartProcess(processPath);
             }

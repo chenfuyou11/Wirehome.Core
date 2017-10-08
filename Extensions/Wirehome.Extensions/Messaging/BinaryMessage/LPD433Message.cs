@@ -6,15 +6,12 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {
-    //TODO
-    public class LPD433Message //: IBinaryMessage
+    public class LPD433Message : IBinaryMessage
     {
-
         public uint Code { get; set; }
         public byte Pin { get; set; } = 1;
         public byte Repeats { get; set; } = 1;
         public byte Bits { get; set; } = 24;
-
         public byte Protocol { get; set; }
 
         public MessageType Type()
@@ -90,11 +87,6 @@ namespace Wirehome.Extensions.Messaging
                 Bits = bits,
                 Protocol = protocol
             };
-        }
-
-        public string MessageAddress(JObject message)
-        {
-            throw new NotImplementedException();
         }
     }
 }

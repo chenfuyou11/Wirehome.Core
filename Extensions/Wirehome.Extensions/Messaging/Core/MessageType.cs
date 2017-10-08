@@ -8,8 +8,6 @@
         InfraredRAW = 4,
         Current = 5,
         Humidity = 6,
-        Debug = 10,
-        TCP = 20,
-        UDP = 30
+        Debug = 10
     }
 }

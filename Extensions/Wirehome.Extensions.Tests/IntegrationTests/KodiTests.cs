@@ -23,9 +23,10 @@ namespace Wirehome.Extensions.Tests
     [TestCategory("Integration")]
     public class KodiTests
     {
-        public const string KODI_HOST = "192.168.0.159:8080";
+        public const string KODI_HOST = "192.168.0.159";
         public const string KODI_USER = "kodi";
         public const string KODI_PASS = "9dominik";
+        public const int KODI_PORT = 8080;
 
         private (IEventAggregator ev, IScheduler ch) PrepareMocks()
         {
@@ -58,7 +59,8 @@ namespace Wirehome.Extensions.Tests
                 StatusInterval = TimeSpan.FromMilliseconds(500),
                 Hostname = KODI_HOST,
                 UserName = KODI_USER,
-                Password = KODI_PASS
+                Password = KODI_PASS,
+                Port= KODI_PORT
             };
 
             await denon.Initialize();

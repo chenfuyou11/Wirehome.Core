@@ -6,8 +6,7 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions.Messaging
 {
-    //TODO
-    public class InfraredMessage //: IBinaryMessage
+    public class InfraredMessage : IBinaryMessage
     {
         public byte Repeats { get; set; } = 1;
         public byte System { get; set; }
@@ -79,11 +78,6 @@ namespace Wirehome.Extensions.Messaging
                 Code = code,
                 Bits = bits
             };
-        }
-
-        public string MessageAddress(JObject message)
-        {
-            throw new NotImplementedException();
         }
     }
 

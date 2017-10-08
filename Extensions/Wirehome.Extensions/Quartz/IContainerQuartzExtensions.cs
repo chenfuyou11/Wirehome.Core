@@ -10,7 +10,7 @@ namespace Wirehome.Extensions.Quartz
         {
             container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();
             container.RegisterSingleton<ISchedulerFactory, SimpleInjectorSchedulerFactory>();
-            container.RegisterFactory(() => { return container.GetInstance<ISchedulerFactory>().GetScheduler().Result; });
+            container.RegisterFactory(() => container.GetInstance<ISchedulerFactory>().GetScheduler().Result);
         }
     }
 }

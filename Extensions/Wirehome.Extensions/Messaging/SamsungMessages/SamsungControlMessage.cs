@@ -1,13 +1,11 @@
-﻿using Wirehome.Extensions.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Newtonsoft.Json.Linq;
-using Wirehome.Contracts.Core;
+using Wirehome.Extensions.Contracts;
 
 namespace Wirehome.Extensions.Messaging.SamsungMessages
 {
-    public class SamsungControlMessage : IBinaryMessage
+    public class SamsungControlMessage : ITcpMessage
     {
         public string Address { get; set; }
         public string Code { get; set; }
@@ -40,6 +38,25 @@ namespace Wirehome.Extensions.Messaging.SamsungMessages
             return ConvertToBytes(wrappedMessage);
         }
 
+        public byte[] Serialize()
+        {
+            var identifier = CreateIdentifier();
+            var secondParameter = CreateSecondParameter();
+            var command = CreateCommand(Code);
+
+            var binaryMessage = new List<byte>();
+            binaryMessage.AddRange(identifier);
+            binaryMessage.AddRange(secondParameter);
+            binaryMessage.AddRange(command);
+
+            return binaryMessage.ToArray();
+        }
+
+        public string MessageAddress()
+        {
+            return $"{Address}:{Port}";
+        }
+
         private byte[] CreateSecondParameter()
         {
             var message = ((char)0xc8) + ((char)0x00) + string.Empty;
@@ -58,59 +75,21 @@ namespace Wirehome.Extensions.Messaging.SamsungMessages
             return ConvertToBytes(wrappedMessage);
         }
 
-        private static string Base64Encode(string plainText)
+        private string Base64Encode(string plainText)
         {
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             return Convert.ToBase64String(plainTextBytes);
         }
 
-        private static byte[] ConvertToBytes(string value)
+        private byte[] ConvertToBytes(string value)
         {
             return Encoding.ASCII.GetBytes(value);
         }
 
-        private static string Format(int value)
+        private string Format(int value)
         {
             return char.ToString((char)value);
         }
 
-        public bool CanDeserialize(byte messageType, byte messageSize)
-        {
-            return false;
-        }
-
-        public bool CanSerialize(string messageType)
-        {
-            return messageType == GetType().Name; 
-        }
-
-        public object Deserialize(IBinaryReader reader, byte? messageSize = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public byte[] Serialize()
-        {
-            var identifier = CreateIdentifier();
-            var secondParameter = CreateSecondParameter();
-            var command = CreateCommand(Code);
-
-            var binaryMessage = new List<byte>();
-            binaryMessage.AddRange(identifier);
-            binaryMessage.AddRange(secondParameter);
-            binaryMessage.AddRange(command);
-            
-            return binaryMessage.ToArray();
-        }
-
-        public MessageType Type()
-        {
-            return MessageType.TCP;
-        }
-
-        public string MessageAddress()
-        {
-            return $"{Address}:{Port}";
-        }
     }
 }

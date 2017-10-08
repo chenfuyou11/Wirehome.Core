@@ -7,7 +7,6 @@ using Wirehome.Contracts.Logging;
 using Wirehome.Extensions.Contracts;
 using Wirehome.Extensions.Messaging.Core;
 
-
 namespace Wirehome.Extensions.Messaging.Services
 {
     public class TcpMessagingService : ITcpMessagingService
@@ -23,17 +22,16 @@ namespace Wirehome.Extensions.Messaging.Services
 
         public Task Initialize()
         {
-            // Add filteringto this service
-            _eventAggregator.SubscribeForAsyncResult<IBinaryMessage>(MessageHandler);
+            _eventAggregator.SubscribeForAsyncResult<ITcpMessage>(MessageHandler);
             return Task.CompletedTask;
         }
         
-        private Task<object> MessageHandler(IMessageEnvelope<IBinaryMessage> message)
+        private Task<object> MessageHandler(IMessageEnvelope<ITcpMessage> message)
         {
             return SendMessage(message);
         }
 
-        private async Task<object> SendMessage(IMessageEnvelope<IBinaryMessage> message)
+        private async Task<object> SendMessage(IMessageEnvelope<ITcpMessage> message)
         {
             try
             {

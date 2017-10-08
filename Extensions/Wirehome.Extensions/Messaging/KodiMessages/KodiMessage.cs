@@ -14,6 +14,7 @@ namespace Wirehome.Extensions.Messaging.KodiMessages
         public string UserName { get; set; }
         public string Password { get; set; }
         public string Method { get; set; }
+        public int Port { get; set; }
         public object Parameters { get; set; }
 
         public KodiMessage()
@@ -26,8 +27,7 @@ namespace Wirehome.Extensions.Messaging.KodiMessages
         {
             Creditionals = new System.Net.NetworkCredential(UserName, Password);
 
-            var uri = new Uri($"http://{Address}");
-            return $"http://{uri.Host}:{uri.Port}/jsonrpc";
+            return $"http://{Address}:{Port}/jsonrpc";
         }
 
         public override string Serialize()

@@ -2,18 +2,15 @@
 using Moq;
 using Quartz;
 using System;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Wirehome.Contracts.Components.Commands;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Logging;
 using Wirehome.Core;
 using Wirehome.Extensions.Devices;
+using Wirehome.Extensions.Devices.Commands;
 using Wirehome.Extensions.Devices.Kodi;
 using Wirehome.Extensions.Messaging.Core;
-using Wirehome.Extensions.Messaging.KodiMessages;
 using Wirehome.Extensions.Messaging.Services;
 using Wirehome.Extensions.Quartz;
 
@@ -25,7 +22,7 @@ namespace Wirehome.Extensions.Tests
     {
         public const string KODI_HOST = "192.168.0.159";
         public const string KODI_USER = "kodi";
-        public const string KODI_PASS = "9dominik";
+        public const string KODI_PASS = "kajak";
         public const int KODI_PORT = 8080;
 
         private (IEventAggregator ev, IScheduler ch) PrepareMocks()
@@ -63,74 +60,95 @@ namespace Wirehome.Extensions.Tests
                 Port= KODI_PORT
             };
 
-            await denon.Initialize();
+            await denon.Initialize().ConfigureAwait(false);
 
-            await denon.ExecuteAsyncCommand<TurnOnCommand>();
+            await denon.ExecuteAsyncCommand<TurnOnCommand>().ConfigureAwait(false);
 
+            await Task.Delay(2000).ConfigureAwait(false);
+
+            await denon.ExecuteAsyncCommand<TurnOffCommand>().ConfigureAwait(false);
         }
 
         [TestMethod]
-        public async Task TestKod()
+        public async Task KodiVolumeTest()
         {
-            //http://kodi.wiki/view/JSON-RPC_API/Examples#Introspect
-            //http://kodi.wiki/view/JSON-RPC_API
+            var mocks = PrepareMocks();
 
-            var ip = "192.168.0.159";
-            var port = 8080;
-            var uri = $"http://{ip}:{port}/jsonrpc";
-           // Dictionary<string, string> DefaultHeaders = new Dictionary<string, string>();
-           // KeyValuePair<string, string> AuthorisationHeader = new KeyValuePair<string, string>("", "");
-
-            // DefaultHeaders.Add("Content-Type", "application/json-rpc");
-           // AuthorisationHeader = new KeyValuePair<string, string>("", "");
-
-            var jsonRpcRequest = new JsonRpcRequest
+            var denon = new KodiDevice(Guid.NewGuid().ToString(), mocks.ev, mocks.ch)
             {
-                Method = "JSONRPC.Ping",
-                Parameters = new object()
+                StatusInterval = TimeSpan.FromMilliseconds(500),
+                Hostname = KODI_HOST,
+                UserName = KODI_USER,
+                Password = KODI_PASS,
+                Port = KODI_PORT
             };
 
-            //var jsonRpcRequest = new JsonRpcRequest
-            //{
-            //    Method = "Player.PlayPause",
-            //    Parameters = new { playerid = 1 }
-            //};
+            await denon.Initialize().ConfigureAwait(false);
 
-            //var jsonRpcRequest = new JsonRpcRequest
-            //{
-            //    Id = "1",
-            //    Method = "Player.GetActivePlayers",
-            //    Parameters = new object()
-            //};
+            //await denon.ExecuteAsyncCommand(new SetVolumeCommand { Volume = 50 }).ConfigureAwait(false);
+            await denon.ExecuteAsyncCommand(new MuteOnCommand()).ConfigureAwait(false);
+        }
 
+        [TestMethod]
+        public async Task KodiPlayerTest()
+        {
+            var mocks = PrepareMocks();
 
-            var httpClientHandler = new HttpClientHandler();
-            httpClientHandler.Credentials = new NetworkCredential("kodi", "9dominik");
-
-
-            using (var httpClient = new HttpClient(httpClientHandler))
+            var denon = new KodiDevice(Guid.NewGuid().ToString(), mocks.ev, mocks.ch)
             {
-                //foreach (var header in DefaultHeaders)
-                //{
-                //    httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
-                //}
+                StatusInterval = TimeSpan.FromMilliseconds(500),
+                Hostname = KODI_HOST,
+                UserName = KODI_USER,
+                Password = KODI_PASS,
+                Port = KODI_PORT,
+                PlayerId = 1
+            };
 
-                //if (!string.IsNullOrWhiteSpace(AuthorisationHeader.Key))
-                //{
-                //    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(AuthorisationHeader.Key, AuthorisationHeader.Value);
-                //}
-
-                var content = new StringContent(jsonRpcRequest.ToString());
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/json-rpc");
-
-                var response = await httpClient.PostAsync(uri, content).ConfigureAwait(false);
-                var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                //var result = JsonConvert.DeserializeObject<JsonRpcResponse<JsonPausePlayResult>>(responseBody);
-
-            }
+            await denon.Initialize().ConfigureAwait(false);
+            await denon.ExecuteAsyncCommand(new PlayCommand()).ConfigureAwait(false);            
         }
 
     }
 }
 
+//{"jsonrpc": "2.0", "method": "Application.GetProperties", "id": "libMovies", "params": { "properties": ["volume", "muted", "name", "version"] }}
+
+//{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}
+//{"id": "KodiJSON-RPC", "jsonrpc": "2.0", "method":"Player.Open","params":{"item":{"movieid":3 }} }
+
+//{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": "AudioGetItem"}
+//{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title"], "playerid": 1 }, "id": "AudioGetItem"}
+//{"jsonrpc": "2.0", "method": "Player.PlayPause", "params": { "playerid": 1 }, "id": 1}
+//{"jsonrpc": "2.0", "method": "Player.GetProperties", "id": "libMovies", "params": { "properties": ["speed", "subtitles", "subtitleenabled", "position"], "playerid": 1 }}
+//{"jsonrpc": "2.0", "method": "Player.Stop", "id": "libMovies", "params": {  "playerid": 1 }}
+//{"jsonrpc": "2.0", "method": "Player.Seek", "id": "libMovies", "params": {  "playerid": 1,"value":{ "hours":0, "minutes":10, "seconds":0} }}
+
+
+//{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "id": "libMovies"}
+
+//{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "0"}, "limits": { "start" : 0, "end": 75 }, "properties" : ["art", "rating", "thumbnail", "playcount", "file"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libMovies"}
+
+
+//{"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "AudioGetItem"}
+
+
+//{"jsonrpc": "2.0", "method": "GUI.ActivateWindow", "id": "libMovies", "params": {  "window": "videos" }}
+//{"jsonrpc": "2.0", "method": "GUI.ActivateWindow", "id": "libMovies", "params": {  "window": "subtitlesearch" }}
+//{"jsonrpc": "2.0", "method": "GUI.ActivateWindow", "id": "libMovies", "params": {  "window": "home" }}
+
+// Player.SetSubtitle
+// Input.Select
+// Input.Up
+
+//PlaybackController 
+
+//Pause
+//Play
+//Stop
+
+//Next
+//Previous
+//StartOver
+
+//FastForward
+//Rewind

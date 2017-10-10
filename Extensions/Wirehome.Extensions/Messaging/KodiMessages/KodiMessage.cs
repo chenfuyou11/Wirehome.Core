@@ -35,10 +35,10 @@ namespace Wirehome.Extensions.Messaging.KodiMessages
             var jsonRpcRequest = new JsonRpcRequest
             {
                 Method = Method,
-                Parameters = new object()
+                Parameters = Parameters
             };
 
-            return jsonRpcRequest.ToString();
+            return JsonConvert.SerializeObject(jsonRpcRequest);
         }
 
         public override object ParseResult(string responseData, Type responseType = null)
@@ -47,7 +47,7 @@ namespace Wirehome.Extensions.Messaging.KodiMessages
             
             if(result.Error != null) throw new Exception(result.Error.ToString());
             
-            return result.Result;
+            return result.Result.ToString();
         }
     }
 }

@@ -22,17 +22,19 @@ namespace Wirehome.Extensions.Devices.Kodi
 {
     public class KodiDevice : DeviceComponent, IDisposable
     {
-        private PowerStateValue _powerState;
-        private float _volume;
-        private bool _mute;
-        private string _input;
-        private TimeSpan _statusInterval { get; set; } = TimeSpan.FromSeconds(3);
-        private readonly CancellationTokenSource _cancelationTokenSource = new CancellationTokenSource();
+        #region Properties
         private string _hostname;
         private int _port;
         private string _userName;
         private string _Password;
+        private PowerStateValue _powerState;
+        private float _volume;
+        private bool _mute;
+        private string _input;
+        
 
+        private TimeSpan _statusInterval { get; set; } = TimeSpan.FromSeconds(3);
+        private readonly CancellationTokenSource _cancelationTokenSource = new CancellationTokenSource();
         private readonly IScheduler _scheduler;
 
         public string Hostname
@@ -85,6 +87,18 @@ namespace Wirehome.Extensions.Devices.Kodi
             }
         }
 
+        public int? PlayerId { get; set; }
+
+        public override IComponentFeatureStateCollection GetState()
+        {
+            return new ComponentFeatureStateCollection().With(new PowerState(_powerState))
+                                                               .With(new MuteState(_mute))
+                                                               .With(new VolumeState(_volume))
+                                                               .With(new InputSourceState(_input));
+        }
+        #endregion
+
+        #region Init
         public KodiDevice(string id, IEventAggregator eventAggregator, IScheduler scheduler) : base(id, eventAggregator)
         {
             _scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
@@ -95,7 +109,7 @@ namespace Wirehome.Extensions.Devices.Kodi
             InitPowerStateFeature();
             InitVolumeFeature();
             InitMuteFeature();
-            InitInputSourceFeature();
+            InitPlaybackFeature();
 
             var context = new KodiStateJobContext
             {
@@ -117,14 +131,7 @@ namespace Wirehome.Extensions.Devices.Kodi
             // _eventAggregator.UnSubscribe(_statusSubscription);
             _scheduler.Shutdown();
         }
-
-        public override IComponentFeatureStateCollection GetState()
-        {
-            return new ComponentFeatureStateCollection().With(new PowerState(_powerState))
-                                                               .With(new MuteState(_mute))
-                                                               .With(new VolumeState(_volume))
-                                                               .With(new InputSourceState(_input));
-        }
+        #endregion
 
         #region Power Feature
         private void InitPowerStateFeature()
@@ -140,11 +147,10 @@ namespace Wirehome.Extensions.Devices.Kodi
                     Message = new ProcessPost { ProcessName = "kodi", Start = true },
                     Port = 5000
                 }).ConfigureAwait(false);
+                SetPowerState(PowerStateValue.On);
             }
            );
             _commandExecutor.Register<TurnOffCommand>(async c =>
-
-
             {
                 var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
                 {
@@ -152,10 +158,18 @@ namespace Wirehome.Extensions.Devices.Kodi
                     UserName = UserName,
                     Password = Password,
                     Port = Port,
-                    Method = "JSONRPC.Ping"
+                    Method = "Application.Quit"
                 }).ConfigureAwait(false);
+                SetPowerState(PowerStateValue.Off);
             }
             );
+        }
+
+        private void SetPowerState(PowerStateValue powerState)
+        {
+            if (_powerState == powerState) { return; }
+            _eventAggregator.Publish(new PowerStateChangeMessage(Id, new PowerState(_powerState), new PowerState(powerState)));
+            _powerState = powerState;
         }
         #endregion
 
@@ -168,7 +182,15 @@ namespace Wirehome.Extensions.Devices.Kodi
                 if (c == null) throw new ArgumentNullException();
                 var volume = _volume + c.DefaultChangeFactor;
 
-               
+                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                {
+                    Address = Hostname,
+                    UserName = UserName,
+                    Password = Password,
+                    Port = Port,
+                    Method = "Application.SetVolume",
+                    Parameters = new { volume = (int)volume }
+                }).ConfigureAwait(false);
 
                 SetVolumeState(volume);
             }
@@ -178,7 +200,15 @@ namespace Wirehome.Extensions.Devices.Kodi
                 if (c == null) throw new ArgumentNullException();
                 var volume = _volume - c.DefaultChangeFactor;
 
-               
+                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                {
+                    Address = Hostname,
+                    UserName = UserName,
+                    Password = Password,
+                    Port = Port,
+                    Method = "Application.SetVolume",
+                    Parameters = new { volume = (int)volume }
+                }).ConfigureAwait(false);
 
                 SetVolumeState(volume);
             }
@@ -188,7 +218,15 @@ namespace Wirehome.Extensions.Devices.Kodi
             {
                 if (c == null) throw new ArgumentNullException();
 
-               
+                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                {
+                    Address = Hostname,
+                    UserName = UserName,
+                    Password = Password,
+                    Port = Port,
+                    Method = "Application.SetVolume",
+                    Parameters = new { volume = (int)c.Volume }
+                }).ConfigureAwait(false);
 
                 SetVolumeState(c.Volume);
             });
@@ -210,14 +248,30 @@ namespace Wirehome.Extensions.Devices.Kodi
 
             _commandExecutor.Register<MuteOnCommand>(async c =>
             {
-                
+                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                {
+                    Address = Hostname,
+                    UserName = UserName,
+                    Password = Password,
+                    Port = Port,
+                    Method = "Application.SetMute",
+                    Parameters = new { mute = true }
+                }).ConfigureAwait(false);
 
                 SetMuteState(true);
             });
 
             _commandExecutor.Register<MuteOffCommand>(async c =>
             {
-              
+                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                {
+                    Address = Hostname,
+                    UserName = UserName,
+                    Password = Password,
+                    Port = Port,
+                    Method = "Application.SetMute",
+                    Parameters = new { mute = false }
+                }).ConfigureAwait(false);
 
                 SetMuteState(false);
             });
@@ -232,27 +286,49 @@ namespace Wirehome.Extensions.Devices.Kodi
         }
         #endregion
 
-        #region Input Source Feature
-        private void InitInputSourceFeature()
+        #region Playback Feature
+        private void InitPlaybackFeature()
         {
-            _featuresSupported.With(new InputSourceFeature());
+            _featuresSupported.With(new PlaybackFeature());
 
-            _commandExecutor.Register<ChangeInputSourceCommand>(async c =>
+            _commandExecutor.Register<PlayCommand>(async c =>
             {
-                if (c == null) throw new ArgumentNullException();
+                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                {
+                    Address = Hostname,
+                    UserName = UserName,
+                    Password = Password,
+                    Port = Port,
+                    Method = "Player.PlayPause",
+                    Parameters = new { playerid = PlayerId.GetValueOrDefault() }
+                }).ConfigureAwait(false);
 
-                
-                SetInputSource(c.InputName);
+             
             });
+
+            //_commandExecutor.Register<MuteOffCommand>(async c =>
+            //{
+            //    var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+            //    {
+            //        Address = Hostname,
+            //        UserName = UserName,
+            //        Password = Password,
+            //        Port = Port,
+            //        Method = "Application.SetMute",
+            //        Parameters = new { mute = false }
+            //    }).ConfigureAwait(false);
+
+            //    SetMuteState(false);
+            //});
         }
 
-        private void SetInputSource(string input)
-        {
-            if (_input == input) { return; }
+        //private void SetMuteState(bool mute)
+        //{
+        //    if (_mute == mute) { return; }
 
-            _eventAggregator.Publish(new InpuSourceChangeMessage(Id, new InputSourceState(_input), new InputSourceState(input)));
-            _input = input;
-        }
+        //    _eventAggregator.Publish(new MuteStateChangeMessage(Id, new MuteState(_mute), new MuteState(mute)));
+        //    _mute = mute;
+        //}
         #endregion
     }
 }

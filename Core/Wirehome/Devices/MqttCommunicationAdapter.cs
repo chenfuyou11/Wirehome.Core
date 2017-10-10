@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MQTTnet.Core.Adapter;
-using MQTTnet.Core.Client;
 using MQTTnet.Core.Packets;
 using MQTTnet.Core.Serializer;
 
@@ -33,7 +32,7 @@ namespace Wirehome.Devices
             }
         }
 
-        public Task ConnectAsync(TimeSpan timeout, MqttClientOptions options)
+        public Task ConnectAsync(TimeSpan timeout)
         {
             return Task.FromResult(0);
         }
@@ -63,5 +62,7 @@ namespace Wirehome.Devices
 
             return Task.Run(() => _incomingPackets.Take());
         }
+
+       
     }
 }

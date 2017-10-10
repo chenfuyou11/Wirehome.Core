@@ -12,7 +12,7 @@ namespace Wirehome.Extensions.Messaging.KodiMessages
         public string Name { get; set; }
 
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public object Type { get; set; }
     }
     
 }

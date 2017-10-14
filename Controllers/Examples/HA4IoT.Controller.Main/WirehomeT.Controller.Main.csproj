@@ -11,8 +11,8 @@
     <AssemblyName>Wirehome.Controller.Main</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
@@ -22,6 +22,7 @@
     <AppxPackage>true</AppxPackage>
     <ContainsStartupTask>true</ContainsStartupTask>
     <PackageCertificateThumbprint>32DEED0403E65AA0BEB48C79EBC4735D5DF5A2BE</PackageCertificateThumbprint>
+    <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -98,7 +99,6 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="HA4IoT.Controller.Main_TemporaryKey.pfx" />
-    <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cellar\Configuration.cs" />
@@ -136,14 +136,19 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\HA4IoT.Contracts\HA4IoT.Contracts.csproj">
-      <Project>{b10b2e2a-85cd-4289-8649-fc0c1c98921d}</Project>
-      <Name>HA4IoT.Contracts</Name>
+    <ProjectReference Include="..\..\..\Core\Wirehome.Contracts\Wirehome.Contracts.csproj">
+      <Project>{ee5c16af-0acf-4d87-ad5a-d995832ddb6c}</Project>
+      <Name>Wirehome.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\HA4IoT\HA4IoT.csproj">
-      <Project>{c034ec4d-46cc-490a-a045-e4d4d1f49c31}</Project>
-      <Name>HA4IoT</Name>
+    <ProjectReference Include="..\..\..\Core\Wirehome\Wirehome.csproj">
+      <Project>{50737d30-ad0d-4832-b675-fda4c27c58ca}</Project>
+      <Name>Wirehome</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>5.3.4</Version>
+    </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

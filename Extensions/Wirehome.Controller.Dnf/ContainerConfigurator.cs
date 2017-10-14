@@ -6,7 +6,6 @@ using Wirehome.Extensions.Extensions;
 using Wirehome.Extensions.Messaging;
 using Wirehome.Extensions.Messaging.Services;
 using Wirehome.Raspberry;
-using Wirehome.HttpServer;
 using Wirehome.Extensions.Messaging.Core;
 
 namespace Wirehome.Controller.Dnf
@@ -21,7 +20,6 @@ namespace Wirehome.Controller.Dnf
             var messagingServicesTypes = typeof(HttpMessagingService); // all Wirehome.Extensions.Messaging.Services
 
             container.RegisterRaspberryServices();
-            container.RegisterHttpServer();
 
             container.RegisterServicesInNamespace(projectAssemblies, messagingServicesTypes.Namespace);
             container.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();

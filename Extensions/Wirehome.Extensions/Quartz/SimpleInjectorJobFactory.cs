@@ -1,11 +1,7 @@
 ﻿using Quartz.Spi;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Quartz;
-using SimpleInjector;
 using Wirehome.Contracts.Core;
-using System.Globalization;
 
 namespace Wirehome.Extensions.Quartz
 {

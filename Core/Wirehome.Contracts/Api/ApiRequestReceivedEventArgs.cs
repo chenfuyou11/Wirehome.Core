@@ -6,9 +6,7 @@ namespace Wirehome.Contracts.Api
     {
         public ApiRequestReceivedEventArgs(IApiCall apiCall)
         {
-            if (apiCall == null) throw new ArgumentNullException(nameof(apiCall));
-
-            ApiContext = apiCall;
+            ApiContext = apiCall ?? throw new ArgumentNullException(nameof(apiCall));
         }
 
         public bool IsHandled { get; set; }

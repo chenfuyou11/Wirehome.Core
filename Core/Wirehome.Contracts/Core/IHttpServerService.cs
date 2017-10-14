@@ -1,12 +1,12 @@
 ﻿using Wirehome.Contracts.Api;
 using System;
-using Wirehome.Contracts.Network.Http;
+using HTTPnet.Core.Pipeline;
 
 namespace Wirehome.Contracts.Core
 {
     public interface IHttpServerService
     {
         event EventHandler<ApiRequestReceivedEventArgs> ApiRequestReceived;
-        event EventHandler<HttpRequestReceivedEventArgs> HTTPRequestReceived;
+        event EventHandler<HttpContextPipelineHandlerContext> HTTPRequestReceived;
     }
 }

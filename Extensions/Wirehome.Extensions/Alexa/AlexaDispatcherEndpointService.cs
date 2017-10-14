@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Net;
 using Wirehome.Contracts.Api;
 using Wirehome.Contracts.Areas;
 using Wirehome.Contracts.Components;
@@ -13,11 +11,10 @@ using Wirehome.Contracts.Components.Features;
 using Wirehome.Contracts.Settings;
 using Wirehome.Contracts.Components.Commands;
 using Wirehome.Extensions.Contracts;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 using Wirehome.Contracts.Core;
-using Wirehome.Contracts.Network.Http;
 using System.Threading.Tasks;
+using HTTPnet.Core.Http;
+using HTTPnet.Core.Pipeline;
 
 namespace Wirehome.Extensions
 {
@@ -62,11 +59,11 @@ namespace Wirehome.Extensions
 
         public Task Initialize()
         {
-            _httpServer.HTTPRequestReceived += DispatchHttpRequest;
+            _httpServer.HTTPRequestReceived += DispatchHttpRequest; 
 
             return Task.CompletedTask;
         }
-
+        
         public void AddConnectedVivices(string friendlyName, IEnumerable<IComponent> devices)
         {
             if (_connectedDevices.ContainsKey(friendlyName))
@@ -77,55 +74,57 @@ namespace Wirehome.Extensions
             _connectedDevices.Add(friendlyName, devices);
         }
 
-        private void DispatchHttpRequest(object sender, HttpRequestReceivedEventArgs eventArgs)
+        private void DispatchHttpRequest(object sender, HttpContextPipelineHandlerContext eventArgs)
         {
-            if (!eventArgs.Context.Request.Uri.StartsWith("/alexa/"))
+            if (!eventArgs.HttpContext.Request.Uri.StartsWith("/alexa/"))
             {
                 return;
             }
 
-            HandleHttpRequest(eventArgs.Context);
-            eventArgs.IsHandled = true;
+            HandleHttpRequest(eventArgs.HttpContext);
+            eventArgs.BreakPipeline = true;
         }
 
         private void HandleHttpRequest(HttpContext httpContext)
         {
-            var apiContext = CreateApiContext(httpContext);
-            if (apiContext == null)
-            {
-                httpContext.Response.StatusCode = HttpStatusCode.BadRequest;
-                return;
-            }
+            //TODO FIX
+            //var apiContext = CreateApiContext(httpContext);
+            //if (apiContext == null)
+            //{
+            //    httpContext.Response.StatusCode = HttpStatusCode.BadRequest;
+            //    return;
+            //}
 
-            var response = DispatchHttpRequest(apiContext);
-            apiContext.Result = response != null ? JObject.FromObject(response) : new JObject();
+            //var response = DispatchHttpRequest(apiContext);
+            //apiContext.Result = response != null ? JObject.FromObject(response) : new JObject();
 
-            var json = JsonConvert.SerializeObject(apiContext.Result);
-            httpContext.Response.Body = Encoding.UTF8.GetBytes(json);
-            httpContext.Response.MimeType = MimeTypeProvider.Json;
+            //var json = JsonConvert.SerializeObject(apiContext.Result);
+            //httpContext.Response.Body = Encoding.UTF8.GetBytes(json);
+            //httpContext.Response.MimeType = MimeTypeProvider.Json;
         }
 
         private ApiCall CreateApiContext(HttpContext httpContext)
         {
             try
             {
-                string bodyText = Encoding.UTF8.GetString(httpContext.Request.Body ?? new byte[0]);
+                //string bodyText = Encoding.UTF8.GetString(httpContext.Request.Body);
 
-                int bodyStart = bodyText.IndexOf("{");
-                int bodyEnd = bodyText.LastIndexOf("}");
+                //int bodyStart = bodyText.IndexOf("{");
+                //int bodyEnd = bodyText.LastIndexOf("}");
 
-                if(bodyStart == -1 || bodyEnd == -1)
-                {
-                    throw new Exception("JSON body is not correctly formmated");
-                }
+                //if(bodyStart == -1 || bodyEnd == -1)
+                //{
+                //    throw new Exception("JSON body is not correctly formmated");
+                //}
 
-                bodyText = bodyText.Substring(bodyStart, bodyEnd - bodyStart + 1)?.Trim();
+                //bodyText = bodyText.Substring(bodyStart, bodyEnd - bodyStart + 1)?.Trim();
 
 
-                var action = httpContext.Request.Uri.Substring("/alexa/".Length);
-                var parameter = string.IsNullOrEmpty(bodyText) ? new JObject() : JObject.Parse(bodyText);
+                //var action = httpContext.Request.Uri.Substring("/alexa/".Length);
+                //var parameter = string.IsNullOrEmpty(bodyText) ? new JObject() : JObject.Parse(bodyText);
 
-                return new ApiCall(action, parameter, null);
+                //return new ApiCall(action, parameter, null);
+                return null;
             }
             catch (Exception)
             {

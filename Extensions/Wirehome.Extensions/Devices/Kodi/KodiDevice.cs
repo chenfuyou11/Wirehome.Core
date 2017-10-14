@@ -31,7 +31,7 @@ namespace Wirehome.Extensions.Devices.Kodi
         private float _volume;
         private bool _mute;
         private string _input;
-        
+        private float _speed;
 
         private TimeSpan _statusInterval { get; set; } = TimeSpan.FromSeconds(3);
         private readonly CancellationTokenSource _cancelationTokenSource = new CancellationTokenSource();
@@ -293,6 +293,9 @@ namespace Wirehome.Extensions.Devices.Kodi
 
             _commandExecutor.Register<PlayCommand>(async c =>
             {
+                if (_speed != 0) return;
+
+                //{"jsonrpc": "2.0", "method": "Player.PlayPause", "params": { "playerid": 1 }, "id": 1}
                 var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
                 {
                     Address = Hostname,
@@ -303,32 +306,34 @@ namespace Wirehome.Extensions.Devices.Kodi
                     Parameters = new { playerid = PlayerId.GetValueOrDefault() }
                 }).ConfigureAwait(false);
 
-             
+                // use return 
+                SetPlaybackState(1.0f);
             });
 
-            //_commandExecutor.Register<MuteOffCommand>(async c =>
-            //{
-            //    var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
-            //    {
-            //        Address = Hostname,
-            //        UserName = UserName,
-            //        Password = Password,
-            //        Port = Port,
-            //        Method = "Application.SetMute",
-            //        Parameters = new { mute = false }
-            //    }).ConfigureAwait(false);
+            _commandExecutor.Register<StopCommand>(async c =>
+            {
+                //{"jsonrpc": "2.0", "method": "Player.Stop", "id": "libMovies", "params": {  "playerid": 1 }}
+                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                {
+                    Address = Hostname,
+                    UserName = UserName,
+                    Password = Password,
+                    Port = Port,
+                    Method = "Player.Stop",
+                    Parameters = new { playerid = PlayerId.GetValueOrDefault() }
+                }).ConfigureAwait(false);
+            });
 
-            //    SetMuteState(false);
-            //});
+
         }
 
-        //private void SetMuteState(bool mute)
-        //{
-        //    if (_mute == mute) { return; }
+        private void SetPlaybackState(float speed)
+        {
+            if (_speed == speed) { return; }
 
-        //    _eventAggregator.Publish(new MuteStateChangeMessage(Id, new MuteState(_mute), new MuteState(mute)));
-        //    _mute = mute;
-        //}
+            _eventAggregator.Publish(new PlaybackStateChangeMessage(Id, new PlaybackState(_speed), new PlaybackState(speed)));
+            _speed = speed;
+        }
         #endregion
     }
 }

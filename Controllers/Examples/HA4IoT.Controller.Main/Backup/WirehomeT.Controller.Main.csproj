@@ -1,49 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{3B74528D-2D22-406E-AA43-DC2F47CDC5C1}</ProjectGuid>
+    <ProjectGuid>{D3634558-2746-441F-BC09-454B1EC7DC1D}</ProjectGuid>
     <OutputType>winmdobj</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Wirehome.Controller.Dnf</RootNamespace>
-    <AssemblyName>Wirehome.Controller.Dnf</AssemblyName>
+    <RootNamespace>Wirehome.Controller.Main</RootNamespace>
+    <AssemblyName>Wirehome.Controller.Main</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <AllowCrossPlatformRetargeting>false</AllowCrossPlatformRetargeting>
-    <PackageCertificateKeyFile>Wirehome.Controller.Dnf_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>HA4IoT.Controller.Main_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxPackage>true</AppxPackage>
     <ContainsStartupTask>true</ContainsStartupTask>
+    <PackageCertificateThumbprint>32DEED0403E65AA0BEB48C79EBC4735D5DF5A2BE</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>DEBUG;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
-    <Optimize>true</Optimize>
+    <DefineConstants>NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS</DefineConstants>
+    <Optimize>false</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -78,7 +82,6 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -90,36 +93,30 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Configuration.cs" />
-    <Compile Include="ContainerConfigurator.cs" />
-    <Compile Include="Enum\BalconyElements.cs" />
-    <Compile Include="Enum\BathroomElements.cs" />
-    <Compile Include="Enum\BedroomElements.cs" />
-    <Compile Include="Enum\BirdSounds.cs" />
-    <Compile Include="Enum\CCToolsDevices.cs" />
-    <Compile Include="Enum\HallwayElements.cs" />
-    <Compile Include="Enum\KitchenElements.cs" />
-    <Compile Include="Enum\LivingroomElements.cs" />
-    <Compile Include="Enum\RemoteSockets.cs" />
-    <Compile Include="Enum\Rooms.cs" />
-    <Compile Include="Enum\StaircaseElements.cs" />
-    <Compile Include="Enum\ToiletElements.cs" />
-    <Compile Include="Rooms\BalconyConfiguration.cs" />
-    <Compile Include="Rooms\BathroomConfiguration.cs" />
-    <Compile Include="Rooms\BedroomConfiguration.cs" />
-    <Compile Include="Rooms\HallwayConfiguration.cs" />
-    <Compile Include="Rooms\HouseConfiguration.cs" />
-    <Compile Include="Rooms\KitchenConfiguration.cs" />
-    <Compile Include="Rooms\LivingroomConfiguration.cs" />
-    <Compile Include="Rooms\StaircaseConfiguration.cs" />
-    <Compile Include="Rooms\TestConfiguration.cs" />
-    <Compile Include="Rooms\ToiletConfiguration.cs" />
+    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="HA4IoT.Controller.Main_TemporaryKey.pfx" />
+    <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cellar\Configuration.cs" />
+    <Compile Include="Cellar\Garden.cs" />
+    <Compile Include="Main\Configuration.cs" />
+    <Compile Include="Main\InstalledDevice.cs" />
+    <Compile Include="Main\Rooms\BedroomConfiguration.cs" />
+    <Compile Include="Main\CatLitterBoxSender.cs" />
+    <Compile Include="Main\Rooms\FloorConfiguration.cs" />
+    <Compile Include="Main\Rooms\KitchenConfiguration.cs" />
+    <Compile Include="Main\Rooms\LivingRoomConfiguration.cs" />
+    <Compile Include="Main\Rooms\LowerBathroomConfiguration.cs" />
+    <Compile Include="Main\Rooms\OfficeConfiguration.cs" />
+    <Compile Include="Main\Rooms\ChildrensRoomConfiguration.cs" />
+    <Compile Include="Main\Rooms\ReadingRoomConfiguration.cs" />
+    <Compile Include="Main\Room.cs" />
+    <Compile Include="Main\Rooms\StoreroomConfiguration.cs" />
+    <Compile Include="Main\Rooms\UpperBathroomConfiguration.cs" />
     <Compile Include="StartupTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -127,63 +124,57 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="Configuration\Configuration-Devices.json" />
-    <None Include="Configuration\Configuration-Interrupts.json" />
-    <None Include="Configuration\Configuration-RemoteSockets.json" />
-    <None Include="Configuration\Configuration.json" />
-    <None Include="Configuration\OnlyArduino\Configuration-Devices.json" />
-    <None Include="Configuration\OnlyArduino\Configuration.json" />
-    <None Include="Wirehome.Controller.Dnf_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Properties\Default.rd.xml" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png">
-      <InProject>false</InProject>
-    </Content>
-    <Content Include="Assets\SplashScreen.scale-200.png">
-      <InProject>false</InProject>
-    </Content>
-    <Content Include="Assets\Square150x150Logo.scale-200.png">
-      <InProject>false</InProject>
-    </Content>
-    <Content Include="Assets\Square44x44Logo.scale-200.png">
-      <InProject>false</InProject>
-    </Content>
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
-      <InProject>false</InProject>
-    </Content>
-    <Content Include="Assets\StoreLogo.png">
-      <InProject>false</InProject>
-    </Content>
-    <Content Include="Assets\Wide310x150Logo.scale-200.png">
-      <InProject>false</InProject>
-    </Content>
+    <EmbeddedResource Include="Properties\Default.rd.xml" />
+    <Content Include="Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.0.1</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Wirehome.Contracts\Wirehome.Contracts.csproj">
+    <ProjectReference Include="..\..\..\Core\Wirehome.Contracts\Wirehome.Contracts.csproj">
       <Project>{ee5c16af-0acf-4d87-ad5a-d995832ddb6c}</Project>
       <Name>Wirehome.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Wirehome.Raspberry\Wirehome.Raspberry.csproj">
-      <Project>{0d7d0870-8888-4742-9cfd-f8ef2c3a50d8}</Project>
-      <Name>Wirehome.Raspberry</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Wirehome\Wirehome.csproj">
+    <ProjectReference Include="..\..\..\Core\Wirehome\Wirehome.csproj">
       <Project>{50737d30-ad0d-4832-b675-fda4c27c58ca}</Project>
       <Name>Wirehome</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Wirehome.Extensions\Wirehome.Extensions.csproj">
-      <Project>{118ef925-83ff-456e-9898-34da5ee417ef}</Project>
-      <Name>Wirehome.Extensions</Name>
-    </ProjectReference>
   </ItemGroup>
-  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '15.0' ">
-    <VisualStudioVersion>15.0</VisualStudioVersion>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS</DefineConstants>
+    <Optimize>true</Optimize>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>;2008</NoWarn>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

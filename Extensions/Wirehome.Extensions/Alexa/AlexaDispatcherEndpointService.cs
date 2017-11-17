@@ -18,7 +18,7 @@ using HTTPnet.Core.Pipeline;
 
 namespace Wirehome.Extensions
 {
-    public class AlexaDispatcherEndpointService : IAlexaDispatcherEndpointService
+    public class AlexaDispatcherEndpointService : IAlexaDispatcherEndpointService, IHttpContextPipelineHandler
     {
         private const string API_VERSION = "Wirehome 1.0";
         private const string PAYLOAD_VERSION = "2";
@@ -59,11 +59,23 @@ namespace Wirehome.Extensions
 
         public Task Initialize()
         {
-            _httpServer.HTTPRequestReceived += DispatchHttpRequest; 
+            _httpServer.AddRequestHandler(this);
 
             return Task.CompletedTask;
         }
-        
+
+        //TODO Fix
+        public Task ProcessRequestAsync(HttpContextPipelineHandlerContext context)
+        {
+            return Task.CompletedTask;
+        }
+
+        //TODO Fix
+        public Task ProcessResponseAsync(HttpContextPipelineHandlerContext context)
+        {
+            return Task.CompletedTask;
+        }
+
         public void AddConnectedVivices(string friendlyName, IEnumerable<IComponent> devices)
         {
             if (_connectedDevices.ContainsKey(friendlyName))
@@ -399,7 +411,7 @@ namespace Wirehome.Extensions
             }
         }
 
-        
+       
     }
 
 }

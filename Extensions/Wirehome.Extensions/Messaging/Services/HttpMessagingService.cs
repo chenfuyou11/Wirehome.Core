@@ -6,10 +6,11 @@ using Wirehome.Extensions.Contracts;
 using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Extensions.Extensions;
 using System.Text;
+using Wirehome.Extensions.Core;
 
 namespace Wirehome.Extensions.Messaging.Services
 {
-    public class HttpMessagingService : IHttpMessagingService
+    public class HttpMessagingService : ServiceBaseEx, IHttpMessagingService
     {
         private readonly IEventAggregator _eventAggregator;
 
@@ -18,10 +19,9 @@ namespace Wirehome.Extensions.Messaging.Services
             _eventAggregator = eventAggregator;
         }
 
-        //TODO Add Dispose - maybe to all IService
-        public Task Initialize()
+        public override Task Initialize()
         {
-            _eventAggregator.SubscribeForAsyncResult<IHttpMessage>(MessageHandler);
+            _disposeContainer.Add(_eventAggregator.SubscribeForAsyncResult<IHttpMessage>(MessageHandler));
             return Task.CompletedTask;
         }
 
@@ -72,6 +72,7 @@ namespace Wirehome.Extensions.Messaging.Services
             
             using (var httpClient = new HttpClient(httpClientHandler))
             {
+
                 foreach (var header in message.Message.DefaultHeaders)
                 {
                     httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);

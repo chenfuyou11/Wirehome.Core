@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Quartz" Version="3.0.0-beta1" />
-    <PackageReference Include="SimpleInjector" Version="4.0.11" />
+    <PackageReference Include="SimpleInjector" Version="4.0.12" />
     <PackageReference Include="System.Reactive" Version="3.1.1" />
   </ItemGroup>
 

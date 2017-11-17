@@ -8,9 +8,9 @@ namespace Wirehome.Extensions.Extensions
 {
     public static class TaskExtensions
     {
-        public static async Task<Task> WhenAll(this IEnumerable<Task> tasks, int millisecondsTimeOut, CancellationToken cancellationToken)
+        public static async Task<Task> WhenAll(this IEnumerable<Task> tasks, TimeSpan timeout, CancellationToken cancellationToken)
         {
-            var timeoutTask = Task.Delay(millisecondsTimeOut, cancellationToken);
+            var timeoutTask = Task.Delay(timeout, cancellationToken);
             var result = await Task.WhenAny(tasks.ToList().AddChained(timeoutTask)).ConfigureAwait(false);
 
             if (result == timeoutTask)
@@ -30,9 +30,9 @@ namespace Wirehome.Extensions.Extensions
             return result;
         }
 
-        public static async Task<R> WhenAny<R>(this IEnumerable<Task> tasks, int millisecondsTimeOut, CancellationToken cancellationToken) where R : class
+        public static async Task<R> WhenAny<R>(this IEnumerable<Task> tasks, TimeSpan timeout, CancellationToken cancellationToken) where R : class
         {
-            var timeoutTask = Task.Delay(millisecondsTimeOut, cancellationToken);
+            var timeoutTask = Task.Delay(timeout, cancellationToken);
             var result = await Task.WhenAny(tasks.ToList().AddChained(timeoutTask)).ConfigureAwait(false);
 
             if (result == timeoutTask)

@@ -67,7 +67,7 @@ namespace Wirehome.Extensions.Devices.Samsung
             //});
             _commandExecutor.Register<TurnOffCommand>(async c =>
             {
-                await _eventAggregator.PublishWithResultAsync<SamsungControlMessage, string>(new SamsungControlMessage
+                await _eventAggregator.SendAsync<SamsungControlMessage, string>(new SamsungControlMessage
                 {
                     Address = Hostname,
                     Code = "KEY_POWEROFF"
@@ -85,7 +85,7 @@ namespace Wirehome.Extensions.Devices.Samsung
             _featuresSupported.With(new VolumeFeature());
             _commandExecutor.Register<VolumeUpCommand>(async c =>
             {
-                await _eventAggregator.PublishWithResultAsync<SamsungControlMessage, string>(new SamsungControlMessage
+                await _eventAggregator.SendAsync<SamsungControlMessage, string>(new SamsungControlMessage
                 {
                     Address = Hostname,
                     Code = "KEY_VOLUP"
@@ -93,7 +93,7 @@ namespace Wirehome.Extensions.Devices.Samsung
             });
             _commandExecutor.Register<VolumeDownCommand>(async c =>
             {
-                await _eventAggregator.PublishWithResultAsync<SamsungControlMessage, string>(new SamsungControlMessage
+                await _eventAggregator.SendAsync<SamsungControlMessage, string>(new SamsungControlMessage
                 {
                     Address = Hostname,
                     Code = "KEY_VOLDOWN"
@@ -111,7 +111,7 @@ namespace Wirehome.Extensions.Devices.Samsung
 
             _commandExecutor.Register<MuteOnCommand>(async c =>
             {
-                await _eventAggregator.PublishWithResultAsync<SamsungControlMessage, string>(new SamsungControlMessage
+                await _eventAggregator.SendAsync<SamsungControlMessage, string>(new SamsungControlMessage
                 {
                     Address = Hostname,
                     Code = "KEY_MUTE"
@@ -150,7 +150,7 @@ namespace Wirehome.Extensions.Devices.Samsung
 
                 if (source?.Length == 0) throw new Exception($"Input {c.InputName} was not found on Samsung available device input sources");
 
-                await _eventAggregator.PublishWithResultAsync<SamsungControlMessage, string>(new SamsungControlMessage
+                await _eventAggregator.SendAsync<SamsungControlMessage, string>(new SamsungControlMessage
                 {
                     Address = Hostname,
                     Code = source

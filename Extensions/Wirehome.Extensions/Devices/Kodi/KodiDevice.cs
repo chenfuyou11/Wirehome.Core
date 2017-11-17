@@ -140,7 +140,7 @@ namespace Wirehome.Extensions.Devices.Kodi
 
             _commandExecutor.Register<TurnOnCommand>(async c =>
             {
-                await _eventAggregator.PublishWithResultAsync<ComputerControlMessage, string>(new ComputerControlMessage
+                await _eventAggregator.SendAsync<ComputerControlMessage, string>(new ComputerControlMessage
                 {
                     Address = Hostname,
                     Service = "Process",
@@ -152,7 +152,7 @@ namespace Wirehome.Extensions.Devices.Kodi
            );
             _commandExecutor.Register<TurnOffCommand>(async c =>
             {
-                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                var result = await _eventAggregator.SendAsync<KodiMessage, string>(new KodiMessage
                 {
                     Address = Hostname,
                     UserName = UserName,
@@ -182,7 +182,7 @@ namespace Wirehome.Extensions.Devices.Kodi
                 if (c == null) throw new ArgumentNullException();
                 var volume = _volume + c.DefaultChangeFactor;
 
-                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                var result = await _eventAggregator.SendAsync<KodiMessage, string>(new KodiMessage
                 {
                     Address = Hostname,
                     UserName = UserName,
@@ -200,7 +200,7 @@ namespace Wirehome.Extensions.Devices.Kodi
                 if (c == null) throw new ArgumentNullException();
                 var volume = _volume - c.DefaultChangeFactor;
 
-                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                var result = await _eventAggregator.SendAsync<KodiMessage, string>(new KodiMessage
                 {
                     Address = Hostname,
                     UserName = UserName,
@@ -218,7 +218,7 @@ namespace Wirehome.Extensions.Devices.Kodi
             {
                 if (c == null) throw new ArgumentNullException();
 
-                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                var result = await _eventAggregator.SendAsync<KodiMessage, string>(new KodiMessage
                 {
                     Address = Hostname,
                     UserName = UserName,
@@ -248,7 +248,7 @@ namespace Wirehome.Extensions.Devices.Kodi
 
             _commandExecutor.Register<MuteOnCommand>(async c =>
             {
-                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                var result = await _eventAggregator.SendAsync<KodiMessage, string>(new KodiMessage
                 {
                     Address = Hostname,
                     UserName = UserName,
@@ -263,7 +263,7 @@ namespace Wirehome.Extensions.Devices.Kodi
 
             _commandExecutor.Register<MuteOffCommand>(async c =>
             {
-                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                var result = await _eventAggregator.SendAsync<KodiMessage, string>(new KodiMessage
                 {
                     Address = Hostname,
                     UserName = UserName,
@@ -296,7 +296,7 @@ namespace Wirehome.Extensions.Devices.Kodi
                 if (_speed != 0) return;
 
                 //{"jsonrpc": "2.0", "method": "Player.PlayPause", "params": { "playerid": 1 }, "id": 1}
-                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                var result = await _eventAggregator.SendAsync<KodiMessage, string>(new KodiMessage
                 {
                     Address = Hostname,
                     UserName = UserName,
@@ -313,7 +313,7 @@ namespace Wirehome.Extensions.Devices.Kodi
             _commandExecutor.Register<StopCommand>(async c =>
             {
                 //{"jsonrpc": "2.0", "method": "Player.Stop", "id": "libMovies", "params": {  "playerid": 1 }}
-                var result = await _eventAggregator.PublishWithResultAsync<KodiMessage, string>(new KodiMessage
+                var result = await _eventAggregator.SendAsync<KodiMessage, string>(new KodiMessage
                 {
                     Address = Hostname,
                     UserName = UserName,

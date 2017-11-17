@@ -28,7 +28,7 @@ namespace Wirehome.Extensions.Devices
                 if(context.JobDetail.JobDataMap.TryGetValue("context", out object contextData))
                 {
                     var denonStateJobContext = contextData as DenonStateJobContext;
-                    await _eventAggregator.PublishWithRepublishResult<DenonStatusLightMessage, DenonStatus>(new DenonStatusLightMessage
+                    await _eventAggregator.SendWithRepublishResult<DenonStatusLightMessage, DenonStatus>(new DenonStatusLightMessage
                     {
                         Address = denonStateJobContext.Hostname,
                         Zone = denonStateJobContext.Zone

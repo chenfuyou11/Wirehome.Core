@@ -28,7 +28,7 @@ namespace Wirehome.Extensions.Devices.Sony
                 {
                     var stateJobContext = contextData as SonyStateJobContext;
 
-                    var power = await _eventAggregator.PublishWithResultAsync<SonyJsonMessage, string>(new SonyJsonMessage
+                    var power = await _eventAggregator.SendAsync<SonyJsonMessage, string>(new SonyJsonMessage
                     {
                         Address = stateJobContext.Hostname,
                         AuthorisationKey = stateJobContext.AuthKey,
@@ -36,7 +36,7 @@ namespace Wirehome.Extensions.Devices.Sony
                         Method = "getPowerStatus"
                     }).ConfigureAwait(false);
 
-                    var aydio = await _eventAggregator.PublishWithResultAsync<SonyJsonMessage, string>(new SonyJsonMessage
+                    var aydio = await _eventAggregator.SendAsync<SonyJsonMessage, string>(new SonyJsonMessage
                     {
                         Address = stateJobContext.Hostname,
                         AuthorisationKey = stateJobContext.AuthKey,

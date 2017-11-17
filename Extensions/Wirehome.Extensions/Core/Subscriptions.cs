@@ -8,7 +8,7 @@ namespace Wirehome.Extensions.Messaging.Core
 {
     public class Subscriptions
     {
-        private readonly List<Subscription> AllSubscriptions = new List<Subscription>();
+        private readonly List<Subscription> _allSubscriptions = new List<Subscription>();
         private int _subscriptionRevision;
 
         private int _localSubscriptionRevision;
@@ -20,9 +20,9 @@ namespace Wirehome.Extensions.Messaging.Core
             var key = Guid.NewGuid();
             var subscription = new Subscription(type, key, action, filter);
 
-            lock (AllSubscriptions)
+            lock (_allSubscriptions)
             {
-                AllSubscriptions.Add(subscription);
+                _allSubscriptions.Add(subscription);
                 _subscriptionRevision++;
             }
 
@@ -35,9 +35,9 @@ namespace Wirehome.Extensions.Messaging.Core
             var key = Guid.NewGuid();
             var subscription = new Subscription(type, key, action, filter);
 
-            lock (AllSubscriptions)
+            lock (_allSubscriptions)
             {
-                AllSubscriptions.Add(subscription);
+                _allSubscriptions.Add(subscription);
                 _subscriptionRevision++;
             }
 
@@ -46,10 +46,10 @@ namespace Wirehome.Extensions.Messaging.Core
 
         public void UnRegister(Guid token)
         {
-            lock (AllSubscriptions)
+            lock (_allSubscriptions)
             {
-                var subscription = AllSubscriptions.FirstOrDefault(s => s.Token == token);
-                var removed = AllSubscriptions.Remove(subscription);
+                var subscription = _allSubscriptions.FirstOrDefault(s => s.Token == token);
+                var removed = _allSubscriptions.Remove(subscription);
 
                 if (removed) { _subscriptionRevision++; }
             }
@@ -57,16 +57,16 @@ namespace Wirehome.Extensions.Messaging.Core
 
         public void Clear()
         {
-            lock (AllSubscriptions)
+            lock (_allSubscriptions)
             {
-                AllSubscriptions.Clear();
+                _allSubscriptions.Clear();
                 _subscriptionRevision++;
             }
         }
 
         public bool IsRegistered(Guid token)
         {
-            lock (AllSubscriptions) { return AllSubscriptions.Any(s => s.Token == token); }
+            lock (_allSubscriptions) { return _allSubscriptions.Any(s => s.Token == token); }
         }
 
         public Subscription[] GetCurrentSubscriptions()
@@ -82,9 +82,9 @@ namespace Wirehome.Extensions.Messaging.Core
             }
 
             Subscription[] latestSubscriptions;
-            lock (AllSubscriptions)
+            lock (_allSubscriptions)
             {
-                latestSubscriptions = AllSubscriptions.ToArray();
+                latestSubscriptions = _allSubscriptions.ToArray();
                 _localSubscriptionRevision = _subscriptionRevision;
             }
 

@@ -127,7 +127,7 @@ namespace Wirehome.Extensions.Tests
                 return "Test";
             });
 
-            var result = await aggregator.PublishWithResultAsync<TestMessage, string>(new TestMessage()).ConfigureAwait(false);
+            var result = await aggregator.SendAsync<TestMessage, string>(new TestMessage()).ConfigureAwait(false);
 
             Assert.AreEqual("Test", result);
         }
@@ -143,7 +143,7 @@ namespace Wirehome.Extensions.Tests
                 return "Test";
             }, "DNF");
 
-            var result = await aggregator.PublishWithResultAsync<TestMessage, string>(new TestMessage(), "DNF").ConfigureAwait(false);
+            var result = await aggregator.SendAsync<TestMessage, string>(new TestMessage(), "DNF").ConfigureAwait(false);
 
             Assert.AreEqual("Test", result);
         }
@@ -165,7 +165,7 @@ namespace Wirehome.Extensions.Tests
                 return "Faster";
             });
 
-            var result = await aggregator.PublishWithResultAsync<TestMessage, string>(new TestMessage()).ConfigureAwait(false);
+            var result = await aggregator.SendAsync<TestMessage, string>(new TestMessage()).ConfigureAwait(false);
 
             Assert.AreEqual("Faster", result);
         }
@@ -182,7 +182,7 @@ namespace Wirehome.Extensions.Tests
                 return "Test";
             });
 
-            await aggregator.PublishWithResultAsync<TestMessage, List<string>>(new TestMessage()).ConfigureAwait(false);
+            await aggregator.SendAsync<TestMessage, List<string>>(new TestMessage()).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -197,7 +197,7 @@ namespace Wirehome.Extensions.Tests
                 return "Test";
             });
             
-            await aggregator.PublishWithResultAsync<TestMessage, string>(new TestMessage(), millisecondsTimeOut: 50).ConfigureAwait(false);
+            await aggregator.SendAsync<TestMessage, string>(new TestMessage(), timeout: TimeSpan.FromMilliseconds(50)).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -211,7 +211,7 @@ namespace Wirehome.Extensions.Tests
                 throw new TestException();
             });
 
-            AggregateExceptionHelper.AssertInnerException<TestException>(aggregator.PublishWithResultAsync<TestMessage, string>(new TestMessage()));
+            AggregateExceptionHelper.AssertInnerException<TestException>(aggregator.SendAsync<TestMessage, string>(new TestMessage()));
 
         }
 
@@ -228,7 +228,7 @@ namespace Wirehome.Extensions.Tests
                 return "OK";
             });
 
-            var result = await aggregator.PublishWithResultAsync<TestMessage, string>(new TestMessage(), retryCount: 1).ConfigureAwait(false);
+            var result = await aggregator.SendAsync<TestMessage, string>(new TestMessage(), retryCount: 1).ConfigureAwait(false);
             Assert.AreEqual("OK", result);
 
         }
@@ -250,7 +250,7 @@ namespace Wirehome.Extensions.Tests
                 throw new TestException();
             });
 
-            AggregateExceptionHelper.AssertInnerException<TestException>(aggregator.PublishWithResultAsync<TestMessage, string>(new TestMessage()));
+            AggregateExceptionHelper.AssertInnerException<TestException>(aggregator.SendAsync<TestMessage, string>(new TestMessage()));
         }
 
         [TestMethod]
@@ -271,7 +271,7 @@ namespace Wirehome.Extensions.Tests
                 return "Faster";
             });
 
-            var result = await aggregator.PublishWithResultAsync<TestMessage, string>(new TestMessage()).ConfigureAwait(false);
+            var result = await aggregator.SendAsync<TestMessage, string>(new TestMessage()).ConfigureAwait(false);
 
             Assert.AreEqual("Faster", result);
         }
@@ -290,7 +290,7 @@ namespace Wirehome.Extensions.Tests
             });
             
             var ts = new CancellationTokenSource();
-            var result = aggregator.PublishWithResultAsync<TestMessage, string>(new TestMessage(), cancellationToken: ts.Token).ConfigureAwait(false);
+            var result = aggregator.SendAsync<TestMessage, string>(new TestMessage(), cancellationToken: ts.Token).ConfigureAwait(false);
             ts.Cancel();
             await result;
         }
@@ -307,7 +307,7 @@ namespace Wirehome.Extensions.Tests
 
             });
 
-            var result = aggregator.IsSubscribed(subscription);
+            var result = aggregator.IsSubscribed(subscription.Token);
             Assert.AreEqual(result, true);
         }
 
@@ -323,9 +323,9 @@ namespace Wirehome.Extensions.Tests
 
             });
 
-            aggregator.UnSubscribe(subscription);
+            aggregator.UnSubscribe(subscription.Token);
 
-            var result = aggregator.IsSubscribed(subscription);
+            var result = aggregator.IsSubscribed(subscription.Token);
             Assert.AreEqual(result, false);
         }
 
@@ -373,7 +373,7 @@ namespace Wirehome.Extensions.Tests
             });
 
 
-            var subscription = aggregator.PublishWithResults<TestMessage, string>(new TestMessage());
+            var subscription = aggregator.SendWithResults<TestMessage, string>(new TestMessage());
             
             subscription.AssertEqual(expected.ToObservable());
         }
@@ -397,7 +397,7 @@ namespace Wirehome.Extensions.Tests
             });
 
 
-            var subscription = aggregator.PublishWithResults<TestMessage, string>(new TestMessage(), millisecondsTimeOut: 10);
+            var subscription = aggregator.SendWithResults<TestMessage, string>(new TestMessage(), timeout: TimeSpan.FromMilliseconds(10));
 
             AggregateExceptionHelper.AssertInnerException<TimeoutException>(subscription);
         }
@@ -418,7 +418,7 @@ namespace Wirehome.Extensions.Tests
             var ts = new CancellationTokenSource();
             ts.Cancel();
 
-            var subscription = aggregator.PublishWithResults<TestMessage, string>(new TestMessage(), cancellationToken: ts.Token);
+            var subscription = aggregator.SendWithResults<TestMessage, string>(new TestMessage(), cancellationToken: ts.Token);
 
             AggregateExceptionHelper.AssertInnerException<TaskCanceledException>(subscription);
         }
@@ -473,10 +473,34 @@ namespace Wirehome.Extensions.Tests
                 isWorking = true;
             });
 
-            await aggregator.PublishWithRepublishResult<TestMessage, OtherMessage>(new TestMessage()).ConfigureAwait(false);
+            await aggregator.SendWithRepublishResult<TestMessage, OtherMessage>(new TestMessage()).ConfigureAwait(false);
 
            
             Assert.AreEqual(true, isWorking);
+        }
+
+
+        [TestMethod]
+        public async Task ObserveShouldWorkUntilDispose()
+        {
+            var aggregator = InitAggregator();
+            int counter = 0;
+            
+            var messages = aggregator.Observe<TestMessage>();
+
+            var subscription = messages.Subscribe(x =>
+            {
+                counter++;
+            });
+
+            await aggregator.Publish(new TestMessage()).ConfigureAwait(false);
+
+            subscription.Dispose();
+
+            await aggregator.Publish(new TestMessage()).ConfigureAwait(false);
+
+            Assert.AreEqual(1, counter);
+
         }
 
     }

@@ -18,10 +18,12 @@ using System.Globalization;
 using HTTPnet.Core.Pipeline.Handlers;
 using HTTPnet.Core.WebSockets;
 using System.Security.Cryptography;
+using HTTPnet.Core;
+using HTTPnet.Core.Diagnostics;
 
 namespace Wirehome.Api
 {
-    public class HttpServerService : ServiceBase, IApiAdapter, IHttpServerService
+    public class HttpServerService : ServiceBase, IApiAdapter, IHttpServerService, IHttpContextPipelineHandler
     {
         private readonly ILogger _log;
         private readonly IConfigurationService _configurationService;
@@ -30,9 +32,9 @@ namespace Wirehome.Api
         private const string AppBaseUri = "/app/";
         private const string ManagementAppBaseUri = "/managementApp/";
         private readonly IApiDispatcherService _apiDispatcherService;
+        private HttpServer _httpServer;
 
         public event EventHandler<ApiRequestReceivedEventArgs> ApiRequestReceived;
-        public event EventHandler<HttpContextPipelineHandlerContext> HTTPRequestReceived;
 
         public HttpServerService(IConfigurationService configurationService, IApiDispatcherService apiDispatcherService, ILogService logService)
         {
@@ -45,29 +47,59 @@ namespace Wirehome.Api
         {
             _apiDispatcherService.RegisterAdapter(this);
             var configuration = _configurationService.GetConfiguration<HttpServerServiceConfiguration>("HttpServerService");
-
-            //TODO
-            //HttpNetTrace.TraceMessagePublished += (s, e) => Console.WriteLine("[" + e.Source + "] [" + e.Level + "] [" + e.Message + "] [" + e.Exception + "]");
+            
+            HttpNetTrace.TraceMessagePublished += HttpNetTrace_TraceMessagePublished;
 
             var pipeline = new HttpContextPipeline(new HttpExceptionHandler());
             pipeline.Add(new RequestBodyHandler());
             pipeline.Add(new TraceHandler());
-            pipeline.Add(new WebSocketRequestHandler(ComputeSha1Hash, SessionCreated));
+            pipeline.Add(new WebSocketRequestHandler(ComputeSha1Hash, WebSocketSessionCreated));
             pipeline.Add(new ResponseBodyLengthHandler());
             pipeline.Add(new ResponseCompressionHandler());
-            pipeline.Add(new HttpRequestHandler(_log, ApiRequestReceived, HTTPRequestReceived));
+            pipeline.Add(this);
 
-            var httpServer = new HttpServerFactory().CreateHttpServer();
-            httpServer.RequestHandler = pipeline;
+            _httpServer = new HttpServerFactory().CreateHttpServer();
+            _httpServer.RequestHandler = pipeline;
+            
             var options = HttpServerOptions.Default;
             options.Port = configuration.Port;
 
-            await httpServer.StartAsync(options).ConfigureAwait(false);
+            await _httpServer.StartAsync(options).ConfigureAwait(false);
+        }
+
+        private void HttpNetTrace_TraceMessagePublished(object sender, HttpNetTraceMessagePublishedEventArgs e)
+        {
+            if(e.Level == HttpNetTraceLevel.Error)
+            {
+                _log.Error(e.Exception, MessageInfo(e));
+            }
+            else if (e.Level == HttpNetTraceLevel.Warning)
+            {
+                _log.Warning(e.Exception, MessageInfo(e));
+            }
+            else if (e.Level == HttpNetTraceLevel.Verbose)
+            {
+                _log.Verbose(MessageInfo(e));
+            }
+            else if (e.Level == HttpNetTraceLevel.Information)
+            {
+                _log.Info(MessageInfo(e));
+            }
+        }
+
+        private static string MessageInfo(HttpNetTraceMessagePublishedEventArgs e)
+        {
+            return "[" + e.Source + "] [" + e.Level + "] [" + e.Message + "] [" + e.Exception + "]";
         }
 
         public void NotifyStateChanged(IComponent component)
         {
 
+        }
+
+        public void AddRequestHandler(IHttpContextPipelineHandler handler)
+        {
+            ((HttpContextPipeline)_httpServer.RequestHandler).Add(handler);
         }
 
         public class HttpExceptionHandler : IHttpContextPipelineExceptionHandler
@@ -83,7 +115,7 @@ namespace Wirehome.Api
             }
         }
 
-        private void SessionCreated(WebSocketSession webSocketSession)
+        private void WebSocketSessionCreated(WebSocketSession webSocketSession)
         {
             webSocketSession.MessageReceived += async (s, e) =>
             {
@@ -122,152 +154,136 @@ namespace Wirehome.Api
             }
         }
 
-        public class HttpRequestHandler : IHttpContextPipelineHandler
+        public Task ProcessRequestAsync(HttpContextPipelineHandlerContext context)
         {
-            private readonly ILogger _logger;
-            private readonly EventHandler<ApiRequestReceivedEventArgs> _apiHandler;
-            private readonly EventHandler<HttpContextPipelineHandlerContext> _httpHandler;
-
-            public HttpRequestHandler(ILogger logger, EventHandler<ApiRequestReceivedEventArgs> apiHandler, EventHandler<HttpContextPipelineHandlerContext> httpHandler)
+            if (context.HttpContext.Request.Uri.StartsWith(ApiBaseUri, StringComparison.OrdinalIgnoreCase))
             {
-                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-                _apiHandler = apiHandler ?? throw new ArgumentNullException(nameof(apiHandler));
-                _httpHandler = httpHandler ?? throw new ArgumentNullException(nameof(httpHandler));
+                // TODO Break?
+                context.BreakPipeline = true;
+                OnApiRequestReceived(context.HttpContext);
+            }
+            else if (context.HttpContext.Request.Uri.StartsWith(AppBaseUri, StringComparison.OrdinalIgnoreCase))
+            {
+                context.BreakPipeline = true;
+                OnAppRequestReceived(context.HttpContext, StoragePath.AppRoot);
+            }
+            else if (context.HttpContext.Request.Uri.StartsWith(ManagementAppBaseUri, StringComparison.OrdinalIgnoreCase))
+            {
+                context.BreakPipeline = true;
+                OnAppRequestReceived(context.HttpContext, StoragePath.ManagementAppRoot);
             }
 
-            public Task ProcessRequestAsync(HttpContextPipelineHandlerContext context)
+            return Task.FromResult(0);
+        }
+
+        public Task ProcessResponseAsync(HttpContextPipelineHandlerContext context)
+        {
+            return Task.FromResult(0);
+        }
+
+        private void OnApiRequestReceived(HttpContext context)
+        {
+            IApiCall apiCall = CreateApiContext(context);
+            if (apiCall == null)
             {
-                if (context.HttpContext.Request.Uri.StartsWith(ApiBaseUri, StringComparison.OrdinalIgnoreCase))
-                {
-                    //e.IsHandled = true;
-                    OnApiRequestReceived(context.HttpContext);
-                }
-                else if (context.HttpContext.Request.Uri.StartsWith(AppBaseUri, StringComparison.OrdinalIgnoreCase))
-                {
-                    //e.IsHandled = true;
-                    OnAppRequestReceived(context.HttpContext, StoragePath.AppRoot);
-                }
-                else if (context.HttpContext.Request.Uri.StartsWith(ManagementAppBaseUri, StringComparison.OrdinalIgnoreCase))
-                {
-                    //e.IsHandled = true;
-                    OnAppRequestReceived(context.HttpContext, StoragePath.ManagementAppRoot);
-                }
-
-                _httpHandler?.Invoke(this, context);
-
-                return Task.FromResult(0);
+                context.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                return;
             }
 
-            public Task ProcessResponseAsync(HttpContextPipelineHandlerContext context)
+            var eventArgs = new ApiRequestReceivedEventArgs(apiCall);
+
+            ApiRequestReceived?.Invoke(this, eventArgs);
+
+            if (!eventArgs.IsHandled)
             {
-                return Task.FromResult(0);
+                context.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                return;
             }
 
-            private void OnApiRequestReceived(HttpContext context)
+            context.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            if (eventArgs.ApiContext.Result == null)
             {
-                IApiCall apiCall = CreateApiContext(context);
-                if (apiCall == null)
-                {
-                    context.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-                    return;
-                }
-
-                var eventArgs = new ApiRequestReceivedEventArgs(apiCall);
-
-                _apiHandler?.Invoke(this, eventArgs);
-
-                if (!eventArgs.IsHandled)
-                {
-                    context.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-                    return;
-                }
-
-                context.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-                if (eventArgs.ApiContext.Result == null)
-                {
-                    eventArgs.ApiContext.Result = new JObject();
-                }
-
-                var apiResponse = new ApiResponse
-                {
-                    ResultCode = apiCall.ResultCode,
-                    Result = apiCall.Result,
-                    ResultHash = apiCall.ResultHash
-                };
-
-                var json = JsonConvert.SerializeObject(apiResponse);
-
-                //TODO where is released?
-                context.Response.Body = new MemoryStream(Encoding.UTF8.GetBytes(json));
-                //context.Response.MimeType = MimeTypeProvider.Json;
+                eventArgs.ApiContext.Result = new JObject();
             }
 
-            private ApiCall CreateApiContext(HttpContext context)
+            var apiResponse = new ApiResponse
             {
-                try
-                {
-                    string bodyText;
+                ResultCode = apiCall.ResultCode,
+                Result = apiCall.Result,
+                ResultHash = apiCall.ResultHash
+            };
 
-                    // Parse a special query parameter.
-                    // TODO context.Request.Query => context.Request.Uri ???
-                    if (!string.IsNullOrEmpty(context.Request.Uri) && context.Request.Uri.StartsWith("body=", StringComparison.OrdinalIgnoreCase))
-                    {
-                        bodyText = context.Request.Uri.Substring("body=".Length);
-                    }
-                    else
-                    {
-                        bodyText = Encoding.UTF8.GetString(((MemoryStream)context.Request.Body).ToArray() ?? new byte[0]);
-                    }
+            var json = JsonConvert.SerializeObject(apiResponse);
 
-                    var action = context.Request.Uri.Substring("/api/".Length);
-                    var parameter = string.IsNullOrEmpty(bodyText) ? new JObject() : JObject.Parse(bodyText);
+            //TODO where is released?
+            context.Response.Body = new MemoryStream(Encoding.UTF8.GetBytes(json));
+            //context.Response.MimeType = MimeTypeProvider.Json;
+        }
 
-                    return new ApiCall(action, parameter, null);
-                }
-                catch (Exception)
-                {
-                    _logger.Verbose("Received a request with no valid JSON request.");
-                    return null;
-                }
-            }
-
-            private void OnAppRequestReceived(HttpContext context, string rootDirectory)
+        private ApiCall CreateApiContext(HttpContext context)
+        {
+            try
             {
-                if (!TryGetFilename(context, rootDirectory, out string filename))
-                {
-                    context.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-                    return;
-                }
+                string bodyText;
 
-                if (File.Exists(filename))
+                // Parse a special query parameter.
+                if (!string.IsNullOrEmpty(context.Request.Uri) && context.Request.Uri.StartsWith("body=", StringComparison.OrdinalIgnoreCase))
                 {
-                    //TODO
-                    context.Response.Body = new MemoryStream(File.ReadAllBytes(filename));
-                    //context.Response.MimeType = MimeTypeProvider.GetMimeTypeFromFilename(filename);
+                    bodyText = context.Request.Uri.Substring("body=".Length);
                 }
                 else
                 {
-                    context.Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
+                    bodyText = Encoding.UTF8.GetString(((MemoryStream)context.Request.Body).ToArray() ?? new byte[0]);
                 }
-            }
 
-            private bool TryGetFilename(HttpContext context, string rootDirectory, out string filename)
+                var action = context.Request.Uri.Substring("/api/".Length);
+                var parameter = string.IsNullOrEmpty(bodyText) ? new JObject() : JObject.Parse(bodyText);
+
+                return new ApiCall(action, parameter, null);
+            }
+            catch (Exception)
             {
-                var relativeUrl = context.Request.Uri;
-                relativeUrl = relativeUrl.TrimStart('/');
-                relativeUrl = relativeUrl.Substring(relativeUrl.IndexOf('/') + 1);
-
-                if (relativeUrl.EndsWith("/") || relativeUrl == string.Empty)
-                {
-                    relativeUrl += "Index.html";
-                }
-
-                relativeUrl = relativeUrl.Trim('/');
-                relativeUrl = relativeUrl.Replace("/", @"\");
-
-                filename = Path.Combine(rootDirectory, relativeUrl);
-                return true;
+                _log.Verbose("Received a request with no valid JSON request.");
+                return null;
             }
+        }
+
+        private void OnAppRequestReceived(HttpContext context, string rootDirectory)
+        {
+            if (!TryGetFilename(context, rootDirectory, out string filename))
+            {
+                context.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+                return;
+            }
+
+            if (File.Exists(filename))
+            {
+                //TODO
+                context.Response.Body = new MemoryStream(File.ReadAllBytes(filename));
+                //context.Response.MimeType = MimeTypeProvider.GetMimeTypeFromFilename(filename);
+            }
+            else
+            {
+                context.Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
+            }
+        }
+
+        private bool TryGetFilename(HttpContext context, string rootDirectory, out string filename)
+        {
+            var relativeUrl = context.Request.Uri;
+            relativeUrl = relativeUrl.TrimStart('/');
+            relativeUrl = relativeUrl.Substring(relativeUrl.IndexOf('/') + 1);
+
+            if (relativeUrl.EndsWith("/") || relativeUrl == string.Empty)
+            {
+                relativeUrl += "Index.html";
+            }
+
+            relativeUrl = relativeUrl.Trim('/');
+            relativeUrl = relativeUrl.Replace("/", @"\");
+
+            filename = Path.Combine(rootDirectory, relativeUrl);
+            return true;
         }
     }
 }

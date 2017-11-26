@@ -9,23 +9,17 @@ using System.Linq.Expressions;
 namespace Wirehome.Extensions.Core.Policies
 {
 
-    public class TimeoutBehavior : IBehavior
+    public class TimeoutBehavior : Behavior
     {
-        private IAsyncCommandHandler _asyncCommandHandler;
         private readonly TimeSpan _timeout;
-        public int Priority => 30;
-
-        public void SetNextNode(IAsyncCommandHandler asyncCommandHandler)
-        {
-            _asyncCommandHandler = asyncCommandHandler ?? throw new ArgumentNullException(nameof(asyncCommandHandler));
-        }
-
+        
         public TimeoutBehavior(TimeSpan timeout)
         {
             _timeout = timeout;
+            Priority = 30;
         }
 
-        public Task<R> HandleAsync<T, R>(IMessageEnvelope<T> message) where R : class
+        public override Task<R> HandleAsync<T, R>(IMessageEnvelope<T> message)
         {
             return _asyncCommandHandler.HandleAsync<T, R>(message).WhenDone(_timeout, message.CancellationToken);
         }

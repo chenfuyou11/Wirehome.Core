@@ -9,23 +9,17 @@ using System.Linq.Expressions;
 namespace Wirehome.Extensions.Core.Policies
 {
 
-    public class RetryBehavior : IBehavior
+    public class RetryBehavior : Behavior
     {
-        private IAsyncCommandHandler _asyncCommandHandler;
         private int _retryCount;
-        public int Priority => 40;
-
-        public void SetNextNode(IAsyncCommandHandler asyncCommandHandler)
-        {
-            _asyncCommandHandler = asyncCommandHandler ?? throw new ArgumentNullException(nameof(asyncCommandHandler));
-        }
-
+        
         public RetryBehavior(int retryCount = 3)
         {
+            Priority = 40;
             _retryCount = retryCount;
         }
 
-        public async Task<R> HandleAsync<T, R>(IMessageEnvelope<T> message) where R : class
+        public override async Task<R> HandleAsync<T, R>(IMessageEnvelope<T> message)
         {
             while (true)
             {
@@ -36,8 +30,6 @@ namespace Wirehome.Extensions.Core.Policies
                 catch when (_retryCount-- > 0) { }
             }
         }
-
-        
     }
 
 }

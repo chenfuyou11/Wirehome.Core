@@ -13,12 +13,16 @@ namespace Wirehome.Extensions.Messaging.Core
 
     public interface IEventAggregator
     {
+
         void ClearSubscriptions();
         bool IsSubscribed(Guid token);
         void UnSubscribe(Guid token);
         List<BaseCommandHandler> GetSubscriptors<T>(MessageFilter filter = null);
+
         SubscriptionToken Subscribe<T>(Action<IMessageEnvelope<T>> action, MessageFilter filter = null);
+        SubscriptionToken SubscribeAsync<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter = null);
         SubscriptionToken SubscribeForAsyncResult<T>(Func<IMessageEnvelope<T>, Task<object>> action, MessageFilter filter = null);
+
         IObservable<IMessageEnvelope<T>> Observe<T>();
         Func<BehaviorChain> DefaultBehavior { get; set; }
 

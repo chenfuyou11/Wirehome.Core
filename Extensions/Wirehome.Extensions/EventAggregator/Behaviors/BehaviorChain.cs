@@ -26,6 +26,11 @@ namespace Wirehome.Extensions.Core.Policies
 
             return nextHandler;
         }
+
+        public static implicit operator BehaviorChain(Behavior behavior)
+        {
+            return new BehaviorChain().WithPolicy(behavior);
+        }
     }
 
 }

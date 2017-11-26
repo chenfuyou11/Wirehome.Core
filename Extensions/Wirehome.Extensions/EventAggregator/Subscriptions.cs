@@ -14,7 +14,22 @@ namespace Wirehome.Extensions.Messaging.Core
         private int _localSubscriptionRevision;
         private BaseCommandHandler[] _localSubscriptions;
 
-        internal Guid RegisterForAsyncResult<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter)
+        internal Guid RegisterAsyncWithResult<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter)
+        {
+            var type = typeof(T);
+            var key = Guid.NewGuid();
+            var subscription = new AsyncWithResultCommandHandler(type, key, action, filter);
+
+            lock (_allSubscriptions)
+            {
+                _allSubscriptions.Add(subscription);
+                _subscriptionRevision++;
+            }
+
+            return key;
+        }
+
+        internal Guid RegisterAsync<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter)
         {
             var type = typeof(T);
             var key = Guid.NewGuid();

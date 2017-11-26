@@ -138,7 +138,12 @@ namespace Wirehome.Extensions.Messaging.Core
 
         public SubscriptionToken SubscribeForAsyncResult<T>(Func<IMessageEnvelope<T>, Task<object>> action, MessageFilter filter = null)
         {
-            return new SubscriptionToken(_subscriptions.RegisterForAsyncResult(action, filter), this);
+            return new SubscriptionToken(_subscriptions.RegisterAsyncWithResult(action, filter), this);
+        }
+
+        public SubscriptionToken SubscribeAsync<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter = null)
+        {
+            return new SubscriptionToken(_subscriptions.RegisterAsync(action, filter), this);
         }
 
         public SubscriptionToken Subscribe<T>(Action<IMessageEnvelope<T>> action, MessageFilter filter = null)

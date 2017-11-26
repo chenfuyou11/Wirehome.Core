@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Wirehome.Extensions.Core.Policies;
 using Wirehome.Extensions.Messaging.Core.Extensions;
+using System.Diagnostics;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -461,32 +462,6 @@ namespace Wirehome.Extensions.Tests
 
             Assert.AreEqual(1, counter);
         }
-
-
-        [TestMethod]
-        public async Task Test()
-        {
-            var aggregator = InitAggregator();
-            var throwError = true;
-
-            var chain = new BehaviorChain().WithAsync().WithRetry(1).WithTimeout(TimeSpan.FromMilliseconds(100));
-
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
-            {
-                if(throwError)
-                {
-                    throwError = false;
-                    await Task.Delay(500).ConfigureAwait(false);
-                }
-                await Task.Delay(10).ConfigureAwait(false);
-                return "Test";
-            });
-
-            var result = await aggregator.QueryAsync<TestMessage, string>(new TestMessage(), behaviors: chain).ConfigureAwait(false);
-
-            //Assert.AreEqual(1, counter);
-
-        }
-
+        
     }
 }

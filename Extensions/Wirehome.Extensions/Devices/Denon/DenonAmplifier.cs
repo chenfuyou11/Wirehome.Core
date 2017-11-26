@@ -96,8 +96,8 @@ namespace Wirehome.Extensions.Devices
 
         public async Task RefreshDeviceState()
         {
-            _fullState = await _eventAggregator.SendAsync<DenonStatusMessage, DenonDeviceInfo>(new DenonStatusMessage { Address = Hostname }).ConfigureAwait(false);
-            var mapping = await _eventAggregator.SendAsync<DenonMappingMessage, DenonDeviceInfo>(new DenonMappingMessage { Address = Hostname }).ConfigureAwait(false);
+            _fullState = await _eventAggregator.QueryAsync<DenonStatusMessage, DenonDeviceInfo>(new DenonStatusMessage { Address = Hostname }).ConfigureAwait(false);
+            var mapping = await _eventAggregator.QueryAsync<DenonMappingMessage, DenonDeviceInfo>(new DenonMappingMessage { Address = Hostname }).ConfigureAwait(false);
             _fullState.FriendlyName = mapping.FriendlyName;
             _fullState.InputMap = mapping.InputMap;
             _surround = _fullState.Surround;
@@ -139,7 +139,7 @@ namespace Wirehome.Extensions.Devices
             _featuresSupported.With(new PowerStateFeature());
             _commandExecutor.Register<TurnOnCommand>(async c =>
             {
-                await _eventAggregator.SendWithExpectedResultAsync(new DenonControlMessage
+                await _eventAggregator.QueryWithResultCheckAsync(new DenonControlMessage
                 {
                     Command = "PowerOn",
                     Api = "formiPhoneAppPower",
@@ -151,7 +151,7 @@ namespace Wirehome.Extensions.Devices
             });
             _commandExecutor.Register<TurnOffCommand>(async c =>
             {
-                await _eventAggregator.SendWithExpectedResultAsync(new DenonControlMessage
+                await _eventAggregator.QueryWithResultCheckAsync(new DenonControlMessage
                 {
                     Command = "PowerStandby",
                     Api = "formiPhoneAppPower",
@@ -182,7 +182,7 @@ namespace Wirehome.Extensions.Devices
                 var normalized = NormalizeVolume(volume);
 
                 // Results are unpredictyble so we ignore them
-                await _eventAggregator.SendAsync<DenonControlMessage, string>(new DenonControlMessage
+                await _eventAggregator.QueryAsync<DenonControlMessage, string>(new DenonControlMessage
                 {
                     Command = normalized,
                     Api = "formiPhoneAppVolume",
@@ -199,7 +199,7 @@ namespace Wirehome.Extensions.Devices
                 var volume = _volume - c.DefaultChangeFactor;
                 var normalized = NormalizeVolume(volume);
 
-                await _eventAggregator.SendAsync<DenonControlMessage, string>(new DenonControlMessage
+                await _eventAggregator.QueryAsync<DenonControlMessage, string>(new DenonControlMessage
                 {
                     Command = normalized,
                     Api = "formiPhoneAppVolume",
@@ -215,7 +215,7 @@ namespace Wirehome.Extensions.Devices
                 if (c == null) throw new ArgumentNullException();
                 var normalized = NormalizeVolume(c.Volume);
 
-                await _eventAggregator.SendAsync<DenonControlMessage, string>(new DenonControlMessage
+                await _eventAggregator.QueryAsync<DenonControlMessage, string>(new DenonControlMessage
                 {
                     Command = normalized,
                     Api = "formiPhoneAppVolume",
@@ -253,7 +253,7 @@ namespace Wirehome.Extensions.Devices
 
             _commandExecutor.Register<MuteOnCommand>(async c =>
             {
-                await _eventAggregator.SendWithExpectedResultAsync(new DenonControlMessage
+                await _eventAggregator.QueryWithResultCheckAsync(new DenonControlMessage
                 {
                     Command = "MuteOn",
                     Api = "formiPhoneAppMute",
@@ -267,7 +267,7 @@ namespace Wirehome.Extensions.Devices
 
             _commandExecutor.Register<MuteOffCommand>(async c =>
             {
-                await _eventAggregator.SendWithExpectedResultAsync(new DenonControlMessage
+                await _eventAggregator.QueryWithResultCheckAsync(new DenonControlMessage
                 {
                     Command = "MuteOff",
                     Api = "formiPhoneAppMute",
@@ -302,7 +302,7 @@ namespace Wirehome.Extensions.Devices
                 var input = _fullState.TranslateInputName(c.InputName, Zone.ToString());
                 if(input?.Length == 0) throw new Exception($"Input {c.InputName} was not found on available device input sources");
 
-                await _eventAggregator.SendWithExpectedResultAsync(new DenonControlMessage
+                await _eventAggregator.QueryWithResultCheckAsync(new DenonControlMessage
                 {
                     Command = input,
                     Api = "formiPhoneAppDirect",
@@ -340,7 +340,7 @@ namespace Wirehome.Extensions.Devices
                 var mode = DenonSurroundModes.GetApiCommand(c.SurroundMode);
                 if (mode?.Length == 0) throw new Exception($"Surroundmode {mode} was not found on available surround modes");
 
-                await _eventAggregator.SendWithExpectedResultAsync(new DenonControlMessage
+                await _eventAggregator.QueryWithResultCheckAsync(new DenonControlMessage
                 {
                     Command = mode,
                     Api = "formiPhoneAppDirect",

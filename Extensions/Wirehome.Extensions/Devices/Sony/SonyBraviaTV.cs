@@ -118,7 +118,7 @@ namespace Wirehome.Extensions.Devices.Sony
 
             _commandExecutor.Register<TurnOnCommand>(async c =>
             {
-                var result = await _eventAggregator.SendAsync<SonyControlMessage, string>(new SonyControlMessage
+                var result = await _eventAggregator.QueryAsync<SonyControlMessage, string>(new SonyControlMessage
                 {
                     Address = Hostname,
                     AuthorisationKey = AuthorisationKey,
@@ -128,7 +128,7 @@ namespace Wirehome.Extensions.Devices.Sony
            );
             _commandExecutor.Register<TurnOffCommand>(async c =>
             {
-                var result = await _eventAggregator.SendAsync<SonyControlMessage, string>(new SonyControlMessage
+                var result = await _eventAggregator.QueryAsync<SonyControlMessage, string>(new SonyControlMessage
                 {
                     Address = Hostname,
                     AuthorisationKey = AuthorisationKey,
@@ -148,7 +148,7 @@ namespace Wirehome.Extensions.Devices.Sony
                 if (c == null) throw new ArgumentNullException();
                 var volume = _volume + c.DefaultChangeFactor;
 
-                await _eventAggregator.SendAsync<SonyJsonMessage, string>(new SonyJsonMessage
+                await _eventAggregator.QueryAsync<SonyJsonMessage, string>(new SonyJsonMessage
                 {
                     Address = Hostname,
                     AuthorisationKey = AuthorisationKey,
@@ -165,7 +165,7 @@ namespace Wirehome.Extensions.Devices.Sony
                 if (c == null) throw new ArgumentNullException();
                 var volume = _volume - c.DefaultChangeFactor;
 
-                await _eventAggregator.SendAsync<SonyJsonMessage, string>(new SonyJsonMessage
+                await _eventAggregator.QueryAsync<SonyJsonMessage, string>(new SonyJsonMessage
                 {
                     Address = Hostname,
                     AuthorisationKey = AuthorisationKey,
@@ -182,7 +182,7 @@ namespace Wirehome.Extensions.Devices.Sony
             {
                 if (c == null) throw new ArgumentNullException();
                 
-                await _eventAggregator.SendAsync<SonyJsonMessage, string>(new SonyJsonMessage
+                await _eventAggregator.QueryAsync<SonyJsonMessage, string>(new SonyJsonMessage
                 {
                     Address = Hostname,
                     AuthorisationKey = AuthorisationKey,
@@ -211,7 +211,7 @@ namespace Wirehome.Extensions.Devices.Sony
 
             _commandExecutor.Register<MuteOnCommand>(async c =>
             {
-                await _eventAggregator.SendAsync<SonyJsonMessage, string>(new SonyJsonMessage
+                await _eventAggregator.QueryAsync<SonyJsonMessage, string>(new SonyJsonMessage
                 {
                     Address = Hostname,
                     AuthorisationKey = AuthorisationKey,
@@ -225,7 +225,7 @@ namespace Wirehome.Extensions.Devices.Sony
 
             _commandExecutor.Register<MuteOffCommand>(async c =>
             {
-                await _eventAggregator.SendAsync<SonyJsonMessage, string>(new SonyJsonMessage
+                await _eventAggregator.QueryAsync<SonyJsonMessage, string>(new SonyJsonMessage
                 {
                     Address = Hostname,
                     AuthorisationKey = AuthorisationKey,
@@ -260,7 +260,7 @@ namespace Wirehome.Extensions.Devices.Sony
 
                 var cmd = _inputSourceMap[c.InputName];
 
-                var result = await _eventAggregator.SendAsync<SonyControlMessage, string>(new SonyControlMessage
+                var result = await _eventAggregator.QueryAsync<SonyControlMessage, string>(new SonyControlMessage
                 {
                     Address = Hostname,
                     AuthorisationKey = AuthorisationKey,

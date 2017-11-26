@@ -30,7 +30,7 @@ namespace Wirehome.Extensions.Devices
                 {
                     var computerStateJobContext = contextData as ComputerStateJobContext;
 
-                    await _eventAggregator.SendWithRepublishResult<ComputerControlMessage, ComputerStatus>(new ComputerControlMessage
+                    await _eventAggregator.QueryWithRepublishResult<ComputerControlMessage, ComputerStatus>(new ComputerControlMessage
                     {
                         Address = computerStateJobContext.Hostname,
                         Port = computerStateJobContext.Port,

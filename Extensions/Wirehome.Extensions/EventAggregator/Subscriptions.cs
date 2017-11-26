@@ -8,17 +8,17 @@ namespace Wirehome.Extensions.Messaging.Core
 {
     public class Subscriptions
     {
-        private readonly List<Subscription> _allSubscriptions = new List<Subscription>();
+        private readonly List<BaseCommandHandler> _allSubscriptions = new List<BaseCommandHandler>();
         private int _subscriptionRevision;
 
         private int _localSubscriptionRevision;
-        private Subscription[] _localSubscriptions;
+        private BaseCommandHandler[] _localSubscriptions;
 
         internal Guid RegisterForAsyncResult<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter)
         {
             var type = typeof(T);
             var key = Guid.NewGuid();
-            var subscription = new Subscription(type, key, action, filter);
+            var subscription = new AsyncCommandHandler(type, key, action, filter);
 
             lock (_allSubscriptions)
             {
@@ -33,7 +33,7 @@ namespace Wirehome.Extensions.Messaging.Core
         {
             var type = typeof(T);
             var key = Guid.NewGuid();
-            var subscription = new Subscription(type, key, action, filter);
+            var subscription = new CommandHandler(type, key, action, filter);
 
             lock (_allSubscriptions)
             {
@@ -69,11 +69,11 @@ namespace Wirehome.Extensions.Messaging.Core
             lock (_allSubscriptions) { return _allSubscriptions.Any(s => s.Token == token); }
         }
 
-        public Subscription[] GetCurrentSubscriptions()
+        public BaseCommandHandler[] GetCurrentSubscriptions()
         {
             if (_localSubscriptions == null)
             {
-                _localSubscriptions = new Subscription[0];
+                _localSubscriptions = new BaseCommandHandler[0];
             }
 
             if (_localSubscriptionRevision == _subscriptionRevision)
@@ -81,7 +81,7 @@ namespace Wirehome.Extensions.Messaging.Core
                 return _localSubscriptions;
             }
 
-            Subscription[] latestSubscriptions;
+            BaseCommandHandler[] latestSubscriptions;
             lock (_allSubscriptions)
             {
                 latestSubscriptions = _allSubscriptions.ToArray();
@@ -93,11 +93,11 @@ namespace Wirehome.Extensions.Messaging.Core
             return latestSubscriptions;
         }
 
-        public List<Subscription> GetCurrentSubscriptions(Type messageType, MessageFilter filter = null)
+        public List<BaseCommandHandler> GetCurrentSubscriptions(Type messageType, MessageFilter filter = null)
         {
             var latestSubscriptions = GetCurrentSubscriptions();
             var msgTypeInfo = messageType.GetTypeInfo();
-            var filteredSubscription = new List<Subscription>();
+            var filteredSubscription = new List<BaseCommandHandler>();
 
             for (var idx = 0; idx < latestSubscriptions.Length; idx++)
             {

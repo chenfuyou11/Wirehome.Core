@@ -134,7 +134,7 @@ namespace Wirehome.Extensions.Devices
 
             _commandExecutor.Register<TurnOnCommand>(async c =>
             {
-                await _eventAggregator.SendAsync<WakeOnLanMessage, string>(new WakeOnLanMessage
+                await _eventAggregator.QueryAsync<WakeOnLanMessage, string>(new WakeOnLanMessage
                 {
                     MAC = Mac
                 }).ConfigureAwait(false);
@@ -142,7 +142,7 @@ namespace Wirehome.Extensions.Devices
             });
             _commandExecutor.Register<TurnOffCommand>(async c =>
             {
-                await _eventAggregator.SendAsync<ComputerControlMessage, string>(new ComputerControlMessage
+                await _eventAggregator.QueryAsync<ComputerControlMessage, string>(new ComputerControlMessage
                 {
                     Address = Hostname,
                     Service = "Power",
@@ -169,7 +169,7 @@ namespace Wirehome.Extensions.Devices
                 if (c == null) throw new ArgumentNullException();
                 var volume = _volume + c.DefaultChangeFactor;
 
-                await _eventAggregator.SendAsync<ComputerControlMessage, string>(new ComputerControlMessage
+                await _eventAggregator.QueryAsync<ComputerControlMessage, string>(new ComputerControlMessage
                 {
                     Address = Hostname,
                     Service = "Volume",
@@ -183,7 +183,7 @@ namespace Wirehome.Extensions.Devices
                 if (c == null) throw new ArgumentNullException();
                 var volume = _volume - c.DefaultChangeFactor;
 
-                await _eventAggregator.SendAsync<ComputerControlMessage, string>(new ComputerControlMessage
+                await _eventAggregator.QueryAsync<ComputerControlMessage, string>(new ComputerControlMessage
                 {
                     Address = Hostname,
                     Service = "Volume",
@@ -196,7 +196,7 @@ namespace Wirehome.Extensions.Devices
             {
                 if (c == null) throw new ArgumentNullException();
                 
-                await _eventAggregator.SendAsync<ComputerControlMessage, string>(new ComputerControlMessage
+                await _eventAggregator.QueryAsync<ComputerControlMessage, string>(new ComputerControlMessage
                 {
                     Address = Hostname,
                     Service = "Volume",
@@ -224,7 +224,7 @@ namespace Wirehome.Extensions.Devices
 
             _commandExecutor.Register<MuteOnCommand>(async c =>
             {
-                await _eventAggregator.SendAsync<ComputerControlMessage, string>(new ComputerControlMessage
+                await _eventAggregator.QueryAsync<ComputerControlMessage, string>(new ComputerControlMessage
                 {
                     Address = Hostname,
                     Service = "Mute",
@@ -236,7 +236,7 @@ namespace Wirehome.Extensions.Devices
 
             _commandExecutor.Register<MuteOffCommand>(async c =>
             {
-                await _eventAggregator.SendAsync<ComputerControlMessage, string>(new ComputerControlMessage
+                await _eventAggregator.QueryAsync<ComputerControlMessage, string>(new ComputerControlMessage
                 {
                     Address = Hostname,
                     Service = "Mute",
@@ -265,7 +265,7 @@ namespace Wirehome.Extensions.Devices
             {
                 if (c == null) throw new ArgumentNullException();
                
-                await _eventAggregator.SendAsync<ComputerControlMessage, string>(new ComputerControlMessage
+                await _eventAggregator.QueryAsync<ComputerControlMessage, string>(new ComputerControlMessage
                 {
                     Address = Hostname,
                     Service = "InputSource",

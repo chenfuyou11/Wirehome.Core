@@ -11,7 +11,8 @@ namespace Wirehome.Extensions.Extensions
         public static async Task<Task> WhenAll(this IEnumerable<Task> tasks, TimeSpan timeout, CancellationToken cancellationToken)
         {
             var timeoutTask = Task.Delay(timeout, cancellationToken);
-            var result = await Task.WhenAny(tasks.ToList().AddChained(timeoutTask)).ConfigureAwait(false);
+            var workingTask = Task.WhenAll(tasks);
+            var result = await Task.WhenAny(timeoutTask, workingTask).ConfigureAwait(false);
 
             if (result == timeoutTask)
             {
@@ -25,6 +26,20 @@ namespace Wirehome.Extensions.Extensions
                 }
 
                 throw new InvalidOperationException("Not supported result in WhenAll");
+            }
+
+            return result;
+        }
+
+        public static async Task<Task> WhenAll(this IEnumerable<Task> tasks, CancellationToken cancellationToken)
+        {
+            var cancellTask = cancellationToken.WhenCanceled();
+            var workingTask = Task.WhenAll(tasks);
+            var result = await Task.WhenAny(cancellTask, workingTask).ConfigureAwait(false);
+
+            if (result == cancellTask)
+            {
+                throw new OperationCanceledException();
             }
 
             return result;
@@ -49,7 +64,29 @@ namespace Wirehome.Extensions.Extensions
                 throw new InvalidOperationException("Not supported result in WhenAll");
             }
 
-            return (result as Task<R>)?.Result ?? throw new InvalidCastException($"Excepted type {typeof(R)} is diffrent that actual");
+            return (result as Task<R>)?.Result;
+        }
+
+        public static async Task<R> WhenDone<R>(this Task<R> task, TimeSpan timeout, CancellationToken cancellationToken) where R : class
+        {
+            var timeoutTask = Task.Delay(timeout, cancellationToken);
+            var result = await Task.WhenAny(new Task[] { task, timeoutTask }).ConfigureAwait(false);
+
+            if (result == timeoutTask)
+            {
+                if (cancellationToken.IsCancellationRequested && timeoutTask.Status == TaskStatus.Canceled)
+                {
+                    throw new OperationCanceledException();
+                }
+                if (timeoutTask.Status == TaskStatus.RanToCompletion && !cancellationToken.IsCancellationRequested)
+                {
+                    throw new TimeoutException();
+                }
+
+                throw new InvalidOperationException("Not supported result in Timeout");
+            }
+            
+            return (result as Task<R>)?.Result;
         }
 
         public static Task WhenCanceled(this CancellationToken cancellationToken)

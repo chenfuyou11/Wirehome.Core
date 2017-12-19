@@ -39,9 +39,9 @@ namespace Wirehome.Core
             return _container.GetCurrentRegistrations().ToList();
         }
 
-        public IEnumerable<Type> GetRegisterTypes()
+        public IEnumerable<Type> GetSingletonRegistrations()
         {
-            return _container.GetCurrentRegistrations().Select(x => x.ServiceType);
+            return _container.GetCurrentRegistrations().Where(l => l.Lifestyle == Lifestyle.Singleton).Select(x => x.ServiceType);
         }
 
         public TContract GetInstance<TContract>() where TContract : class

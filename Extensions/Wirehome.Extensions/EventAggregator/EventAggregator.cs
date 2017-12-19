@@ -8,6 +8,16 @@ using Wirehome.Extensions.Exceptions;
 using Wirehome.Extensions.Extensions;
 using Wirehome.Extensions.Core.Policies;
 
+
+// 1. Direct message
+// 2. Publish to all
+// 3. Filter xxx.yyy.zz
+// 4. Filter key-value
+
+
+//TODO: Add attributes IHandler methods to allow some filtering
+//TODO: Add dynamic handlers - types that are not registred as singleton to makeinstance of that type and invoke on publish
+
 namespace Wirehome.Extensions.Messaging.Core
 {
     public sealed class EventAggregator : IEventAggregator, IDisposable

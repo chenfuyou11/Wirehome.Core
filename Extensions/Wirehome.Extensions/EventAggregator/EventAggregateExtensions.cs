@@ -28,7 +28,7 @@ namespace Wirehome.Extensions.Messaging.Core.Extensions
 
         public static void RegisterHandlers(this IEventAggregator eventAggregator, IContainer container)
         {
-            foreach (var type in container.GetRegisterTypes().Where(x => x.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IHandler<>))))
+            foreach (var type in container.GetSingletonRegistrations().Where(x => x.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IHandler<>))))
             {
                 var handler = container.GetInstance(type);
 

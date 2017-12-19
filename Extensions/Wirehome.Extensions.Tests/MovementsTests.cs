@@ -120,13 +120,15 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(mockDetector).Setup(x => x.Id).Returns(id);
             return mockDetector;
         }
+
+        public class MotionEnvelope : MessageEnvelope<MotionEvent>
+        {
+            public MotionEnvelope(string motionUid) : base(new MotionEvent(motionUid))
+            {
+            }
+        }
         #endregion
     }
 
-    public class MotionEnvelope : MessageEnvelope<MotionEvent>
-    {
-        public MotionEnvelope(string motionUid) : base(new MotionEvent(motionUid))
-        {
-        }
-    }
+
 }

@@ -6,11 +6,6 @@ using Wirehome.Extensions.Core.Policies;
 
 namespace Wirehome.Extensions.Messaging.Core
 {
-    // 1. Direct message
-    // 2. Publish to all
-    // 3. Filter xxx.yyy.zz
-    // 4. Filter key-value
-
     public interface IEventAggregator
     {
 

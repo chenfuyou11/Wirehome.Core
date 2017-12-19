@@ -49,9 +49,28 @@ namespace Wirehome.Extensions.Messaging.Core
             return RegisterCore(typeof(T), action, filter);
         }
 
-        internal Guid Register(Type messageType, object action, MessageFilter filter)
+        internal Guid Register(Type messageType, Delegate action, MessageFilter filter)
         {
+            ValidateDelegate(messageType, action);
+
             return RegisterCore(messageType, action, filter);
+        }
+
+        internal Guid Register(Type messageType, Func<Delegate> action, MessageFilter filter)
+        {
+            //ValidateDelegate(messageType, action);
+
+            return RegisterCore(messageType, action, filter);
+        }
+
+        private static void ValidateDelegate(Type messageType, Delegate action)
+        {
+            var parameters = action.Method.GetParameters();
+
+            if (action.Method.ReturnType != typeof(void) || parameters.Length != 1 || parameters[0].ParameterType != typeof(IMessageEnvelope<>).MakeGenericType(messageType))
+            {
+                throw new Exception($"Delegate should be in this format: void Delegate(IMessageEnvelope<{messageType.Name}> param)");
+            }
         }
 
         private Guid RegisterCore(Type messageType, object action, MessageFilter filter)

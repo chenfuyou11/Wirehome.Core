@@ -15,9 +15,7 @@ using Wirehome.Extensions.Core.Policies;
 // 4. Filter key-value
 
 
-//TODO: Add attributes IHandler methods to allow some filtering
 //TODO: Add dynamic handlers - types that are not registred as singleton to makeinstance of that type and invoke on publish
-
 namespace Wirehome.Extensions.Messaging.Core
 {
     public sealed class EventAggregator : IEventAggregator, IDisposable
@@ -161,9 +159,14 @@ namespace Wirehome.Extensions.Messaging.Core
             return new SubscriptionToken(_subscriptions.Register(action, filter), this);
         }
 
-        public SubscriptionToken Subscribe(Type messageType, object action, MessageFilter filter = null)
+        public SubscriptionToken Subscribe(Type messageType, Delegate action, MessageFilter filter = null)
         {
             return new SubscriptionToken(_subscriptions.Register(messageType, action, filter), this);
+        }
+
+        public SubscriptionToken Subscribe(Type messageType, Func<Delegate> actionFactory, MessageFilter filter = null)
+        {
+            return new SubscriptionToken(_subscriptions.Register(messageType, actionFactory, filter), this);
         }
 
         public IObservable<IMessageEnvelope<T>> Observe<T>()
@@ -190,5 +193,7 @@ namespace Wirehome.Extensions.Messaging.Core
         {
             ClearSubscriptions();
         }
+
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleInjector;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace Wirehome.Contracts.Core
 
         bool ChackNativeImpelentationExists();
 
-        IEnumerable<Type> GetSingletonRegistrations();
+        IEnumerable<InstanceProducer> GetSingletonRegistrations();
 
         void RegisterSingleton(Type service, object instance);
     }

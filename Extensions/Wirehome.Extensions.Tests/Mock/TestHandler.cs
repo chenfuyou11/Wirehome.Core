@@ -6,6 +6,7 @@ namespace Wirehome.Extensions.Tests
     {
         public bool IsHandled { get; private set; }
 
+        //[MessageFilter("*")]
         public void Handle(IMessageEnvelope<MotionEvent> message)
         {
             IsHandled = true;

@@ -15,7 +15,8 @@ namespace Wirehome.Extensions.Messaging.Core
         List<BaseCommandHandler> GetSubscriptors<T>(MessageFilter filter = null);
 
         SubscriptionToken Subscribe<T>(Action<IMessageEnvelope<T>> action, MessageFilter filter = null);
-        SubscriptionToken Subscribe(Type messageType, object action, MessageFilter filter = null);
+        SubscriptionToken Subscribe(Type messageType, Delegate action, MessageFilter filter = null);
+        SubscriptionToken Subscribe(Type messageType, Func<Delegate> actionFactory, MessageFilter filter = null);
 
         SubscriptionToken SubscribeAsync<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter = null);
         SubscriptionToken SubscribeForAsyncResult<T>(Func<IMessageEnvelope<T>, Task<object>> action, MessageFilter filter = null);

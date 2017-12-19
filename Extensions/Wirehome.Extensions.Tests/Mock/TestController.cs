@@ -21,6 +21,16 @@ using Wirehome.Automations;
 using Wirehome.Components;
 using Wirehome.Areas;
 using Wirehome.Core;
+using System.Collections.Generic;
+using Moq;
+using Wirehome.Contracts.Scripting;
+using Wirehome.Scripting;
+using Wirehome.Contracts.Configuration;
+using Wirehome.Configuration;
+using Wirehome.Contracts.Scheduling;
+using Wirehome.Scheduling;
+using Wirehome.Contracts.Messaging;
+using Wirehome.Messaging;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -30,24 +40,33 @@ namespace Wirehome.Extensions.Tests
 
         public TestController()
         {
+            var adapters = new List<ILogAdapter>();
+            _container.RegisterSingleton<INativeTimerSerice>(() => Mock.Of<INativeTimerSerice>());
+            _container.RegisterSingleton<IConfigurationService>(() => Mock.Of<IConfigurationService>());
+            _container.RegisterSingleton<IScriptingService>(() => Mock.Of<IScriptingService>());
+
             _container.RegisterSingleton<IController>(() => this);
+            _container.RegisterCollection<ILogAdapter>(adapters);
             _container.RegisterSingleton<ILogService, LogService>();
             _container.RegisterSingleton<IBackupService, BackupService>();
             _container.RegisterSingleton<IStorageService, TestStorageService>();
             _container.RegisterSingleton<ISettingsService, SettingsService>();
+            
             _container.RegisterSingleton<IApiDispatcherService, ApiDispatcherService>();
             _container.RegisterSingleton<ISystemInformationService, SystemInformationService>();
             _container.RegisterSingleton<ITimerService, TestTimerService>();
             //_container.RegisterSingleton<IDaylightService, TestDaylightService>();
             _container.RegisterSingleton<IDateTimeService, TestDateTimeService>();
             _container.RegisterSingleton<IResourceService, ResourceService>();
-           // _container.RegisterSingleton<ISchedulerService, SchedulerService>();
+            _container.RegisterSingleton<ISchedulerService, SchedulerService>();
             _container.RegisterSingleton<INotificationService, NotificationService>();
             _container.RegisterSingleton<ISystemEventsService, SystemEventsService>();
             _container.RegisterSingleton<IAutomationRegistryService, AutomationRegistryService>();
             _container.RegisterSingleton<IComponentRegistryService, ComponentRegistryService>();
             _container.RegisterSingleton<IAreaRegistryService, AreaRegistryService>();
-           // _container.RegisterSingleton<IDeviceMessageBrokerService, TestDeviceMessageBrokerService>();
+            _container.RegisterSingleton<IMessageBrokerService, MessageBrokerService>();
+
+            // _container.RegisterSingleton<IDeviceMessageBrokerService, TestDeviceMessageBrokerService>();
 
             _container.Verify();
 

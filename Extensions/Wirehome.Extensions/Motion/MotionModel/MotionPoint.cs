@@ -6,32 +6,35 @@ namespace Wirehome.Extensions.MotionModel
 {
     public class MotionPoint : IEquatable<MotionPoint>
     {
-        public IMotionDetector MotionDetector { get; }
-
+        public string Uid { get; }
         public DateTimeOffset TimeStamp { get; }
 
-        public MotionPoint(IMotionDetector place, DateTimeOffset time)
+        public MotionPoint(string place, DateTimeOffset time)
         {
-            MotionDetector = place;
+            Uid = place;
             TimeStamp = time;
+        }
+
+        public override string ToString()
+        {
+            return $"[{Uid}: {TimeStamp:ss:fff}]";
         }
 
         private bool IsEqual(MotionPoint other)
         {
-            return Equals(MotionDetector.Id, other.MotionDetector.Id);
-                //&& TimeStamp.Equals(other.TimeStamp);
+            return Equals(Uid, other.Uid);
         }
 
         public bool Equals(MotionPoint other)
         {
-            if (ReferenceEquals(null, other)) return false;
+            if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
             return IsEqual(other);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
             return IsEqual((MotionPoint) obj);
@@ -41,13 +44,13 @@ namespace Wirehome.Extensions.MotionModel
         {
             unchecked
             {
-                return ((MotionDetector?.GetHashCode() ?? 0) * 397) ^ TimeStamp.GetHashCode();
+                return ((Uid?.GetHashCode() ?? 0) * 397) ^ TimeStamp.GetHashCode();
             }
         }
 
         public static bool operator ==(MotionPoint motionA, MotionPoint monionB)
         {
-            return (ReferenceEquals(motionA, monionB) || motionA.Equals(monionB));
+            return ReferenceEquals(motionA, monionB) || motionA.Equals(monionB);
         }
 
         public static bool operator !=(MotionPoint motionA, MotionPoint motionB)

@@ -151,6 +151,11 @@ namespace Wirehome.Extensions.Messaging.Core
             return new SubscriptionToken(_subscriptions.Register(action, filter), this);
         }
 
+        public SubscriptionToken Subscribe(Type messageType, object action, MessageFilter filter = null)
+        {
+            return new SubscriptionToken(_subscriptions.Register(messageType, action, filter), this);
+        }
+
         public IObservable<IMessageEnvelope<T>> Observe<T>()
         {
             return Observable.Create<IMessageEnvelope<T>>(x => Subscribe<T>(x.OnNext));

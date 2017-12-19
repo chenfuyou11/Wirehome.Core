@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Linq;
 using Wirehome.Components;
 using Wirehome.Components.Commands;
 using Wirehome.Contracts.Components;
@@ -118,6 +119,15 @@ namespace Wirehome.Sensors.MotionDetectors
             {
                 _autoEnableAction = ScheduledAction.Schedule(Settings.AutoEnableAfter, () => _settingsService.SetComponentEnabledState(this, true));
             }
+        }
+
+        public virtual IObservable<IMotionDetector> ToObservable()
+        {
+            return Observable.FromEventPattern<ComponentFeatureStateChangedEventArgs>
+            (
+                h => StateChanged += h,
+                h => StateChanged -= h
+            ).Select(x => this);
         }
     }
 }

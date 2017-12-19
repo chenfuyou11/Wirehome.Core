@@ -1,125 +1,110 @@
 ﻿using System;
-using Wirehome.Contracts.Areas;
-using Wirehome.Contracts.Sensors;
-using Wirehome.Contracts.Components;
-using Wirehome.Extensions.Core;
+using System.Reactive.Concurrency;
+using System.Collections.Generic;
 using Wirehome.Conditions;
+using Wirehome.Conditions.Specialized;
 using Wirehome.Contracts.Conditions;
-using System.Linq;
 using Wirehome.Contracts.Components.Commands;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Components.States;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Core;
+using Wirehome.Extensions.Motion;
 
 namespace Wirehome.Extensions.MotionModel
 {
+    //TODO add change source in event to distinct the source of the change (manual light on or automatic)
     public class MotionDescriptor
     {
-        private readonly ConditionsValidator _enablingConditionsValidator = new ConditionsValidator().WithDefaultState(ConditionState.NotFulfilled);
-        private readonly ConditionsValidator _disablingConditionsValidator = new ConditionsValidator().WithDefaultState(ConditionState.NotFulfilled);
+        private readonly ConditionsValidator _turnOnConditionsValidator = new ConditionsValidator().WithDefaultState(ConditionState.NotFulfilled);
         private readonly ConditionsValidator _turnOffConditionsValidator = new ConditionsValidator().WithDefaultState(ConditionState.NotFulfilled);
-
         private readonly object _syncRoot = new object();
-        //private bool _isInitialized = false;
 
-        public IMotionDetector MotionDetector { get; private set; }
+        internal IObservable<PowerStateValue> PowerChangeSource { get; } // TODO Add descriptor for some codes for change on/off
 
-        public IMotionDetector[] Neighbors { get; private set; }
+        // Configuration parameters
+        public string MotionDetectorUid { get; }
+        public IEnumerable<string> Neighbors { get; }
+        public ILamp Lamp { get; }
+        public float LightIntensityAtNight { get; }
+        public int MaxPersonCapacity { get; }
+        public AreaType AreaType { get; }
+        public int MotionDetectorAlarmTime { get; }
 
-        public IComponent Lamp { get; private set; }
-        
-        public IArea Area { get; private set; }
-
-        public IObservable<IMotionDetector> MotionSource { get; private set; }
-
-
-        public WriteOnce<AreaType> AreaType { get; set; } = new WriteOnce<AreaType>(MotionModel.AreaType.Room);
-
-        public WriteOnce<bool> DisableAtNight { get; set; } = new WriteOnce<bool>(true);
-
-        public WriteOnce<bool> DisableAtDayLight { get; set; } = new WriteOnce<bool>(true);
-
-        public WriteOnce<bool> DisableLamptAutomation { get; set; } = new WriteOnce<bool>(false);
-
-        public WriteOnce<int> MaxPersonCapacity { get; set; } = new WriteOnce<int>(10);
-
-        public WriteOnce<TimeSpan> TimeToLive { get; set; } = new WriteOnce<TimeSpan>(TimeSpan.FromSeconds(60));
-
-        public WriteOnce<double> PresenceProbability { get; private set; } = new WriteOnce<double>(0.0);
-
-
-        // TODO Collision resolution source
-        // TODO maybe statistics for some period?
+        // Dynamic parameters
+        public TimeSpan TimeToLive { get; private set; }
+        public double PresenceProbability { get; private set; }
+        public bool AutomationDisabled { get; }
         public DateTimeOffset LastMotionTime { get; private set; }
+        public MotionVector LastEnter { get; }
+        public MotionVector LastLeave { get; }
+        public TimeList MotionHistory { get; } //TODO Clear after some period
+        private DateTime AutomationEnableOn { get; set; }
+        public DateTimeOffset LastManualTurnOn { get; private set; }
+        public int NumberOfPersonsInArea { get; private set; }
+        private int _presenseMotionCounter { get; set; }
 
-        public double CurrentPresenceProbability { get; private set; }
+        // TODO
+        // Add pending turnoff source - we could turn off but it was not sure last time
 
-        public TimeSpan CurrentTimeToLive { get; private set; }
-
-
-
-        public MotionDescriptor(IMotionDetector motionDetector, IMotionDetector[] neighbors, IComponent lamp)
+        public MotionDescriptor(string motionDetectorUid, IEnumerable<string> neighbors, ILamp lamp, IScheduler scheduler,
+                                IDaylightService daylightService, IDateTimeService dateTimeService, AreaDescriptor initializer = null)
         {
-            MotionDetector = motionDetector;
-            Neighbors = neighbors;
-            Lamp = lamp;
+            MotionDetectorUid = motionDetectorUid ?? throw new ArgumentNullException(nameof(motionDetectorUid));
+            Neighbors = neighbors ?? throw new ArgumentNullException(nameof(neighbors));
+            Lamp = lamp ?? throw new ArgumentNullException(nameof(lamp));
+            MaxPersonCapacity = initializer?.MaxPersonCapacity ?? 10;
+            AreaType = initializer?.AreaType ?? AreaType.Room;
 
-            MotionSource = MotionDetector.ToObservable();
-        }
-
-        public void InitDescriptor()
-        {
-            //_isInitialized = true;
-        }
-
-        public void SetArea(IArea area)
-        {
-            if (Area != null)
+            if (initializer?.DisableAtNight ?? true)
             {
-                throw new Exception("Area could be initaized onlny once");
+                _turnOnConditionsValidator.WithCondition(ConditionRelation.And, new IsDayCondition(daylightService, dateTimeService));
+            }
+            if (initializer?.DisableAtDayLight ?? true)
+            {
+                _turnOnConditionsValidator.WithCondition(ConditionRelation.And, new IsNightCondition(daylightService, dateTimeService));
             }
 
-            Area = area ?? throw new Exception($"Motion detector {MotionDetector.Id} was not register in any area");
+            MotionHistory = new TimeList(scheduler);
+            PowerChangeSource = Lamp.ToPowerChangeSource();
         }
 
-        public void SetLastMotionTime(DateTimeOffset time)
+        public void MarkMotion(DateTimeOffset time)
         {
             LastMotionTime = time;
+            MotionHistory.Add(time);
+            _presenseMotionCounter++;
+            SetProbability(1.0);
         }
 
-        public void TryTurnOnLamp()
+        public void SetProbability(double probability)
         {
-            lock (_syncRoot)
-            {
-                //TODO ustawiać to w jednym miejscu
-                CurrentPresenceProbability = 1.0;
+            PresenceProbability = probability;
 
-                if (CanTurnOnLamp())
-                {
-                    Lamp.ExecuteCommand(new TurnOnCommand());
-                }
+            //TODO theadsafe
+            if(PresenceProbability == 1.0)
+            {
+                TryTurnOnLamp();
+            }
+            else if(PresenceProbability == 0)
+            {
+                TryTurnOffLamp();
             }
         }
 
-        public void TryTurnOffLamp()
+        private void TryTurnOnLamp()
         {
-            lock (_syncRoot)
-            {
-                //TODO ustawiać to w jednym miejscu
-                CurrentPresenceProbability = 0.0;
-
-                if (CanTurnOffLamp())
-                {
-                    Lamp.ExecuteCommand(new TurnOffCommand());
-                }
-            }
+             if (CanTurnOnLamp()) Lamp.ExecuteCommand(new TurnOnCommand());
         }
 
-        public bool CanTurnOnLamp()
+        private void TryTurnOffLamp()
         {
-            if (_disablingConditionsValidator.Conditions.Any() && _disablingConditionsValidator.Validate() == ConditionState.Fulfilled)
-            {
-                return false;
-            }
+            if (CanTurnOffLamp()) Lamp.ExecuteCommand(new TurnOffCommand());
+        }
 
-            if (_enablingConditionsValidator.Conditions.Any() && _enablingConditionsValidator.Validate() == ConditionState.NotFulfilled)
+        private bool CanTurnOnLamp()
+        {
+            if (_turnOnConditionsValidator.Conditions.Count > 0 && _turnOnConditionsValidator.Validate() == ConditionState.Fulfilled)
             {
                 return false;
             }
@@ -127,9 +112,9 @@ namespace Wirehome.Extensions.MotionModel
             return true;
         }
 
-        public bool CanTurnOffLamp()
+        private bool CanTurnOffLamp()
         {
-            if (_turnOffConditionsValidator.Conditions.Any() && _turnOffConditionsValidator.Validate() == ConditionState.Fulfilled)
+            if (_turnOffConditionsValidator.Conditions.Count > 0 && _turnOffConditionsValidator.Validate() == ConditionState.Fulfilled)
             {
                 return false;
             }
@@ -138,5 +123,3 @@ namespace Wirehome.Extensions.MotionModel
         }
     }
 }
-
-

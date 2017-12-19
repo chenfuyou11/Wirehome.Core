@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using Wirehome.Extensions.Core.Policies;
 using Wirehome.Extensions.Messaging.Core.Extensions;
 using System.Diagnostics;
+using Wirehome.Core;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -461,6 +464,21 @@ namespace Wirehome.Extensions.Tests
             await aggregator.Publish(new TestMessage()).ConfigureAwait(false);
 
             Assert.AreEqual(1, counter);
+        }
+
+
+        [TestMethod]
+        public async Task RegisterHandlers_ShouldReristerHandlersFromContainer()
+        {
+            var aggregator = InitAggregator();
+            var handler = new TestHandler();
+            var container = new Container(new ControllerOptions());
+            container.RegisterSingleton(typeof(TestHandler), handler);
+            aggregator.RegisterHandlers(container);
+            
+            await aggregator.Publish(new MotionEvent("test"));
+
+            Assert.AreEqual(true, handler.IsHandled);
         }
         
     }

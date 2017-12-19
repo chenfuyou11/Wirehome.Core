@@ -1,57 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
-using Wirehome.Contracts.Areas;
-using Wirehome.Contracts.Sensors;
-using Wirehome.Contracts.Services;
+using System.Threading.Tasks;
 using System.Reactive.Linq;
+using System.Diagnostics;
 using System.Linq;
+using Wirehome.Contracts.Services;
 using Wirehome.Extensions.MotionModel;
 using Wirehome.Contracts.Components.Features;
-using System.Diagnostics;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Environment;
 using Wirehome.Contracts.Scheduling;
-using System.Threading.Tasks;
+using Wirehome.Extensions.Core;
+using Wirehome.Extensions.Messaging.Core;
+using Wirehome.Contracts.Actuators;
+using Wirehome.Contracts.Core;
 
 namespace Wirehome.Extensions
 {
     public class LightAutomationService : IService, IDisposable
     {
-        private const int MOTION_TIME_WINDOW = 3000;
-        private const string MOTION_TIMER = "MOTION_TIMER";
-        private const int COLLISION_RESOLUTION_TIME = 10000;
-
-        private readonly IAreaRegistryService _areaService;
+        private readonly IEventAggregator _eventAggregator;
         private readonly ISchedulerService _schedulerService;
         private readonly IDaylightService _daylightService;
         private readonly ILogger _logger;
+        private readonly Dictionary<string, MotionDescriptor> _motionDescriptors = new Dictionary<string, MotionDescriptor>();
+        private readonly DisposeContainer _disposeContainer = new DisposeContainer();
+        private readonly IConcurrencyProvider _concurrencyProvider;
+        private readonly IMotionConfigurationProvider _motionConfigurationProvider;
+        private readonly IDateTimeService _dateTimeService;
 
-        private readonly List<IDisposable> _resources = new List<IDisposable>();
-        private readonly Dictionary<IMotionDetector, MotionDescriptor> _motionDescriptors = new Dictionary<IMotionDetector, MotionDescriptor>();
-
-        private bool _hasStarted = false;
-
-         public LightAutomationService(IAreaRegistryService areaService, 
-                                      ISchedulerService schedulerService, 
+        public int NumberOfPersonsInHouse { get; private set; }
+        private bool _IsInitialized;
+        private const string MOTION_TIMER = "MOTION_TIMER";
+        
+        public LightAutomationService(IEventAggregator eventAggregator,
+                                      ISchedulerService schedulerService,
                                       IDaylightService daylightService,
-                                      ILogService logService
-         )
-         {
-            _areaService = areaService;
-            _schedulerService = schedulerService;
-            _daylightService = daylightService;
+                                      ILogService logService,
+                                      IConcurrencyProvider concurrencyProvider,
+                                      IDateTimeService dateTimeService,
+                                      IMotionConfigurationProvider motionConfigurationProvider
+        )
+        {
+            if (logService == null) throw new ArgumentNullException(nameof(logService));
             _logger = logService.CreatePublisher(nameof(LightAutomationService));
-         }
+            _eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
+            _motionConfigurationProvider = motionConfigurationProvider ?? throw new ArgumentNullException(nameof(motionConfigurationProvider));
+            _schedulerService = schedulerService ?? throw new ArgumentNullException(nameof(schedulerService));
+            _daylightService = daylightService ?? throw new ArgumentNullException(nameof(daylightService));
+            _concurrencyProvider = concurrencyProvider ?? throw new ArgumentNullException(nameof(concurrencyProvider));
+            _dateTimeService = dateTimeService ?? throw new ArgumentNullException(nameof(dateTimeService));
+        }
 
         public Task Initialize()
         {
-            _hasStarted = true;
-
-            _motionDescriptors.Values.ToList().ForEach(x => x.InitDescriptor());
-
             _schedulerService.Register(MOTION_TIMER, TimeSpan.FromSeconds(1), (Action)MotionScheduler);
 
+            if (_motionDescriptors.Count == 0) throw new Exception("No detectors found to automate");
+            
+            var missingDescriptions = _motionDescriptors.Select(m => m.Value)
+                                                        .SelectMany(n => n.Neighbors)
+                                                        .Distinct()
+                                                        .Except(_motionDescriptors.Keys)
+                                                        .ToList();
+
+            if(missingDescriptions.Count > 0) throw new Exception($"Following neighbors have not registred descriptors: {string.Join(", ", missingDescriptions)}");
+            
+            _IsInitialized = true;
             return Task.CompletedTask;
+        }
+
+        public MotionDescriptor RegisterDescriptor(string motionDetectorUid, IEnumerable<string> neighbors, ILamp lamp, AreaDescriptor initializer = null)
+        {
+            if (_IsInitialized) throw new Exception("Cannot register new descriptors after service has started");
+            
+            if (lamp?.GetFeatures()?.Supports<PowerStateFeature>() ?? false) throw new Exception($"Component {lamp?.Id} is not supporting PowerStateFeature");
+            var descriptor = new MotionDescriptor(motionDetectorUid, neighbors, lamp, _concurrencyProvider.Scheduler, _daylightService, _dateTimeService, initializer);
+
+            _motionDescriptors.Add(descriptor.MotionDetectorUid, descriptor);
+            return descriptor;
         }
 
         public void MotionScheduler()
@@ -67,101 +94,96 @@ namespace Wirehome.Extensions
             ms.Stop();
             _logger.Info($"MotionScheduler time {ms.ElapsedMilliseconds}ms");
         }
-        
-        public MotionDescriptor RegisterMotionDescriptor(MotionDescriptor descriptor)
+  
+        public IObservable<MotionVector> AnalyzeMove()
         {
-            if(descriptor == null) new ArgumentNullException(nameof(descriptor));
+            var me = _eventAggregator.Observe<MotionEvent>();
 
-            if(_hasStarted)
-            {
-                throw new Exception("Cannot register new descriptors after service has started");
-            }
+            return me.Timestamp(_concurrencyProvider.Scheduler)
+                     .Select(move => new MotionPoint(move.Value.Message.MotionDetectorUID, move.Timestamp))
+                     .Do(point =>
+                     {
+                         _motionDescriptors?[point.Uid]?.MarkMotion(point.TimeStamp);
+                     })
+                     .Buffer(me, (x) => Observable.Timer(TimeSpan.FromMilliseconds(_motionConfigurationProvider.MotionTimeWindow), _concurrencyProvider.Scheduler))
+                     .Select(movments =>
+                     {
+                        MotionVector vector = null;
+                        
+                        foreach (var move in movments)
+                        {
+                           if (vector == null)
+                           {
+                              vector = new MotionVector(move);
+                              continue;
+                           }
+                           
+                           if
+                           (
+                              AreNeighbors(vector.Start, move) &&
+                              IsPhisicallyPosible(vector.Start, move) && 
+                              !vector.IsComplete()
+                           )
+                           {
+                              vector.SetEnd(move);
+                              break;
+                           }
+                        }
+
+                        if(vector.IsComplete())
+                        {
+                            // If there is move in neighborhood of END point other then START it means thet vector couldbe not real
+                            // becouse move can be from other staring point
+                            vector.RegisterMotionConfusions(GetMovementsInNeighborhood(vector));
+                        }
+                        
+                        
+                        return vector;
+                     })
+                     .Where(vector => vector != null && vector.IsComplete());
+            //.Where(y => y.Path.Count > 1)
+            //.DistinctUntilChanged();
+
             
-            descriptor.SetArea(GetAreaForDetector(descriptor.MotionDetector));
-            
+            //var resource = motion.Subscribe(x =>
+            //{
+            //    var time = DateTime.Now;
+            //    Console.WriteLine($"[{time.Minute}:{time.Second}:{time.Millisecond}] {x}");
+            //    Console.WriteLine(x);
 
-            if (descriptor.Lamp?.GetFeatures()?.Supports<PowerStateFeature>() ?? false)
-            {
-                throw new Exception($"Component {descriptor?.Lamp?.Id} is not supporting PowerStateFeature");
-            }
+            //});
 
-            return descriptor;
+            //_disposeContainer.Add(resource);   
         }
 
-        private IArea GetAreaForDetector(IMotionDetector md)
+        private bool AreNeighbors(MotionPoint p1, MotionPoint p2) => _motionDescriptors?[p1.Uid]?.Neighbors?.Contains(p2.Uid) ?? false;
+
+        private bool IsPhisicallyPosible(MotionPoint p1, MotionPoint p2) => (p2.TimeStamp - p1.TimeStamp).TotalMilliseconds > _motionConfigurationProvider.MotionMinDiff;
+
+        /// <summary>
+        /// Search in all neighbors of END diffrent of START for any movemnts in last period time
+        /// </summary>
+        /// <param name="v">Vector we are cheking out</param>
+        /// <returns>List of all motionpoint in neighborhoo</returns>
+        private List<MotionPoint> GetMovementsInNeighborhood(MotionVector v)
         {
-            foreach (var area in _areaService.GetAreas())
+            var neighbors = new List<MotionPoint>();
+            if (v.IsComplete())
             {
-                if(area.GetComponent<IMotionDetector>(md.Id) != null)
+                foreach (var neighbor in _motionDescriptors[v.End.Uid].Neighbors.Where(n => n != v.Start.Uid))
                 {
-                    return area;
+                    neighbors.AddRange(_motionDescriptors[neighbor]
+                             .MotionHistory
+                             .GetLastElements(TimeSpan.FromMilliseconds(_motionConfigurationProvider.MotionTimeWindow))
+                             .Select(time => new MotionPoint(neighbor, time)));
                 }
             }
-
-            return null;
-        }
-
-        public void StartWatchForMove()
-        {
-            var detectors = _motionDescriptors.Values
-                                              .Select(x => x.MotionSource)
-                                              .Merge()
-                                              .Select(messages => messages);
-
-            
-            var motion = detectors.Timestamp()
-                                  .Do(y =>
-                                  {
-                                      var descriptor = _motionDescriptors[y.Value];
-                                      descriptor.SetLastMotionTime(y.Timestamp);
-                                      descriptor.TryTurnOnLamp();   
-                                  })
-                                  .Buffer(detectors, (x) => { return Observable.Timer(TimeSpan.FromMilliseconds(MOTION_TIME_WINDOW)); })
-                                  .Select(x =>
-                                  {
-                                        var vector = new MotionVector();
-
-                                        //foreach (var ev in x)
-                                        //{
-                                        //    if (vector.Path.Count == 0)
-                                        //    {
-                                        //        vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
-                                        //        continue;
-                                        //    }
-
-                                        //    if (ev.Value.MotionDetector == _motionDetectors[vector.End.MotionDetector].Neighbor)
-                                        //    {
-                                        //        vector.Path.Add(new MotionPoint(ev.Value.MotionDetector, ev.Timestamp));
-                                        //    }
-                                        //}
-
-                                        return vector;
-                                  })
-                                  .Where(y => y.Path.Count > 1)
-                                  .DistinctUntilChanged();
-
-          
-            var resource = motion.Subscribe(x =>
-            {
-                var time = DateTime.Now;
-               Console.WriteLine($"[{time.Minute}:{time.Second}:{time.Millisecond}] {x.ToString()}");
-                
-            });
-
-            AddResourceToDisposeList(resource);
-        }
-    
-        private void AddResourceToDisposeList(IDisposable resource)
-        {
-            _resources.Add(resource);
+            return neighbors;
         }
 
         public void Dispose()
         {
-            foreach(var resource in _resources)
-            {
-                resource.Dispose();
-            }
+            _disposeContainer.Dispose();
         }
     }
 }

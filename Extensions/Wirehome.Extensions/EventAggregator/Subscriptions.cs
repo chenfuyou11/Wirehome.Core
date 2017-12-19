@@ -46,7 +46,17 @@ namespace Wirehome.Extensions.Messaging.Core
 
         internal Guid Register<T>(Action<IMessageEnvelope<T>> action, MessageFilter filter)
         {
-            var type = typeof(T);
+            return RegisterCore(typeof(T), action, filter);
+        }
+
+        internal Guid Register(Type messageType, object action, MessageFilter filter)
+        {
+            return RegisterCore(messageType, action, filter);
+        }
+
+        private Guid RegisterCore(Type messageType, object action, MessageFilter filter)
+        {
+            var type = messageType;
             var key = Guid.NewGuid();
             var subscription = new CommandHandler(type, key, action, filter);
 

@@ -39,6 +39,11 @@ namespace Wirehome.Core
             return _container.GetCurrentRegistrations().ToList();
         }
 
+        public IEnumerable<Type> GetRegisterTypes()
+        {
+            return _container.GetCurrentRegistrations().Select(x => x.ServiceType);
+        }
+
         public TContract GetInstance<TContract>() where TContract : class
         {
             return _container.GetInstance<TContract>();
@@ -91,6 +96,11 @@ namespace Wirehome.Core
             _container.Register(service, implementation, Lifestyle.Singleton);
         }
 
+        public void RegisterSingleton(Type service, object instance)
+        {
+            _container.RegisterSingleton(service, instance);
+        }
+
         public void RegisterSingleton<T>(T service) where T : class
         {
             _container.RegisterSingleton<T>(service);
@@ -126,10 +136,6 @@ namespace Wirehome.Core
         {
             _container.RegisterInitializer<T>(initializer);
         }
-        
-
-
-
 
     }
 }

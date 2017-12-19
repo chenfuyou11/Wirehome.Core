@@ -21,6 +21,13 @@ namespace Wirehome.Components
             return TryGetStateValue<TemperatureState, float?>(component, s => s.Value, out value);
         }
 
+        public static bool TryGetPowerState(this IComponent component, out PowerStateValue? value)
+        {
+            if (component == null) throw new ArgumentNullException(nameof(component));
+
+            return TryGetStateValue<PowerState, PowerStateValue?>(component, s => s.Value, out value);
+        }
+
         public static bool TryGetMotionDetectionState(this IComponent component, out MotionDetectionStateValue value)
         {
             if (component == null) throw new ArgumentNullException(nameof(component));

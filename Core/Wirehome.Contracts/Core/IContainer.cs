@@ -35,5 +35,9 @@ namespace Wirehome.Contracts.Core
         void RegisterSingleton<T>(T service) where T : class;
 
         bool ChackNativeImpelentationExists();
+
+        IEnumerable<Type> GetRegisterTypes();
+
+        void RegisterSingleton(Type service, object instance);
     }
 }

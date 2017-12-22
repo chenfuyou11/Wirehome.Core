@@ -6,36 +6,30 @@ namespace Wirehome.Extensions.MotionModel
     public class MotionVector : IEquatable<MotionVector>
     {
         public MotionPoint Start { get; }
-        public MotionPoint End { get; private set;}
+        public MotionPoint End { get; }
         public List<MotionPoint> Confiusions { get; private set; } = new List<MotionPoint>();
         
 
         public MotionVector() { }
-        public MotionVector(MotionPoint startPoint)
+        public MotionVector(MotionPoint startPoint, MotionPoint endPoint)
         {
             Start = startPoint;
+            End = endPoint;
         }
         
-        public bool Contains(MotionPoint p)
-        {
-            return Start.Equals(p)|| End.Equals(p);
-        }
+        public bool Contains(MotionPoint p) => Start.Equals(p) || End.Equals(p);
 
-        public bool IsComplete()
-        {
-            return End != null;
-        }
-
-        public void SetEnd(MotionPoint end)
-        {
-            End = end;
-        }
-
-        public void RegisterMotionConfusions(List<MotionPoint> confiusions)
+        /// <summary>
+        /// If there is move in neighborhood of END point other then START it means thet vector couldbe not real becouse move can be from other staring point
+        /// </summary>
+        /// <param name="confiusions"></param>
+        public MotionVector RegisterMotionConfusions(IEnumerable<MotionPoint> confiusions)
         {
             Confiusions.AddRange(confiusions);
+            return this;
         }
 
+        
         public override string ToString()
         {
             return $"{Start} -> {End}";

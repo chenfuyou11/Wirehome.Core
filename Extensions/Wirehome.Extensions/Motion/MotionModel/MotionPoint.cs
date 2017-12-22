@@ -1,6 +1,4 @@
 ﻿using System;
-using Wirehome.Contracts.Sensors;
-
 
 namespace Wirehome.Extensions.MotionModel
 {
@@ -14,6 +12,8 @@ namespace Wirehome.Extensions.MotionModel
             Uid = place;
             TimeStamp = time;
         }
+
+        public MotionVector ToVector(MotionPoint start) => new MotionVector(start, this);
 
         public override string ToString()
         {

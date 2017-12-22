@@ -22,9 +22,9 @@ namespace Wirehome.Extensions.Motion
             _innerList.Add(time);
         }
 
-        public IEnumerable<DateTimeOffset> GetLastElements(TimeSpan period)
+        public IEnumerable<DateTimeOffset> GetLastElements(DateTimeOffset endTime, TimeSpan period)
         {
-            return _innerList.Where(el => _scheduler.Now - el < period);
+            return _innerList.Where(el => el < endTime && endTime - el < period);
         }
 
         public bool HasElement(TimeSpan period)

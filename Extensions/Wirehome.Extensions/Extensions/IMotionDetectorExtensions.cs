@@ -1,10 +1,8 @@
 ﻿using Wirehome.Contracts.Components;
 using Wirehome.Contracts.Sensors;
 using System;
-using System.Reactive.Linq;
-using Wirehome.Components;
 using Wirehome.Contracts.Components.States;
-using Wirehome.Contracts.Actuators;
+using System.Reactive.Linq;
 
 namespace Wirehome.Extensions
 {
@@ -19,7 +17,7 @@ namespace Wirehome.Extensions
             ).Select(x => motionDetector);
         }
 
-        public static IObservable<PowerStateValue> ToPowerChangeSource(this ILamp lamp)
+        public static IObservable<PowerStateValue> ToPowerChangeSource(this IComponent lamp)
         {
             return Observable.FromEventPattern<ComponentFeatureStateChangedEventArgs>
             (

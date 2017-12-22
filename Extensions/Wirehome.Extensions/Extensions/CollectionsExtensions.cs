@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Wirehome.Extensions.Extensions
 {
@@ -123,6 +121,11 @@ namespace Wirehome.Extensions.Extensions
         {
             return dictionary.ContainsKey(lookupValue) ? dictionary[lookupValue] : null;
         }
-       
+
+        public static void ForEach<T>(this IReadOnlyCollection<T> collection, Action<T> action)
+        {
+            foreach (T item in collection) action(item);
+        }
+
     }
 }

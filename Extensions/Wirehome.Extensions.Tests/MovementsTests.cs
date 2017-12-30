@@ -7,25 +7,26 @@ using Wirehome.Contracts.Sensors;
 using Wirehome.Extensions.MotionModel;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Environment;
-using Wirehome.Contracts.Scheduling;
 using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Components;
 using Wirehome.Contracts.Components.Commands;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace Wirehome.Extensions.Tests
 {
     //                                             STAIRCASE [S]
     //  ________________________________________<_    __________________________
     // |        |                |                       |                      |
-    // |        |                         HALLWAY        |                      |
+    // |        |                  [HL]   HALLWAY        |                      |
     // |   B    |                |<         [H]          |<                     |
     // |   A                     |___   ______           |       BADROOM        |
     // |   L    |                |            |                    [D]          |
     // |   C    |                |            |          |                      |
     // |   O    |                |            |          |______________________|
     // |   N    |   LIVINGROOM  >|            |          |<                     |
-    // |   Y    |      [L]       |  BATHROOM  |                                 |
+    // |   Y    |      [L]       |  BATHROOM  |   [HT]                          |
     // |        |                |     [B]   >|___v  ____|                      |
     // |  [Y]   |                |            |          |       KITCHEN        |
     // |        |                |            |  TOILET  |         [K]          |
@@ -184,6 +185,59 @@ namespace Wirehome.Extensions.Tests
         }
 
 
+        //[TestMethod]
+        //public void AnalyzeMoveShouldCountPeopleNumber()
+        //{
+        //    var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
+        //    var motionEvents = scheduler.CreateColdObservable
+        //    (
+        //      OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
+        //      OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
+        //      OnNext(Time.Tics(2000), new MotionEnvelope(KitchenId)),
+        //      OnNext(Time.Tics(2500), new MotionEnvelope(LivingroomId)),
+        //      OnNext(Time.Tics(3000), new MotionEnvelope(HallwayLivingroomId)),
+        //      OnNext(Time.Tics(3500), new MotionEnvelope(HallwayToiletId)),
+        //      OnNext(Time.Tics(4000), new MotionEnvelope(KitchenId))
+
+        //    );
+        //    Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
+
+        //    service.Initialize();
+
+        //    var result = scheduler.Start(service.AnalyzeMove, 0, 0, long.MaxValue);
+
+        //    Assert.AreEqual(2, service.GetCurrentNumberOfPeople(KitchenId));
+
+        //}
+
+
+        [TestMethod]
+        public async Task Test()
+        {
+            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
+            var motionEvents = scheduler.CreateColdObservable
+            (
+                  OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
+                  OnNext(Time.Tics(1000), new MotionEnvelope(HallwayToiletId)),
+                  OnNext(Time.Tics(1500), new MotionEnvelope(KitchenId)),
+                  OnCompleted(Time.Tics(1700), new MotionEnvelope(LivingroomId))
+
+            );
+            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
+
+            await service.Initialize();
+            service.Start();
+
+            scheduler.Start();
+
+            //await service.StopWorking;
+            
+            //var result = scheduler.Start(service., 0, 0, long.MaxValue);
+
+
+
+        }
+
 
 
         #region Setup
@@ -256,18 +310,21 @@ namespace Wirehome.Extensions.Tests
 
             var lightAutomation = new LightAutomationService(eventAggregator, daylightService, logService, concurrencyProvider, dateTimeService,  motionConfigurationProvider);
 
-            
-            lightAutomation.RegisterDescriptor(hallwayDetectorToilet.Id, new[] { hallwayDetectorLivingRoom.Id, kitchenDetector.Id, staircaseDetector.Id }, hallwayLampToilet, area);
-            lightAutomation.RegisterDescriptor(hallwayDetectorLivingRoom.Id, new[] { livingRoomDetector.Id, bathroomDetector.Id, hallwayDetectorToilet.Id }, hallwayLampLivingRoom, area);
-            lightAutomation.RegisterDescriptor(livingRoomDetector.Id, new[] { balconyDetector.Id }, livingRoomLamp, area);
-            lightAutomation.RegisterDescriptor(balconyDetector.Id, new[] { livingRoomDetector.Id }, balconyLamp, area);
-            lightAutomation.RegisterDescriptor(kitchenDetector.Id, new[] { hallwayDetectorToilet.Id }, kitchenLamp, area);
-            lightAutomation.RegisterDescriptor(bathroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, bathroomLamp, area);
-            lightAutomation.RegisterDescriptor(badroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, badroomLamp, area);
-            lightAutomation.RegisterDescriptor(staircaseDetector.Id, new[] { hallwayDetectorToilet.Id }, staircaseLamp, area);
+            var descriptors = new List<MotionDesctiptorInitializer>
+            {
+                new MotionDesctiptorInitializer(hallwayDetectorToilet.Id, new[] { hallwayDetectorLivingRoom.Id, kitchenDetector.Id, staircaseDetector.Id }, hallwayLampToilet, area),
+                new MotionDesctiptorInitializer(hallwayDetectorLivingRoom.Id, new[] { livingRoomDetector.Id, bathroomDetector.Id, hallwayDetectorToilet.Id }, hallwayLampLivingRoom, area),
+                new MotionDesctiptorInitializer(livingRoomDetector.Id, new[] { balconyDetector.Id }, livingRoomLamp, area),
+                new MotionDesctiptorInitializer(balconyDetector.Id, new[] { livingRoomDetector.Id }, balconyLamp, area),
+                new MotionDesctiptorInitializer(kitchenDetector.Id, new[] { hallwayDetectorToilet.Id }, kitchenLamp, area),
+                new MotionDesctiptorInitializer(bathroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, bathroomLamp, area),
+                new MotionDesctiptorInitializer(badroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, badroomLamp, area),
+                new MotionDesctiptorInitializer(staircaseDetector.Id, new[] { hallwayDetectorToilet.Id }, staircaseLamp, area)
+            };
 
             area.MaxPersonCapacity = 1;
-            lightAutomation.RegisterDescriptor(toiletDetector.Id, new[] { hallwayDetectorToilet.Id }, toiletLamp, area);
+            descriptors.Add(new MotionDesctiptorInitializer(toiletDetector.Id, new[] { hallwayDetectorToilet.Id }, toiletLamp, area));
+            lightAutomation.RegisterDescriptors(descriptors);
 
             return
             (

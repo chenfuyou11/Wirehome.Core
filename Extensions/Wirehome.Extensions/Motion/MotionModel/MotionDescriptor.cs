@@ -9,14 +9,15 @@ using Wirehome.Contracts.Components.Commands;
 using Wirehome.Contracts.Components.States;
 using Wirehome.Contracts.Environment;
 using Wirehome.Contracts.Core;
-using Wirehome.Extensions.Motion;
 using Wirehome.Contracts.Components;
 using System.Collections.ObjectModel;
 using Wirehome.Extensions.Extensions;
+using System.Diagnostics;
 
 namespace Wirehome.Extensions.MotionModel
 {
     //TODO add change source in event to distinct the source of the change (manual light on or automatic)
+    [DebuggerDisplay("{MotionDetectorUid} [Last move: {_LastMotionTime.Second}:{_LastMotionTime.Millisecond}]")]
     public class MotionDescriptor
     {
         private readonly ConditionsValidator _turnOnConditionsValidator = new ConditionsValidator();
@@ -33,20 +34,26 @@ namespace Wirehome.Extensions.MotionModel
         private float LightIntensityAtNight { get; }
         private int MaxPersonCapacity { get; }
         private AreaType AreaType { get; }
-        private TimeSpan MotionDetectorAlarmTime { get; }
+        internal TimeSpan MotionDetectorAlarmTime { get; }
 
         // Dynamic parameters
-        public bool AutomationDisabled { get; private set; }
+        internal bool AutomationDisabled { get; private set; }
+        internal int NumberOfPersonsInArea { get; private set; }
+        internal DateTimeOffset LastMotionTime { get; private set; }
+
         private TimeList _MotionHistory { get; }
         private TimeSpan _TimeToLive { get; set; }
         private double _PresenceProbability { get; set; }
         private DateTime _AutomationEnableOn { get; set; }
         private DateTimeOffset _LastManualTurnOn { get; set; }
-        private int _NumberOfPersonsInArea { get; set; }
         private int _PresenseMotionCounter { get; set; }
-        private DateTimeOffset _LastMotionTime { get; set; }
         private MotionVector _LastEnter { get; set; }
         private MotionVector _LastLeave { get; set; }
+
+        public override string ToString()
+        {
+            return $"{MotionDetectorUid} [Last move: {LastMotionTime.Second}:{LastMotionTime.Millisecond}]";
+        }
 
 
         // TODO
@@ -84,7 +91,7 @@ namespace Wirehome.Extensions.MotionModel
 
         public void MarkMotion(DateTimeOffset time)
         {
-            _LastMotionTime = time;
+            LastMotionTime = time;
             _MotionHistory.Add(time);
             _PresenseMotionCounter++;
             SetProbability(1.0);
@@ -97,26 +104,27 @@ namespace Wirehome.Extensions.MotionModel
             
         }
 
+        public void ResolveCofusion(DateTimeOffset time)
+        {
+
+        }
+
         public void MarkEnter(MotionVector vector)
         {
             _LastEnter = vector;
-            _NumberOfPersonsInArea++;
+            NumberOfPersonsInArea++;
         }
 
         public void MarkLeave(MotionVector vector)
         {
             _LastLeave = vector;
-            _NumberOfPersonsInArea--;
+            NumberOfPersonsInArea--;
 
-            if (vector.Confiusions.Count == 0 && MaxPersonCapacity == 1)
-            {
-                SetProbability(0);
-            }
         }
 
         private void ResetStatistics()
         {
-            _NumberOfPersonsInArea = 0;
+            NumberOfPersonsInArea = 0;
             _MotionHistory.ClearOldData(MotionDetectorAlarmTime);
         }
 
@@ -157,5 +165,27 @@ namespace Wirehome.Extensions.MotionModel
 
         internal void DisableAutomation() => AutomationDisabled = true;
         internal void EnableAutomation() => AutomationDisabled = false;
+    }
+
+
+    public class MotionDesctiptorInitializer
+    {
+        public MotionDesctiptorInitializer(string motionDetectorUid, IEnumerable<string> neighbors, IComponent lamp, AreaDescriptor areaInitializer = null)
+        {
+            MotionDetectorUid = motionDetectorUid;
+            Neighbors = neighbors;
+            Lamp = lamp;
+            AreaInitializer = areaInitializer;
+        }
+
+        public string MotionDetectorUid { get; }
+        public IEnumerable<string> Neighbors { get; }
+        public IComponent Lamp { get; }
+        public AreaDescriptor AreaInitializer { get; }
+
+        public MotionDescriptor ToMotionDescriptor(IScheduler scheduler, IDaylightService daylightService, IDateTimeService dateTimeService)
+        {
+            return new MotionDescriptor(MotionDetectorUid, Neighbors, Lamp, scheduler, daylightService, dateTimeService, AreaInitializer);
+        }
     }
 }

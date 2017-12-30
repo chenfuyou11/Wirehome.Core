@@ -8,7 +8,7 @@ namespace Wirehome.Extensions.Tests
         public TestConcurrencyProvider(TestScheduler scheduler)
         {
             Scheduler = scheduler;
-            Task = TaskPoolScheduler.Default;
+            Task = scheduler;//TaskPoolScheduler.Default;
             Thread = NewThreadScheduler.Default;
         }
         public IScheduler Scheduler { get; }

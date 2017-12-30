@@ -1,9 +1,12 @@
-﻿namespace Wirehome.Extensions.MotionModel
+﻿using System;
+
+namespace Wirehome.Extensions.MotionModel
 {
     public interface IMotionConfigurationProvider
     {
-        int CollisionResolutionTime { get; set; }
-        int MotionMinDiff { get; set; }
-        int MotionTimeWindow { get; set; }
+        TimeSpan CollisionResolutionTime { get; set; }
+        TimeSpan MotionMinDiff { get; set; }
+        TimeSpan MotionTimeWindow { get; set; }
+        TimeSpan PeriodicCheckTime { get; set; }
     }
 }

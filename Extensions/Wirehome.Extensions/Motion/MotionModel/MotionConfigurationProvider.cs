@@ -4,6 +4,11 @@ namespace Wirehome.Extensions.MotionModel
 {
     public class MotionConfigurationProvider : IMotionConfigurationProvider
     {
+        public MotionConfiguration GetConfiguration() => new MotionConfiguration();
+    }
+    
+    public class MotionConfiguration
+    {
         public TimeSpan MotionTimeWindow { get; set; } = TimeSpan.FromMilliseconds(3000);
         public TimeSpan CollisionResolutionTime { get; set; } = TimeSpan.FromMilliseconds(10000);
         public TimeSpan MotionMinDiff { get; set; } = TimeSpan.FromMilliseconds(500);  //minimal difference in movement that is possible to do physically

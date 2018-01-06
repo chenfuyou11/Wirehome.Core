@@ -7,12 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DeepCloner" Version="0.10.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="3.1.1" />
-    <PackageReference Include="Moq" Version="4.7.145" />
+    <PackageReference Include="Moq" Version="4.8.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
-    <PackageReference Include="Quartz" Version="3.0.0-beta1" />
+    <PackageReference Include="Quartz" Version="3.0.0" />
     <PackageReference Include="System.Reactive" Version="3.1.1" />
   </ItemGroup>
 

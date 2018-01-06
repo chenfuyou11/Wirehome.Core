@@ -1,5 +1,6 @@
 ﻿using Moq;
 using System;
+using System.Reactive.Linq;
 using System.Collections.Generic;
 using Microsoft.Reactive.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,8 +12,8 @@ using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Components;
 using Wirehome.Contracts.Components.Commands;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
+using Force.DeepCloner;
+using System.Reactive;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -50,9 +51,8 @@ namespace Wirehome.Extensions.Tests
             );
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
-            service.Initialize();
-
-            var result = scheduler.Start(service.AnalyzeMove, 0, 0, long.MaxValue);
+            service.Start();
+            scheduler.Start();
 
             Assert.AreEqual(true, lampDictionary[ToiletId].IsTurnedOn);
             Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
@@ -72,9 +72,8 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
             Mock.Get(dateTime).Setup(x => x.Time).Returns(TimeSpan.FromHours(12));
 
-            service.Initialize();
-
-            var result = scheduler.Start(service.AnalyzeMove, 0, 0, long.MaxValue);
+            service.Start();
+            scheduler.Start();
 
             Assert.AreEqual(true, lampDictionary[ToiletId].IsTurnedOn);
             Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
@@ -93,10 +92,9 @@ namespace Wirehome.Extensions.Tests
             );
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
             Mock.Get(dateTime).Setup(x => x.Time).Returns(TimeSpan.FromHours(21));
-            
-            service.Initialize();
 
-            var result = scheduler.Start(service.AnalyzeMove, 0, 0, long.MaxValue);
+            service.Start();
+            scheduler.Start();
 
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
             Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
@@ -116,9 +114,8 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
             Mock.Get(dateTime).Setup(x => x.Time).Returns(TimeSpan.FromHours(12));
 
-            service.Initialize();
-
-            var result = scheduler.Start(service.AnalyzeMove, 0, 0, long.MaxValue);
+            service.Start();
+            scheduler.Start();
 
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
             Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
@@ -134,11 +131,10 @@ namespace Wirehome.Extensions.Tests
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId))
             );
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
-            
-            service.Initialize();
+  
             service.DisableAutomation(ToiletId);
-
-            var result = scheduler.Start(service.AnalyzeMove, 0, 0, long.MaxValue);
+            service.Start();
+            scheduler.Start();
 
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
         }
@@ -150,19 +146,42 @@ namespace Wirehome.Extensions.Tests
             var motionEvents = scheduler.CreateColdObservable
             (
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
-              OnNext(Time.Tics(1500), new MotionEnvelope(ToiletId))
+              OnNext(Time.Tics(2500), new MotionEnvelope(ToiletId))
             );
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
-            service.Initialize();
+
             service.DisableAutomation(ToiletId);
             motionEvents.Subscribe(x => service.EnableAutomation(ToiletId));
-
-            var result = scheduler.Start(service.AnalyzeMove, 0, 0, long.MaxValue);
+            service.Start();
+            scheduler.Start();
 
             Assert.AreEqual(true, lampDictionary[ToiletId].IsTurnedOn);
         }
 
+        [TestMethod]
+        public void AnalyzeMoveShouldCountPeopleNumber()
+        {
+            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
+            var motionEvents = scheduler.CreateColdObservable
+            (
+              OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
+              OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
+              OnNext(Time.Tics(2000), new MotionEnvelope(KitchenId)),
+              OnNext(Time.Tics(2500), new MotionEnvelope(LivingroomId)),
+              OnNext(Time.Tics(3000), new MotionEnvelope(HallwayLivingroomId)),
+              OnNext(Time.Tics(3500), new MotionEnvelope(HallwayToiletId)),
+              OnNext(Time.Tics(4000), new MotionEnvelope(KitchenId))
+
+            );
+            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
+
+            service.Start();
+            scheduler.Start();
+
+            Assert.AreEqual(2, service.GetCurrentNumberOfPeople(KitchenId));
+
+        }
 
         [TestMethod]
         public void WhenLeaveFromOnePersonRoomWithNoConfusionShouldTurnOffLightImmediately()
@@ -171,74 +190,87 @@ namespace Wirehome.Extensions.Tests
             var motionEvents = scheduler.CreateColdObservable
             (
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
-              OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
-              OnNext(Time.Tics(2000), new MotionEnvelope(HallwayLivingroomId))
+              OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId))
             );
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
-            service.Initialize();
-
-            var result = scheduler.Start(service.AnalyzeMove, 0, 0, long.MaxValue);
+            service.Start();
+            scheduler.Start();
 
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
-
         }
 
 
-        //[TestMethod]
-        //public void AnalyzeMoveShouldCountPeopleNumber()
-        //{
-        //    var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
-        //    var motionEvents = scheduler.CreateColdObservable
-        //    (
-        //      OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
-        //      OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
-        //      OnNext(Time.Tics(2000), new MotionEnvelope(KitchenId)),
-        //      OnNext(Time.Tics(2500), new MotionEnvelope(LivingroomId)),
-        //      OnNext(Time.Tics(3000), new MotionEnvelope(HallwayLivingroomId)),
-        //      OnNext(Time.Tics(3500), new MotionEnvelope(HallwayToiletId)),
-        //      OnNext(Time.Tics(4000), new MotionEnvelope(KitchenId))
-
-        //    );
-        //    Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
-
-        //    service.Initialize();
-
-        //    var result = scheduler.Start(service.AnalyzeMove, 0, 0, long.MaxValue);
-
-        //    Assert.AreEqual(2, service.GetCurrentNumberOfPeople(KitchenId));
-
-        //}
-
-
         [TestMethod]
-        public async Task Test()
+        public void WhenLeaveFromOnePersonRoomWithConfusionShouldTurnOffImmediatelyWhenConfusionResolved()
         {
             var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
             var motionEvents = scheduler.CreateColdObservable
             (
                   OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
-                  OnNext(Time.Tics(1000), new MotionEnvelope(HallwayToiletId)),
-                  OnNext(Time.Tics(1500), new MotionEnvelope(KitchenId)),
-                  OnCompleted(Time.Tics(1700), new MotionEnvelope(LivingroomId))
+                  OnNext(Time.Tics(1000), new MotionEnvelope(KitchenId)),
+                  OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
+                  OnNext(Time.Tics(2000), new MotionEnvelope(HallwayLivingroomId)),
+                  OnNext(Time.Tics(3000), new MotionEnvelope(KitchenId))
 
             );
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
-            await service.Initialize();
             service.Start();
-
             scheduler.Start();
-
-            //await service.StopWorking;
             
-            //var result = scheduler.Start(service., 0, 0, long.MaxValue);
-
-
-
+            Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
         }
 
 
+        [TestMethod]
+        public void WhenLeaveFromRoomWithNoConfusionShouldTurnOffLightAfterSomeTime()
+        {
+            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
+            var motionEvents = scheduler.CreateColdObservable
+            (
+              OnNext(Time.Tics(500), new MotionEnvelope(KitchenId)),
+              OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId))
+            );
+            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
+
+            service.Start();
+
+            scheduler.AdvanceTo(Time.Tics(1600));
+            Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
+            scheduler.AdvanceTo(Time.Tics(2500));
+            Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
+        }
+
+
+        [TestMethod]
+        public void WhenNoMoveInRoomShouldTurnOffAfterSomeTime()
+        {
+            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
+            var motionEvents = scheduler.CreateColdObservable
+            (
+              OnNext(Time.Tics(500), new MotionEnvelope(KitchenId))
+            );
+            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
+            
+            service.Start();
+            
+            scheduler.AdvanceTo(Time.Tics(1000));
+            Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
+            scheduler.AdvanceTo(Time.Tics(11000));
+            Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
+        }
+
+        public Recorded<Notification<DateTimeOffset>>[] GenerateTestTime()
+        {
+            var time = new List<Recorded<Notification<DateTimeOffset>>>();
+            for (int i = 0; i < 10; i++)
+            {
+                time.Add(new Recorded<Notification<DateTimeOffset>>(Time.Tics(i * 1000), Notification.CreateOnNext(DateTimeOffset.Now)));
+            }
+
+            return time.ToArray();
+        }
 
         #region Setup
 
@@ -307,24 +339,30 @@ namespace Wirehome.Extensions.Tests
             var scheduler = new TestScheduler();
             var concurrencyProvider = new TestConcurrencyProvider(scheduler);
             var motionConfigurationProvider = new MotionConfigurationProvider();
+            var motionConfiguration = motionConfigurationProvider.GetConfiguration();
 
-            var lightAutomation = new LightAutomationService(eventAggregator, daylightService, logService, concurrencyProvider, dateTimeService,  motionConfigurationProvider);
+            var observableTimer = Mock.Of<IObservableTimer>();
+            Mock.Get(observableTimer).Setup(x => x.GenerateTime(motionConfiguration.PeriodicCheckTime)).Returns(scheduler.CreateColdObservable(GenerateTestTime()));
+
+            var lightAutomation = new LightAutomationService(eventAggregator, daylightService, logService, concurrencyProvider, dateTimeService,  motionConfigurationProvider, observableTimer);
 
             var descriptors = new List<MotionDesctiptorInitializer>
             {
-                new MotionDesctiptorInitializer(hallwayDetectorToilet.Id, new[] { hallwayDetectorLivingRoom.Id, kitchenDetector.Id, staircaseDetector.Id }, hallwayLampToilet, area),
-                new MotionDesctiptorInitializer(hallwayDetectorLivingRoom.Id, new[] { livingRoomDetector.Id, bathroomDetector.Id, hallwayDetectorToilet.Id }, hallwayLampLivingRoom, area),
-                new MotionDesctiptorInitializer(livingRoomDetector.Id, new[] { balconyDetector.Id }, livingRoomLamp, area),
-                new MotionDesctiptorInitializer(balconyDetector.Id, new[] { livingRoomDetector.Id }, balconyLamp, area),
-                new MotionDesctiptorInitializer(kitchenDetector.Id, new[] { hallwayDetectorToilet.Id }, kitchenLamp, area),
-                new MotionDesctiptorInitializer(bathroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, bathroomLamp, area),
-                new MotionDesctiptorInitializer(badroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, badroomLamp, area),
-                new MotionDesctiptorInitializer(staircaseDetector.Id, new[] { hallwayDetectorToilet.Id }, staircaseLamp, area)
+                new MotionDesctiptorInitializer(hallwayDetectorToilet.Id, new[] { hallwayDetectorLivingRoom.Id, kitchenDetector.Id, staircaseDetector.Id }, hallwayLampToilet, area.DeepClone()),
+                new MotionDesctiptorInitializer(hallwayDetectorLivingRoom.Id, new[] { livingRoomDetector.Id, bathroomDetector.Id, hallwayDetectorToilet.Id }, hallwayLampLivingRoom, area.DeepClone()),
+                new MotionDesctiptorInitializer(livingRoomDetector.Id, new[] { balconyDetector.Id }, livingRoomLamp, area.DeepClone()),
+                new MotionDesctiptorInitializer(balconyDetector.Id, new[] { livingRoomDetector.Id }, balconyLamp, area.DeepClone()),
+                new MotionDesctiptorInitializer(kitchenDetector.Id, new[] { hallwayDetectorToilet.Id }, kitchenLamp, area.DeepClone()),
+                new MotionDesctiptorInitializer(bathroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, bathroomLamp, area.DeepClone()),
+                new MotionDesctiptorInitializer(badroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, badroomLamp, area.DeepClone()),
+                new MotionDesctiptorInitializer(staircaseDetector.Id, new[] { hallwayDetectorToilet.Id }, staircaseLamp, area.DeepClone())
             };
 
-            area.MaxPersonCapacity = 1;
-            descriptors.Add(new MotionDesctiptorInitializer(toiletDetector.Id, new[] { hallwayDetectorToilet.Id }, toiletLamp, area));
+            var toiletArea = area.DeepClone();
+            toiletArea.MaxPersonCapacity = 1;
+            descriptors.Add(new MotionDesctiptorInitializer(toiletDetector.Id, new[] { hallwayDetectorToilet.Id }, toiletLamp, toiletArea));
             lightAutomation.RegisterDescriptors(descriptors);
+            lightAutomation.Initialize();
 
             return
             (

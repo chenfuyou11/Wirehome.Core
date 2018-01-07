@@ -14,6 +14,7 @@ using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Contracts.Core;
 using Wirehome.Extensions.Extensions;
 using System.Reactive.Concurrency;
+using Force.DeepCloner;
 
 namespace Wirehome.Extensions
 {
@@ -69,7 +70,7 @@ namespace Wirehome.Extensions
             //TODO Check if component is real lamp - wait for new component implementation
             _motionDescriptors = motionDescriptorsInitilizers.Select(md => md.ToMotionDescriptor(_motionConfiguration, _concurrencyProvider.Scheduler, _daylightService, _dateTimeService))
                                                              .ToImmutableDictionary(k => k.MotionDetectorUid, v => v);
-   
+
             var missingDescriptions = _motionDescriptors.Select(m => m.Value)
                                                         .SelectMany(n => n.Neighbors)
                                                         .Distinct()
@@ -85,10 +86,11 @@ namespace Wirehome.Extensions
         public void EnableAutomation(string roomId) => _motionDescriptors?[roomId].EnableAutomation();
         public void Dispose() => _disposeContainer.Dispose();
         public int GetCurrentNumberOfPeople(string roomId) => _motionDescriptors[roomId].NumberOfPersonsInArea;
+        public AreaDescriptor GetAreaDescriptor(string roomId) => _motionDescriptors[roomId].AreaDescriptor.ShallowClone();
 
         public void Start()
         {
-            _disposeContainer.Add(CheckInactivity());
+            _disposeContainer.Add(PeriodicCheck());
             _disposeContainer.Add(CheckMotion());
         }
 
@@ -117,7 +119,7 @@ namespace Wirehome.Extensions
                         .Where(motion => motion != null && motion.Vector != null))
                         .Select(motion => motion.Vector);
         }
-        
+   
         private void ResolveConfusion(MotionPoint point)
         {
             for (int i = _confusedVectors.Count - 1; i >= 0; i--)
@@ -136,8 +138,8 @@ namespace Wirehome.Extensions
                 }
             }
         }
-        
-        private IDisposable CheckInactivity()
+      
+        private IDisposable PeriodicCheck()
         {
             return _observableTimer.GenerateTime(_motionConfiguration.PeriodicCheckTime)
                                    .ObserveOn(_concurrencyProvider.Task)
@@ -183,7 +185,7 @@ namespace Wirehome.Extensions
         private IEnumerable<MotionPoint> GetMovementsInNeighborhood(MotionVector vector)
         {
             return _motionDescriptors[vector.End.Uid].NeighborsCache
-                                                     .Where(n => n.MotionDetectorUid != vector.Start.Uid && vector.End.TimeStamp - n.LastMotionTime < n.MotionDetectorAlarmTime)
+                                                     .Where(n => n.MotionDetectorUid != vector.Start.Uid && vector.End.TimeStamp - n.LastMotionTime < n.AreaDescriptor.MotionDetectorAlarmTime)
                                                      .Select(n => new MotionPoint(n.MotionDetectorUid, n.LastMotionTime.GetValueOrDefault()));
         }
 

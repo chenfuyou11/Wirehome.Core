@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CSharpFunctionalExtensions;
+using System;
 
 namespace Wirehome.Extensions.MotionModel
 {
-    public class MotionVector : IEquatable<MotionVector>
+    public class MotionVector : ValueObject<MotionVector>, IEquatable<MotionVector>
     {
         public MotionPoint Start { get; }
         public MotionPoint End { get; }
@@ -16,35 +16,11 @@ namespace Wirehome.Extensions.MotionModel
         }
         
         public bool Contains(MotionPoint p) => Start.Equals(p) || End.Equals(p);
-
-        public override string ToString()
-        {
-            return $"{Start} -> {End}";
-        }
-
-        public bool Equals(MotionVector other)
-        {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
-
-            return IsEqual(other);
-        }
-
-        private bool IsEqual(MotionVector other)
-        {
-            return other.Start.Equals(this.Start)
-                   && other.End.Equals(this.End);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return IsEqual((MotionVector) obj);
-        }
-
-        public override int GetHashCode()
+        public override string ToString() =>  $"{Start} -> {End}";
+        protected override bool EqualsCore(MotionVector other) => other.Start.Equals(Start) && other.End.Equals(End);
+        public bool Equals(MotionVector other) => base.Equals(other);
+        
+        protected override int GetHashCodeCore()
         {
             unchecked
             {

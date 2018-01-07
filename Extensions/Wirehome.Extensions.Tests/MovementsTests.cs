@@ -52,8 +52,8 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
             service.Start();
-            scheduler.Start();
-
+            scheduler.AdvanceToEnd(motionEvents);
+            
             Assert.AreEqual(true, lampDictionary[ToiletId].IsTurnedOn);
             Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
             Assert.AreEqual(true, lampDictionary[LivingroomId].IsTurnedOn);
@@ -73,7 +73,7 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(dateTime).Setup(x => x.Time).Returns(TimeSpan.FromHours(12));
 
             service.Start();
-            scheduler.Start();
+            scheduler.AdvanceToEnd(motionEvents);
 
             Assert.AreEqual(true, lampDictionary[ToiletId].IsTurnedOn);
             Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
@@ -94,7 +94,7 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(dateTime).Setup(x => x.Time).Returns(TimeSpan.FromHours(21));
 
             service.Start();
-            scheduler.Start();
+            scheduler.AdvanceToEnd(motionEvents);
 
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
             Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
@@ -115,7 +115,7 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(dateTime).Setup(x => x.Time).Returns(TimeSpan.FromHours(12));
 
             service.Start();
-            scheduler.Start();
+            scheduler.AdvanceToEnd(motionEvents);
 
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
             Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
@@ -134,7 +134,7 @@ namespace Wirehome.Extensions.Tests
   
             service.DisableAutomation(ToiletId);
             service.Start();
-            scheduler.Start();
+            scheduler.AdvanceToEnd(motionEvents);
 
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
         }
@@ -154,7 +154,7 @@ namespace Wirehome.Extensions.Tests
             service.DisableAutomation(ToiletId);
             motionEvents.Subscribe(x => service.EnableAutomation(ToiletId));
             service.Start();
-            scheduler.Start();
+            scheduler.AdvanceToEnd(motionEvents);
 
             Assert.AreEqual(true, lampDictionary[ToiletId].IsTurnedOn);
         }
@@ -177,7 +177,7 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
             service.Start();
-            scheduler.Start();
+            scheduler.AdvanceToBeyondEnd(motionEvents);
 
             Assert.AreEqual(2, service.GetCurrentNumberOfPeople(KitchenId));
 
@@ -195,7 +195,7 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
             service.Start();
-            scheduler.Start();
+            scheduler.AdvanceToBeyondEnd(motionEvents);
 
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
         }
@@ -212,13 +212,12 @@ namespace Wirehome.Extensions.Tests
                   OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
                   OnNext(Time.Tics(2000), new MotionEnvelope(HallwayLivingroomId)),
                   OnNext(Time.Tics(3000), new MotionEnvelope(KitchenId))
-
             );
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
             service.Start();
-            scheduler.Start();
-            
+            scheduler.AdvanceToEnd(motionEvents);
+
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
         }
 
@@ -254,23 +253,17 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
             
             service.Start();
-            
-            scheduler.AdvanceTo(Time.Tics(1000));
+            var area = service.GetAreaDescriptor(KitchenId);
+
+            scheduler.AdvanceTo(TimeSpan.FromMilliseconds(500).JustAfter().Ticks);
             Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
-            scheduler.AdvanceTo(Time.Tics(11000));
+            scheduler.AdvanceTo(area.TurnOffTimeout.Ticks);
+            Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
+            scheduler.AdvanceTo(area.TurnOffTimeout.JustAfter().Ticks);
             Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
         }
-
-        public Recorded<Notification<DateTimeOffset>>[] GenerateTestTime()
-        {
-            var time = new List<Recorded<Notification<DateTimeOffset>>>();
-            for (int i = 0; i < 10; i++)
-            {
-                time.Add(new Recorded<Notification<DateTimeOffset>>(Time.Tics(i * 1000), Notification.CreateOnNext(DateTimeOffset.Now)));
-            }
-
-            return time.ToArray();
-        }
+        
+        
 
         #region Setup
 
@@ -283,6 +276,7 @@ namespace Wirehome.Extensions.Tests
         private const string KitchenId = "Kitchen";
         private const string BalconyId = "Balcony";
         private const string StaircaseId = "Staircase";
+        private const int TIMER_DURATION = 20;
 
         public
         (
@@ -342,7 +336,8 @@ namespace Wirehome.Extensions.Tests
             var motionConfiguration = motionConfigurationProvider.GetConfiguration();
 
             var observableTimer = Mock.Of<IObservableTimer>();
-            Mock.Get(observableTimer).Setup(x => x.GenerateTime(motionConfiguration.PeriodicCheckTime)).Returns(scheduler.CreateColdObservable(GenerateTestTime()));
+
+            Mock.Get(observableTimer).Setup(x => x.GenerateTime(motionConfiguration.PeriodicCheckTime)).Returns(scheduler.CreateColdObservable(GenerateTestTime(TimeSpan.FromSeconds(TIMER_DURATION), motionConfiguration.PeriodicCheckTime)));
 
             var lightAutomation = new LightAutomationService(eventAggregator, daylightService, logService, concurrencyProvider, dateTimeService,  motionConfigurationProvider, observableTimer);
 
@@ -372,6 +367,23 @@ namespace Wirehome.Extensions.Tests
                 lampDictionary,
                 dateTimeService
             );
+        }
+
+        public Recorded<Notification<DateTimeOffset>>[] GenerateTestTime(TimeSpan duration, TimeSpan frequency)
+        {
+            var time = new List<Recorded<Notification<DateTimeOffset>>>();
+            var durationSoFar = TimeSpan.FromTicks(0);
+            var dateSoFar = new DateTimeOffset(1, 1, 1, 0, 0, 0, TimeSpan.FromTicks(0));
+            while (true)
+            {
+                durationSoFar = durationSoFar.Add(frequency);
+                if (durationSoFar > duration) break;
+
+                dateSoFar = dateSoFar.Add(frequency);
+                time.Add(new Recorded<Notification<DateTimeOffset>>(durationSoFar.Ticks, Notification.CreateOnNext(dateSoFar)));
+            }
+
+            return time.ToArray();
         }
 
         private IMotionDetector CreateMotionDetector(string id)
@@ -423,6 +435,7 @@ namespace Wirehome.Extensions.Tests
                 throw new NotImplementedException();
             }
         }
+   
         #endregion
     }
 

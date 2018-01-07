@@ -1,8 +1,9 @@
-﻿using System;
+﻿using CSharpFunctionalExtensions;
+using System;
 
 namespace Wirehome.Extensions.MotionModel
 {
-    public class MotionPoint : IEquatable<MotionPoint>
+    public class MotionPoint : ValueObject<MotionPoint>, IEquatable<MotionPoint>
     {
         public string Uid { get; }
         public DateTimeOffset TimeStamp { get; }
@@ -14,48 +15,16 @@ namespace Wirehome.Extensions.MotionModel
         }
 
         public MotionVector ToVector(MotionPoint start) => new MotionVector(start, this);
+        protected override bool EqualsCore(MotionPoint other) => Equals(Uid, other.Uid);
+        public bool Equals(MotionPoint other) => base.Equals(other);
+        public override string ToString() => $"[{Uid}: {TimeStamp:ss:fff}]";
 
-        public override string ToString()
-        {
-            return $"[{Uid}: {TimeStamp:ss:fff}]";
-        }
-
-        private bool IsEqual(MotionPoint other)
-        {
-            return Equals(Uid, other.Uid);
-        }
-
-        public bool Equals(MotionPoint other)
-        {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return IsEqual(other);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return IsEqual((MotionPoint) obj);
-        }
-
-        public override int GetHashCode()
+        protected override int GetHashCodeCore()
         {
             unchecked
             {
                 return ((Uid?.GetHashCode() ?? 0) * 397) ^ TimeStamp.GetHashCode();
             }
-        }
-
-        public static bool operator ==(MotionPoint motionA, MotionPoint monionB)
-        {
-            return ReferenceEquals(motionA, monionB) || motionA.Equals(monionB);
-        }
-
-        public static bool operator !=(MotionPoint motionA, MotionPoint motionB)
-        {
-            return !(motionA == motionB);
         }
     }
 }

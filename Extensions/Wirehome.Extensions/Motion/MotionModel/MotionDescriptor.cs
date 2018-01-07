@@ -29,12 +29,9 @@ namespace Wirehome.Extensions.MotionModel
         public string MotionDetectorUid { get; }
         internal IEnumerable<string> Neighbors { get; }
         internal IReadOnlyCollection<MotionDescriptor> NeighborsCache { get; private set; }
-        internal TimeSpan MotionDetectorAlarmTime { get; }
         private IComponent Lamp { get; }
         private float LightIntensityAtNight { get; }
-        private int MaxPersonCapacity { get; }
-        private AreaType AreaType { get; }
-        private TimeSpan TurnOffTimeout { get; }
+
 
         // Dynamic parameters
         internal bool AutomationDisabled { get; private set; }
@@ -42,13 +39,14 @@ namespace Wirehome.Extensions.MotionModel
         internal DateTimeOffset? LastMotionTime { get; private set; }
 
         private TimeList _MotionHistory { get; }
-        private double _PresenceProbability { get; set; }
+        private Probability _PresenceProbability { get; set; } = Probability.Zero;
         private DateTimeOffset _AutomationEnableOn { get; set; }
         private DateTimeOffset _LastManualTurnOn { get; set; }
         private int _PresenseMotionCounter { get; set; }
         private MotionVector _LastEnter { get; set; }
         private MotionVector _LastLeave { get; set; }
-        
+        internal AreaDescriptor AreaDescriptor { get; }
+
         public override string ToString()
         {
             return $"{MotionDetectorUid} [Last move: {(LastMotionTime != null ? LastMotionTime?.Second.ToString() : "?")}:{(LastMotionTime != null ? LastMotionTime?.Millisecond.ToString() : "?")}]";
@@ -59,15 +57,12 @@ namespace Wirehome.Extensions.MotionModel
         // Add pending turnoff source - we could turn off but it was not sure last time
 
         public MotionDescriptor(string motionDetectorUid, IEnumerable<string> neighbors, IComponent lamp, IScheduler scheduler,
-                                IDaylightService daylightService, IDateTimeService dateTimeService, AreaDescriptor areaDescriptor, MotionConfiguration motionConfiguration)
+                                IDaylightService daylightService, IDateTimeService dateTimeService, AreaDescriptor areaDescriptor,
+                                MotionConfiguration motionConfiguration)
         {
             MotionDetectorUid = motionDetectorUid ?? throw new ArgumentNullException(nameof(motionDetectorUid));
             Neighbors = neighbors ?? throw new ArgumentNullException(nameof(neighbors));
             Lamp = lamp ?? throw new ArgumentNullException(nameof(lamp));
-            MaxPersonCapacity = areaDescriptor.MaxPersonCapacity;
-            AreaType = areaDescriptor.AreaType;
-            MotionDetectorAlarmTime = areaDescriptor.MotionDetectorAlarmTime;
-            TurnOffTimeout = areaDescriptor.TurnOffTimeout;
             
             if (areaDescriptor.WorkingTime == WorkingTime.DayLight)
             {
@@ -83,6 +78,7 @@ namespace Wirehome.Extensions.MotionModel
             PowerChangeSource = Lamp.ToPowerChangeSource();
             _scheduler = scheduler;
             _motionConfiguration = motionConfiguration;
+            AreaDescriptor = areaDescriptor;
         }
 
         internal void BuildNeighborsCache(IEnumerable<MotionDescriptor> neighbors)
@@ -95,7 +91,7 @@ namespace Wirehome.Extensions.MotionModel
             LastMotionTime = time;
             _MotionHistory.Add(time);
             _PresenseMotionCounter++;
-            SetProbability(1.0);
+            SetProbability(Probability.Full);
         }
         
         public void Update()
@@ -107,9 +103,9 @@ namespace Wirehome.Extensions.MotionModel
 
         private void RecalculateProbability()
         {
-            var probabilityDelta = 1.0 / (TurnOffTimeout.Ticks / _motionConfiguration.PeriodicCheckTime.Ticks);
+            var probabilityDelta = 1.0 / (AreaDescriptor.TurnOffTimeout.Ticks / _motionConfiguration.PeriodicCheckTime.Ticks);
 
-            SetProbability(_PresenceProbability - probabilityDelta);
+            SetProbability(_PresenceProbability.Decrease(probabilityDelta));
         }
 
         private void CheckForTurnOnAutomationAgain()
@@ -134,13 +130,13 @@ namespace Wirehome.Extensions.MotionModel
                 NumberOfPersonsInArea--;
             }
 
-            if (MaxPersonCapacity == 1)
+            if (AreaDescriptor.MaxPersonCapacity == 1)
             {
-                SetProbability(0);
+                SetProbability(Probability.Zero);
             }
             else
             {
-                SetProbability(0.1);
+                SetProbability(Probability.FromValue(0.1));
             }
 
         }
@@ -148,20 +144,18 @@ namespace Wirehome.Extensions.MotionModel
         private void ResetStatistics()
         {
             NumberOfPersonsInArea = 0;
-            _MotionHistory.ClearOldData(MotionDetectorAlarmTime);
+            _MotionHistory.ClearOldData(AreaDescriptor.MotionDetectorAlarmTime);
         }
 
-        private void SetProbability(double probability)
+        private void SetProbability(Probability probability)
         {
-            if (probability < 0) probability = 0;
             _PresenceProbability = probability;
-
-
-            if(_PresenceProbability == 1.0)
+            
+            if(_PresenceProbability.IsFullProbability)
             {
                 TryTurnOnLamp();
             }
-            else if(_PresenceProbability == 0)
+            else if(_PresenceProbability.IsNoProbability)
             {
                 TryTurnOffLamp();
             }

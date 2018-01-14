@@ -177,7 +177,7 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
             service.Start();
-            scheduler.AdvanceToBeyondEnd(motionEvents);
+            scheduler.AdvanceJustAfterEnd(motionEvents);
 
             Assert.AreEqual(2, service.GetCurrentNumberOfPeople(KitchenId));
 
@@ -195,7 +195,7 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
             service.Start();
-            scheduler.AdvanceToBeyondEnd(motionEvents);
+            scheduler.AdvanceJustAfterEnd(motionEvents);
 
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
         }
@@ -235,7 +235,7 @@ namespace Wirehome.Extensions.Tests
 
             service.Start();
 
-            scheduler.AdvanceTo(Time.Tics(1600));
+            scheduler.AdvanceJustAfterEnd(motionEvents);
             Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
             scheduler.AdvanceTo(Time.Tics(2500));
             Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
@@ -243,7 +243,7 @@ namespace Wirehome.Extensions.Tests
 
 
         [TestMethod]
-        public void WhenNoMoveInRoomShouldTurnOffAfterSomeTime()
+        public void WhenNoMoveInRoomShouldTurnOffAfterTurnOffTimeout()
         {
             var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
             var motionEvents = scheduler.CreateColdObservable
@@ -255,11 +255,11 @@ namespace Wirehome.Extensions.Tests
             service.Start();
             var area = service.GetAreaDescriptor(KitchenId);
 
-            scheduler.AdvanceTo(TimeSpan.FromMilliseconds(500).JustAfter().Ticks);
+            scheduler.AdvanceJustAfterEnd(motionEvents);
             Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
-            scheduler.AdvanceTo(area.TurnOffTimeout.Ticks);
+            scheduler.AdvanceTo(area.TurnOffTimeout);
             Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
-            scheduler.AdvanceTo(area.TurnOffTimeout.JustAfter().Ticks);
+            scheduler.AdvanceJustAfter(area.TurnOffTimeout);
             Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
         }
         

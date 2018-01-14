@@ -12,10 +12,26 @@ namespace Wirehome.Extensions.Tests
             scheduler.AdvanceTo(events.Messages.Max(x => x.Time));
         }
         
-        public static void AdvanceToBeyondEnd<T>(this TestScheduler scheduler, ITestableObservable<T> events, int beyondEnd = 500)
+        public static void AdvanceJustAfterEnd<T>(this TestScheduler scheduler, ITestableObservable<T> events, int timeAfter = 500)
         {
-            scheduler.AdvanceTo(events.Messages.Max(x => x.Time) + Time.Tics(beyondEnd));
+            scheduler.AdvanceTo(events.Messages.Max(x => x.Time) + Time.Tics(timeAfter));
         }
+
+        public static void AdvanceJustAfter(this TestScheduler scheduler, int time)
+        {
+            scheduler.AdvanceTo(TimeSpan.FromMilliseconds(time).JustAfter().Ticks);
+        }
+
+        public static void AdvanceJustAfter(this TestScheduler scheduler, TimeSpan time)
+        {
+            scheduler.AdvanceTo(time.JustAfter().Ticks);
+        }
+
+        public static void AdvanceTo(this TestScheduler scheduler, TimeSpan time)
+        {
+            scheduler.AdvanceTo(time.Ticks);
+        }
+
 
         public static TimeSpan JustAfter(this TimeSpan span, int timeAfter = 100) => span.Add(TimeSpan.FromMilliseconds(timeAfter));
         

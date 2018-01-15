@@ -1,4 +1,4 @@
-﻿namespace Wirehome.Extensions
+﻿namespace Wirehome.Motion.Model
 {
     public class MotionEvent
     {

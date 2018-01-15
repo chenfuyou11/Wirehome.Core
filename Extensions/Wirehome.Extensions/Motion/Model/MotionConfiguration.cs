@@ -1,12 +1,7 @@
 ﻿using System;
 
-namespace Wirehome.Extensions.MotionModel
+namespace Wirehome.Motion.Model
 {
-    public class MotionConfigurationProvider : IMotionConfigurationProvider
-    {
-        public MotionConfiguration GetConfiguration() => new MotionConfiguration();
-    }
-    
     public class MotionConfiguration
     {
         public TimeSpan MotionTimeWindow { get; set; } = TimeSpan.FromMilliseconds(3000);

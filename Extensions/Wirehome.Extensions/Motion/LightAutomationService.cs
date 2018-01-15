@@ -3,20 +3,18 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Reactive.Linq;
 using System.Linq;
-using System.Threading;
 using System.Collections.Immutable;
 using Wirehome.Contracts.Services;
-using Wirehome.Extensions.MotionModel;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Environment;
 using Wirehome.Extensions.Core;
 using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Contracts.Core;
 using Wirehome.Extensions.Extensions;
-using System.Reactive.Concurrency;
 using Force.DeepCloner;
+using Wirehome.Motion.Model;
 
-namespace Wirehome.Extensions
+namespace Wirehome.Motion
 {
     public class LightAutomationService : IService, IDisposable
     {
@@ -33,7 +31,8 @@ namespace Wirehome.Extensions
         private readonly TaskCompletionSource<bool> _workDoneTaskSource = new TaskCompletionSource<bool>();
         private bool _IsInitialized;
         public Task StopWorking => _workDoneTaskSource.Task;
-        public int NumberOfPersonsInHouse { get; }
+        public readonly List<MotionVector> MotionVectors = new List<MotionVector>();
+        
 
         public LightAutomationService(IEventAggregator eventAggregator,
                                       IDaylightService daylightService,
@@ -86,6 +85,7 @@ namespace Wirehome.Extensions
         public void EnableAutomation(string roomId) => _motionDescriptors?[roomId].EnableAutomation();
         public void Dispose() => _disposeContainer.Dispose();
         public int GetCurrentNumberOfPeople(string roomId) => _motionDescriptors[roomId].NumberOfPersonsInArea;
+        public int NumberOfPersonsInHouse => _motionDescriptors.Sum(md => md.Value.NumberOfPersonsInArea);
         public AreaDescriptor GetAreaDescriptor(string roomId) => _motionDescriptors[roomId].AreaDescriptor.ShallowClone();
 
         public void Start()
@@ -99,27 +99,19 @@ namespace Wirehome.Extensions
             var events = _eventAggregator.Observe<MotionEvent>();
 
             return events.Timestamp(_concurrencyProvider.Scheduler)
-                        .Select(move => new Motion(new MotionPoint(move.Value.Message.MotionDetectorUID, move.Timestamp)))
-                        .Do(point =>
-                        {
-                            ResolveConfusion(point.Start);
-                            _motionDescriptors?[point.Start.Uid]?.MarkMotion(point.Start.TimeStamp);
-                        })
-                        .Window(events, timeWindow => Observable.Timer(_motionConfiguration.MotionTimeWindow, _concurrencyProvider.Scheduler))
-                        .SelectMany(x => x.Scan((accumulate, actualPoint) =>
-                        {
-                            if (accumulate == null || accumulate.Vector != null) return null;
-                            // Fix - works only in one neighbor move - if we have move in two neighbors it will not work
-                            if (IsEndPoint(accumulate.Start, actualPoint.Start))
-                            {
-                                accumulate.CreateVector(actualPoint.Start);
-                            }
-                            return accumulate;
-                        })
-                        .Where(motion => motion != null && motion.Vector != null))
-                        .Select(motion => motion.Vector);
+                         .Select(move => new MotionWindow(move.Value.Message.MotionDetectorUID, move.Timestamp))
+                         .Do(HandleMove)
+                         .Window(events, _ => Observable.Timer(_motionConfiguration.MotionTimeWindow, _concurrencyProvider.Scheduler))
+                         .SelectMany(x => x.Scan((vectors, currentPoint) => vectors.AccumulateVector(currentPoint.Start, IsProperVector))
+                         .SelectMany(motion => motion.ToVectors()));
         }
-   
+
+        private void HandleMove(MotionWindow point)
+        {
+            ResolveConfusion(point.Start);
+            _motionDescriptors?[point.Start.Uid]?.MarkMotion(point.Start.TimeStamp);
+        }
+
         private void ResolveConfusion(MotionPoint point)
         {
             for (int i = _confusedVectors.Count - 1; i >= 0; i--)
@@ -169,6 +161,8 @@ namespace Wirehome.Extensions
             if (!confusionPoints.Any())
             {
                 MarkVector(motionVector);
+
+                MotionVectors.Add(motionVector);
             }
             else
             {
@@ -189,16 +183,10 @@ namespace Wirehome.Extensions
                                                      .Select(n => new MotionPoint(n.MotionDetectorUid, n.LastMotionTime.GetValueOrDefault()));
         }
 
-        private bool IsEndPoint(MotionPoint start, MotionPoint potencialEnd) => AreNeighbors(start, potencialEnd) && IsMovePhisicallyPosible(start, potencialEnd);
+        private bool IsProperVector(MotionPoint start, MotionPoint potencialEnd) => AreNeighbors(start, potencialEnd) && IsMovePhisicallyPosible(start, potencialEnd);
         private bool AreNeighbors(MotionPoint p1, MotionPoint p2) => _motionDescriptors?[p1.Uid]?.Neighbors?.Contains(p2.Uid) ?? false;
         private bool IsMovePhisicallyPosible(MotionPoint p1, MotionPoint p2) => p2.TimeStamp - p1.TimeStamp >= _motionConfiguration.MotionMinDiff;
         private IEnumerable<MotionDescriptor> GetNeighbors(string roomId) => _motionDescriptors.Where(x => _motionDescriptors[roomId].Neighbors.Contains(x.Key)).Select(y => y.Value);
 
-        //private IEnumerable<MotionPoint> GetMovementsInNeighborhoodOld(MotionVector vector)
-        //{
-        //    return _motionDescriptors[vector.End.Uid].Neighbors
-        //                                             .Where(n => n != vector.Start.Uid)
-        //                                             .SelectMany(neighbor => _motionDescriptors[neighbor].GetLastMovments(vector.End.TimeStamp));
-        //}
     }
 }

@@ -11,8 +11,10 @@ using Wirehome.Contracts.Environment;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Components;
 using System.Collections.ObjectModel;
+using Wirehome.Motion.Model;
+using Wirehome.Extensions;
 
-namespace Wirehome.Extensions.MotionModel
+namespace Wirehome.Motion
 {
     //TODO Thread safe
     //TODO add change source in event to distinct the source of the change (manual light on or automatic)
@@ -32,7 +34,7 @@ namespace Wirehome.Extensions.MotionModel
         internal IReadOnlyCollection<MotionDescriptor> NeighborsCache { get; private set; }
         private IComponent Lamp { get; }
         private float LightIntensityAtNight { get; }
-        
+
         // Dynamic parameters
         internal bool AutomationDisabled { get; private set; }
         internal int NumberOfPersonsInArea { get; private set; }
@@ -46,11 +48,10 @@ namespace Wirehome.Extensions.MotionModel
         private int _PresenseMotionCounter { get; set; }
         private MotionVector _LastEnter { get; set; }
         private MotionVector _LastLeave { get; set; }
-        
 
         public override string ToString()
         {
-            return $"{MotionDetectorUid} [Last move: {(LastMotionTime != null ? LastMotionTime?.Second.ToString() : "?")}:{(LastMotionTime != null ? LastMotionTime?.Millisecond.ToString() : "?")}]";
+            return $"{MotionDetectorUid} [Last move: {(LastMotionTime != null ? LastMotionTime?.Second.ToString() : "?")}:{(LastMotionTime != null ? LastMotionTime?.Millisecond.ToString() : "?")}] [Persons: {NumberOfPersonsInArea}]";
         }
 
         public MotionDescriptor(string motionDetectorUid, IEnumerable<string> neighbors, IComponent lamp, IScheduler scheduler,
@@ -60,7 +61,7 @@ namespace Wirehome.Extensions.MotionModel
             MotionDetectorUid = motionDetectorUid ?? throw new ArgumentNullException(nameof(motionDetectorUid));
             Neighbors = neighbors ?? throw new ArgumentNullException(nameof(neighbors));
             Lamp = lamp ?? throw new ArgumentNullException(nameof(lamp));
-            
+
             if (areaDescriptor.WorkingTime == WorkingTime.DayLight)
             {
                 _turnOnConditionsValidator.WithCondition(ConditionRelation.And, new IsDayCondition(daylightService, dateTimeService));
@@ -70,15 +71,18 @@ namespace Wirehome.Extensions.MotionModel
                 _turnOnConditionsValidator.WithCondition(ConditionRelation.And, new IsNightCondition(daylightService, dateTimeService));
             }
 
+            _turnOnConditionsValidator.WithCondition(ConditionRelation.And, new IsEnabledAutomationCondition(this));
+            _turnOffConditionsValidator.WithCondition(ConditionRelation.And, new IsEnabledAutomationCondition(this));
+
             _MotionHistory = new TimeList(scheduler);
 
             PowerChangeSource = Lamp.ToPowerChangeSource();
-            
+
             _scheduler = scheduler;
             _motionConfiguration = motionConfiguration;
             AreaDescriptor = areaDescriptor;
         }
-        
+
         public void MarkMotion(DateTimeOffset time)
         {
             LastMotionTime = time;
@@ -86,7 +90,7 @@ namespace Wirehome.Extensions.MotionModel
             _PresenseMotionCounter++;
             SetProbability(Probability.Full);
         }
-        
+
         public void Update()
         {
             CheckForTurnOnAutomationAgain();
@@ -118,8 +122,7 @@ namespace Wirehome.Extensions.MotionModel
                 SetProbability(Probability.FromValue(0.1));
             }
         }
-        
-        //internal IEnumerable<MotionPoint> GetLastMovments(DateTimeOffset referenceTime) => _MotionHistory.GetLastElements(referenceTime, MotionDetectorAlarmTime).Select(time => new MotionPoint(MotionDetectorUid, time));
+
         internal void BuildNeighborsCache(IEnumerable<MotionDescriptor> neighbors) => NeighborsCache = new ReadOnlyCollection<MotionDescriptor>(neighbors.ToList());
         internal void DisableAutomation() => AutomationDisabled = true;
         internal void EnableAutomation() => AutomationDisabled = false;
@@ -143,7 +146,7 @@ namespace Wirehome.Extensions.MotionModel
                 EnableAutomation();
             }
         }
-        
+
         private void ResetStatistics()
         {
             NumberOfPersonsInArea = 0;
@@ -153,7 +156,7 @@ namespace Wirehome.Extensions.MotionModel
         private void SetProbability(Probability probability)
         {
             _PresenceProbability = probability;
-            
+
             if(_PresenceProbability.IsFullProbability)
             {
                 TryTurnOnLamp();
@@ -163,7 +166,7 @@ namespace Wirehome.Extensions.MotionModel
                 TryTurnOffLamp();
             }
         }
-        
+
         private void TryTurnOnLamp()
         {
             if (CanTurnOnLamp()) Lamp.ExecuteCommand(new TurnOnCommand());
@@ -177,11 +180,9 @@ namespace Wirehome.Extensions.MotionModel
                 ResetStatistics();
             }
         }
-        
-        private bool CanTurnOnLamp() => !(AutomationDisabled || (_turnOnConditionsValidator.Validate() == ConditionState.NotFulfilled));
-        private bool CanTurnOffLamp() => !(AutomationDisabled || (_turnOffConditionsValidator.Validate() == ConditionState.NotFulfilled));
-        
 
-
+        private bool CanTurnOnLamp() => _turnOnConditionsValidator.Validate() != ConditionState.NotFulfilled;
+        private bool CanTurnOffLamp() => _turnOffConditionsValidator.Validate() != ConditionState.NotFulfilled;
     }
+
 }

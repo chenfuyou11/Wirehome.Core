@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Wirehome.Extensions.MotionModel
+namespace Wirehome.Motion.Model
 {
     public interface IMotionConfigurationProvider
     {

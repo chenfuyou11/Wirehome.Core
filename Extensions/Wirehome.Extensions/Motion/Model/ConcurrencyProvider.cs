@@ -1,6 +1,6 @@
 ﻿using System.Reactive.Concurrency;
 
-namespace Wirehome.Extensions
+namespace Wirehome.Motion.Model
 {
     public class ConcurrencyProvider : IConcurrencyProvider
     {

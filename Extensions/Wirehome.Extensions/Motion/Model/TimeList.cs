@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Text;
 
-namespace Wirehome.Extensions.MotionModel
+namespace Wirehome.Motion.Model
 {
     //TODO Add thread safe
     public class TimeList : IEnumerable<DateTimeOffset>

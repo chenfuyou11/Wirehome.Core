@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Wirehome.Extensions.MotionModel;
 
-namespace Wirehome.Extensions
+namespace Wirehome.Motion.Model
 {
     public class ConfusedVector
     {
@@ -23,5 +22,8 @@ namespace Wirehome.Extensions
 
         public MotionVector Vector { get; }
         public IReadOnlyCollection<MotionPoint> ConfusionPoint => _confusionPoints.AsReadOnly();
+
+        public override string ToString() => $"{Vector} | Confusion: {string.Join(", ",ConfusionPoint)}";
+        
     }
 }

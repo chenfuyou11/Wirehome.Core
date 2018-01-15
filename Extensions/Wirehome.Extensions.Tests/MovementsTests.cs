@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Microsoft.Reactive.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Wirehome.Contracts.Sensors;
-using Wirehome.Extensions.MotionModel;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Environment;
 using Wirehome.Extensions.Messaging.Core;
@@ -14,6 +13,8 @@ using Wirehome.Contracts.Components;
 using Wirehome.Contracts.Components.Commands;
 using Force.DeepCloner;
 using System.Reactive;
+using Wirehome.Motion.Model;
+using Wirehome.Motion;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -42,14 +43,11 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldTurnOnLight()
         {
-            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
-            var motionEvents = scheduler.CreateColdObservable
-            (
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(KitchenId)),
               OnNext(Time.Tics(2000), new MotionEnvelope(LivingroomId))
             );
-            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
             service.Start();
             scheduler.AdvanceToEnd(motionEvents);
@@ -62,14 +60,12 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldTurnOnLightOnWhenWorkinghoursAreDaylight()
         {
-            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.DayLight });
-            var motionEvents = scheduler.CreateColdObservable
-            (
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.DayLight },
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(KitchenId)),
               OnNext(Time.Tics(2000), new MotionEnvelope(LivingroomId))
             );
-            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
+
             Mock.Get(dateTime).Setup(x => x.Time).Returns(TimeSpan.FromHours(12));
 
             service.Start();
@@ -83,14 +79,12 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldNotTurnOnLightOnNightWhenWorkinghoursAreDaylight()
         {
-            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.DayLight });
-            var motionEvents = scheduler.CreateColdObservable
-            (
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.DayLight },
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(KitchenId)),
               OnNext(Time.Tics(2000), new MotionEnvelope(LivingroomId))
             );
-            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
+
             Mock.Get(dateTime).Setup(x => x.Time).Returns(TimeSpan.FromHours(21));
 
             service.Start();
@@ -104,14 +98,11 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldNotTurnOnLightOnDaylightWhenWorkinghoursIsNight()
         {
-            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.AfterDusk });
-            var motionEvents = scheduler.CreateColdObservable
-            (
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.AfterDusk },
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(KitchenId)),
               OnNext(Time.Tics(2000), new MotionEnvelope(LivingroomId))
             );
-            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
             Mock.Get(dateTime).Setup(x => x.Time).Returns(TimeSpan.FromHours(12));
 
             service.Start();
@@ -125,13 +116,10 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldNotTurnOnLightWhenAutomationIsDisabled()
         {
-            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
-            var motionEvents = scheduler.CreateColdObservable
-            (
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId))
             );
-            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
-  
+
             service.DisableAutomation(ToiletId);
             service.Start();
             scheduler.AdvanceToEnd(motionEvents);
@@ -142,14 +130,10 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldTurnOnLightWhenAutomationIsReEnabled()
         {
-            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
-            var motionEvents = scheduler.CreateColdObservable
-            (
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(2500), new MotionEnvelope(ToiletId))
             );
-            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
-
 
             service.DisableAutomation(ToiletId);
             motionEvents.Subscribe(x => service.EnableAutomation(ToiletId));
@@ -160,11 +144,9 @@ namespace Wirehome.Extensions.Tests
         }
 
         [TestMethod]
-        public void AnalyzeMoveShouldCountPeopleNumber()
+        public void AnalyzeMoveShouldCountPeopleNumberInRoom()
         {
-            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
-            var motionEvents = scheduler.CreateColdObservable
-            (
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
               OnNext(Time.Tics(2000), new MotionEnvelope(KitchenId)),
@@ -174,7 +156,6 @@ namespace Wirehome.Extensions.Tests
               OnNext(Time.Tics(4000), new MotionEnvelope(KitchenId))
 
             );
-            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
             service.Start();
             scheduler.AdvanceJustAfterEnd(motionEvents);
@@ -184,15 +165,31 @@ namespace Wirehome.Extensions.Tests
         }
 
         [TestMethod]
+        public void AnalyzeMoveShouldCountPeopleNumberInHouse()
+        {
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+              OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
+              OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
+              OnNext(Time.Tics(2000), new MotionEnvelope(KitchenId)),
+              OnNext(Time.Tics(2500), new MotionEnvelope(LivingroomId)),
+              OnNext(Time.Tics(3000), new MotionEnvelope(HallwayLivingroomId))
+
+            );
+
+            service.Start();
+            scheduler.AdvanceJustAfterEnd(motionEvents, 2000);
+
+            Assert.AreEqual(2, service.NumberOfPersonsInHouse);
+
+        }
+
+        [TestMethod]
         public void WhenLeaveFromOnePersonRoomWithNoConfusionShouldTurnOffLightImmediately()
         {
-            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
-            var motionEvents = scheduler.CreateColdObservable
-            (
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId))
             );
-            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
             service.Start();
             scheduler.AdvanceJustAfterEnd(motionEvents);
@@ -204,16 +201,16 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void WhenLeaveFromOnePersonRoomWithConfusionShouldTurnOffImmediatelyWhenConfusionResolved()
         {
-            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
-            var motionEvents = scheduler.CreateColdObservable
-            (
+            
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+                  // T->HT vs K->HT 
                   OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
                   OnNext(Time.Tics(1000), new MotionEnvelope(KitchenId)),
                   OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
                   OnNext(Time.Tics(2000), new MotionEnvelope(HallwayLivingroomId)),
+                  // Move in K cancels K->HT 
                   OnNext(Time.Tics(3000), new MotionEnvelope(KitchenId))
             );
-            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
 
             service.Start();
             scheduler.AdvanceToEnd(motionEvents);
@@ -225,14 +222,11 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void WhenLeaveFromRoomWithNoConfusionShouldTurnOffLightAfterSomeTime()
         {
-            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
-            var motionEvents = scheduler.CreateColdObservable
-            (
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
               OnNext(Time.Tics(500), new MotionEnvelope(KitchenId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId))
             );
-            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
-
+            
             service.Start();
 
             scheduler.AdvanceJustAfterEnd(motionEvents);
@@ -245,13 +239,10 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void WhenNoMoveInRoomShouldTurnOffAfterTurnOffTimeout()
         {
-            var (service, eventAggregator, scheduler, lampDictionary, dateTime) = SetupEnviroment();
-            var motionEvents = scheduler.CreateColdObservable
-            (
-              OnNext(Time.Tics(500), new MotionEnvelope(KitchenId))
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+                OnNext(Time.Tics(500), new MotionEnvelope(KitchenId))
             );
-            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
-            
+
             service.Start();
             var area = service.GetAreaDescriptor(KitchenId);
 
@@ -262,9 +253,7 @@ namespace Wirehome.Extensions.Tests
             scheduler.AdvanceJustAfter(area.TurnOffTimeout);
             Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
         }
-        
-        
-
+      
         #region Setup
 
         private const string HallwayToiletId = "HallwayToilet";
@@ -281,12 +270,12 @@ namespace Wirehome.Extensions.Tests
         public
         (
             LightAutomationService,
-            IEventAggregator,
+            ITestableObservable<MotionEnvelope>,
             TestScheduler,
             Dictionary<string, MotionLamp>,
             IDateTimeService
         )
-        SetupEnviroment(AreaDescriptor areaDescription = null)
+        SetupEnviroment(AreaDescriptor areaDescription = null, params Recorded<Notification<MotionEnvelope>>[] messages)
         {
             AreaDescriptor area = areaDescription ?? new AreaDescriptor();
             
@@ -345,7 +334,7 @@ namespace Wirehome.Extensions.Tests
             {
                 new MotionDesctiptorInitializer(hallwayDetectorToilet.Id, new[] { hallwayDetectorLivingRoom.Id, kitchenDetector.Id, staircaseDetector.Id }, hallwayLampToilet, area.DeepClone()),
                 new MotionDesctiptorInitializer(hallwayDetectorLivingRoom.Id, new[] { livingRoomDetector.Id, bathroomDetector.Id, hallwayDetectorToilet.Id }, hallwayLampLivingRoom, area.DeepClone()),
-                new MotionDesctiptorInitializer(livingRoomDetector.Id, new[] { balconyDetector.Id }, livingRoomLamp, area.DeepClone()),
+                new MotionDesctiptorInitializer(livingRoomDetector.Id, new[] { balconyDetector.Id, hallwayDetectorLivingRoom.Id }, livingRoomLamp, area.DeepClone()),
                 new MotionDesctiptorInitializer(balconyDetector.Id, new[] { livingRoomDetector.Id }, balconyLamp, area.DeepClone()),
                 new MotionDesctiptorInitializer(kitchenDetector.Id, new[] { hallwayDetectorToilet.Id }, kitchenLamp, area.DeepClone()),
                 new MotionDesctiptorInitializer(bathroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, bathroomLamp, area.DeepClone()),
@@ -359,10 +348,13 @@ namespace Wirehome.Extensions.Tests
             lightAutomation.RegisterDescriptors(descriptors);
             lightAutomation.Initialize();
 
+            var motionEvents = scheduler.CreateColdObservable(messages);
+            Mock.Get(eventAggregator).Setup(x => x.Observe<MotionEvent>()).Returns(motionEvents);
+
             return
             (
                 lightAutomation,
-                eventAggregator,
+                motionEvents,
                 scheduler,
                 lampDictionary,
                 dateTimeService
@@ -438,6 +430,4 @@ namespace Wirehome.Extensions.Tests
    
         #endregion
     }
-
-
 }

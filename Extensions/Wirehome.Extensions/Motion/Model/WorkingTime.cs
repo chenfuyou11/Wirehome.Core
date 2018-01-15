@@ -1,4 +1,4 @@
-﻿namespace Wirehome.Extensions.MotionModel
+﻿namespace Wirehome.Motion.Model
 {
     public enum WorkingTime
     {

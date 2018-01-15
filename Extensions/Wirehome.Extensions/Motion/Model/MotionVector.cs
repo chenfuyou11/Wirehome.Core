@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using System;
 
-namespace Wirehome.Extensions.MotionModel
+namespace Wirehome.Motion.Model
 {
     public class MotionVector : ValueObject<MotionVector>, IEquatable<MotionVector>
     {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Reactive.Testing;
 using System.Reactive.Concurrency;
+using Wirehome.Motion.Model;
 
 namespace Wirehome.Extensions.Tests
 {

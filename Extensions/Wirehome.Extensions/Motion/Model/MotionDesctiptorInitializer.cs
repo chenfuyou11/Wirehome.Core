@@ -4,7 +4,7 @@ using Wirehome.Contracts.Environment;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Components;
 
-namespace Wirehome.Extensions.MotionModel
+namespace Wirehome.Motion.Model
 {
     public class MotionDesctiptorInitializer
     {

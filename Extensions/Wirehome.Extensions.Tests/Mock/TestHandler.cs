@@ -1,4 +1,5 @@
 ﻿using Wirehome.Extensions.Messaging.Core;
+using Wirehome.Motion.Model;
 
 namespace Wirehome.Extensions.Tests
 {

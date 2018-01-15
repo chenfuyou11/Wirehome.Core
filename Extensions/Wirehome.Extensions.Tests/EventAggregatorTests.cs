@@ -9,10 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Wirehome.Extensions.Core.Policies;
 using Wirehome.Extensions.Messaging.Core.Extensions;
-using System.Diagnostics;
 using Wirehome.Core;
-using System.Linq;
-using System.Linq.Expressions;
+using Wirehome.Motion.Model;
 
 namespace Wirehome.Extensions.Tests
 {

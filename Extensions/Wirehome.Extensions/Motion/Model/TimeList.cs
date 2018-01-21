@@ -8,43 +8,41 @@ using System.Text;
 namespace Wirehome.Motion.Model
 {
     //TODO Add thread safe
-    public class TimeList : IEnumerable<DateTimeOffset>
+    public class TimeList<T> : IEnumerable<TimePair<T>>
     {
-        private List<DateTimeOffset> _innerList { get; } = new List<DateTimeOffset>();
+        private List<TimePair<T>> _innerList { get; } = new List<TimePair<T>>();
         private readonly IScheduler _scheduler;
 
         public TimeList(IScheduler scheduler)
         {
             _scheduler = scheduler;
         }
-        public void Add(DateTimeOffset time)
+        public void Add(DateTimeOffset time, T value) => _innerList.Add(new TimePair<T>(time, value));
+        public void Add(T value) => Add(_scheduler.Now, value);
+        
+
+        public IEnumerable<T> GetLastElements(DateTimeOffset endTime, TimeSpan period)
         {
-            _innerList.Add(time);
+            return _innerList.Where(el => el.Time < endTime && endTime - el.Time < period).Select(v => v.Value);
         }
 
-        public IEnumerable<DateTimeOffset> GetLastElements(DateTimeOffset endTime, TimeSpan period)
-        {
-            return _innerList.Where(el => el < endTime && endTime - el < period);
-        }
+        public bool HasElement(TimeSpan period) => _innerList.Any(el => _scheduler.Now - el.Time < period);
+        public void ClearOldData(TimeSpan period) =>  _innerList.RemoveAll(el => _scheduler.Now - el.Time > period);
+        
 
-        public bool HasElement(TimeSpan period)
-        {
-            return _innerList.Any(el => _scheduler.Now - el < period);
-        }
+        public IEnumerator<TimePair<T>> GetEnumerator() => _innerList.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
 
-        public void ClearOldData(TimeSpan period)
-        {
-            _innerList.RemoveAll(el => _scheduler.Now - el > period);
-        }
+    public class TimePair<T>
+    {
+        public DateTimeOffset Time { get; }
+        public T Value { get; }
 
-        public IEnumerator<DateTimeOffset> GetEnumerator()
+        public TimePair(DateTimeOffset time, T value)
         {
-            return _innerList.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            Time = time;
+            Value = value;
         }
     }
 }

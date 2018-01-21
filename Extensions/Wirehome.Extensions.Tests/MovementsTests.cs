@@ -253,7 +253,30 @@ namespace Wirehome.Extensions.Tests
             scheduler.AdvanceJustAfter(area.TurnOffTimeout);
             Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
         }
-      
+
+        /// <summary>
+        /// First not confused moving path should not be source of confusion for next path
+        /// HT -> HL is eliminated because of that
+        /// T -> HT -> K | L -> HL -> HT -> K
+        /// </summary>
+        [TestMethod]
+        public void MoveInFirstPathShouldNotConfusedNextPathWhenItIsSure()
+        {
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+                // First path
+                OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
+                OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
+                OnNext(Time.Tics(2000), new MotionEnvelope(KitchenId)),
+                // Second path
+                OnNext(Time.Tics(2500), new MotionEnvelope(LivingroomId)),
+                OnNext(Time.Tics(3000), new MotionEnvelope(HallwayLivingroomId))
+            );
+
+            service.Start();
+            
+            scheduler.AdvanceJustAfterEnd(motionEvents);
+        }
+
         #region Setup
 
         private const string HallwayToiletId = "HallwayToilet";

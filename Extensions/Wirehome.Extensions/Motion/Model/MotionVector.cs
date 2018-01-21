@@ -27,5 +27,9 @@ namespace Wirehome.Motion.Model
                 return ((Start?.GetHashCode() ?? 0) * 397) ^ End.GetHashCode();
             }
         }
+
+        public bool EqualsWithEndTime(MotionVector other) => EqualsCore(other) && End.TimeStamp == other.End.TimeStamp;
+        public bool EqualsWithStartTime(MotionVector other) => EqualsCore(other) && Start.TimeStamp == other.Start.TimeStamp;
+        public bool EqualsBothTimes(MotionVector other) => EqualsCore(other) && Start.TimeStamp == other.Start.TimeStamp && End.TimeStamp == other.End.TimeStamp;
     }
 }

@@ -32,26 +32,27 @@ namespace Wirehome.Motion
         public string MotionDetectorUid { get; }
         internal IEnumerable<string> Neighbors { get; }
         internal IReadOnlyCollection<MotionDescriptor> NeighborsCache { get; private set; }
-        private IComponent Lamp { get; }
-        private float LightIntensityAtNight { get; }
-
+        
         // Dynamic parameters
         internal bool AutomationDisabled { get; private set; }
         internal int NumberOfPersonsInArea { get; private set; }
-        internal DateTimeOffset? LastMotionTime { get; private set; }
+        internal MotionStamp LastMotionTime { get; private set; } = new MotionStamp();
         internal AreaDescriptor AreaDescriptor { get; }
+        internal MotionVector LastVectorEnter { get; private set; }
 
-        private TimeList _MotionHistory { get; }
+        private IComponent Lamp { get; }
+        private float LightIntensityAtNight { get; }
+        private TimeList<DateTimeOffset> _MotionHistory { get; }
         private Probability _PresenceProbability { get; set; } = Probability.Zero;
         private DateTimeOffset _AutomationEnableOn { get; set; }
         private DateTimeOffset _LastManualTurnOn { get; set; }
         private int _PresenseMotionCounter { get; set; }
-        private MotionVector _LastEnter { get; set; }
-        private MotionVector _LastLeave { get; set; }
+        private DateTimeOffset? _LastAutoIncrement;
+        
 
         public override string ToString()
         {
-            return $"{MotionDetectorUid} [Last move: {(LastMotionTime != null ? LastMotionTime?.Second.ToString() : "?")}:{(LastMotionTime != null ? LastMotionTime?.Millisecond.ToString() : "?")}] [Persons: {NumberOfPersonsInArea}]";
+            return $"{MotionDetectorUid} [Last move: {LastMotionTime}] [Persons: {NumberOfPersonsInArea}]";
         }
 
         public MotionDescriptor(string motionDetectorUid, IEnumerable<string> neighbors, IComponent lamp, IScheduler scheduler,
@@ -74,7 +75,7 @@ namespace Wirehome.Motion
             _turnOnConditionsValidator.WithCondition(ConditionRelation.And, new IsEnabledAutomationCondition(this));
             _turnOffConditionsValidator.WithCondition(ConditionRelation.And, new IsEnabledAutomationCondition(this));
 
-            _MotionHistory = new TimeList(scheduler);
+            _MotionHistory = new TimeList<DateTimeOffset>(scheduler);
 
             PowerChangeSource = Lamp.ToPowerChangeSource();
 
@@ -85,10 +86,45 @@ namespace Wirehome.Motion
 
         public void MarkMotion(DateTimeOffset time)
         {
-            LastMotionTime = time;
+            LastMotionTime.SetTime(time);
             _MotionHistory.Add(time);
             _PresenseMotionCounter++;
             SetProbability(Probability.Full);
+
+            AutoIncrementForOnePerson();
+        }
+
+        /// <summary>
+        /// When we don't detect motion vector but there is move in room and currently we have 0 person we know that there is a least one
+        /// </summary>
+        private void AutoIncrementForOnePerson()
+        {
+            if (NumberOfPersonsInArea == 0)
+            {
+                _LastAutoIncrement = _scheduler.Now;
+                NumberOfPersonsInArea++;
+            }
+        }
+
+        private void IncrementNumberOfPersons()
+        {
+            if (!_LastAutoIncrement.HasValue || _scheduler.Now - _LastAutoIncrement > TimeSpan.FromMilliseconds(100))
+            {
+                NumberOfPersonsInArea++;
+            }
+        }
+
+        private void DecrementNumberOfPersons()
+        {
+            if (NumberOfPersonsInArea > 0)
+            {
+                NumberOfPersonsInArea--;
+
+                if(NumberOfPersonsInArea == 0)
+                {
+                    LastMotionTime.UnConfuze();
+                }
+            }
         }
 
         public void Update()
@@ -100,17 +136,13 @@ namespace Wirehome.Motion
 
         public void MarkEnter(MotionVector vector)
         {
-            _LastEnter = vector;
-            NumberOfPersonsInArea++;
+            LastVectorEnter = vector;
+            IncrementNumberOfPersons();
         }
 
         public void MarkLeave(MotionVector vector)
         {
-            _LastLeave = vector;
-            if (NumberOfPersonsInArea > 0)
-            {
-                NumberOfPersonsInArea--;
-            }
+            DecrementNumberOfPersons();
 
             if (AreaDescriptor.MaxPersonCapacity == 1)
             {
@@ -184,5 +216,24 @@ namespace Wirehome.Motion
         private bool CanTurnOnLamp() => _turnOnConditionsValidator.Validate() != ConditionState.NotFulfilled;
         private bool CanTurnOffLamp() => _turnOffConditionsValidator.Validate() != ConditionState.NotFulfilled;
     }
+
+    public class MotionStamp
+    {
+        public DateTimeOffset? Time { get; private set; }
+        public bool CanConfuze { get; private set; }
+
+        public override string ToString() => $"{(Time != null ? Time?.Second.ToString() : "?")}:{(Time != null ? Time?.Millisecond.ToString() : "?")}";
+
+        public void SetTime(DateTimeOffset time)
+        {
+            Time = time;
+            CanConfuze = true;
+        }
+
+        public void UnConfuze() => CanConfuze = false;
+        
+
+    }
+
 
 }

@@ -13,6 +13,7 @@ using Wirehome.Contracts.Core;
 using Wirehome.Extensions.Extensions;
 using Force.DeepCloner;
 using Wirehome.Motion.Model;
+using System.Reactive.Subjects;
 
 namespace Wirehome.Motion
 {
@@ -29,11 +30,11 @@ namespace Wirehome.Motion
         private readonly List<ConfusedVector> _confusedVectors = new List<ConfusedVector>();
         private readonly DisposeContainer _disposeContainer = new DisposeContainer();
         private readonly TaskCompletionSource<bool> _workDoneTaskSource = new TaskCompletionSource<bool>();
+        
         private bool _IsInitialized;
         public Task StopWorking => _workDoneTaskSource.Task;
-        public readonly List<MotionVector> MotionVectors = new List<MotionVector>();
-        
 
+    
         public LightAutomationService(IEventAggregator eventAggregator,
                                       IDaylightService daylightService,
                                       ILogService logService,
@@ -64,6 +65,7 @@ namespace Wirehome.Motion
         public void RegisterDescriptors(IEnumerable<MotionDesctiptorInitializer> motionDescriptorsInitilizers)
         {
             if (_IsInitialized) throw new Exception("Cannot register new descriptors after service has started");
+
             if (!motionDescriptorsInitilizers.Any()) throw new Exception("No detectors found to automate");
 
             //TODO Check if component is real lamp - wait for new component implementation
@@ -131,57 +133,49 @@ namespace Wirehome.Motion
             }
         }
       
-        private IDisposable PeriodicCheck()
-        {
-            return _observableTimer.GenerateTime(_motionConfiguration.PeriodicCheckTime)
-                                   .ObserveOn(_concurrencyProvider.Task)
-                                   .Subscribe(_ => _motionDescriptors.Values.ForEach(md => md.Update()), HandleError, Test);
-        }
+        private IDisposable PeriodicCheck() => _observableTimer.GenerateTime(_motionConfiguration.PeriodicCheckTime)
+                                                               .ObserveOn(_concurrencyProvider.Task)
+                                                               .Subscribe(_ => _motionDescriptors.Values.ForEach(md => md.Update()), HandleError);
+        
 
-        private IDisposable CheckMotion()
-        {
-            return AnalyzeMove().ObserveOn(_concurrencyProvider.Task)
-                                .Subscribe(HandleVector, HandleError, () => _workDoneTaskSource.SetResult(true));
-        }
-
-        private void HandleError(Exception ex)
-        {
-            _logger.Error(ex, "Exception in LightAutomationService");
-        }
-
-        private void Test()
-        {
-
-        }
-
+        private IDisposable CheckMotion() => AnalyzeMove().ObserveOn(_concurrencyProvider.Task).Subscribe(HandleVector, HandleError, () => _workDoneTaskSource.SetResult(true));
+        
+        private void HandleError(Exception ex) =>_logger.Error(ex, "Exception in LightAutomationService");
+        
+        
         private void HandleVector(MotionVector motionVector)
         {
             var confusionPoints = GetMovementsInNeighborhood(motionVector);
 
-            if (!confusionPoints.Any())
+            if (confusionPoints.Count == 0)
             {
                 MarkVector(motionVector);
-
-                MotionVectors.Add(motionVector);
             }
-            else
+            // If there is no more people in are this confusion is resolving immediately
+            else if (_motionDescriptors[motionVector.Start.Uid].NumberOfPersonsInArea > 0)
             {
-                _confusedVectors.Add(new ConfusedVector(motionVector, confusionPoints));
+                _confusedVectors.Add(new ConfusedVector(motionVector, confusionPoints));   
             }
         }
 
         private void MarkVector(MotionVector motionVector)
         {
+            // If there was a vector from this point we don't start another
+            if (_motionDescriptors[motionVector.End.Uid].LastVectorEnter?.EqualsWithStartTime(motionVector) ?? false) return;
+            
             _motionDescriptors[motionVector.Start.Uid].MarkLeave(motionVector);
             _motionDescriptors[motionVector.End.Uid].MarkEnter(motionVector);
         }
         
-        private IEnumerable<MotionPoint> GetMovementsInNeighborhood(MotionVector vector)
-        {
-            return _motionDescriptors[vector.End.Uid].NeighborsCache
-                                                     .Where(n => n.MotionDetectorUid != vector.Start.Uid && vector.End.TimeStamp - n.LastMotionTime < n.AreaDescriptor.MotionDetectorAlarmTime)
-                                                     .Select(n => new MotionPoint(n.MotionDetectorUid, n.LastMotionTime.GetValueOrDefault()));
-        }
+        private IList<MotionPoint> GetMovementsInNeighborhood(MotionVector vector) =>
+            _motionDescriptors[vector.End.Uid].NeighborsCache
+                                              .Where(n => n.MotionDetectorUid != vector.Start.Uid
+                                                      && n.LastMotionTime.CanConfuze
+                                                      && vector.End.TimeStamp.HappendBefore(n.LastMotionTime.Time, n.AreaDescriptor.MotionDetectorAlarmTime)
+                                              )
+                                              .Select(n => new MotionPoint(n.MotionDetectorUid, n.LastMotionTime.Time.GetValueOrDefault()))
+                                              .ToList();
+        
 
         private bool IsProperVector(MotionPoint start, MotionPoint potencialEnd) => AreNeighbors(start, potencialEnd) && IsMovePhisicallyPosible(start, potencialEnd);
         private bool AreNeighbors(MotionPoint p1, MotionPoint p2) => _motionDescriptors?[p1.Uid]?.Neighbors?.Contains(p2.Uid) ?? false;

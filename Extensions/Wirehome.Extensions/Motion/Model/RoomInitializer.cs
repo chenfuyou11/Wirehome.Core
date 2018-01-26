@@ -6,9 +6,9 @@ using Wirehome.Contracts.Components;
 
 namespace Wirehome.Motion.Model
 {
-    public class MotionDesctiptorInitializer
+    public class RoomInitializer
     {
-        public MotionDesctiptorInitializer(string motionDetectorUid, IEnumerable<string> neighbors, IComponent lamp, AreaDescriptor areaInitializer = null)
+        public RoomInitializer(string motionDetectorUid, IEnumerable<string> neighbors, IComponent lamp, AreaDescriptor areaInitializer = null)
         {
             MotionDetectorUid = motionDetectorUid;
             Neighbors = neighbors;
@@ -21,9 +21,9 @@ namespace Wirehome.Motion.Model
         public IComponent Lamp { get; }
         public AreaDescriptor AreaInitializer { get; }
 
-        public MotionDescriptor ToMotionDescriptor(MotionConfiguration config, IScheduler scheduler, IDaylightService daylightService, IDateTimeService dateTimeService)
+        public Room ToRoom(MotionConfiguration config, IScheduler scheduler, IDaylightService daylightService, IDateTimeService dateTimeService)
         {
-            return new MotionDescriptor(MotionDetectorUid, Neighbors, Lamp, scheduler, daylightService, dateTimeService, AreaInitializer, config);
+            return new Room(MotionDetectorUid, Neighbors, Lamp, scheduler, daylightService, dateTimeService, AreaInitializer, config);
         }
     }
 }

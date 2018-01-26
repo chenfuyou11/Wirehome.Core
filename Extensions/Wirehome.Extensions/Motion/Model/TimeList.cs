@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Concurrency;
-using System.Text;
 
 namespace Wirehome.Motion.Model
 {
@@ -25,7 +24,7 @@ namespace Wirehome.Motion.Model
         {
             return _innerList.Where(el => el.Time < endTime && endTime - el.Time < period).Select(v => v.Value);
         }
-
+        
         public bool HasElement(TimeSpan period) => _innerList.Any(el => _scheduler.Now - el.Time < period);
         public void ClearOldData(TimeSpan period) =>  _innerList.RemoveAll(el => _scheduler.Now - el.Time > period);
         
@@ -36,6 +35,8 @@ namespace Wirehome.Motion.Model
 
     public class TimePair<T>
     {
+        public static TimePair<T> Empty = new TimePair<T>(new DateTimeOffset(0, TimeSpan.FromTicks(0)), default);
+
         public DateTimeOffset Time { get; }
         public T Value { get; }
 

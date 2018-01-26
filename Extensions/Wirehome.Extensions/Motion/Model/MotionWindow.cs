@@ -10,6 +10,7 @@ namespace Wirehome.Motion.Model
     {
         private static readonly ReadOnlyCollection<MotionVector> _noVectors = new List<MotionVector>().AsReadOnly();
         private readonly List<MotionVector> _vectors = new List<MotionVector>();
+        private readonly List<MotionVector> _vectorsHistory = new List<MotionVector>();
 
         public MotionWindow(MotionPoint start)
         {
@@ -27,7 +28,12 @@ namespace Wirehome.Motion.Model
         {
             if (isProperVectorCheck(Start, mp))
             {
-               _vectors.Add(new MotionVector(Start, mp));
+                var vector = new MotionVector(Start, mp);
+                if(!_vectorsHistory.Contains(vector))
+                {
+                    _vectorsHistory.Add(vector);
+                    _vectors.Add(vector);
+                }
             }
 
             return this;

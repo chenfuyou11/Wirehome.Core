@@ -17,9 +17,9 @@ namespace Wirehome.Motion.Model
 
     public class IsEnabledAutomationCondition : Condition
     {
-        private readonly MotionDescriptor _motionDescriptor;
+        private readonly Room _motionDescriptor;
 
-        public IsEnabledAutomationCondition(MotionDescriptor motionDescriptor)
+        public IsEnabledAutomationCondition(Room motionDescriptor)
         {
             _motionDescriptor = motionDescriptor;
 

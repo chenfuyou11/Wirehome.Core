@@ -31,19 +31,16 @@ namespace Wirehome.Extensions.Extensions
         {
             return source
                 .Timestamp(scheduler)
-                .Scan
-                (new
+                .Scan(new
                 {
                     Acumulator = new Dictionary<TSource, DateTimeOffset>(comparer),
                     Next = Observable.Empty<TSource>()
                 }, (state, item) => new
                 {
-                    Acumulator = state.Acumulator.Where(kvp => item.Timestamp - kvp.Value < expirationTime)
-                                .Concat(CheckForValueOrTimeout(expirationTime, state.Acumulator, item)
-                                        ? Enumerable.Repeat(new KeyValuePair<TSource, DateTimeOffset>(item.Value, item.Timestamp), 1)
-                                        : Enumerable.Empty<KeyValuePair<TSource, DateTimeOffset>>()
-                                        )
-                                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value, comparer),
+                    Acumulator = state.Acumulator
+                                      .Where(acumulator => item.Timestamp - acumulator.Value < expirationTime)
+                                      .Concat(CheckForValueOrTimeout(expirationTime, state.Acumulator, item) ? Enumerable.Repeat(new KeyValuePair<TSource, DateTimeOffset>(item.Value, item.Timestamp), 1) : Enumerable.Empty<KeyValuePair<TSource, DateTimeOffset>>())
+                                      .ToDictionary(acumulator => acumulator.Key, acumulator => acumulator.Value, comparer),
                     Next = CheckForValueOrTimeout(expirationTime, state.Acumulator, item) ? Observable.Return(item.Value) : Observable.Empty(item.Value)
                 }
                 )

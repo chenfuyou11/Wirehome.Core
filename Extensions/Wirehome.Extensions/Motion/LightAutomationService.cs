@@ -155,7 +155,7 @@ namespace Wirehome.Motion
             // If there is no more people in are this confusion is resolving immediately
             else if (_rooms[motionVector.Start.Uid].NumberOfPersonsInArea > 0)
             {
-                _logger.Info($"{motionVector} [Confused]");
+                _logger.Info($"{motionVector} [Confused: {string.Join(" | ", confusionPoints)}]");
                 _confusedVectors.Add(new ConfusedVector(motionVector, confusionPoints));
             }
             else

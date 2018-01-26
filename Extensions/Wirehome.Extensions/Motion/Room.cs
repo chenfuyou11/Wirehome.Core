@@ -185,28 +185,30 @@ namespace Wirehome.Motion
 
         internal IList<MotionPoint> GetMovementsInNeighborhood(MotionVector vector) => NeighborsCache.ToList()
                                                                                                      .AddChained(this)
-                                                                                                     .Where(room => room.Uid != vector.Start.Uid && room.CanConfuse(vector.End.TimeStamp))
-                                                                                                     .Select(room => new MotionPoint(room.Uid, room.LastMotion.Time.Value))
+                                                                                                     .Where(room => room.Uid != vector.Start.Uid)
+                                                                                                     .Select(room => room.CanConfuse(vector.End.TimeStamp))
+                                                                                                     .Where(y => y != null)
                                                                                                      .ToList();
 
         
-        internal bool CanConfuse(DateTimeOffset timeOfMotion)
+        internal MotionPoint CanConfuse(DateTimeOffset timeOfMotion)
         {
             var lastMotion = LastMotion;
-            
+
             // If last motion time has same value we have to go back in time for previous value to check real previous
             if (timeOfMotion == lastMotion.Time)
             {
                 lastMotion = lastMotion.Previous;
             }
 
-            if (lastMotion?.Time == null) return false;
+            if(lastMotion?.Time != null && lastMotion.CanConfuze && timeOfMotion.HappendBefore(lastMotion.Time, AreaDescriptor.MotionDetectorAlarmTime))
+            {
+                return new MotionPoint(Uid, lastMotion.Time.Value);
+            }
 
-            return lastMotion.CanConfuze && timeOfMotion.HappendBefore(lastMotion.Time, AreaDescriptor.MotionDetectorAlarmTime);
+            return null;
         }
-            
-         
-        
+
         internal void BuildNeighborsCache(IEnumerable<Room> neighbors) => NeighborsCache = new ReadOnlyCollection<Room>(neighbors.ToList());
         internal void DisableAutomation() => AutomationDisabled = true;
         internal void EnableAutomation() => AutomationDisabled = false;

@@ -17,7 +17,7 @@ namespace Wirehome.Motion.Model
         public MotionVector ToVector(MotionPoint start) => new MotionVector(start, this);
         protected override bool EqualsCore(MotionPoint other) => Equals(Uid, other.Uid);
         public bool Equals(MotionPoint other) => base.Equals(other);
-        public override string ToString() => $"[{Uid}: {TimeStamp:ss:fff}]";
+        public override string ToString() => $"{Uid}: {TimeStamp:ss:fff}";
 
         protected override int GetHashCodeCore()
         {

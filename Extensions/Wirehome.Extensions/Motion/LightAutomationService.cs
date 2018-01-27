@@ -16,6 +16,8 @@ using Wirehome.Motion.Model;
 
 namespace Wirehome.Motion
 {
+    // Add time between rooms - people walks 6km/1h => 6000m/3600s => 1m = 600ms
+    // Alarm when move in one enter room without move in entering neighbor
     public class LightAutomationService : IService, IDisposable
     {
         private readonly IEventAggregator _eventAggregator;
@@ -24,15 +26,11 @@ namespace Wirehome.Motion
         private readonly IConcurrencyProvider _concurrencyProvider;
         private readonly IDateTimeService _dateTimeService;
         private readonly IObservableTimer _observableTimer;
-        private MotionConfiguration _motionConfiguration;
-        private ImmutableDictionary<string, Room> _rooms;
+        private readonly MotionConfiguration _motionConfiguration;
         private readonly List<ConfusedVector> _confusedVectors = new List<ConfusedVector>();
         private readonly DisposeContainer _disposeContainer = new DisposeContainer();
-        private readonly TaskCompletionSource<bool> _workDoneTaskSource = new TaskCompletionSource<bool>();
-
+        private ImmutableDictionary<string, Room> _rooms;
         private bool _IsInitialized;
-        public Task StopWorking => _workDoneTaskSource.Task;
-
 
         public LightAutomationService(IEventAggregator eventAggregator,
                                       IDaylightService daylightService,
@@ -61,7 +59,7 @@ namespace Wirehome.Motion
             return Task.CompletedTask;
         }
 
-        public void RegisterRoom(IEnumerable<RoomInitializer> roomInitializers)
+        public void RegisterRooms(IEnumerable<RoomInitializer> roomInitializers)
         {
             if (_IsInitialized) throw new Exception("Cannot register new descriptors after service has started");
 
@@ -72,10 +70,10 @@ namespace Wirehome.Motion
                                                              .ToImmutableDictionary(k => k.Uid, v => v);
 
             var missingRooms = _rooms.Select(m => m.Value)
-                                                        .SelectMany(n => n.Neighbors)
-                                                        .Distinct()
-                                                        .Except(_rooms.Keys)
-                                                        .ToList();
+                                     .SelectMany(n => n.Neighbors)
+                                     .Distinct()
+                                     .Except(_rooms.Keys)
+                                     .ToList();
             if (missingRooms.Count > 0) throw new Exception($"Following neighbors have not registered rooms: {string.Join(", ", missingRooms)}");
 
             _rooms.Values.ForEach(md => md.BuildNeighborsCache(GetNeighbors(md.Uid)));
@@ -89,6 +87,7 @@ namespace Wirehome.Motion
         public int NumberOfPersonsInHouse => _rooms.Sum(md => md.Value.NumberOfPersonsInArea);
         public AreaDescriptor GetAreaDescriptor(string roomId) => _rooms[roomId].AreaDescriptor.ShallowClone();
         public int NumberOfConfusions => _confusedVectors.Count;
+        public MotionConfiguration Configuration => _motionConfiguration.ShallowClone();
 
         public void Start()
         {
@@ -110,54 +109,64 @@ namespace Wirehome.Motion
 
         private void HandleMove(MotionWindow point)
         {
-            ResolveConfusion(point.Start);
             _rooms?[point.Start.Uid]?.MarkMotion(point.Start.TimeStamp);
         }
-
-        private void ResolveConfusion(MotionPoint point)
-        {
-            for (int i = _confusedVectors.Count - 1; i >= 0; i--)
-            {
-                var confusedVector = _confusedVectors[i];
-                // If we have move in start point we are sure that leave was not there (TODO what about more than 2 people)
-                if (confusedVector.Vector.Start == point)
-                {
-                    _confusedVectors.Remove(confusedVector);
-                }
-                // If we can eliminate confusion we try to reduce it and check if it is still confusing
-                else if (confusedVector.ConfusionPoint.Contains(point) && !confusedVector.ReduceConfusion(point).IsConfused)
-                {
-                    _confusedVectors.Remove(confusedVector);
-                    MarkVector(confusedVector.Vector);
-                }
-            }
-        }
-
-        private IDisposable PeriodicCheck() => _observableTimer.GenerateTime(_motionConfiguration.PeriodicCheckTime)
-                                                               .ObserveOn(_concurrencyProvider.Task)
-                                                               .Subscribe(_ => _rooms.Values.ForEach(md => md.Update()), HandleError);
-
-
-        private IDisposable CheckMotion() => AnalyzeMove().ObserveOn(_concurrencyProvider.Task).Subscribe(HandleVector, HandleError, () => _workDoneTaskSource.SetResult(true));
+        
+        private IDisposable CheckMotion() => AnalyzeMove().ObserveOn(_concurrencyProvider.Task).Subscribe(HandleVector, HandleError);
 
         private void HandleError(Exception ex) => _logger.Error(ex, "Exception in LightAutomationService");
 
+        private IDisposable PeriodicCheck() => _observableTimer.GenerateTime(_motionConfiguration.PeriodicCheckTime)
+                                                               .ObserveOn(_concurrencyProvider.Task)
+                                                               .Subscribe(CheckConfusions, HandleError);
 
+        private void CheckConfusions(DateTimeOffset currentTime)
+        {
+            _rooms.Values.ForEach(room => room.Update());
+
+            for (int i = _confusedVectors.Count - 1; i >= 0; i--)
+            {
+                var confusedVector = _confusedVectors[i];
+
+                // When timeout we have to delete confused vector
+                if(currentTime - confusedVector.Vector.End.TimeStamp > _motionConfiguration.ConfusionResolutionTimeOut)
+                {
+                    _confusedVectors.Remove(confusedVector);
+                    continue;
+                }
+
+                var startRoom = _rooms[confusedVector.Vector.Start.Uid];
+                var endRoom = _rooms[confusedVector.Vector.End.Uid];
+
+                var startNeighbors = startRoom.NeighborsCache.ToList().AddChained(startRoom).RemoveChained(endRoom);
+
+                if(currentTime - confusedVector.Vector.Start.TimeStamp > _motionConfiguration.ConfusionResolutionTime)
+                {
+                    var noMoveInStartNeighbors = startNeighbors.All(n => n.LastMotion.Time <= confusedVector.Vector.Start.TimeStamp);
+                    if (noMoveInStartNeighbors)
+                    {
+                        MarkVector(confusedVector.Vector);
+                        _confusedVectors.Remove(confusedVector);
+                    }
+                }
+
+            }
+        }
+        
         private void HandleVector(MotionVector motionVector)
         {
             var confusionPoints = _rooms[motionVector.End.Uid].GetMovementsInNeighborhood(motionVector);
 
             if (confusionPoints.Count == 0)
             {
-                _logger.Info(motionVector.ToString());
                 MarkVector(motionVector);
             }
-            // If there is no more people in are this confusion is resolving immediately
             else if (_rooms[motionVector.Start.Uid].NumberOfPersonsInArea > 0)
             {
                 _logger.Info($"{motionVector} [Confused: {string.Join(" | ", confusionPoints)}]");
                 _confusedVectors.Add(new ConfusedVector(motionVector, confusionPoints));
             }
+            // If there is no more people in area this confusion is resolved immediately because it is physically impossible
             else
             {
                 _logger.Info($"{motionVector} [Deleted]");
@@ -166,8 +175,10 @@ namespace Wirehome.Motion
 
         private void MarkVector(MotionVector motionVector)
         {
-            // If there was a vector from this room we don't start another
+            // If there was not confused vector from this point we don't start another
             if (_rooms[motionVector.End.Uid].LastVectorEnter?.EqualsWithStartTime(motionVector) ?? false) return;
+
+            _logger.Info(motionVector.ToString());
 
             _rooms[motionVector.Start.Uid].MarkLeave(motionVector);
             _rooms[motionVector.End.Uid].MarkEnter(motionVector);

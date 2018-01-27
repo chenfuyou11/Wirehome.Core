@@ -117,6 +117,12 @@ namespace Wirehome.Extensions.Extensions
             return collection;
         }
 
+        public static ICollection<T> RemoveChained<T>(this ICollection<T> collection, T item)
+        {
+            collection.Remove(item);
+            return collection;
+        }
+
         public static K ElementAtOrNull<T, K>(this Dictionary<T, K> dictionary, T lookupValue) where K: class
         {
             return dictionary.ContainsKey(lookupValue) ? dictionary[lookupValue] : null;

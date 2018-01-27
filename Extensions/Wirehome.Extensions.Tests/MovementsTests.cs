@@ -9,8 +9,6 @@ using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Environment;
 using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Contracts.Core;
-using Wirehome.Contracts.Components;
-using Wirehome.Contracts.Components.Commands;
 using Force.DeepCloner;
 using System.Reactive;
 using Wirehome.Motion.Model;
@@ -158,17 +156,7 @@ namespace Wirehome.Extensions.Tests
             );
 
             service.Start();
-            //scheduler.AdvanceJustAfterEnd(motionEvents);
-
-            scheduler.AdvanceJustAfter(TimeSpan.FromMilliseconds(500));
-            scheduler.AdvanceJustAfter(TimeSpan.FromMilliseconds(1500));
-            scheduler.AdvanceJustAfter(TimeSpan.FromMilliseconds(2000));
-            scheduler.AdvanceJustAfter(TimeSpan.FromMilliseconds(2500));
-            scheduler.AdvanceJustAfter(TimeSpan.FromMilliseconds(3000));
-            scheduler.AdvanceJustAfter(TimeSpan.FromMilliseconds(3500));
-            scheduler.AdvanceJustAfter(TimeSpan.FromMilliseconds(4000));
-            
-
+            scheduler.AdvanceTo(service.Configuration.ConfusionResolutionTime + TimeSpan.FromMilliseconds(6000));
 
             Assert.AreEqual(2, service.GetCurrentNumberOfPeople(KitchenId));
         }
@@ -209,21 +197,19 @@ namespace Wirehome.Extensions.Tests
 
 
         [TestMethod]
-        public void WhenLeaveFromOnePersonRoomWithConfusionShouldTurnOffImmediatelyWhenConfusionResolved()
+        public void WhenLeaveFromOnePersonRoomWithConfusionShouldTurnOffWhenConfusionResolved()
         {
             
             var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
-                  // T->HT vs K->HT 
                   OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
                   OnNext(Time.Tics(1000), new MotionEnvelope(KitchenId)),
                   OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
                   OnNext(Time.Tics(2000), new MotionEnvelope(HallwayLivingroomId)),
-                  // Move in K cancels K->HT 
                   OnNext(Time.Tics(3000), new MotionEnvelope(KitchenId))
             );
 
             service.Start();
-            scheduler.AdvanceToEnd(motionEvents);
+            scheduler.AdvanceTo(service.Configuration.ConfusionResolutionTime + TimeSpan.FromMilliseconds(1500));
 
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
         }
@@ -406,20 +392,21 @@ namespace Wirehome.Extensions.Tests
 
             var descriptors = new List<RoomInitializer>
             {
-                new RoomInitializer(hallwayDetectorToilet.Id, new[] { hallwayDetectorLivingRoom.Id, kitchenDetector.Id, staircaseDetector.Id }, hallwayLampToilet, area.DeepClone()),
+                new RoomInitializer(hallwayDetectorToilet.Id, new[] { hallwayDetectorLivingRoom.Id, kitchenDetector.Id, staircaseDetector.Id, toiletDetector.Id }, hallwayLampToilet, area.DeepClone()),
                 new RoomInitializer(hallwayDetectorLivingRoom.Id, new[] { livingRoomDetector.Id, bathroomDetector.Id, hallwayDetectorToilet.Id }, hallwayLampLivingRoom, area.DeepClone()),
                 new RoomInitializer(livingRoomDetector.Id, new[] { balconyDetector.Id, hallwayDetectorLivingRoom.Id }, livingRoomLamp, area.DeepClone()),
                 new RoomInitializer(balconyDetector.Id, new[] { livingRoomDetector.Id }, balconyLamp, area.DeepClone()),
                 new RoomInitializer(kitchenDetector.Id, new[] { hallwayDetectorToilet.Id }, kitchenLamp, area.DeepClone()),
                 new RoomInitializer(bathroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, bathroomLamp, area.DeepClone()),
                 new RoomInitializer(badroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, badroomLamp, area.DeepClone()),
-                new RoomInitializer(staircaseDetector.Id, new[] { hallwayDetectorToilet.Id }, staircaseLamp, area.DeepClone())
+                new RoomInitializer(staircaseDetector.Id, new[] { hallwayDetectorToilet.Id }, staircaseLamp, area.DeepClone()),
             };
 
             var toiletArea = area.DeepClone();
             toiletArea.MaxPersonCapacity = 1;
             descriptors.Add(new RoomInitializer(toiletDetector.Id, new[] { hallwayDetectorToilet.Id }, toiletLamp, toiletArea));
-            lightAutomation.RegisterRoom(descriptors);
+
+            lightAutomation.RegisterRooms(descriptors);
             lightAutomation.Initialize();
 
             var motionEvents = scheduler.CreateColdObservable(messages);

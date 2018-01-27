@@ -32,7 +32,11 @@ namespace Wirehome.Extensions.Tests
             scheduler.AdvanceTo(time.Ticks);
         }
 
-
+        public static void AdvanceAfterElement<T>(this TestScheduler scheduler, ITestableObservable<T> events, int elementIndex, int timeAfter = 500)
+        {
+            scheduler.AdvanceTo(events.Messages.ElementAt(elementIndex).Time + Time.Tics(timeAfter));
+        }
+        
         public static TimeSpan JustAfter(this TimeSpan span, int timeAfter = 100) => span.Add(TimeSpan.FromMilliseconds(timeAfter));
         
     }

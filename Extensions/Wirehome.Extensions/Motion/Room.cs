@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Wirehome.Conditions;
 using Wirehome.Conditions.Specialized;
 using Wirehome.Contracts.Conditions;
@@ -10,7 +11,6 @@ using Wirehome.Contracts.Components.States;
 using Wirehome.Contracts.Environment;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Components;
-using System.Collections.ObjectModel;
 using Wirehome.Motion.Model;
 using Wirehome.Extensions;
 using Wirehome.Extensions.Extensions;
@@ -42,14 +42,13 @@ namespace Wirehome.Motion
         internal MotionVector LastVectorEnter { get; private set; }
 
         private IComponent Lamp { get; }
-        private float LightIntensityAtNight { get; }
         private TimeList<DateTimeOffset> _MotionHistory { get; }
         private Probability _PresenceProbability { get; set; } = Probability.Zero;
         private DateTimeOffset _AutomationEnableOn { get; set; }
-        private DateTimeOffset _LastManualTurnOn { get; set; }
         private int _PresenseMotionCounter { get; set; }
         private DateTimeOffset? _LastAutoIncrement;
-        
+        private float LightIntensityAtNight { get; }
+        private DateTimeOffset _LastManualTurnOn { get; set; }
 
         public override string ToString()
         {
@@ -186,12 +185,12 @@ namespace Wirehome.Motion
         internal IList<MotionPoint> GetMovementsInNeighborhood(MotionVector vector) => NeighborsCache.ToList()
                                                                                                      .AddChained(this)
                                                                                                      .Where(room => room.Uid != vector.Start.Uid)
-                                                                                                     .Select(room => room.CanConfuse(vector.End.TimeStamp))
+                                                                                                     .Select(room => room.GetConfusion(vector.End.TimeStamp))
                                                                                                      .Where(y => y != null)
                                                                                                      .ToList();
 
         
-        internal MotionPoint CanConfuse(DateTimeOffset timeOfMotion)
+        internal MotionPoint GetConfusion(DateTimeOffset timeOfMotion)
         {
             var lastMotion = LastMotion;
 
@@ -270,5 +269,4 @@ namespace Wirehome.Motion
         private bool CanTurnOnLamp() => _turnOnConditionsValidator.Validate() != ConditionState.NotFulfilled;
         private bool CanTurnOffLamp() => _turnOffConditionsValidator.Validate() != ConditionState.NotFulfilled;
     }
-
 }

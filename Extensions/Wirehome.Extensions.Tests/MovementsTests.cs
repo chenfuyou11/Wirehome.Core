@@ -1,7 +1,9 @@
 ﻿using Moq;
 using System;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Collections.Generic;
+using Force.DeepCloner;
 using Microsoft.Reactive.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Wirehome.Contracts.Sensors;
@@ -9,10 +11,9 @@ using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Environment;
 using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Contracts.Core;
-using Force.DeepCloner;
-using System.Reactive;
 using Wirehome.Motion.Model;
 using Wirehome.Motion;
+using Wirehome.Contracts.Components.States;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -123,6 +124,7 @@ namespace Wirehome.Extensions.Tests
             scheduler.AdvanceToEnd(motionEvents);
 
             Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
+            Assert.AreEqual(true, service.IsAutomationDisabled(ToiletId));
         }
 
         [TestMethod]
@@ -176,7 +178,7 @@ namespace Wirehome.Extensions.Tests
             );
 
             service.Start();
-            scheduler.AdvanceJustAfterEnd(motionEvents);
+            scheduler.AdvanceTo(service.Configuration.ConfusionResolutionTime + TimeSpan.FromMilliseconds(6000));
 
             Assert.AreEqual(2, service.NumberOfPersonsInHouse);
         }
@@ -269,7 +271,6 @@ namespace Wirehome.Extensions.Tests
             );
 
             service.Start();
-            
             scheduler.AdvanceJustAfterEnd(motionEvents);
 
             Assert.AreEqual(0, service.NumberOfConfusions);
@@ -289,21 +290,37 @@ namespace Wirehome.Extensions.Tests
                 OnNext(Time.Tics(1501), new MotionEnvelope(HallwayLivingroomId)),
 
                 //OnNext(Time.Tics(2000), new MotionEnvelope(HallwayLivingroomId)), <- Undetected due motion detectors lag after previous move
-                //OnNext(Time.Tics(2000), new MotionEnvelope(HallwayToiletId)), <- Undetected due motion detectors lag after previous move
+                //OnNext(Time.Tics(2000), new MotionEnvelope(HallwayToiletId)),     <- Undetected due motion detectors lag after previous move
 
                 OnNext(Time.Tics(3000), new MotionEnvelope(LivingroomId)),
                 OnNext(Time.Tics(3001), new MotionEnvelope(KitchenId))
             );
 
             service.Start();
+            scheduler.AdvanceJustAfterEnd(motionEvents);
 
-            scheduler.AdvanceJustAfter(TimeSpan.FromMilliseconds(501));
-            scheduler.AdvanceJustAfter(TimeSpan.FromMilliseconds(1501));
-            scheduler.AdvanceJustAfter(TimeSpan.FromMilliseconds(3001));
-            
-            
-            //scheduler.AdvanceJustAfterEnd(motionEvents);
+            Assert.AreEqual(1, service.GetCurrentNumberOfPeople(KitchenId));
+            Assert.AreEqual(1, service.GetCurrentNumberOfPeople(LivingroomId));
+            Assert.AreEqual(2, service.NumberOfPersonsInHouse);
+        }
 
+        [TestMethod]
+        public void ManualLightChangeShouldInvokeDecoderAction()
+        {
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null);
+
+
+            var testEvents = scheduler.CreateHotObservable(
+                OnNext(Time.Tics(500), GenPowerOnEvent()),
+                OnNext(Time.Tics(1500), GenPowerOffEvent()),
+                OnNext(Time.Tics(2000), GenPowerOnEvent())
+            );
+            lampDictionary[KitchenId].SetPowerStateSource(testEvents);
+
+            service.Start();
+            scheduler.AdvanceJustAfterEnd(testEvents);
+
+            Assert.AreEqual(true, service.IsAutomationDisabled(KitchenId));
         }
 
         #region Setup
@@ -392,19 +409,19 @@ namespace Wirehome.Extensions.Tests
 
             var descriptors = new List<RoomInitializer>
             {
-                new RoomInitializer(hallwayDetectorToilet.Id, new[] { hallwayDetectorLivingRoom.Id, kitchenDetector.Id, staircaseDetector.Id, toiletDetector.Id }, hallwayLampToilet, area.DeepClone()),
-                new RoomInitializer(hallwayDetectorLivingRoom.Id, new[] { livingRoomDetector.Id, bathroomDetector.Id, hallwayDetectorToilet.Id }, hallwayLampLivingRoom, area.DeepClone()),
-                new RoomInitializer(livingRoomDetector.Id, new[] { balconyDetector.Id, hallwayDetectorLivingRoom.Id }, livingRoomLamp, area.DeepClone()),
-                new RoomInitializer(balconyDetector.Id, new[] { livingRoomDetector.Id }, balconyLamp, area.DeepClone()),
-                new RoomInitializer(kitchenDetector.Id, new[] { hallwayDetectorToilet.Id }, kitchenLamp, area.DeepClone()),
-                new RoomInitializer(bathroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, bathroomLamp, area.DeepClone()),
-                new RoomInitializer(badroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, badroomLamp, area.DeepClone()),
-                new RoomInitializer(staircaseDetector.Id, new[] { hallwayDetectorToilet.Id }, staircaseLamp, area.DeepClone()),
+                new RoomInitializer(hallwayDetectorToilet.Id, new[] { hallwayDetectorLivingRoom.Id, kitchenDetector.Id, staircaseDetector.Id, toiletDetector.Id }, hallwayLampToilet, null, area.DeepClone()),
+                new RoomInitializer(hallwayDetectorLivingRoom.Id, new[] { livingRoomDetector.Id, bathroomDetector.Id, hallwayDetectorToilet.Id }, hallwayLampLivingRoom, null, area.DeepClone()),
+                new RoomInitializer(livingRoomDetector.Id, new[] { balconyDetector.Id, hallwayDetectorLivingRoom.Id }, livingRoomLamp, null, area.DeepClone()),
+                new RoomInitializer(balconyDetector.Id, new[] { livingRoomDetector.Id }, balconyLamp, null, area.DeepClone()),
+                new RoomInitializer(kitchenDetector.Id, new[] { hallwayDetectorToilet.Id }, kitchenLamp, new IEventDecoder[]{ new DisableAutomationDecoder() }, area.DeepClone()),
+                new RoomInitializer(bathroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, bathroomLamp, null, area.DeepClone()),
+                new RoomInitializer(badroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, badroomLamp, null, area.DeepClone()),
+                new RoomInitializer(staircaseDetector.Id, new[] { hallwayDetectorToilet.Id }, staircaseLamp, null, area.DeepClone()),
             };
 
             var toiletArea = area.DeepClone();
             toiletArea.MaxPersonCapacity = 1;
-            descriptors.Add(new RoomInitializer(toiletDetector.Id, new[] { hallwayDetectorToilet.Id }, toiletLamp, toiletArea));
+            descriptors.Add(new RoomInitializer(toiletDetector.Id, new[] { hallwayDetectorToilet.Id }, toiletLamp, null, toiletArea));
 
             lightAutomation.RegisterRooms(descriptors);
             lightAutomation.Initialize();
@@ -453,8 +470,18 @@ namespace Wirehome.Extensions.Tests
             }
         }
 
-        
-   
+        private static PowerStateChangeEvent GenPowerOnEvent()
+        {
+            return new PowerStateChangeEvent(PowerStateValue.On, PowerStateChangeEvent.ManualSource);
+        }
+
+        private static PowerStateChangeEvent GenPowerOffEvent()
+        {
+            return new PowerStateChangeEvent(PowerStateValue.Off, PowerStateChangeEvent.ManualSource);
+        }
+
+
+
         #endregion
     }
 }

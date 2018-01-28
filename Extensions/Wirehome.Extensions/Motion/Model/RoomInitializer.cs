@@ -8,22 +8,25 @@ namespace Wirehome.Motion.Model
 {
     public class RoomInitializer
     {
-        public RoomInitializer(string motionDetectorUid, IEnumerable<string> neighbors, IComponent lamp, AreaDescriptor areaInitializer = null)
+        public RoomInitializer(string motionDetectorUid, IEnumerable<string> neighbors, IMotionLamp lamp, IEnumerable<IEventDecoder> eventDecoders, AreaDescriptor areaInitializer = null)
         {
             MotionDetectorUid = motionDetectorUid;
             Neighbors = neighbors;
             Lamp = lamp;
             AreaInitializer = areaInitializer;
+            EventDecoders = eventDecoders;
         }
 
         public string MotionDetectorUid { get; }
         public IEnumerable<string> Neighbors { get; }
-        public IComponent Lamp { get; }
+        public IMotionLamp Lamp { get; }
         public AreaDescriptor AreaInitializer { get; }
+        public IEnumerable<IEventDecoder> EventDecoders { get; }
 
-        public Room ToRoom(MotionConfiguration config, IScheduler scheduler, IDaylightService daylightService, IDateTimeService dateTimeService)
+        public Room ToRoom(MotionConfiguration config, IScheduler scheduler, IDaylightService daylightService, 
+                           IDateTimeService dateTimeService, IConcurrencyProvider concurrencyProvider)
         {
-            return new Room(MotionDetectorUid, Neighbors, Lamp, scheduler, daylightService, dateTimeService, AreaInitializer, config);
+            return new Room(MotionDetectorUid, Neighbors, Lamp, scheduler, daylightService, dateTimeService, concurrencyProvider, AreaInitializer, config, EventDecoders);
         }
     }
 }

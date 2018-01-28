@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using System;
+using Wirehome.Extensions.Extensions;
 
 namespace Wirehome.Motion.Model
 {
@@ -26,5 +27,7 @@ namespace Wirehome.Motion.Model
                 return ((Uid?.GetHashCode() ?? 0) * 397) ^ TimeStamp.GetHashCode();
             }
         }
+
+        public bool IsMovePhisicallyPosible(MotionPoint point, TimeSpan motionMinDiff) => TimeStamp.IsMovePhisicallyPosible(point.TimeStamp, motionMinDiff);
     }
 }

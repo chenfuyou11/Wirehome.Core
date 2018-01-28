@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reactive.Concurrency;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,26 +15,27 @@ using Wirehome.Contracts.Components;
 using Wirehome.Motion.Model;
 using Wirehome.Extensions;
 using Wirehome.Extensions.Extensions;
+using System.Reactive;
+using Wirehome.Extensions.Core;
 
 namespace Wirehome.Motion
 {
     //TODO Thread safe
     //TODO add change source in event to distinct the source of the change (manual light on or automatic)
     //TODO Manual turn off/on - react if was just after auto, code some automatic reaction (code from manual turn on/off)
-    public class Room
+    public class Room : IDisposable
     {
         private readonly ConditionsValidator _turnOnConditionsValidator = new ConditionsValidator();
         private readonly ConditionsValidator _turnOffConditionsValidator = new ConditionsValidator();
         private readonly IScheduler _scheduler;
         private readonly MotionConfiguration _motionConfiguration;
-
-        internal IObservable<PowerStateValue> PowerChangeSource { get; } // TODO Add descriptor for some codes for change on/off
+        private readonly DisposeContainer _disposeContainer = new DisposeContainer();
 
         // Configuration parameters
         public string Uid { get; }
         internal IEnumerable<string> Neighbors { get; }
         internal IReadOnlyCollection<Room> NeighborsCache { get; private set; }
-        
+    
         // Dynamic parameters
         internal bool AutomationDisabled { get; private set; }
         internal int NumberOfPersonsInArea { get; private set; }
@@ -41,12 +43,15 @@ namespace Wirehome.Motion
         internal AreaDescriptor AreaDescriptor { get; }
         internal MotionVector LastVectorEnter { get; private set; }
 
-        private IComponent Lamp { get; }
+        private IMotionLamp Lamp { get; }
         private TimeList<DateTimeOffset> _MotionHistory { get; }
         private Probability _PresenceProbability { get; set; } = Probability.Zero;
         private DateTimeOffset _AutomationEnableOn { get; set; }
         private int _PresenseMotionCounter { get; set; }
         private DateTimeOffset? _LastAutoIncrement;
+        private readonly IConcurrencyProvider _concurrencyProvider;
+        private readonly IEnumerable<IEventDecoder> _eventsDecoders;
+
         private float LightIntensityAtNight { get; }
         private DateTimeOffset _LastManualTurnOn { get; set; }
 
@@ -57,9 +62,9 @@ namespace Wirehome.Motion
             return $"{Uid} [Last move: {LastMotion}] [Persons: {NumberOfPersonsInArea}] [Lamp: {(Lamp as MotionLamp)?.IsTurnedOn}]";
         }
 
-        public Room(string uid, IEnumerable<string> neighbors, IComponent lamp, IScheduler scheduler,
-                                IDaylightService daylightService, IDateTimeService dateTimeService, AreaDescriptor areaDescriptor,
-                                MotionConfiguration motionConfiguration)
+        public Room(string uid, IEnumerable<string> neighbors, IMotionLamp lamp, IScheduler scheduler, IDaylightService daylightService,
+                    IDateTimeService dateTimeService, IConcurrencyProvider concurrencyProvider, AreaDescriptor areaDescriptor, MotionConfiguration motionConfiguration, 
+                    IEnumerable<IEventDecoder> eventsDecoders)
         {
             Uid = uid ?? throw new ArgumentNullException(nameof(uid));
             Neighbors = neighbors ?? throw new ArgumentNullException(nameof(neighbors));
@@ -79,12 +84,31 @@ namespace Wirehome.Motion
 
             _MotionHistory = new TimeList<DateTimeOffset>(scheduler);
 
-            PowerChangeSource = Lamp.ToPowerChangeSource();
-
             _scheduler = scheduler;
             _motionConfiguration = motionConfiguration;
+            _concurrencyProvider = concurrencyProvider;
+            _eventsDecoders = eventsDecoders;
             AreaDescriptor = areaDescriptor;
+            
+            _eventsDecoders?.ForEach(decoder => decoder.Init(this));
         }
+        
+        internal void RegisterLampManualChangeEvents()
+        {
+            if (Lamp.PowerStateChange == null) return;
+
+            var manualEventSource = Lamp.PowerStateChange
+                                        .Where(ev => ev.EventSource == PowerStateChangeEvent.ManualSource);
+            
+            var subscription = manualEventSource.Timestamp()
+                                                .Buffer(manualEventSource, _ => Observable.Timer(_motionConfiguration.ManualCodeWindow, _concurrencyProvider.Scheduler))
+                                                .Subscribe(DecodeMessage);
+
+            _disposeContainer.Add(subscription);
+        }
+
+        private void DecodeMessage(IList<Timestamped<PowerStateChangeEvent>> powerStateEvents) => _eventsDecoders?.ForEach(decoder => decoder.DecodeMessage(powerStateEvents));
+        
 
         public void MarkMotion(DateTimeOffset time)
         {
@@ -95,6 +119,50 @@ namespace Wirehome.Motion
 
             AutoIncrementForOnePerson(time);
         }
+
+        public void Update()
+        {
+            CheckForTurnOnAutomationAgain();
+            RecalculateProbability();
+        }
+
+        public void MarkEnter(MotionVector vector)
+        {
+            LastVectorEnter = vector;
+            IncrementNumberOfPersons(vector.End.TimeStamp);
+        }
+
+        public void MarkLeave(MotionVector vector)
+        {
+            DecrementNumberOfPersons();
+
+            if (AreaDescriptor.MaxPersonCapacity == 1)
+            {
+                SetProbability(Probability.Zero);
+            }
+            else
+            {
+                //TODO change this value                                                                                                                                                        
+                SetProbability(Probability.FromValue(0.1));
+            }
+        }
+
+        internal void BuildNeighborsCache(IEnumerable<Room> neighbors) => NeighborsCache = new ReadOnlyCollection<Room>(neighbors.ToList());
+        internal void DisableAutomation() => AutomationDisabled = true;
+        internal void EnableAutomation() => AutomationDisabled = false;
+
+        internal void DisableAutomation(TimeSpan time)
+        {
+            DisableAutomation();
+            _AutomationEnableOn = _scheduler.Now + time;
+        }
+
+        internal IList<MotionPoint> GetConfusingPoints(MotionVector vector) => NeighborsCache.ToList()
+                                                                                             .AddChained(this)
+                                                                                             .Where(room => room.Uid != vector.Start.Uid)
+                                                                                             .Select(room => room.GetConfusion(vector.End.TimeStamp))
+                                                                                             .Where(y => y != null)
+                                                                                             .ToList();
 
         /// <summary>
         /// When we don't detect motion vector previously but there is move in room and currently we have 0 person so we know that there is a least one
@@ -108,9 +176,9 @@ namespace Wirehome.Motion
             }
         }
 
-        private void IncrementNumberOfPersons(DateTimeOffset contextTime)
+        private void IncrementNumberOfPersons(DateTimeOffset time)
         {
-            if (!_LastAutoIncrement.HasValue || contextTime - _LastAutoIncrement > TimeSpan.FromMilliseconds(100))
+            if (!_LastAutoIncrement.HasValue || time.HappendBeforePrecedingTimeWindow(_LastAutoIncrement, TimeSpan.FromMilliseconds(100)))
             {
                 NumberOfPersonsInArea++;
             }
@@ -134,63 +202,7 @@ namespace Wirehome.Motion
             NumberOfPersonsInArea = 0;
         }
 
-        public void Update()
-        {
-            CheckForTurnOnAutomationAgain();
-
-            RecalculateProbability();
-        }
-
-        public void MarkEnter(MotionVector vector)
-        {
-            LastVectorEnter = vector;
-           // UnConfuzeLastMotionFromEnter(vector);
-            IncrementNumberOfPersons(vector.End.TimeStamp);
-            
-        }
-        
-        public void MarkLeave(MotionVector vector)
-        {
-           
-            DecrementNumberOfPersons();
-            //UnConfuzeLastMotionFromLeave(vector);
-
-            if (AreaDescriptor.MaxPersonCapacity == 1)
-            {
-                SetProbability(Probability.Zero);
-            }
-            else
-            {
-                //TODO change this value                                                                                                                                                        
-                SetProbability(Probability.FromValue(0.1));
-            }
-        }
-        
-        //private void UnConfuzeLastMotionFromEnter(MotionVector vector)
-        //{
-        //    if (LastMotionTime.Time == vector.End.TimeStamp)
-        //    {
-        //        LastMotionTime.UnConfuze();
-        //    }
-        //}
-
-        //private void UnConfuzeLastMotionFromLeave(MotionVector vector)
-        //{
-        //    if (LastMotionTime.Time == vector.Start.TimeStamp)
-        //    {
-        //        LastMotionTime.UnConfuze();
-        //    }
-        //}
-
-        internal IList<MotionPoint> GetMovementsInNeighborhood(MotionVector vector) => NeighborsCache.ToList()
-                                                                                                     .AddChained(this)
-                                                                                                     .Where(room => room.Uid != vector.Start.Uid)
-                                                                                                     .Select(room => room.GetConfusion(vector.End.TimeStamp))
-                                                                                                     .Where(y => y != null)
-                                                                                                     .ToList();
-
-        
-        internal MotionPoint GetConfusion(DateTimeOffset timeOfMotion)
+        private MotionPoint GetConfusion(DateTimeOffset timeOfMotion)
         {
             var lastMotion = LastMotion;
 
@@ -200,21 +212,18 @@ namespace Wirehome.Motion
                 lastMotion = lastMotion.Previous;
             }
 
-            if(lastMotion?.Time != null && lastMotion.CanConfuze && timeOfMotion.HappendBefore(lastMotion.Time, AreaDescriptor.MotionDetectorAlarmTime))
+            if
+            (
+                  lastMotion?.Time != null
+               && lastMotion.CanConfuze
+               && timeOfMotion.IsMovePhisicallyPosible(lastMotion.Time.Value, _motionConfiguration.MotionMinDiff)
+               && timeOfMotion.HappendInPrecedingTimeWindow(lastMotion.Time, AreaDescriptor.MotionDetectorAlarmTime)
+            )
             {
                 return new MotionPoint(Uid, lastMotion.Time.Value);
             }
 
             return null;
-        }
-
-        internal void BuildNeighborsCache(IEnumerable<Room> neighbors) => NeighborsCache = new ReadOnlyCollection<Room>(neighbors.ToList());
-        internal void DisableAutomation() => AutomationDisabled = true;
-        internal void EnableAutomation() => AutomationDisabled = false;
-        internal void DisableAutomation(TimeSpan time)
-        {
-            DisableAutomation();
-            _AutomationEnableOn = _scheduler.Now + time;
         }
 
         private void RecalculateProbability()
@@ -237,7 +246,7 @@ namespace Wirehome.Motion
             ZeroNumberOfPersons();
             _MotionHistory.ClearOldData(AreaDescriptor.MotionDetectorAlarmTime);
         }
-        
+
         private void SetProbability(Probability probability)
         {
             _PresenceProbability = probability;
@@ -268,5 +277,10 @@ namespace Wirehome.Motion
 
         private bool CanTurnOnLamp() => _turnOnConditionsValidator.Validate() != ConditionState.NotFulfilled;
         private bool CanTurnOffLamp() => _turnOffConditionsValidator.Validate() != ConditionState.NotFulfilled;
+
+        public void Dispose()
+        {
+            _disposeContainer.Dispose();
+        }
     }
 }

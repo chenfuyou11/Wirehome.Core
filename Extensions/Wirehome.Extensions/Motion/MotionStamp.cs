@@ -24,8 +24,6 @@ namespace Wirehome.Motion
         }
 
         public void UnConfuze() => CanConfuze = false;
-        
-
     }
 
 }

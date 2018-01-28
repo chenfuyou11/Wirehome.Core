@@ -4,7 +4,7 @@ using Wirehome.Contracts.Components;
 
 namespace Wirehome.Motion
 {
-    public class MotionLamp : IComponent
+    public class MotionLamp : IMotionLamp
     {
         public MotionLamp(string id)
         {
@@ -12,10 +12,15 @@ namespace Wirehome.Motion
         }
 
         public string Id { get; }
-
-        public event EventHandler<ComponentFeatureStateChangedEventArgs> StateChanged;
-
+        
         public bool IsTurnedOn { get; private set; }
+
+        public IObservable<PowerStateChangeEvent> PowerStateChange { get; private set; }
+
+        public void SetPowerStateSource(IObservable<PowerStateChangeEvent> source)
+        {
+            PowerStateChange = source;
+        }
 
         public void ExecuteCommand(ICommand command)
         {
@@ -32,17 +37,7 @@ namespace Wirehome.Motion
                 throw new NotSupportedException($"Not supported command {command}");
             }
         }
-
-        public IComponentFeatureCollection GetFeatures()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IComponentFeatureStateCollection GetState()
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public override string ToString() => $"{Id} : {IsTurnedOn}";
 
     }

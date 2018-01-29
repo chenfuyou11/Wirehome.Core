@@ -10,6 +10,7 @@ namespace Wirehome.Motion.Model
         public TimeSpan MotionMinDiff { get; set; } = TimeSpan.FromMilliseconds(500);  //minimal difference in movement that is possible to do physically
         public TimeSpan PeriodicCheckTime { get; set; } = TimeSpan.FromMilliseconds(1000);
         public TimeSpan ManualCodeWindow { get; set; } = TimeSpan.FromMilliseconds(3000);
+        public float TurnOffTimeoutIncrementPercentage { get; set; } = 50;
     }
 }
 

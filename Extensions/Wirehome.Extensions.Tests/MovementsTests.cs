@@ -42,7 +42,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldTurnOnLight()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(KitchenId)),
               OnNext(Time.Tics(2000), new MotionEnvelope(LivingroomId))
@@ -59,7 +59,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldTurnOnLightOnWhenWorkinghoursAreDaylight()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.DayLight },
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.DayLight }, null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(KitchenId)),
               OnNext(Time.Tics(2000), new MotionEnvelope(LivingroomId))
@@ -78,7 +78,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldNotTurnOnLightOnNightWhenWorkinghoursAreDaylight()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.DayLight },
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.DayLight }, null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(KitchenId)),
               OnNext(Time.Tics(2000), new MotionEnvelope(LivingroomId))
@@ -97,7 +97,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldNotTurnOnLightOnDaylightWhenWorkinghoursIsNight()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.AfterDusk },
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(new AreaDescriptor { WorkingTime = WorkingTime.AfterDusk }, null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(KitchenId)),
               OnNext(Time.Tics(2000), new MotionEnvelope(LivingroomId))
@@ -115,7 +115,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldNotTurnOnLightWhenAutomationIsDisabled()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId))
             );
 
@@ -130,7 +130,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInRoomShouldTurnOnLightWhenAutomationIsReEnabled()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(2500), new MotionEnvelope(ToiletId))
             );
@@ -146,7 +146,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void AnalyzeMoveShouldCountPeopleNumberInRoom()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
               OnNext(Time.Tics(2000), new MotionEnvelope(KitchenId)),
@@ -166,7 +166,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void AnalyzeMoveShouldCountPeopleNumberInHouse()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
               OnNext(Time.Tics(2000), new MotionEnvelope(KitchenId)),
@@ -186,7 +186,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void WhenLeaveFromOnePersonRoomWithNoConfusionShouldTurnOffLightImmediately()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
               OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId))
             );
@@ -202,7 +202,7 @@ namespace Wirehome.Extensions.Tests
         public void WhenLeaveFromOnePersonRoomWithConfusionShouldTurnOffWhenConfusionResolved()
         {
             
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
                   OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
                   OnNext(Time.Tics(1000), new MotionEnvelope(KitchenId)),
                   OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
@@ -220,7 +220,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void WhenLeaveFromRoomWithNoConfusionShouldTurnOffLightAfterSomeTime()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
               OnNext(Time.Tics(500), new MotionEnvelope(KitchenId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId))
             );
@@ -237,7 +237,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void WhenNoMoveInRoomShouldTurnOffAfterTurnOffTimeout()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
                 OnNext(Time.Tics(500), new MotionEnvelope(KitchenId))
             );
 
@@ -260,7 +260,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void MoveInFirstPathShouldNotConfusedNextPathWhenItIsSure()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
                 // First path
                 OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
                 OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId)),
@@ -279,10 +279,10 @@ namespace Wirehome.Extensions.Tests
 
 
         [TestMethod]
-        public void CrossPass()
+        public void WhenCrossPassingNumberOfPeopleSlouldBeCorrect()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null,
-                
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
+
                 OnNext(Time.Tics(500), new MotionEnvelope(KitchenId)),
                 OnNext(Time.Tics(501), new MotionEnvelope(LivingroomId)),
 
@@ -307,7 +307,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void ManualLightChangeShouldInvokeDecoderAction()
         {
-            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null);
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, () => new IEventDecoder[] { new DisableAutomationDecoder() });
 
 
             var testEvents = scheduler.CreateHotObservable(
@@ -318,10 +318,65 @@ namespace Wirehome.Extensions.Tests
             lampDictionary[KitchenId].SetPowerStateSource(testEvents);
 
             service.Start();
-            scheduler.AdvanceJustAfterEnd(testEvents);
+            scheduler.AdvanceTo(service.Configuration.ManualCodeWindow.Add(TimeSpan.FromMilliseconds(500)));
 
             Assert.AreEqual(true, service.IsAutomationDisabled(KitchenId));
         }
+
+        [TestMethod]
+        public void ManualLightChangeShouldNotInvokeDecoderActionWhenIncomplete()
+        {
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, () => new IEventDecoder[] { new DisableAutomationDecoder() });
+
+
+            var testEvents = scheduler.CreateHotObservable(
+                OnNext(Time.Tics(500), GenPowerOnEvent()),
+                OnNext(Time.Tics(1500), GenPowerOffEvent())
+            );
+            lampDictionary[KitchenId].SetPowerStateSource(testEvents);
+
+            service.Start();
+            scheduler.AdvanceTo(service.Configuration.ManualCodeWindow.Add(TimeSpan.FromMilliseconds(500)));
+
+            Assert.AreEqual(false, service.IsAutomationDisabled(KitchenId));
+        }
+
+        [TestMethod]
+        public void ManualLightChangeShouldNotInvokeDecoderActionWhenToLong()
+        {
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, () => new IEventDecoder[] { new DisableAutomationDecoder() });
+
+
+            var testEvents = scheduler.CreateHotObservable(
+                OnNext(Time.Tics(500), GenPowerOnEvent()),
+                OnNext(Time.Tics(1500), GenPowerOffEvent()),
+                OnNext(Time.Tics(4000), GenPowerOnEvent())
+            );
+            lampDictionary[KitchenId].SetPowerStateSource(testEvents);
+
+            service.Start();
+            scheduler.AdvanceTo(service.Configuration.ManualCodeWindow.Add(TimeSpan.FromMilliseconds(500)));
+
+            Assert.AreEqual(false, service.IsAutomationDisabled(KitchenId));
+        }
+
+
+        [TestMethod]
+        public void WhenTurnOnJustAfterTurnOffServiceShouldIncreaseTurnOffTimeout()
+        {
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
+
+                OnNext(Time.Tics(500), new MotionEnvelope(KitchenId)),
+                OnNext(Time.Tics(12000), new MotionEnvelope(KitchenId))
+            );
+
+
+            service.Start();
+            scheduler.AdvanceJustAfterEnd(motionEvents);
+
+            Assert.AreEqual(false, service.IsAutomationDisabled(KitchenId));
+        }
+
 
         #region Setup
 
@@ -344,7 +399,7 @@ namespace Wirehome.Extensions.Tests
             Dictionary<string, MotionLamp>,
             IDateTimeService
         )
-        SetupEnviroment(AreaDescriptor areaDescription = null, params Recorded<Notification<MotionEnvelope>>[] messages)
+        SetupEnviroment(AreaDescriptor areaDescription = null, Func<IEventDecoder[]> sampleDecoder = null, params Recorded<Notification<MotionEnvelope>>[] messages)
         {
             AreaDescriptor area = areaDescription ?? new AreaDescriptor();
             
@@ -409,19 +464,19 @@ namespace Wirehome.Extensions.Tests
 
             var descriptors = new List<RoomInitializer>
             {
-                new RoomInitializer(hallwayDetectorToilet.Id, new[] { hallwayDetectorLivingRoom.Id, kitchenDetector.Id, staircaseDetector.Id, toiletDetector.Id }, hallwayLampToilet, null, area.DeepClone()),
-                new RoomInitializer(hallwayDetectorLivingRoom.Id, new[] { livingRoomDetector.Id, bathroomDetector.Id, hallwayDetectorToilet.Id }, hallwayLampLivingRoom, null, area.DeepClone()),
-                new RoomInitializer(livingRoomDetector.Id, new[] { balconyDetector.Id, hallwayDetectorLivingRoom.Id }, livingRoomLamp, null, area.DeepClone()),
-                new RoomInitializer(balconyDetector.Id, new[] { livingRoomDetector.Id }, balconyLamp, null, area.DeepClone()),
-                new RoomInitializer(kitchenDetector.Id, new[] { hallwayDetectorToilet.Id }, kitchenLamp, new IEventDecoder[]{ new DisableAutomationDecoder() }, area.DeepClone()),
-                new RoomInitializer(bathroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, bathroomLamp, null, area.DeepClone()),
-                new RoomInitializer(badroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, badroomLamp, null, area.DeepClone()),
-                new RoomInitializer(staircaseDetector.Id, new[] { hallwayDetectorToilet.Id }, staircaseLamp, null, area.DeepClone()),
+                new RoomInitializer(hallwayDetectorToilet.Id, new[] { hallwayDetectorLivingRoom.Id, kitchenDetector.Id, staircaseDetector.Id, toiletDetector.Id }, hallwayLampToilet, sampleDecoder?.Invoke(), area.DeepClone()),
+                new RoomInitializer(hallwayDetectorLivingRoom.Id, new[] { livingRoomDetector.Id, bathroomDetector.Id, hallwayDetectorToilet.Id }, hallwayLampLivingRoom, sampleDecoder?.Invoke(), area.DeepClone()),
+                new RoomInitializer(livingRoomDetector.Id, new[] { balconyDetector.Id, hallwayDetectorLivingRoom.Id }, livingRoomLamp, sampleDecoder?.Invoke(), area.DeepClone()),
+                new RoomInitializer(balconyDetector.Id, new[] { livingRoomDetector.Id }, balconyLamp, sampleDecoder?.Invoke(), area.DeepClone()),
+                new RoomInitializer(kitchenDetector.Id, new[] { hallwayDetectorToilet.Id }, kitchenLamp,  sampleDecoder?.Invoke(), area.DeepClone()),
+                new RoomInitializer(bathroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, bathroomLamp,  sampleDecoder?.Invoke(), area.DeepClone()),
+                new RoomInitializer(badroomDetector.Id, new[] { hallwayDetectorLivingRoom.Id }, badroomLamp, sampleDecoder?.Invoke() , area.DeepClone()),
+                new RoomInitializer(staircaseDetector.Id, new[] { hallwayDetectorToilet.Id }, staircaseLamp, sampleDecoder?.Invoke() , area.DeepClone()),
             };
 
             var toiletArea = area.DeepClone();
             toiletArea.MaxPersonCapacity = 1;
-            descriptors.Add(new RoomInitializer(toiletDetector.Id, new[] { hallwayDetectorToilet.Id }, toiletLamp, null, toiletArea));
+            descriptors.Add(new RoomInitializer(toiletDetector.Id, new[] { hallwayDetectorToilet.Id }, toiletLamp, sampleDecoder?.Invoke(), toiletArea));
 
             lightAutomation.RegisterRooms(descriptors);
             lightAutomation.Initialize();

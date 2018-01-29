@@ -77,7 +77,7 @@ namespace Wirehome.Motion
             if (missingRooms.Count > 0) throw new Exception($"Following neighbors have not registered rooms: {string.Join(", ", missingRooms)}");
 
             _rooms.Values.ForEach(room => room.BuildNeighborsCache(GetNeighbors(room.Uid)));
-            _rooms.Values.ForEach(room => room.RegisterLampManualChangeEvents());
+            
         }
 
         public void DisableAutomation(string roomId) => _rooms[roomId].DisableAutomation();
@@ -98,6 +98,8 @@ namespace Wirehome.Motion
 
         public void Start()
         {
+            _rooms.Values.ForEach(room => room.RegisterLampManualChangeEvents());
+
             _disposeContainer.Add(PeriodicCheck());
             _disposeContainer.Add(CheckMotion());
         }

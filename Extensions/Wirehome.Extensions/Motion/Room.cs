@@ -53,7 +53,7 @@ namespace Wirehome.Motion
         private readonly IEnumerable<IEventDecoder> _eventsDecoders;
 
         private float LightIntensityAtNight { get; }
-        private DateTimeOffset _LastManualTurnOn { get; set; }
+        private DateTimeOffset? _LastAutoTurnOff { get; set; }
 
         public override string ToString()
         {
@@ -112,6 +112,11 @@ namespace Wirehome.Motion
 
         public void MarkMotion(DateTimeOffset time)
         {
+            if (_PresenceProbability == Probability.Zero && time.HappendInPrecedingTimeWindow(_LastAutoTurnOff, _motionConfiguration.MotionTimeWindow))
+            {
+                AreaDescriptor.TurnOffTimeout = AreaDescriptor.TurnOffTimeout.IncreaseByPercentage(_motionConfiguration.TurnOffTimeoutIncrementPercentage);
+            }
+
             LastMotion.SetTime(time);
             _MotionHistory.Add(time);
             _PresenseMotionCounter++;
@@ -245,6 +250,7 @@ namespace Wirehome.Motion
         {
             ZeroNumberOfPersons();
             _MotionHistory.ClearOldData(AreaDescriptor.MotionDetectorAlarmTime);
+            _LastAutoTurnOff = _scheduler.Now;
         }
 
         private void SetProbability(Probability probability)

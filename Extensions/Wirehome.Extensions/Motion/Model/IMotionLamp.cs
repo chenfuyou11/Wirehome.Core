@@ -6,7 +6,9 @@ namespace Wirehome.Motion
     public interface IMotionLamp
     {
         string Id { get; }
-        bool IsTurnedOn { get; }
+
+        bool GetIsTurnedOn();
+
         IObservable<PowerStateChangeEvent> PowerStateChange { get; }
 
         void ExecuteCommand(ICommand command);

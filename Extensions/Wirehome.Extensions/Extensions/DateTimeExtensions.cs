@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Wirehome.Extensions.Extensions
 {
-   public static class DateTimeExtensions
+    public static class DateTimeExtensions
    {
         public static bool HappendInPrecedingTimeWindow(this DateTimeOffset time, DateTimeOffset? comparedTime, TimeSpan timeWindow) => comparedTime < time && time - comparedTime < timeWindow;
 

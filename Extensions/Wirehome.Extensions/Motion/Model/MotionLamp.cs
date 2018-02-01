@@ -1,21 +1,55 @@
 ﻿using System;
 using Wirehome.Contracts.Components.Commands;
 using Wirehome.Contracts.Components;
+using System.Reactive.Subjects;
+using Wirehome.Contracts.Components.States;
 
 namespace Wirehome.Motion
 {
     public class MotionLamp : IMotionLamp
     {
+        private Subject<PowerStateChangeEvent> _powerStateSubject = new Subject<PowerStateChangeEvent>();
+        private IObservable<PowerStateChangeEvent> _powerStateChange;
+
         public MotionLamp(string id)
         {
             Id = id;
         }
 
         public string Id { get; }
-        
-        public bool IsTurnedOn { get; private set; }
 
-        public IObservable<PowerStateChangeEvent> PowerStateChange { get; private set; }
+        private bool isTurnedOn;
+
+        public bool GetIsTurnedOn()
+        {
+            return isTurnedOn;
+        }
+
+        private void SetIsTurnedOn(bool value)
+        {
+            if(value != isTurnedOn)
+            {
+                
+                if(_powerStateSubject != null)
+                {
+                    var powerStateValue = value ? PowerStateValue.On : PowerStateValue.Off;
+                    _powerStateSubject.OnNext(new PowerStateChangeEvent(powerStateValue, PowerStateChangeEvent.AutoSource));
+                }
+            }
+            isTurnedOn = value;
+        }
+
+        public IObservable<PowerStateChangeEvent> PowerStateChange
+        {
+            get
+            {
+                return _powerStateChange ?? _powerStateSubject;
+            }
+            private set
+            {
+                _powerStateChange = value;
+            }
+        }
 
         public void SetPowerStateSource(IObservable<PowerStateChangeEvent> source)
         {
@@ -26,11 +60,11 @@ namespace Wirehome.Motion
         {
             if (command is TurnOnCommand)
             {
-                IsTurnedOn = true;
+                SetIsTurnedOn(true);
             }
             else if (command is TurnOffCommand)
             {
-                IsTurnedOn = false;
+                SetIsTurnedOn(false);
             }
             else
             {
@@ -38,7 +72,7 @@ namespace Wirehome.Motion
             }
         }
         
-        public override string ToString() => $"{Id} : {IsTurnedOn}";
+        public override string ToString() => $"{Id} : {GetIsTurnedOn()}";
 
     }
 

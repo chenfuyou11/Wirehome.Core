@@ -66,7 +66,7 @@ namespace Wirehome.Motion
             if (!roomInitializers.Any()) throw new Exception("No detectors found to automate");
 
             //TODO Check if component is real lamp - wait for new component implementation
-            _rooms = roomInitializers.Select(roomInitializer => roomInitializer.ToRoom(_motionConfiguration, _concurrencyProvider.Scheduler, _daylightService, _dateTimeService, _concurrencyProvider))
+            _rooms = roomInitializers.Select(roomInitializer => roomInitializer.ToRoom(_motionConfiguration, _concurrencyProvider.Scheduler, _daylightService, _dateTimeService, _concurrencyProvider, _logger))
                                                              .ToImmutableDictionary(k => k.Uid, v => v);
 
             var missingRooms = _rooms.Select(m => m.Value)
@@ -98,7 +98,7 @@ namespace Wirehome.Motion
 
         public void Start()
         {
-            _rooms.Values.ForEach(room => room.RegisterLampManualChangeEvents());
+            _rooms.Values.ForEach(room => room.RegisterForLampChangeState());
 
             _disposeContainer.Add(PeriodicCheck());
             _disposeContainer.Add(CheckMotion());

@@ -20,8 +20,8 @@ namespace Wirehome.Extensions.Tests
     //                                             STAIRCASE [S]
     //  ________________________________________<_    __________________________
     // |        |                |                       |                      |
-    // |        |                  [HL]   HALLWAY        |                      |
-    // |   B    |                |<         [H]          |<                     |
+    // |        |                  [HL]      HALLWAY     |                      |
+    // |   B    |                |<            [H]       |<                     |
     // |   A                     |___   ______           |       BADROOM        |
     // |   L    |                |            |                    [D]          |
     // |   C    |                |            |          |                      |
@@ -51,9 +51,9 @@ namespace Wirehome.Extensions.Tests
             service.Start();
             scheduler.AdvanceToEnd(motionEvents);
             
-            Assert.AreEqual(true, lampDictionary[ToiletId].IsTurnedOn);
-            Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
-            Assert.AreEqual(true, lampDictionary[LivingroomId].IsTurnedOn);
+            Assert.AreEqual(true, lampDictionary[ToiletId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[LivingroomId].GetIsTurnedOn());
         }
 
         [TestMethod]
@@ -70,9 +70,9 @@ namespace Wirehome.Extensions.Tests
             service.Start();
             scheduler.AdvanceToEnd(motionEvents);
 
-            Assert.AreEqual(true, lampDictionary[ToiletId].IsTurnedOn);
-            Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
-            Assert.AreEqual(true, lampDictionary[LivingroomId].IsTurnedOn);
+            Assert.AreEqual(true, lampDictionary[ToiletId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[LivingroomId].GetIsTurnedOn());
         }
 
         [TestMethod]
@@ -89,9 +89,9 @@ namespace Wirehome.Extensions.Tests
             service.Start();
             scheduler.AdvanceToEnd(motionEvents);
 
-            Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
-            Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
-            Assert.AreEqual(false, lampDictionary[LivingroomId].IsTurnedOn);
+            Assert.AreEqual(false, lampDictionary[ToiletId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[KitchenId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[LivingroomId].GetIsTurnedOn());
         }
 
         [TestMethod]
@@ -107,9 +107,9 @@ namespace Wirehome.Extensions.Tests
             service.Start();
             scheduler.AdvanceToEnd(motionEvents);
 
-            Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
-            Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
-            Assert.AreEqual(false, lampDictionary[LivingroomId].IsTurnedOn);
+            Assert.AreEqual(false, lampDictionary[ToiletId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[KitchenId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[LivingroomId].GetIsTurnedOn());
         }
 
         [TestMethod]
@@ -123,7 +123,7 @@ namespace Wirehome.Extensions.Tests
             service.Start();
             scheduler.AdvanceToEnd(motionEvents);
 
-            Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
+            Assert.AreEqual(false, lampDictionary[ToiletId].GetIsTurnedOn());
             Assert.AreEqual(true, service.IsAutomationDisabled(ToiletId));
         }
 
@@ -140,7 +140,7 @@ namespace Wirehome.Extensions.Tests
             service.Start();
             scheduler.AdvanceToEnd(motionEvents);
 
-            Assert.AreEqual(true, lampDictionary[ToiletId].IsTurnedOn);
+            Assert.AreEqual(true, lampDictionary[ToiletId].GetIsTurnedOn());
         }
 
         [TestMethod]
@@ -194,7 +194,7 @@ namespace Wirehome.Extensions.Tests
             service.Start();
             scheduler.AdvanceJustAfterEnd(motionEvents);
 
-            Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
+            Assert.AreEqual(false, lampDictionary[ToiletId].GetIsTurnedOn());
         }
 
 
@@ -213,7 +213,7 @@ namespace Wirehome.Extensions.Tests
             service.Start();
             scheduler.AdvanceTo(service.Configuration.ConfusionResolutionTime + TimeSpan.FromMilliseconds(1500));
 
-            Assert.AreEqual(false, lampDictionary[ToiletId].IsTurnedOn);
+            Assert.AreEqual(false, lampDictionary[ToiletId].GetIsTurnedOn());
         }
 
 
@@ -228,9 +228,9 @@ namespace Wirehome.Extensions.Tests
             service.Start();
 
             scheduler.AdvanceJustAfterEnd(motionEvents);
-            Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
+            Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
             scheduler.AdvanceTo(Time.Tics(2500));
-            Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
+            Assert.AreEqual(false, lampDictionary[KitchenId].GetIsTurnedOn());
         }
 
 
@@ -245,11 +245,11 @@ namespace Wirehome.Extensions.Tests
             var area = service.GetAreaDescriptor(KitchenId);
 
             scheduler.AdvanceJustAfterEnd(motionEvents);
-            Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
+            Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
             scheduler.AdvanceTo(area.TurnOffTimeout);
-            Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
+            Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
             scheduler.AdvanceJustAfter(area.TurnOffTimeout);
-            Assert.AreEqual(false, lampDictionary[KitchenId].IsTurnedOn);
+            Assert.AreEqual(false, lampDictionary[KitchenId].GetIsTurnedOn());
         }
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace Wirehome.Extensions.Tests
             scheduler.AdvanceJustAfterEnd(motionEvents);
 
             Assert.AreEqual(0, service.NumberOfConfusions);
-            Assert.AreEqual(true, lampDictionary[KitchenId].IsTurnedOn);
+            Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
         }
 
 
@@ -377,6 +377,63 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(false, service.IsAutomationDisabled(KitchenId));
         }
 
+        [TestMethod]
+        public void WhenNoConfusionMoveThroughManyRoomsShouldTurnOfLightImmediately()
+        {
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
+
+                OnNext(Time.Tics(1000), new MotionEnvelope(LivingroomId)),
+                OnNext(Time.Tics(2000), new MotionEnvelope(HallwayLivingroomId)),
+                OnNext(Time.Tics(3000), new MotionEnvelope(HallwayToiletId)),
+                OnNext(Time.Tics(4000), new MotionEnvelope(KitchenId))
+            );
+            
+            service.Start();
+            scheduler.AdvanceJustAfter(TimeSpan.FromSeconds(2));
+            Assert.AreEqual(true, lampDictionary[LivingroomId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[HallwayLivingroomId].GetIsTurnedOn());
+            scheduler.AdvanceJustAfter(TimeSpan.FromSeconds(3));
+            Assert.AreEqual(false, lampDictionary[LivingroomId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[HallwayLivingroomId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[HallwayToiletId].GetIsTurnedOn());
+            scheduler.AdvanceJustAfter(TimeSpan.FromSeconds(4));
+            Assert.AreEqual(false, lampDictionary[LivingroomId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[HallwayLivingroomId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[HallwayToiletId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
+            scheduler.AdvanceJustAfter(TimeSpan.FromSeconds(5));
+            Assert.AreEqual(false, lampDictionary[LivingroomId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[HallwayLivingroomId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[HallwayToiletId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
+
+        }
+
+        [TestMethod]
+        public void WhenTwoPersonsStartsFromOneRoomAndSplitToTwoOthersNumbersOfPeopleShouldBeCorrect()
+        {
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
+
+                OnNext(Time.Tics(1000), new MotionEnvelope(LivingroomId)),
+                OnNext(Time.Tics(2000), new MotionEnvelope(HallwayLivingroomId)),
+                OnNext(Time.Tics(2900), new MotionEnvelope(BathroomId)),
+                OnNext(Time.Tics(3000), new MotionEnvelope(HallwayToiletId)),
+                OnNext(Time.Tics(4000), new MotionEnvelope(KitchenId))
+            );
+
+            service.Start();
+            
+            scheduler.AdvanceJustAfter(TimeSpan.FromSeconds(4));
+            Assert.AreEqual(1, service.GetCurrentNumberOfPeople(KitchenId));
+            Assert.AreEqual(1, service.GetCurrentNumberOfPeople(BathroomId));
+            Assert.AreEqual(2, service.NumberOfPersonsInHouse);
+            Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[BathroomId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[HallwayLivingroomId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[LivingroomId].GetIsTurnedOn());
+            scheduler.AdvanceJustAfter(TimeSpan.FromSeconds(5));
+            Assert.AreEqual(false, lampDictionary[HallwayToiletId].GetIsTurnedOn());
+        }
 
         #region Setup
 
@@ -440,15 +497,7 @@ namespace Wirehome.Extensions.Tests
             Mock.Get(daylightService).Setup(x => x.Sunrise).Returns(TimeSpan.FromHours(8));
             Mock.Get(daylightService).Setup(x => x.Sunset).Returns(TimeSpan.FromHours(20));
 
-            var logService = Mock.Of<ILogService>();
-            var logger = Mock.Of<ILogger>();
-            Mock.Get(logService).Setup(x => x.CreatePublisher(It.IsAny<string>())).Returns(logger);
-            Mock.Get(logger).Setup(x => x.Info(It.IsAny<string>())).Callback((string message) => Console.WriteLine(message));
-            Mock.Get(logger).Setup(x => x.Error(It.IsAny<string>())).Callback((string message) => Console.WriteLine(message));
-            Mock.Get(logger).Setup(x => x.Warning(It.IsAny<string>())).Callback((string message) => Console.WriteLine(message));
-
-
-
+           
             var eventAggregator = Mock.Of<IEventAggregator>();
             var dateTimeService = Mock.Of<IDateTimeService>();
             var scheduler = new TestScheduler();
@@ -457,6 +506,12 @@ namespace Wirehome.Extensions.Tests
             var motionConfiguration = motionConfigurationProvider.GetConfiguration();
 
             var observableTimer = Mock.Of<IObservableTimer>();
+            var logService = Mock.Of<ILogService>();
+            var logger = Mock.Of<ILogger>();
+            Mock.Get(logService).Setup(x => x.CreatePublisher(It.IsAny<string>())).Returns(logger);
+            Mock.Get(logger).Setup(x => x.Info(It.IsAny<string>())).Callback((string message) => Console.WriteLine($"[{scheduler.Now:ss:fff}] {message}"));
+            Mock.Get(logger).Setup(x => x.Error(It.IsAny<string>())).Callback((string message) => Console.WriteLine($"[{scheduler.Now:ss:fff}] {message}"));
+            Mock.Get(logger).Setup(x => x.Warning(It.IsAny<string>())).Callback((string message) => Console.WriteLine($"[{scheduler.Now:ss:fff}] {message}"));
 
             Mock.Get(observableTimer).Setup(x => x.GenerateTime(motionConfiguration.PeriodicCheckTime)).Returns(scheduler.CreateColdObservable(GenerateTestTime(TimeSpan.FromSeconds(TIMER_DURATION), motionConfiguration.PeriodicCheckTime)));
 
@@ -477,6 +532,7 @@ namespace Wirehome.Extensions.Tests
             var toiletArea = area.DeepClone();
             toiletArea.MaxPersonCapacity = 1;
             descriptors.Add(new RoomInitializer(toiletDetector.Id, new[] { hallwayDetectorToilet.Id }, toiletLamp, sampleDecoder?.Invoke(), toiletArea));
+
 
             lightAutomation.RegisterRooms(descriptors);
             lightAutomation.Initialize();

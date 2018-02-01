@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Wirehome.Contracts.Environment;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Components;
+using Wirehome.Contracts.Logging;
 
 namespace Wirehome.Motion.Model
 {
@@ -24,9 +25,11 @@ namespace Wirehome.Motion.Model
         public IEnumerable<IEventDecoder> EventDecoders { get; }
 
         public Room ToRoom(MotionConfiguration config, IScheduler scheduler, IDaylightService daylightService, 
-                           IDateTimeService dateTimeService, IConcurrencyProvider concurrencyProvider)
+                           IDateTimeService dateTimeService, IConcurrencyProvider concurrencyProvider, ILogger logger)
         {
-            return new Room(MotionDetectorUid, Neighbors, Lamp, scheduler, daylightService, dateTimeService, concurrencyProvider, AreaInitializer, config, EventDecoders);
+            return new Room(MotionDetectorUid, Neighbors, Lamp, scheduler, daylightService, dateTimeService, concurrencyProvider, logger, AreaInitializer, config, EventDecoders);
         }
     }
 }
+
+

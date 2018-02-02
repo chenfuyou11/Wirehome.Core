@@ -1,10 +1,9 @@
 ﻿using System;
 using Wirehome.Contracts.Components.Commands;
-using Wirehome.Contracts.Components;
 using System.Reactive.Subjects;
 using Wirehome.Contracts.Components.States;
 
-namespace Wirehome.Motion
+namespace Wirehome.Motion.Model
 {
     public class MotionLamp : IMotionLamp
     {

@@ -1,6 +1,6 @@
 ﻿using Wirehome.Contracts.Components.States;
 
-namespace Wirehome.Motion
+namespace Wirehome.Motion.Model
 {
     public class PowerStateChangeEvent
     {

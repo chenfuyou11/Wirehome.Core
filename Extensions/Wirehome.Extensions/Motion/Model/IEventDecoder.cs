@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reactive;
 
-namespace Wirehome.Motion
+namespace Wirehome.Motion.Model
 {
     public interface IEventDecoder
     {

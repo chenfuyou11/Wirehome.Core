@@ -27,6 +27,7 @@ namespace Wirehome.Motion
         private readonly IScheduler _scheduler;
         private readonly MotionConfiguration _motionConfiguration;
         private readonly DisposeContainer _disposeContainer = new DisposeContainer();
+        private IMotionLamp Lamp { get; }
 
         // Configuration parameters
         public string Uid { get; }
@@ -39,18 +40,15 @@ namespace Wirehome.Motion
         internal MotionStamp LastMotion { get; } = new MotionStamp();
         internal AreaDescriptor AreaDescriptor { get; }
         internal MotionVector LastVectorEnter { get; private set; }
-
-        private IMotionLamp Lamp { get; }
+        
         private Probability _PresenceProbability { get; set; } = Probability.Zero;
         private DateTimeOffset _AutomationEnableOn { get; set; }
-        private int _PresenseMotionCounter { get; set; }
         private DateTimeOffset? _LastAutoIncrement;
         private readonly IConcurrencyProvider _concurrencyProvider;
         private readonly IEnumerable<IEventDecoder> _eventsDecoders;
         private readonly ILogger _logger;
-
-        private float LightIntensityAtNight { get; }
         private DateTimeOffset? _LastAutoTurnOff { get; set; }
+        private Timeout _TurnOffTimeOut;
 
         public override string ToString()
         {
@@ -78,13 +76,15 @@ namespace Wirehome.Motion
 
             _turnOnConditionsValidator.WithCondition(ConditionRelation.And, new IsEnabledAutomationCondition(this));
             _turnOffConditionsValidator.WithCondition(ConditionRelation.And, new IsEnabledAutomationCondition(this));
-
+            _turnOffConditionsValidator.WithCondition(ConditionRelation.And, new IsTurnOffAutomaionCondition(this));
+            
             _logger = logger;
             _scheduler = scheduler;
             _motionConfiguration = motionConfiguration;
             _concurrencyProvider = concurrencyProvider;
             _eventsDecoders = eventsDecoders;
             AreaDescriptor = areaDescriptor;
+            _TurnOffTimeOut = new Timeout(AreaDescriptor.TurnOffTimeout, _motionConfiguration.TurnOffPresenceFactor);
 
             _eventsDecoders?.ForEach(decoder => decoder.Init(this));
         }
@@ -127,17 +127,24 @@ namespace Wirehome.Motion
             SetProbability(Probability.Full);
             CheckAutoIncrementForOnePerson(time);
 
-            _PresenseMotionCounter++;
+            _TurnOffTimeOut.IncrementCounter();
         }
 
         private void CheckTurnOffTimeOut(DateTimeOffset time)
         {
+            // if light is turned off to early area TurnOffTimeout is too low and we have to update it
             if (_PresenceProbability == Probability.Zero && time.HappendInPrecedingTimeWindow(_LastAutoTurnOff, _motionConfiguration.MotionTimeWindow))
             {
-                var newTimeOut = AreaDescriptor.TurnOffTimeout.IncreaseByPercentage(_motionConfiguration.TurnOffTimeoutIncrementPercentage);
-                _logger.Info($"[{Uid} turn-off time out] {AreaDescriptor.TurnOffTimeout} -> {newTimeOut}");
-                AreaDescriptor.TurnOffTimeout = newTimeOut;
+                UpdateAreaTurnoffTimeOut();
+                _TurnOffTimeOut.UpdateBaseTime(AreaDescriptor.TurnOffTimeout);
             }
+        }
+
+        private void UpdateAreaTurnoffTimeOut()
+        {
+            var newTimeOut = AreaDescriptor.TurnOffTimeout.IncreaseByPercentage(_motionConfiguration.TurnOffTimeoutIncrementPercentage);
+            _logger.Info($"[{Uid} turn-off time out] {AreaDescriptor.TurnOffTimeout} -> {newTimeOut}");
+            AreaDescriptor.TurnOffTimeout = newTimeOut;
         }
 
         public void Update()
@@ -254,7 +261,7 @@ namespace Wirehome.Motion
 
         private void RecalculateProbability()
         {
-            var probabilityDelta = 1.0 / (AreaDescriptor.TurnOffTimeout.Ticks / _motionConfiguration.PeriodicCheckTime.Ticks);
+            var probabilityDelta = 1.0 / (_TurnOffTimeOut.Value.Ticks / _motionConfiguration.PeriodicCheckTime.Ticks);
 
             SetProbability(_PresenceProbability.Decrease(probabilityDelta));
         }
@@ -297,7 +304,12 @@ namespace Wirehome.Motion
             }
         }
 
-        private void ResetStatistics() => NumberOfPersonsInArea = 0;
+        private void ResetStatistics()
+        {
+            NumberOfPersonsInArea = 0;
+            _TurnOffTimeOut.Reset();
+        }
+
         private void RegisterTurnOffTime() => _LastAutoTurnOff = _scheduler.Now;
         private bool CanTurnOnLamp() => _turnOnConditionsValidator.Validate() != ConditionState.NotFulfilled;
         private bool CanTurnOffLamp() => _turnOffConditionsValidator.Validate() != ConditionState.NotFulfilled;

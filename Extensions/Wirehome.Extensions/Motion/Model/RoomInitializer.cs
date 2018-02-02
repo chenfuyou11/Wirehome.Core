@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Wirehome.Contracts.Environment;
 using Wirehome.Contracts.Core;
-using Wirehome.Contracts.Components;
 using Wirehome.Contracts.Logging;
 
 namespace Wirehome.Motion.Model

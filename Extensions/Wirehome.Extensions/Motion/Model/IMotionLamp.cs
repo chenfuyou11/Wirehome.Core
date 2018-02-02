@@ -1,7 +1,7 @@
 ﻿using System;
 using Wirehome.Contracts.Components.Commands;
 
-namespace Wirehome.Motion
+namespace Wirehome.Motion.Model
 {
     public interface IMotionLamp
     {

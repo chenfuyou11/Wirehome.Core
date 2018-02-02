@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Linq;
-using Wirehome.Motion.Model;
 
-namespace Wirehome.Motion
+namespace Wirehome.Motion.Model
 {
     public class ObservableTimer : IObservableTimer
     {

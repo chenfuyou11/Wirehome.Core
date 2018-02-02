@@ -11,6 +11,7 @@ namespace Wirehome.Motion.Model
         public TimeSpan PeriodicCheckTime { get; set; } = TimeSpan.FromMilliseconds(1000);
         public TimeSpan ManualCodeWindow { get; set; } = TimeSpan.FromMilliseconds(3000);
         public float TurnOffTimeoutIncrementPercentage { get; set; } = 50;
+        public float TurnOffPresenceFactor { get; set; } = 0.05f;
     }
 }
 

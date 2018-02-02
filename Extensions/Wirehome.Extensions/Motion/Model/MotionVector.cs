@@ -52,20 +52,23 @@ namespace Wirehome.Motion.Model
 
         public override string ToString()
         {
-            if(_confusionPoints.Count > 0)
+            var time = End.TimeStamp - Start.TimeStamp;
+            var baseFormat = $"{Start} -> {End} [{time.TotalMilliseconds}ms]";
+
+            if (_confusionPoints.Count > 0)
             {
                 if(IsConfused)
                 {
-                    return $"{Start} -> {End} | Confusion: {string.Join(", ", ConfusionPoint)}";
+                    return baseFormat + $" | Confusion: {string.Join(", ", ConfusionPoint)}";
                 }
                 else
                 {
-                    return $"{Start} -> {End} | Unconfused";
+                    return baseFormat + " | Unconfused";
                 }
             }
             else
             {
-                return $"{Start} -> {End}";
+                return baseFormat;
             }
         }
 

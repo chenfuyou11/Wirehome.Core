@@ -435,6 +435,34 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(false, lampDictionary[HallwayToiletId].GetIsTurnedOn());
         }
 
+
+        [TestMethod]
+        public void MoveCloseToRoomWithOtherPersonShouldConfuzeVectorsNearThatRoom()
+        {
+            var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
+
+                //L->HL->HT->K vs move in B
+                OnNext(Time.Tics(1000), new MotionEnvelope(LivingroomId)),
+                OnNext(Time.Tics(1500), new MotionEnvelope(BathroomId)),
+                OnNext(Time.Tics(2000), new MotionEnvelope(HallwayLivingroomId)),
+                OnNext(Time.Tics(2900), new MotionEnvelope(BathroomId)),
+                OnNext(Time.Tics(3000), new MotionEnvelope(HallwayToiletId)),
+                OnNext(Time.Tics(4000), new MotionEnvelope(KitchenId)),
+                OnNext(Time.Tics(4100), new MotionEnvelope(BathroomId))
+            );
+
+            service.Start();
+
+            scheduler.AdvanceJustAfter(TimeSpan.FromSeconds(9));
+
+            Assert.AreEqual(2, service.NumberOfConfusions);
+            Assert.AreEqual(true, lampDictionary[BathroomId].GetIsTurnedOn());
+            Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[LivingroomId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[HallwayLivingroomId].GetIsTurnedOn());
+            Assert.AreEqual(false, lampDictionary[HallwayToiletId].GetIsTurnedOn());
+        }
+
         #region Setup
 
         private const string HallwayToiletId = "HallwayToilet";

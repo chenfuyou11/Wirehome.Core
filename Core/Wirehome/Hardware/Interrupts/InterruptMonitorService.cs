@@ -7,6 +7,7 @@ using Wirehome.Contracts.Hardware.Interrupts.Configuration;
 using Wirehome.Contracts.Hardware.Gpio;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Services;
+using System.Threading.Tasks;
 
 namespace Wirehome.Hardware.Interrupts
 {
@@ -27,7 +28,14 @@ namespace Wirehome.Hardware.Interrupts
             _log = logService.CreatePublisher(nameof(InterruptMonitorService));
         }
 
-        public void RegisterInterrupts()
+        public override Task Initialize()
+        {
+            RegisterInterrupts();
+
+            return base.Initialize();
+        }
+
+        private void RegisterInterrupts()
         {
             var configuration = _configurationService.GetConfiguration<InterruptMonitorServiceConfiguration>("InterruptMonitorService");
             foreach (var interruptConfiguration in configuration.Interrupts)

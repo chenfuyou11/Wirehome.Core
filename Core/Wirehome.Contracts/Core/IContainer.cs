@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading.Tasks;
+using Wirehome.Contracts.Services;
 
 namespace Wirehome.Contracts.Core
 {
@@ -40,5 +40,9 @@ namespace Wirehome.Contracts.Core
         IEnumerable<InstanceProducer> GetSingletonRegistrations();
 
         void RegisterSingleton(Type service, object instance);
+
+        void RegisterService<TContract, TImplementation>(int priority = 0) where TContract : class, IService where TImplementation : class, TContract;
+
+        Queue<IService> GetSerives();
     }
 }

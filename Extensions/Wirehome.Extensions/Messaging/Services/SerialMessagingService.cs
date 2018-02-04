@@ -30,13 +30,13 @@ namespace Wirehome.Extensions.Messaging.Services
 
         public async Task Initialize()
         {
-            await _serialDevice.Init();
+            await _serialDevice.Init().ConfigureAwait(false);
             _dataReader = _serialDevice.GetBinaryReader();
-            
-            Listen();
+
+            Task.Run(async () => await Listen());
         }
 
-        private async void Listen()
+        private async Task Listen()
         {
             try
             {
@@ -93,11 +93,10 @@ namespace Wirehome.Extensions.Messaging.Services
                         {
                             if(handler.CanDeserialize(messageType, messageBodySize))
                             {
-                                //TODO DNF
-                                //var message = handler.Deserialize(dataReaderObject, messageBodySize);
-                                //await _messageBroker.Publish("SerialService", message);
+                                var message = handler.Deserialize(_dataReader, messageBodySize);
+                                await _messageBroker.Publish("SerialService", message).ConfigureAwait(false);
 
-                                //_logService.Info($"Recived UART message handled by {handler.GetType().Name}, Message details: [{message.ToString()}]");
+                                _logService.Info($"Received UART message handled by {handler.GetType().Name}, Message details: [{message}]");
                             }
                         }
                     }

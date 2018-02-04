@@ -26,8 +26,11 @@ namespace Wirehome.Core
             if (container == null) throw new ArgumentNullException(nameof(container));
             if (log == null) throw new ArgumentNullException(nameof(log));
 
-            foreach (var service in container.GetInstances<IService>())
+            var services = container.GetSerives();
+
+            while (services.Count > 0)
             {
+                var service = services.Dequeue();
                 try
                 {
                     await service.Initialize().ConfigureAwait(false);

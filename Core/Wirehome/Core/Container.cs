@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Services;
 
 namespace Wirehome.Core
 {
@@ -11,6 +12,7 @@ namespace Wirehome.Core
     {
         private readonly SimpleInjector.Container _container = new SimpleInjector.Container();
         private readonly ControllerOptions _options;
+        private Dictionary<Type, int> _serviceInitalizationPriority = new Dictionary<Type, int>();
 
         public Container(ControllerOptions options)
         {
@@ -96,6 +98,13 @@ namespace Wirehome.Core
             _container.Register(service, implementation, Lifestyle.Singleton);
         }
 
+        
+        public void RegisterService<TContract, TImplementation>(int priority = 0) where TContract : class, IService where TImplementation : class, TContract
+        {
+            RegisterSingleton<TContract, TImplementation>();
+            _serviceInitalizationPriority.Add(typeof(TImplementation), priority);
+        }
+
         public void RegisterSingleton(Type service, object instance)
         {
             _container.RegisterSingleton(service, instance);
@@ -135,6 +144,29 @@ namespace Wirehome.Core
         public void RegisterInitializer<T>(Action<T> initializer) where T : class
         {
             _container.RegisterInitializer<T>(initializer);
+        }
+
+
+
+        public Queue<IService> GetSerives()
+        {
+            var services = GetInstances<IService>().ToList();
+            var result = new Queue<IService>();
+
+            // add priority at first
+            foreach(var service in _serviceInitalizationPriority.Where(v => v.Value > 0).OrderByDescending(x => x.Value).Select(y => y.Key))
+            {
+                var found = services.Find(s => s.GetType() == service);
+                result.Enqueue(found);
+                services.Remove(found);
+            }
+
+            foreach(var service in services)
+            {
+                result.Enqueue(service);
+            }
+
+            return result;
         }
 
     }

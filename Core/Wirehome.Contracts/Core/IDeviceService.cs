@@ -15,8 +15,6 @@ namespace Wirehome.Contracts.Core
 
         IList<TDevice> GetDevices<TDevice>() where TDevice : IDevice;
 
-        void RegisterDevices();
-
         void RegisterDeviceFactory(IDeviceFactory deviceFactory);
     }
 }

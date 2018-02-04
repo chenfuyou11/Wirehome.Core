@@ -39,7 +39,7 @@ void LPD433::ProcessLoop()
     	unsigned long value = LPD433::mySwitch.getReceivedValue();
         uint8_t bit = LPD433::mySwitch.getReceivedBitlength();
         uint8_t protocol = LPD433::mySwitch.getReceivedProtocol();
-    	mySwitch.resetAvailable();
+    	LPD433::mySwitch.resetAvailable();
 
 		uint8_t messageSize = sizeof(value) + sizeof(bit) + sizeof(protocol);
 

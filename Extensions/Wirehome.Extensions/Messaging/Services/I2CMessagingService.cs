@@ -54,9 +54,8 @@ namespace Wirehome.Extensions.Messaging.Services
                 {
                     try
                     {
-                        //TODO
-                        //var package = handler.Serialize(message.Payload.Content);
-                        //_i2cServiceBus.Write(_bridge.Address, package);
+                        var package = handler.Serialize(message.Payload.Content);
+                        _i2cServiceBus.Write(_bridge.Address, package);
                     }
                     catch (Exception ex)
                     {

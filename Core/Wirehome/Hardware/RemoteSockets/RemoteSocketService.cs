@@ -13,6 +13,7 @@ using Wirehome.Contracts.Scheduling;
 using Wirehome.Contracts.Services;
 using Wirehome.Hardware.Drivers.RemoteSockets;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace Wirehome.Hardware.RemoteSockets
 {
@@ -49,7 +50,15 @@ namespace Wirehome.Hardware.RemoteSockets
             _log = logService.CreatePublisher(nameof(RemoteSocketService));
         }
 
-        public void RegisterRemoteSockets()
+        public override Task Initialize()
+        {
+            RegisterRemoteSockets();
+
+            return base.Initialize();
+        }
+
+
+        private void RegisterRemoteSockets()
         {
             var adapterDevices = _deviceRegistryService.GetDevices<ILdp433MhzBridgeAdapter>();
             foreach (var adapterDevice in adapterDevices)

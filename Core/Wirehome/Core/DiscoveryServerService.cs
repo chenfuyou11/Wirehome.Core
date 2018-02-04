@@ -48,7 +48,7 @@ namespace Wirehome.Core
             _socket.Dispose();
         }
 
-        private async Task SendResponseAsync(IPEndPoint remoteAddress )
+        private Task SendResponseAsync(IPEndPoint remoteAddress )
         {
             //TODO Why not in constructor??
             var controllerSettings = _settingsService.GetSettings<ControllerSettings>();
@@ -56,7 +56,7 @@ namespace Wirehome.Core
             var response = new DiscoveryResponse(controllerSettings.Caption, controllerSettings.Description);
             var buffer = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response));
 
-            await _socket.SendAsync(buffer, buffer.Length, remoteAddress);
+            return _socket.SendAsync(buffer, buffer.Length, remoteAddress);
         }
 
    

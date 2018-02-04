@@ -13,6 +13,7 @@ using Wirehome.Extensions.Contracts;
 using Wirehome.Contracts.Messaging;
 using Wirehome.Contracts.Scheduling;
 using Wirehome.Extensions.Messaging;
+using Wirehome.Extensions.Messaging.Services;
 
 namespace Wirehome.Controller.Dnf.Rooms
 {
@@ -76,24 +77,25 @@ namespace Wirehome.Controller.Dnf.Rooms
 
             //_schedulerService.Register("TEST_IR", TimeSpan.FromSeconds(3), () =>
             //{
-            //    _messageBroker.Publish(typeof(I2CService).Name, new InfraredMessage
+            //    _messageBroker.Publish(typeof(I2CMessagingService).Name, new InfraredMessage
             //    {
             //        IfraredSystem = IfraredSystem.NECX,
             //        Bits = 32,
             //        Code = 3772833823
             //    });
+            //});
 
-           // var last = false;
+            //var last = false;
 
             //_schedulerService.Register("TEST_LPD", TimeSpan.FromSeconds(3), () =>
             //{
-            //    _messageBroker.Publish(typeof(I2CService).Name, new LPD433Message
+            //    _messageBroker.Publish(typeof(I2CMessagingService).Name, new LPD433Message
             //    {
             //        Pin = 7,
             //        Code = last ? codePair.OnCode.Value : codePair.OffCode.Value
             //    });
+            //    last = !last;
 
-            //    
             //});
 
             //_messageBroker.Publish(typeof(I2CService).Name, new CurrentMessage
@@ -116,6 +118,8 @@ namespace Wirehome.Controller.Dnf.Rooms
             //        && x.Payload.Content.DipswitchCode?.Unit == DipswitchUnitCode.A
             //    )
             //    {
+            //        Console.WriteLine("!!!!!!!!!!!!!!!!!!!");
+
             //        //_messageBroker.Publish(typeof(HttpMessagingService).Name, new DenonMessage
             //        //{
             //        //    ParamName = "cmd0",

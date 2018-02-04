@@ -90,10 +90,8 @@ namespace Wirehome.Core
 
                 InitializeStorage();
 
-                RegisterDevices();
-
                 await InitializeServices().ConfigureAwait(false);
-
+                
                 ExposeRegistrationsToApi();
 
                 await TryConfigureAsync().ConfigureAwait(false);
@@ -121,16 +119,9 @@ namespace Wirehome.Core
             _container.ExposeRegistrationsToApi();
         }
 
-        private async Task InitializeServices()
+        private Task InitializeServices()
         {
-            await _container.StartupServices(_log).ConfigureAwait(false);
-        }
-
-        private void RegisterDevices()
-        {
-            _container.GetInstance<IInterruptMonitorService>().RegisterInterrupts();
-            _container.GetInstance<IDeviceRegistryService>().RegisterDevices();
-            _container.GetInstance<IRemoteSocketService>().RegisterRemoteSockets();
+            return _container.StartupServices(_log);
         }
 
         private void InitializeStorage()
@@ -221,73 +212,51 @@ namespace Wirehome.Core
             }
 
             _container.RegisterCollection<ILogAdapter>(_options.LogAdapters);
-            _container.RegisterSingleton<ILogService, LogService>();
-            _container.RegisterSingleton<IHealthService, HealthService>();
-            _container.RegisterSingleton<IDateTimeService, DateTimeService>();
-            _container.RegisterSingleton<ITimerService, TimerService>();
 
             _container.RegisterSingleton<DiscoveryServerService>();
-
-            _container.RegisterSingleton<IConfigurationService, ConfigurationService>();
-           // _container.RegisterInitializer<ConfigurationService>(s => s.Initialize());
-
-            _container.RegisterSingleton<IStorageService, StorageService>();
-
-            _container.RegisterSingleton<ISystemEventsService, SystemEventsService>();
-            _container.RegisterSingleton<ISystemInformationService, SystemInformationService>();
-            _container.RegisterSingleton<IBackupService, BackupService>();
-
-            _container.RegisterSingleton<IResourceService, ResourceService>();
-            //_container.RegisterInitializer<ResourceService>(s => s.Initialize());
-
-            _container.RegisterSingleton<IApiDispatcherService, ApiDispatcherService>();
             _container.RegisterSingleton<AzureCloudService>();
             _container.RegisterSingleton<CloudConnectorService>();
-
-            _container.RegisterSingleton<INotificationService, NotificationService>();
-            //_container.RegisterInitializer<NotificationService>(s => s.Initialize());
-
-            _container.RegisterSingleton<ISettingsService, SettingsService>();
-            //_container.RegisterInitializer<SettingsService>(s => s.Initialize());
-            _container.RegisterSingleton<ISchedulerService, SchedulerService>();
-
-            _container.RegisterSingleton<IMessageBrokerService, MessageBrokerService>();
-            _container.RegisterSingleton<IInterruptMonitorService, InterruptMonitorService>();
-            _container.RegisterSingleton<IGpioService, GpioService>();
-            _container.RegisterSingleton<II2CBusService, I2CBusService>();
-            
-            _container.RegisterSingleton<IDeviceMessageBrokerService, DeviceMessageBrokerService>();
-            //_container.RegisterInitializer<DeviceMessageBrokerService>(s => s.Initialize());
-
-            _container.RegisterSingleton<IRemoteSocketService, RemoteSocketService>();
-
             _container.RegisterSingleton<CCToolsDeviceService>();
             _container.RegisterSingleton<SonoffDeviceService>();
             _container.RegisterSingleton<OutpostDeviceService>();
-
-            _container.RegisterSingleton<IDeviceRegistryService, DeviceRegistryService>();
-            _container.RegisterSingleton<IAreaRegistryService, AreaRegistryService>();
-            _container.RegisterSingleton<IComponentRegistryService, ComponentRegistryService>();
-            _container.RegisterSingleton<IAutomationRegistryService, AutomationRegistryService>();
-            _container.RegisterSingleton<IScriptingService, ScriptingService>();
-
             _container.RegisterSingleton<ActuatorFactory>();
             _container.RegisterSingleton<SensorFactory>();
             _container.RegisterSingleton<AutomationFactory>();
-
-            _container.RegisterSingleton<IPersonalAgentService, PersonalAgentService>();
-
-            _container.RegisterSingleton<IOutdoorService, OutdoorService>();
-            _container.RegisterSingleton<IDaylightService, DaylightService>();
             _container.RegisterSingleton<OpenWeatherMapService>();
             _container.RegisterSingleton<ControllerSlaveService>();
 
-            _container.RegisterSingleton<ITwitterClientService, TwitterClientService>();
-            _container.RegisterSingleton<ITelegramBotService, TelegramBotService>();
-
-            _container.RegisterSingleton<IStatusService, StatusService>();
-            _container.RegisterSingleton<IHttpServerService, HttpServerService>();
-            
+            _container.RegisterService<IConfigurationService, ConfigurationService>(100);
+            _container.RegisterService<IInterruptMonitorService, InterruptMonitorService>(90);
+            _container.RegisterService<IDeviceRegistryService, DeviceRegistryService>(80);
+            _container.RegisterService<IRemoteSocketService, RemoteSocketService>(70);
+            _container.RegisterService<IResourceService, ResourceService>(60);
+            _container.RegisterService<INotificationService, NotificationService>(50);
+            _container.RegisterService<ISettingsService, SettingsService>(40);
+            _container.RegisterService<IDeviceMessageBrokerService, DeviceMessageBrokerService>(30);
+            _container.RegisterService<ILogService, LogService>();
+            _container.RegisterService<IHealthService, HealthService>();
+            _container.RegisterService<IDateTimeService, DateTimeService>();
+            _container.RegisterService<ITimerService, TimerService>();
+            _container.RegisterService<IStorageService, StorageService>();
+            _container.RegisterService<ISystemEventsService, SystemEventsService>();
+            _container.RegisterService<ISystemInformationService, SystemInformationService>();
+            _container.RegisterService<IBackupService, BackupService>();
+            _container.RegisterService<IApiDispatcherService, ApiDispatcherService>();
+            _container.RegisterService<ISchedulerService, SchedulerService>();
+            _container.RegisterService<IMessageBrokerService, MessageBrokerService>();
+            _container.RegisterService<IGpioService, GpioService>();
+            _container.RegisterService<II2CBusService, I2CBusService>();
+            _container.RegisterService<IAreaRegistryService, AreaRegistryService>();
+            _container.RegisterService<IComponentRegistryService, ComponentRegistryService>();
+            _container.RegisterService<IAutomationRegistryService, AutomationRegistryService>();
+            _container.RegisterService<IScriptingService, ScriptingService>();
+            _container.RegisterService<IPersonalAgentService, PersonalAgentService>();
+            _container.RegisterService<IOutdoorService, OutdoorService>();
+            _container.RegisterService<IDaylightService, DaylightService>();
+            _container.RegisterService<ITwitterClientService, TwitterClientService>();
+            _container.RegisterService<ITelegramBotService, TelegramBotService>();
+            _container.RegisterService<IStatusService, StatusService>();
+            _container.RegisterService<IHttpServerService, HttpServerService>();
         }
     }
 }

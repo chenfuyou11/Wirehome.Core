@@ -13,12 +13,12 @@ namespace Wirehome.Extensions.Extensions
                                           .Where
                                           (
                                              x => x.Namespace == namespaceName
-                                             && x.GetInterfaces().Any()
+                                             && x.GetInterfaces().Length > 0
                                              && x.GetTypeInfo().IsClass
                                           )
                                           .Select(y => new
                                           {
-                                            Service = y.GetInterfaces(false).Single(),
+                                            Service = y.GetDirectInterfaces().Single(),
                                             Implementation = y
                                           }
                                           );

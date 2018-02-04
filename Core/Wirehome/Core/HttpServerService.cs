@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Globalization;
+using System.Threading.Tasks;
+using System.Security.Cryptography;
 using Wirehome.Api.Configuration;
 using Wirehome.Contracts.Api;
 using Wirehome.Contracts.Components;
@@ -10,16 +13,13 @@ using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Threading.Tasks;
-using HTTPnet.Core.Pipeline;
 using HTTPnet;
-using HTTPnet.Core.Http;
-using System.Globalization;
-using HTTPnet.Core.Pipeline.Handlers;
-using HTTPnet.Core.WebSockets;
-using System.Security.Cryptography;
 using HTTPnet.Core;
+using HTTPnet.Core.Http;
+using HTTPnet.Core.Pipeline;
+using HTTPnet.Core.WebSockets;
 using HTTPnet.Core.Diagnostics;
+using HTTPnet.Core.Pipeline.Handlers;
 
 namespace Wirehome.Api
 {
@@ -43,7 +43,7 @@ namespace Wirehome.Api
             _apiDispatcherService = apiDispatcherService ?? throw new ArgumentNullException(nameof(apiDispatcherService));
         }
         
-        public override async Task Initialize()
+        public override Task Initialize()
         {
             _apiDispatcherService.RegisterAdapter(this);
             var configuration = _configurationService.GetConfiguration<HttpServerServiceConfiguration>("HttpServerService");
@@ -64,7 +64,7 @@ namespace Wirehome.Api
             var options = HttpServerOptions.Default;
             options.Port = configuration.Port;
 
-            await _httpServer.StartAsync(options).ConfigureAwait(false);
+            return _httpServer.StartAsync(options);
         }
 
         private void HttpNetTrace_TraceMessagePublished(object sender, HttpNetTraceMessagePublishedEventArgs e)

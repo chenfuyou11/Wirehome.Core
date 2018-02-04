@@ -9,7 +9,5 @@ namespace Wirehome.Contracts.Hardware.RemoteSockets
         IBinaryOutput RegisterRemoteSocket(string id, string adapterDeviceId, Lpd433MhzCodePair codePair);
 
         void SendCode(string adapterDeviceId, Lpd433MhzCode code);
-        void RegisterRemoteSockets();
-
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Wirehome.Contracts.Configuration;
 using Wirehome.Contracts.Core;
 using Wirehome.Contracts.Devices;
@@ -39,7 +40,14 @@ namespace Wirehome.Devices
             _deviceFactories.Add(deviceFactory);
         }
 
-        public void RegisterDevices()
+        public override Task Initialize()
+        {
+            RegisterDevices();
+
+            return base.Initialize();
+        }
+
+        private void RegisterDevices()
         {
             var configuration = _configurationService.GetConfiguration<DeviceRegistryServiceConfiguration>("DeviceRegistryService");
             foreach (var deviceConfiguration in configuration.Devices)

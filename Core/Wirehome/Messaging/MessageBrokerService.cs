@@ -94,7 +94,7 @@ namespace Wirehome.Messaging
 
         private void PublishInternal(Message<JObject> message)
         {
-            _log.Verbose($"Message for topic '{message.Topic}' with payload of type '{message.Payload.Type}' published.");
+            //_log.Verbose($"Message for topic '{message.Topic}' with payload of type '{message.Payload.Type}' published.");
 
             List<MessageSubscription> subscriptions;
             lock (_syncRoot)

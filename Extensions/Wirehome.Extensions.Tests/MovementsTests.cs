@@ -462,7 +462,7 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(false, lampDictionary[HallwayLivingroomId].GetIsTurnedOn());
             Assert.AreEqual(false, lampDictionary[HallwayToiletId].GetIsTurnedOn());
         }
-
+        
         #region Setup
 
         private const string HallwayToiletId = "HallwayToilet";

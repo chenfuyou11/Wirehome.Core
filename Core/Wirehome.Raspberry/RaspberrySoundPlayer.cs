@@ -7,7 +7,7 @@ namespace Wirehome.Raspberry.Core
 {
     public class RaspberrySoundPlayer : INativeSoundPlayer
     {
-        MediaPlayer _player;
+        private readonly MediaPlayer _player;
         public Action SoundEnd { get; set; }
 
         public RaspberrySoundPlayer()
@@ -20,10 +20,9 @@ namespace Wirehome.Raspberry.Core
             _player.MediaEnded += _player_MediaEnded;
         }
 
-        public void Pause()
-        {
-            _player.Pause();
-        }
+        private void _player_MediaEnded(MediaPlayer sender, object args) => SoundEnd?.Invoke();
+
+        public void Pause() => _player.Pause();
 
         public void Play(string sound)
         {
@@ -31,9 +30,6 @@ namespace Wirehome.Raspberry.Core
             _player.Play();
         }
 
-        private void _player_MediaEnded(MediaPlayer sender, object args)
-        {
-            SoundEnd?.Invoke();
-        }
+        
     }
 }

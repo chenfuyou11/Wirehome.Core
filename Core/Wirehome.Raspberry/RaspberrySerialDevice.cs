@@ -11,14 +11,8 @@ namespace Wirehome.Raspberry
     {
         private SerialDevice _serialDevice;
 
-        public void Dispose()
-        {
-            if (_serialDevice != null)
-            {
-                _serialDevice.Dispose();
-            }
-            _serialDevice = null;
-        }
+        public void Dispose() => _serialDevice?.Dispose();
+        public IBinaryReader GetBinaryReader() => new BinaryReader(_serialDevice.InputStream);
 
         public async Task Init()
         {
@@ -35,11 +29,6 @@ namespace Wirehome.Raspberry
             _serialDevice.StopBits = SerialStopBitCount.One;
             _serialDevice.DataBits = 8;
             _serialDevice.Handshake = SerialHandshake.None;
-        }
-
-        public IBinaryReader GetBinaryReader()
-        {
-            return new BinaryReader(_serialDevice.InputStream);
         }
     }
 }

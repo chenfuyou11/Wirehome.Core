@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers", "{CD5D2CCD-44D0-46E5-BE14-3B377048E0A2}"
 EndProject
@@ -65,6 +65,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{5147FD81-1D79-47C4-B5D3-9A5965CDED1A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonyBraviaRegisterTool", "Extensions\Tools\SonyBraviaRegisterTool\SonyBraviaRegisterTool.csproj", "{C90F81F0-E8BD-42F2-BE79-59CC32E7C886}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.Alexa.Service", "Extensions\Wirehome.Alexa.Service\Wirehome.Alexa.Service.csproj", "{85247C7A-2FB7-4129-B18C-E4305DE26214}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.Alexa.OAuth", "Extensions\Wirehome.Alexa.OAuth\Wirehome.Alexa.OAuth.csproj", "{5C68D46C-4687-4766-80CE-A4A13A9169F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -556,6 +560,62 @@ Global
 		{C90F81F0-E8BD-42F2-BE79-59CC32E7C886}.Release|x86.Build.0 = Release|Any CPU
 		{C90F81F0-E8BD-42F2-BE79-59CC32E7C886}.Release|x86 (For local).ActiveCfg = Release|Any CPU
 		{C90F81F0-E8BD-42F2-BE79-59CC32E7C886}.Release|x86 (For local).Build.0 = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|Any CPU (For Cloud Components).ActiveCfg = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|Any CPU (For Cloud Components).Build.0 = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|ARM.Build.0 = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|x64.Build.0 = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|x86.Build.0 = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|x86 (For local).ActiveCfg = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Debug|x86 (For local).Build.0 = Debug|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|Any CPU (For Cloud Components).ActiveCfg = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|Any CPU (For Cloud Components).Build.0 = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|ARM.ActiveCfg = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|ARM.Build.0 = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|ARM (For Raspberry Pi).ActiveCfg = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|ARM (For Raspberry Pi).Build.0 = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|x64.ActiveCfg = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|x64.Build.0 = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|x86.ActiveCfg = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|x86.Build.0 = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|x86 (For local).ActiveCfg = Release|Any CPU
+		{85247C7A-2FB7-4129-B18C-E4305DE26214}.Release|x86 (For local).Build.0 = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|Any CPU (For Cloud Components).ActiveCfg = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|Any CPU (For Cloud Components).Build.0 = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|ARM.Build.0 = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|x64.Build.0 = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|x86.Build.0 = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|x86 (For local).ActiveCfg = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Debug|x86 (For local).Build.0 = Debug|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|Any CPU (For Cloud Components).ActiveCfg = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|Any CPU (For Cloud Components).Build.0 = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|ARM.ActiveCfg = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|ARM.Build.0 = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|ARM (For Raspberry Pi).ActiveCfg = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|ARM (For Raspberry Pi).Build.0 = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|x64.ActiveCfg = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|x64.Build.0 = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|x86.ActiveCfg = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|x86.Build.0 = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|x86 (For local).ActiveCfg = Release|Any CPU
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6}.Release|x86 (For local).Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -581,6 +641,8 @@ Global
 		{0E8A3855-D428-4CA2-B752-486B61056933} = {20B098BA-1C68-4602-8BBA-902E7E3CA0B4}
 		{5147FD81-1D79-47C4-B5D3-9A5965CDED1A} = {FC699828-F953-4DA6-978B-EE8BFB988390}
 		{C90F81F0-E8BD-42F2-BE79-59CC32E7C886} = {5147FD81-1D79-47C4-B5D3-9A5965CDED1A}
+		{85247C7A-2FB7-4129-B18C-E4305DE26214} = {FC699828-F953-4DA6-978B-EE8BFB988390}
+		{5C68D46C-4687-4766-80CE-A4A13A9169F6} = {FC699828-F953-4DA6-978B-EE8BFB988390}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67048500-54F1-4071-B01E-6215AD81A909}

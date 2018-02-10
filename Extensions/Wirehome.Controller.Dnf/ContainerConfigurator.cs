@@ -17,12 +17,11 @@ namespace Wirehome.Controller.Dnf
             if (container == null) throw new ArgumentNullException(nameof(container));
 
             var projectAssemblies = AssemblyHelper.GetProjectAssemblies();
-            var messagingServicesTypes = typeof(HttpMessagingService); // all Wirehome.Extensions.Messaging.Services
 
             container.RegisterRaspberryServices();
 
-            container.RegisterServicesInNamespace(projectAssemblies, messagingServicesTypes.Namespace);
-            //container.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
+            container.RegisterServicesInNamespace(projectAssemblies, typeof(HttpMessagingService).Namespace); // all Wirehome.Extensions.Messaging.Services
+            container.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
             container.RegisterSingleton<IEventAggregator, EventAggregator>();
             container.RegisterCollection<IBinaryMessage>(projectAssemblies);
             container.RegisterCollection<IHttpMessage>(projectAssemblies);

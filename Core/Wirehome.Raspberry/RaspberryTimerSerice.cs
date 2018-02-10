@@ -6,9 +6,6 @@ namespace Wirehome.Raspberry.Core
 {
     public class RaspberryTimerSerice : INativeTimerSerice
     {
-        public void CreatePeriodicTimer(Action action, TimeSpan interval)
-        {
-            ThreadPoolTimer.CreatePeriodicTimer(x => action(), interval);
-        }
+        public void CreatePeriodicTimer(Action action, TimeSpan interval) => ThreadPoolTimer.CreatePeriodicTimer(x => action(), interval);
     }
 }

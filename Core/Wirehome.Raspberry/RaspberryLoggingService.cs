@@ -1,46 +1,41 @@
-﻿using Wirehome.Contracts.Logging;
-using System;
+﻿using System;
 using Windows.Foundation.Diagnostics;
+using Wirehome.Contracts.Logging;
 
 namespace Wirehome.Extensions
 {
     public class RaspberryLoggingService : ILogAdapter
     {
-        LoggingChannel _loggingChannel;
+        private readonly LoggingChannel _loggingChannel;
 
-        public RaspberryLoggingService()
-        {
-            _loggingChannel = new LoggingChannel("Wirehome", null, new Guid("4bd2826e-54a1-4ba9-bf63-92b73ea1ac4a"));
-        }
-        
+        public RaspberryLoggingService() => _loggingChannel = new LoggingChannel("Wirehome", null, new Guid("4bd2826e-54a1-4ba9-bf63-92b73ea1ac4a"));
+
         public void ProcessLogEntry(LogEntry logEntry)
         {
             var fields = new LoggingFields();
 
             fields.AddString("Source", logEntry.Source ?? "");
-            //fields.AddString("Exception", logEntry.Exception ?? "");
-            //fields.AddString("Source", logEntry.Source ?? "");
-
+            fields.AddString("Exception", logEntry.Exception ?? "");
+            
             _loggingChannel.LogEvent(logEntry.Message, fields, MapSeverity(logEntry.Severity));
         }
 
         private static LoggingLevel MapSeverity(LogEntrySeverity severity)
         {
-            var level = LoggingLevel.Information;
             if (severity == LogEntrySeverity.Error)
             {
-                level = LoggingLevel.Error;
+                return LoggingLevel.Error;
             }
             else if (severity == LogEntrySeverity.Verbose)
             {
-                level = LoggingLevel.Verbose;
+                return LoggingLevel.Verbose;
             }
             else if (severity == LogEntrySeverity.Warning)
             {
-                level = LoggingLevel.Warning;
+                return LoggingLevel.Warning;
             }
 
-            return level;
+            return LoggingLevel.Information;
         }
     }
 }

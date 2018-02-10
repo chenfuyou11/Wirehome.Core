@@ -7,14 +7,8 @@ namespace Wirehome.Raspberry
     {
         private readonly GpioController _gpioController;
 
-        public RaspberryGpioController()
-        {
-            _gpioController = GpioController.GetDefault();
-        }
+        public RaspberryGpioController() => _gpioController = GpioController.GetDefault();
 
-        public INativeGpio OpenPin(int pinNumber, NativeGpioSharingMode sharingMode)
-        {
-            return new RaspberryGpio(_gpioController.OpenPin(pinNumber, (GpioSharingMode)sharingMode));
-        }
+        public INativeGpio OpenPin(int pinNumber, NativeGpioSharingMode sharingMode) => new RaspberryGpio(_gpioController.OpenPin(pinNumber, (GpioSharingMode)sharingMode));
     }
 }

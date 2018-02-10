@@ -16,29 +16,14 @@ namespace Wirehome.Raspberry
             gpioPin.ValueChanged += GpioPin_ValueChanged;
         }
 
-        private void GpioPin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
-        {
-            ValueChanged?.Invoke();
-        }
+        private void GpioPin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args) => ValueChanged?.Invoke();
 
-        public void SetDriveMode(NativeGpioPinDriveMode pinMode)
-        {
-            _gpioPin.SetDriveMode((GpioPinDriveMode)pinMode);
-        }
+        public void SetDriveMode(NativeGpioPinDriveMode pinMode) => _gpioPin.SetDriveMode((GpioPinDriveMode)pinMode);
 
-        public void Dispose()
-        {
-            _gpioPin.Dispose();
-        }
+        public void Dispose() => _gpioPin.Dispose();
 
-        public NativeGpioPinValue Read()
-        {
-            return (NativeGpioPinValue)_gpioPin.Read();
-        }
+        public NativeGpioPinValue Read() => (NativeGpioPinValue)_gpioPin.Read();
 
-        public void Write(NativeGpioPinValue pinValue)
-        {
-            _gpioPin.Write((GpioPinValue)pinValue);
-        }
+        public void Write(NativeGpioPinValue pinValue) => _gpioPin.Write((GpioPinValue)pinValue);
     }
 }

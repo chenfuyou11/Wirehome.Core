@@ -8,7 +8,7 @@ namespace Wirehome.Raspberry
 {
     public class BinaryReader : IBinaryReader
     {
-        private DataReader _dataReader;
+        private readonly DataReader _dataReader;
 
         public BinaryReader(IInputStream stream)
         {

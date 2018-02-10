@@ -4,24 +4,16 @@ using Wirehome.Contracts.Core;
 
 namespace Wirehome.Raspberry
 {
-
     public class RaspberryI2cDevice : INativeI2cDevice
     {
         private readonly I2cDevice _i2CDevice;
-          
+ 
         public RaspberryI2cDevice(I2cDevice i2CDevice)
         {
             _i2CDevice = i2CDevice ?? throw new ArgumentNullException(nameof(i2CDevice));
         }
-        
-        public void Dispose()
-        {
-            if (_i2CDevice != null)
-            {
-                _i2CDevice.Dispose();
-            }
-        }
-        
+        public void Dispose() => _i2CDevice?.Dispose();
+
         public NativeI2cTransferResult WritePartial(byte[] buffer)
         {
             var result = _i2CDevice.WritePartial(buffer);

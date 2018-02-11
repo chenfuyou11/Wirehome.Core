@@ -22,14 +22,14 @@ namespace Wirehome.Controller.Dnf.Rooms
         private readonly SensorFactory _sensorFactory;
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
-        private readonly IAlexaDispatcherEndpointService _alexaService;
+        private readonly IAlexaDispatcherService _alexaService;
 
         public LivingroomConfiguration(IDeviceRegistryService deviceService,
                                     IAreaRegistryService areaService,
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
                                     AutomationFactory automationFactory,
-                                    IAlexaDispatcherEndpointService alexaService
+                                    IAlexaDispatcherService alexaService
                                      )
         {
             _deviceService = deviceService;
@@ -56,7 +56,7 @@ namespace Wirehome.Controller.Dnf.Rooms
             var lamp1 = _actuatorFactory.RegisterMonostableLamp(room, LivingroomElements.TVLight, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay0], input[HSPE16Pin.GPIO14]));
             var lamp2 = _actuatorFactory.RegisterMonostableLamp(room, LivingroomElements.BedLight, new MonostableBinaryOutputAdapter(relays[HSREL8Pin.Relay1], input[HSPE16Pin.GPIO13]));
 
-            _alexaService.AddConnectedVivices("Light", new IComponent[] { lamp1, lamp2 });
+            _alexaService.RegisterDevice("Light", new IComponent[] { lamp1, lamp2 });
 
         }
 

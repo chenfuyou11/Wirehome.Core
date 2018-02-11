@@ -23,14 +23,14 @@ namespace Wirehome.Controller.Dnf.Rooms
         private readonly SensorFactory _sensorFactory;
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
-        private readonly IAlexaDispatcherEndpointService _alexaService;
+        private readonly IAlexaDispatcherService _alexaService;
 
         public HallwayConfiguration(IDeviceRegistryService deviceService,
                                     IAreaRegistryService areaService,
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
                                     AutomationFactory automationFactory,
-                                    IAlexaDispatcherEndpointService alexaService
+                                    IAlexaDispatcherService alexaService
                                     )  
         {
             _deviceService = deviceService;
@@ -66,7 +66,7 @@ namespace Wirehome.Controller.Dnf.Rooms
              .WithTarget(room.GetLamp(HallwayElements.Light_One))
              .WithEnabledAtNight(TimeSpan.FromMinutes(-30), TimeSpan.FromMinutes(0));
 
-            _alexaService.AddConnectedVivices("Hallway Light", new IComponent[] { lamp1, lamp2 });
+            _alexaService.RegisterDevice("Hallway Light", new IComponent[] { lamp1, lamp2 });
 
         }
 

@@ -14,6 +14,18 @@ namespace Wirehome.Alexa.Model.Power
         public Event Event { get; set; }
     }
 
+    public class Event
+    {
+        [JsonProperty("header")]
+        public Header Header { get; set; }
+
+        [JsonProperty("endpoint")]
+        public SimpleEndpoint Endpoint { get; set; }
+
+        [JsonProperty("payload")]
+        public Payload Payload { get; set; }
+    }
+
     public class Property
     {
         [JsonProperty("namespace")]
@@ -48,17 +60,7 @@ namespace Wirehome.Alexa.Model.Power
         public string EndpointId { get; set; }
     }
 
-    public class Event
-    {
-        [JsonProperty("header")]
-        public Header Header { get; set; }
-
-        [JsonProperty("endpoint")]
-        public SimpleEndpoint Endpoint { get; set; }
-
-        [JsonProperty("payload")]
-        public Payload Payload { get; set; }
-    }
+    
 
    
 

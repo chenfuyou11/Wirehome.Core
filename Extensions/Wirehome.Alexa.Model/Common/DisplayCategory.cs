@@ -20,4 +20,11 @@ namespace Wirehome.Alexa.Model.Common
         THERMOSTAT,
         TV
     }
+
+    public enum InterfaceType
+    {
+        PowerController,
+
+
+    }
 }

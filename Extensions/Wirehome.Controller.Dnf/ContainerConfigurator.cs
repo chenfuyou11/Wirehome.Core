@@ -21,7 +21,7 @@ namespace Wirehome.Controller.Dnf
             container.RegisterRaspberryServices();
 
             container.RegisterServicesInNamespace(projectAssemblies, typeof(HttpMessagingService).Namespace); // all Wirehome.Extensions.Messaging.Services
-            container.RegisterSingleton<IAlexaDispatcherEndpointService, AlexaDispatcherEndpointService>();
+            container.RegisterSingleton<IAlexaDispatcherService, AlexaDispatcherService>();
             container.RegisterSingleton<IEventAggregator, EventAggregator>();
             container.RegisterCollection<IBinaryMessage>(projectAssemblies);
             container.RegisterCollection<IHttpMessage>(projectAssemblies);

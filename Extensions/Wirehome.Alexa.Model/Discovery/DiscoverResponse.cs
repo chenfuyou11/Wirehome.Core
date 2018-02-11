@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
 using Wirehome.Alexa.Model.Common;
 
 namespace Wirehome.Alexa.Model.Discovery
@@ -8,6 +10,70 @@ namespace Wirehome.Alexa.Model.Discovery
     {
         [JsonProperty("event")]
         public Event Event { get; set; }
+        
+        public static DiscoverResponse GenerateResponse(IList<AlexaDevice> devices)
+        {
+            var endpoints = new List<Endpoint>();
+            foreach(var device in devices)
+            {
+                endpoints.Add(new Endpoint
+                {
+                    EndpointId = device.Uid,
+                    FriendlyName = device.FriendlyName,
+                    ManufacturerName = "Wirehome",
+                    Description = device.Description,
+                    DisplayCategories = GetDisplayCategory(device),
+                    Cookie = new Cookie { ExtraDetail1 = device.Room },
+                    Capabilities = device.Capabilities.Select(capability =>
+                    new Capability
+                    {
+                        Interface = $"Alexa.{capability.Interface.ToString()}",
+                        ProactivelyReported = true,
+                        SupportsDeactivation = true,
+                        Retrievable = true,
+                        Properties = new Properties
+                        {
+                            Supported = capability.States.Select(state => new Supported { Name = state }).ToList()
+                        }
+                    }).ToList()
+            });
+            }
+            
+            return new DiscoverResponse
+            {
+                Event = new Event
+                {
+                    Header = new Header
+                    {
+                        MessageId = Guid.NewGuid().ToString(),
+                        Namespace = "Alexa.Discovery",
+                        Name = "Discover.Response"
+                    },
+                    Payload = new DiscoveryResponsePayload
+                    {
+                        Endpoints = endpoints
+                    }
+                }
+            };
+        }
+
+        public static IList<string> GetDisplayCategory(AlexaDevice device)
+        {
+            var list = new List<string>();
+            //TODO fix the logic
+            if(device.Capabilities.Any(capability => capability.Interface == InterfaceType.PowerController))
+            {
+                list.Add(nameof(DisplayCategory.LIGHT));
+            }
+
+            if(list.Count == 0)
+            {
+                list.Add(nameof(DisplayCategory.OTHER));
+            }
+
+            return list;
+        }
+            
     }
 
     public class Event

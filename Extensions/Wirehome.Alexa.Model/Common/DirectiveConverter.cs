@@ -8,10 +8,10 @@ namespace Wirehome.Alexa.Model.Common
     public class DirectiveConverter : JsonConverter
     {
         public override bool CanWrite => false;
-        public override bool CanConvert(System.Type objectType) => true;
+        public override bool CanConvert(Type objectType) => true;
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) => throw new NotImplementedException();
         
-        public override object ReadJson(JsonReader reader, System.Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var jObject = JObject.Load(reader);
             Directive directive = null;

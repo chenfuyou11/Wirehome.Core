@@ -4,8 +4,8 @@ using Wirehome.Contracts.Services;
 
 namespace Wirehome.Extensions.Contracts
 {
-    public interface IAlexaDispatcherEndpointService : IService
+    public interface IAlexaDispatcherService : IService
     {
-        void AddConnectedVivices(string friendlyName, IEnumerable<IComponent> devices);
+        void RegisterDevice(string friendlyName, IEnumerable<IComponent> devices);
     }
 }

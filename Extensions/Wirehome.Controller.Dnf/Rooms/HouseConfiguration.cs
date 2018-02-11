@@ -17,7 +17,7 @@ namespace Wirehome.Controller.Dnf.Rooms
         private readonly SensorFactory _sensorFactory;
         private readonly ActuatorFactory _actuatorFactory;
         private readonly AutomationFactory _automationFactory;
-        private readonly IAlexaDispatcherEndpointService _alexaService;
+        private readonly IAlexaDispatcherService _alexaService;
         private readonly IComponentRegistryService _componentService;
 
         public HouseConfiguration(IDeviceRegistryService deviceService,
@@ -25,7 +25,7 @@ namespace Wirehome.Controller.Dnf.Rooms
                                     SensorFactory sensorFactory,
                                     ActuatorFactory actuatorFactory,
                                     AutomationFactory automationFactory,
-                                    IAlexaDispatcherEndpointService alexaService,
+                                    IAlexaDispatcherService alexaService,
                                     IComponentRegistryService componentService
         )  
         {
@@ -43,7 +43,7 @@ namespace Wirehome.Controller.Dnf.Rooms
 
             var all_lamps = _componentService.GetComponents<ILamp>();
 
-            _alexaService.AddConnectedVivices("All lights", all_lamps);
+            _alexaService.RegisterDevice("All lights", all_lamps);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Wirehome.Contracts.Api;
 using Wirehome.Contracts.Areas;
 using Wirehome.Contracts.Components;
 using Wirehome.Contracts.Logging;
@@ -18,6 +17,7 @@ using Wirehome.Alexa.Model.Common;
 using System.Text;
 using System.Linq;
 using Wirehome.Alexa.Model.Discovery;
+using Wirehome.Extensions.Exceptions;
 
 namespace Wirehome.Extensions
 {
@@ -30,19 +30,7 @@ namespace Wirehome.Extensions
         private readonly ISettingsService _settingService;
         private readonly IComponentRegistryService _componentService;
         private readonly ILogger _log;
-
-        private readonly Dictionary<string, ICommand> _invokeCommandMap = new Dictionary<string, ICommand>
-        {
-            { "TurnOnRequest", new TurnOnCommand() },
-            {"TurnOffRequest", new TurnOffCommand() }
-        };
-
-        private Dictionary<string, string> _invokeConfirmationMap = new Dictionary<string, string>
-        {
-            { "TurnOnRequest", "TurnOnConfirmation" },
-            {"TurnOffRequest", "TurnOffConfirmation" }
-        };
-
+        
         private Dictionary<string, IEnumerable<IComponent>> _registredDevices = new Dictionary<string, IEnumerable<IComponent>>();
         
         public AlexaDispatcherService(IHttpServerService httpServer, IAreaRegistryService areService, ISettingsService settingService, 
@@ -58,7 +46,8 @@ namespace Wirehome.Extensions
 
         public Task Initialize()
         {
-            _httpServer.AddRequestHandler(this);
+            // TODO
+            //_httpServer.AddRequestHandler(this);
             return Task.CompletedTask;
         }
 
@@ -95,9 +84,9 @@ namespace Wirehome.Extensions
             {
                 return PrepareDicsoverMessage();
             }
-            else if (requestName.IndexOf("invoke") > -1)
+            else if (requestName.IndexOf("TurnOn") > -1)
             {
-               // return PrepareInvokeMessage(context);
+               return PrepareInvokeMessage(request);
             }
 
             return null;
@@ -215,101 +204,58 @@ namespace Wirehome.Extensions
             return actions;
         }
 
-        //private object PrepareInvokeMessage(ApiCall context)
-        //{
-        //    TurnRequest request = null;
+        private object PrepareInvokeMessage(SmartHomeRequest request)
+        {
+            try
+            {
+                var componentID = request.Directive.Endpoint.EndpointId;
 
-        //    try
-        //    {
-        //        request = context.Parameter.ToObject<TurnRequest>();
+                if (string.IsNullOrWhiteSpace(componentID))
+                {
+                    throw new NotFoundException();
+                }
 
-        //        var componentID = request?.ComponentID;
+                if (componentID.IndexOf("Composite") > -1)
+                {
+                    // Cut component prefix
+                    componentID = componentID.Substring(10, componentID.Length - 10);
+                    componentID = componentID.Replace("_", " ");
 
-        //        if (string.IsNullOrWhiteSpace(componentID))
-        //        {
-        //            throw new NotFoundException();
-        //        }
+                    if (!_registredDevices.ContainsKey(componentID))
+                    {
+                        throw new NotFoundException();
+                    }
 
-        //        if (componentID.IndexOf("Composite") > -1)
-        //        {
-        //            // Cut component prefix
-        //            componentID = componentID.Substring(10, componentID.Length - 10);
-        //            componentID = componentID.Replace("_", " ");
+                    foreach (var device in _registredDevices[componentID])
+                    {
+                        RunComponentCommand(request.Directive.Header.Name, device.Id, true);
+                    }
+                }
+                else
+                {
+                    componentID = componentID.Replace("_", ".");
 
-        //            if (!_connectedDevices.ContainsKey(componentID))
-        //            {
-        //                throw new NotFoundException();
-        //            }
+                    RunComponentCommand(request.Directive.Header.Name, componentID);
+                }
+            }
+            catch (NotFoundException)
+            {
+                
+            }
+            catch (StateAlreadySetException)
+            {
+               
+            }
 
-        //            foreach (var device in _connectedDevices[componentID])
-        //            {
-        //                RunComponentCommand(request.Command, device.Id, true);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            componentID = request?.ComponentID?.Replace("_", ".");
-
-        //            RunComponentCommand(request.Command, componentID);
-        //        }
-
-        //        var confirmation_name = _invokeConfirmationMap[request.Command];
-
-        //        return new TurnConfirmation
-        //        {
-        //            header = new Header
-        //            {
-        //                //messageId = request.MessageID,
-        //                //name = confirmation_name,
-        //                //payloadVersion = PAYLOAD_VERSION,
-        //                //_namespace = NAMESPACE
-        //            },
-        //            payload = new Payload()
-        //        };
-        //    }
-        //    catch (NotFoundException)
-        //    {
-        //        return new TurnConfirmation
-        //        {
-        //            header = new Header
-        //            {
-        //                //messageId = request.MessageID,
-        //                //name = "NoSuchTargetError",
-        //                //payloadVersion = PAYLOAD_VERSION,
-        //                //_namespace = NAMESPACE
-        //            },
-        //            payload = new Payload()
-        //        };
-        //    }
-        //    catch (StateAlreadySetException)
-        //    {
-        //        return new NotSupportedInCurrentModeError 
-        //        {
-        //            header = new Header
-        //            {
-        //                //messageId = request.MessageID,
-        //                //name = "NotSupportedInCurrentModeError",
-        //                //payloadVersion = PAYLOAD_VERSION,
-        //                //_namespace = NAMESPACE
-        //            },
-        //            payload = new ErrorPayload
-        //            {
-        //                currentDeviceMode = "OTHER"
-        //            }
-        //        };
-        //    }
-        //}
+            // TODO prepare response
+            return null;
+        }
 
         private void RunComponentCommand(string command, string componentID, bool ignoreCurrentStateCheck = false)
         {
             var component = _componentService.GetComponent(componentID);
 
-            if (component != null && _invokeCommandMap.ContainsKey(command))
-            {
-                var requested_state = _invokeCommandMap[command];
-                
-                component.ExecuteCommand(requested_state);
-            }
+            // TODO invoke command
         }
     }
 }

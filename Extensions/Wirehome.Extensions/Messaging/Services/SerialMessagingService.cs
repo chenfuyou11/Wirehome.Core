@@ -10,8 +10,8 @@ using Wirehome.Extensions.Contracts;
 namespace Wirehome.Extensions.Messaging.Services
 {
     public class SerialMessagingService : ISerialMessagingService
-    {        
-        private CancellationTokenSource _readCancellationTokenSource = new CancellationTokenSource();
+    {
+        private readonly CancellationTokenSource _readCancellationTokenSource = new CancellationTokenSource();
         private IBinaryReader _dataReader;
 
         private readonly ILogger _logService;
@@ -19,7 +19,7 @@ namespace Wirehome.Extensions.Messaging.Services
         private readonly IMessageBrokerService _messageBroker;
         private readonly List<IBinaryMessage> _messageHandlers = new List<IBinaryMessage>();
 
-        public SerialMessagingService(INativeSerialDevice serialDevice, ILogService logService, 
+        public SerialMessagingService(INativeSerialDevice serialDevice, ILogService logService,
             IMessageBrokerService messageBroker, IEnumerable<IBinaryMessage> handlers)
         {
             _logService = logService.CreatePublisher(nameof(SerialMessagingService));
@@ -33,7 +33,7 @@ namespace Wirehome.Extensions.Messaging.Services
             await _serialDevice.Init().ConfigureAwait(false);
             _dataReader = _serialDevice.GetBinaryReader();
 
-            Task.Run(async () => await Listen());
+            Task.Run(async () => await Listen().ConfigureAwait(false));
         }
 
         private async Task Listen()
@@ -65,7 +65,7 @@ namespace Wirehome.Extensions.Messaging.Services
             _serialDevice.Dispose();
         }
 
-        private void CancelReadTask()
+        public void CancelRead()
         {
             if (_readCancellationTokenSource != null && !_readCancellationTokenSource.IsCancellationRequested)
             {
@@ -80,13 +80,13 @@ namespace Wirehome.Extensions.Messaging.Services
             
             using (var childCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
-                var headerBytesRead = await _dataReader.LoadAsync(messageHeaderSize, childCancellationTokenSource.Token);
+                var headerBytesRead = await _dataReader.LoadAsync(messageHeaderSize, childCancellationTokenSource.Token).ConfigureAwait(false);
                 if (headerBytesRead > 0)
                 {
                     var messageBodySize = _dataReader.ReadByte();
                     var messageType = _dataReader.ReadByte();
 
-                    var bodyBytesReaded = await _dataReader.LoadAsync(messageBodySize, childCancellationTokenSource.Token);
+                    var bodyBytesReaded = await _dataReader.LoadAsync(messageBodySize, childCancellationTokenSource.Token).ConfigureAwait(false);
                     if (bodyBytesReaded > 0)
                     {
                         foreach(var handler in _messageHandlers)
@@ -100,7 +100,7 @@ namespace Wirehome.Extensions.Messaging.Services
                             }
                         }
                     }
-                }
+                }                      
             }
         }
 

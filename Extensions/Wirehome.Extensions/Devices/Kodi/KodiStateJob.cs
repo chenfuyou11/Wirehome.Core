@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using Wirehome.Contracts.Logging;
+using Wirehome.Core.EventAggregator;
 using Wirehome.Extensions.Messaging.Core;
 
 namespace Wirehome.Extensions.Devices.Kodi

@@ -3,6 +3,7 @@ using Wirehome.Contracts.Components.Commands;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Wirehome.Extensions.Extensions;
+using Wirehome.Core.Extensions;
 
 namespace Wirehome.Extensions.Devices
 {

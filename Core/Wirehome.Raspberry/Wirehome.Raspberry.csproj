@@ -133,10 +133,6 @@
       <Project>{ee5c16af-0acf-4d87-ad5a-d995832ddb6c}</Project>
       <Name>Wirehome.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Wirehome\Wirehome.csproj">
-      <Project>{50737d30-ad0d-4832-b675-fda4c27c58ca}</Project>
-      <Name>Wirehome</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

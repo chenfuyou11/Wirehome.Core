@@ -6,6 +6,7 @@ using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Contracts.Logging;
 using Wirehome.Extensions.Devices.Denon;
 using Wirehome.Extensions.Messaging.ComputerMessages;
+using Wirehome.Core.EventAggregator;
 
 namespace Wirehome.Extensions.Devices
 {

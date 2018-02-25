@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\Core\Wirehome.Contracts\Wirehome.Contracts.csproj" />
     <ProjectReference Include="..\..\Core\Wirehome\Wirehome.csproj" />
     <ProjectReference Include="..\Wirehome.Alexa.Model\Wirehome.Alexa.Model.csproj" />
+    <ProjectReference Include="..\Wirehome.Core\Wirehome.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

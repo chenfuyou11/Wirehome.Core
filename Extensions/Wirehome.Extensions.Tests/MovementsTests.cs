@@ -14,6 +14,9 @@ using Wirehome.Contracts.Core;
 using Wirehome.Motion.Model;
 using Wirehome.Motion;
 using Wirehome.Contracts.Components.States;
+using Wirehome.Core;
+using System.Linq;
+using Wirehome.Core.EventAggregator;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -462,7 +465,13 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(false, lampDictionary[HallwayLivingroomId].GetIsTurnedOn());
             Assert.AreEqual(false, lampDictionary[HallwayToiletId].GetIsTurnedOn());
         }
-        
+
+        [TestMethod]
+        public void Test()
+        {
+           
+        }
+
         #region Setup
 
         private const string HallwayToiletId = "HallwayToilet";
@@ -481,7 +490,7 @@ namespace Wirehome.Extensions.Tests
             LightAutomationService,
             ITestableObservable<MotionEnvelope>,
             TestScheduler,
-            Dictionary<string, MotionLamp>,
+            Dictionary<string, TestMotionLamp>,
             IDateTimeService
         )
         SetupEnviroment(AreaDescriptor areaDescription = null, Func<IEventDecoder[]> sampleDecoder = null, params Recorded<Notification<MotionEnvelope>>[] messages)
@@ -498,17 +507,17 @@ namespace Wirehome.Extensions.Tests
             var balconyDetector = CreateMotionDetector(BalconyId);
             var staircaseDetector = CreateMotionDetector(StaircaseId);
 
-            var hallwayLampToilet = new MotionLamp(HallwayToiletId);
-            var hallwayLampLivingRoom = new MotionLamp(HallwayLivingroomId);
-            var toiletLamp = new MotionLamp(ToiletId);
-            var livingRoomLamp = new MotionLamp(LivingroomId);
-            var bathroomLamp = new MotionLamp(BathroomId);
-            var badroomLamp = new MotionLamp(BadroomId);
-            var kitchenLamp = new MotionLamp(KitchenId);
-            var balconyLamp = new MotionLamp(BadroomId);
-            var staircaseLamp = new MotionLamp(StaircaseId);
+            var hallwayLampToilet = new TestMotionLamp(HallwayToiletId);
+            var hallwayLampLivingRoom = new TestMotionLamp(HallwayLivingroomId);
+            var toiletLamp = new TestMotionLamp(ToiletId);
+            var livingRoomLamp = new TestMotionLamp(LivingroomId);
+            var bathroomLamp = new TestMotionLamp(BathroomId);
+            var badroomLamp = new TestMotionLamp(BadroomId);
+            var kitchenLamp = new TestMotionLamp(KitchenId);
+            var balconyLamp = new TestMotionLamp(BadroomId);
+            var staircaseLamp = new TestMotionLamp(StaircaseId);
 
-            var lampDictionary = new Dictionary<string, MotionLamp>
+            var lampDictionary = new Dictionary<string, TestMotionLamp>
             {
                 { HallwayToiletId, hallwayLampToilet },
                 { HallwayLivingroomId, hallwayLampLivingRoom },
@@ -535,7 +544,7 @@ namespace Wirehome.Extensions.Tests
 
             var observableTimer = Mock.Of<IObservableTimer>();
             var logService = Mock.Of<ILogService>();
-            var logger = Mock.Of<ILogger>();
+            var logger = Mock.Of<Wirehome.Contracts.Logging.ILogger>();
             Mock.Get(logService).Setup(x => x.CreatePublisher(It.IsAny<string>())).Returns(logger);
             Mock.Get(logger).Setup(x => x.Info(It.IsAny<string>())).Callback((string message) => Console.WriteLine($"[{scheduler.Now:ss:fff}] {message}"));
             Mock.Get(logger).Setup(x => x.Error(It.IsAny<string>())).Callback((string message) => Console.WriteLine($"[{scheduler.Now:ss:fff}] {message}"));

@@ -7,6 +7,7 @@ using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Extensions.Extensions;
 using System.Text;
 using Wirehome.Extensions.Core;
+using Wirehome.Core.EventAggregator;
 
 namespace Wirehome.Extensions.Messaging.Services
 {

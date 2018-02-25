@@ -18,6 +18,7 @@ using Wirehome.Extensions.Extensions;
 using Wirehome.Extensions.Devices.Denon;
 using Wirehome.Extensions.Core;
 using Wirehome.Extensions.Exceptions;
+using Wirehome.Core.EventAggregator;
 
 namespace Wirehome.Extensions.Devices
 {

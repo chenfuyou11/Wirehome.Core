@@ -46,8 +46,7 @@ namespace Wirehome.Extensions
 
         public Task Initialize()
         {
-            // TODO
-            //_httpServer.AddRequestHandler(this);
+            _httpServer.AddRequestHandler(this);
             return Task.CompletedTask;
         }
 

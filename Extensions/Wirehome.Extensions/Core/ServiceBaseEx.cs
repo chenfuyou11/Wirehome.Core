@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Wirehome.Contracts.Scripting;
 using Wirehome.Contracts.Services;
+using Wirehome.Core;
 
 namespace Wirehome.Extensions.Core
 {

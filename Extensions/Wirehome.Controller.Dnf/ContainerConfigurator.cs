@@ -22,7 +22,7 @@ namespace Wirehome.Controller.Dnf
 
             container.RegisterServicesInNamespace(projectAssemblies, typeof(HttpMessagingService).Namespace); // all Wirehome.Extensions.Messaging.Services
             container.RegisterSingleton<IAlexaDispatcherService, AlexaDispatcherService>();
-            container.RegisterSingleton<IEventAggregator, EventAggregator>();
+            //container.RegisterSingleton<IEventAggregator, EventAggregator>();
             container.RegisterCollection<IBinaryMessage>(projectAssemblies);
             container.RegisterCollection<IHttpMessage>(projectAssemblies);
         }

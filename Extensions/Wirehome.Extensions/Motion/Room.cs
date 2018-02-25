@@ -16,6 +16,7 @@ using Wirehome.Extensions.Extensions;
 using Wirehome.Extensions.Core;
 using Wirehome.Contracts.Logging;
 using Wirehome.Contracts.Components.States;
+using Wirehome.Core.Extensions;
 
 namespace Wirehome.Motion
 {
@@ -26,7 +27,7 @@ namespace Wirehome.Motion
         private readonly ConditionsValidator _turnOffConditionsValidator = new ConditionsValidator();
         private readonly IScheduler _scheduler;
         private readonly MotionConfiguration _motionConfiguration;
-        private readonly DisposeContainer _disposeContainer = new DisposeContainer();
+        private readonly Wirehome.Core.DisposeContainer _disposeContainer = new Wirehome.Core.DisposeContainer();
         private IMotionLamp Lamp { get; }
 
         // Configuration parameters
@@ -52,9 +53,9 @@ namespace Wirehome.Motion
 
         public override string ToString()
         {
-            //return $"{MotionDetectorUid} [Last move: {LastMotionTime}] [Persons: {NumberOfPersonsInArea}]";
+            return $"{Uid} [Last move: {LastMotion}] [Persons: {NumberOfPersonsInArea}]";
             //TODO DEBUG
-            return $"{Uid} [Last move: {LastMotion}] [Persons: {NumberOfPersonsInArea}] [Lamp: {(Lamp as MotionLamp)?.GetIsTurnedOn()}]";
+            // return $"{Uid} [Last move: {LastMotion}] [Persons: {NumberOfPersonsInArea}] [Lamp: {(Lamp as MotionLamp)?.GetIsTurnedOn()}]";
         }
 
         public Room(string uid, IEnumerable<string> neighbors, IMotionLamp lamp, IScheduler scheduler, IDaylightService daylightService,

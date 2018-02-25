@@ -13,16 +13,19 @@ using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Contracts.Core;
 using Wirehome.Extensions.Extensions;
 using Wirehome.Motion.Model;
+using Wirehome.Core.EventAggregator;
+using Wirehome.Core.Extensions;
+using Wirehome.Core;
 
 namespace Wirehome.Motion
 {
     //TODO Add time between rooms - people walks 6km/1h => 6000m/3600s => 1m = 600ms
     //TODO Alarm when move in one enter room without move in entering neighbor
-    public class LightAutomationService : IService, IDisposable
+    public class LightAutomationService : Contracts.Services.IService, IDisposable
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly IDaylightService _daylightService;
-        private readonly ILogger _logger;
+        private readonly Contracts.Logging.ILogger _logger;
         private readonly IConcurrencyProvider _concurrencyProvider;
         private readonly IDateTimeService _dateTimeService;
         private readonly IObservableTimer _observableTimer;

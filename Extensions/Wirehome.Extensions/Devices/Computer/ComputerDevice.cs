@@ -19,6 +19,7 @@ using Wirehome.Extensions.Exceptions;
 using Wirehome.Extensions.Messaging.ComputerMessages;
 using Wirehome.Extensions.Devices.Computer;
 using Wirehome.Extensions.Messaging;
+using Wirehome.Core.EventAggregator;
 
 namespace Wirehome.Extensions.Devices
 {

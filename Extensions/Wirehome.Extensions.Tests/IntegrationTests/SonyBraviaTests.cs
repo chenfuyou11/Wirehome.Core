@@ -1,79 +1,80 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Quartz;
-using System;
-using System.Threading.Tasks;
-using Wirehome.Contracts.Components.Commands;
-using Wirehome.Contracts.Core;
-using Wirehome.Contracts.Logging;
-using Wirehome.Core;
-using Wirehome.Extensions.Devices.Commands;
-using Wirehome.Extensions.Devices.Sony;
-using Wirehome.Extensions.Messaging.Core;
-using Wirehome.Extensions.Messaging.Services;
-using Wirehome.Extensions.Quartz;
+﻿//using Microsoft.VisualStudio.TestTools.UnitTesting;
+//using Moq;
+//using Quartz;
+//using System;
+//using System.Threading.Tasks;
+//using Wirehome.Contracts.Components.Commands;
+//using Wirehome.Contracts.Core;
+//using Wirehome.Contracts.Logging;
+//using Wirehome.Core;
+//using Wirehome.Core.EventAggregator;
+//using Wirehome.Extensions.Devices.Commands;
+//using Wirehome.Extensions.Devices.Sony;
+//using Wirehome.Extensions.Messaging.Core;
+//using Wirehome.Extensions.Messaging.Services;
+//using Wirehome.Extensions.Quartz;
 
-namespace Wirehome.Extensions.Tests.IntegrationTests
-{
-    [TestClass]
-    [TestCategory("Integration")]
-    public class SonyBraviaTests
-    {
-        public const string SONY_HOST = "192.168.0.106";
-        public const string SONY_KEY = "344fb7d28691ba43c9045e9d38fa3c83a0587620fc14a79a958db4ff5d30e0e7";
-        //1b230496280590265a59311916db216c230d6a3d9a9008fa8ea91b49ec4b772e
+//namespace Wirehome.Extensions.Tests.IntegrationTests
+//{
+//    [TestClass]
+//    [TestCategory("Integration")]
+//    public class SonyBraviaTests
+//    {
+//        public const string SONY_HOST = "192.168.0.106";
+//        public const string SONY_KEY = "344fb7d28691ba43c9045e9d38fa3c83a0587620fc14a79a958db4ff5d30e0e7";
+//        //1b230496280590265a59311916db216c230d6a3d9a9008fa8ea91b49ec4b772e
 
-        private (IEventAggregator ev, IScheduler ch) PrepareMocks()
-        {
-            var log = Mock.Of<ILogService>();
+//        private (IEventAggregator ev, IScheduler ch) PrepareMocks()
+//        {
+//            var log = Mock.Of<ILogService>();
 
-            var container = new Container(new ControllerOptions());
-            container.RegisterSingleton<IContainer>(() => container);
-            container.RegisterSingleton<IEventAggregator, EventAggregator>();
-            container.RegisterSingleton(log);
-            container.RegisterQuartz();
+//            var container = new Container(new ControllerOptions());
+//            container.RegisterSingleton<IContainer>(() => container);
+//            container.RegisterSingleton<IEventAggregator, EventAggregator>();
+//            container.RegisterSingleton(log);
+//            container.RegisterQuartz();
 
-            var scheduler = container.GetInstance<IScheduler>();
-            var eventAggregator = container.GetInstance<IEventAggregator>();
+//            var scheduler = container.GetInstance<IScheduler>();
+//            var eventAggregator = container.GetInstance<IEventAggregator>();
 
-            var http = new HttpMessagingService(eventAggregator);
-            http.Initialize();
+//            var http = new HttpMessagingService(eventAggregator);
+//            http.Initialize();
 
-            return (eventAggregator, scheduler);
-        }
+//            return (eventAggregator, scheduler);
+//        }
 
-        [TestMethod]
-        public async Task SonyPowerTest()
-        {
-            var mocks = PrepareMocks();
+//        [TestMethod]
+//        public async Task SonyPowerTest()
+//        {
+//            var mocks = PrepareMocks();
 
-            var sony = new SonyBraviaTV(Guid.NewGuid().ToString(), mocks.ev, mocks.ch)
-            {
-                Hostname = SONY_HOST,
-                AuthorisationKey = SONY_KEY
-            };
-            await sony.Initialize();
+//            var sony = new SonyBraviaTV(Guid.NewGuid().ToString(), mocks.ev, mocks.ch)
+//            {
+//                Hostname = SONY_HOST,
+//                AuthorisationKey = SONY_KEY
+//            };
+//            await sony.Initialize();
 
-            await sony.ExecuteAsyncCommand<TurnOnCommand>().ConfigureAwait(false);
-        }
+//            await sony.ExecuteAsyncCommand<TurnOnCommand>().ConfigureAwait(false);
+//        }
 
-        [TestMethod]
-        public async Task SonyVolumeTest()
-        {
-            var mocks = PrepareMocks();
+//        [TestMethod]
+//        public async Task SonyVolumeTest()
+//        {
+//            var mocks = PrepareMocks();
 
-            var sony = new SonyBraviaTV(Guid.NewGuid().ToString(), mocks.ev, mocks.ch)
-            {
-                Hostname = SONY_HOST,
-                AuthorisationKey = SONY_KEY
-            };
-            await sony.Initialize();
+//            var sony = new SonyBraviaTV(Guid.NewGuid().ToString(), mocks.ev, mocks.ch)
+//            {
+//                Hostname = SONY_HOST,
+//                AuthorisationKey = SONY_KEY
+//            };
+//            await sony.Initialize();
 
-            await sony.ExecuteAsyncCommand(new SetVolumeCommand { Volume = 40 }).ConfigureAwait(false);
-        }
-        //
-    }
-}
+//            await sony.ExecuteAsyncCommand(new SetVolumeCommand { Volume = 40 }).ConfigureAwait(false);
+//        }
+//        //
+//    }
+//}
 
 
 //    public const string ChannelUp = "AAAAAQAAAAEAAAAQAw==";

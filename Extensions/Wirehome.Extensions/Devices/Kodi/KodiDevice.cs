@@ -7,6 +7,7 @@ using Wirehome.Contracts.Components;
 using Wirehome.Contracts.Components.Commands;
 using Wirehome.Contracts.Components.Features;
 using Wirehome.Contracts.Components.States;
+using Wirehome.Core.EventAggregator;
 using Wirehome.Extensions.Devices.Commands;
 using Wirehome.Extensions.Devices.Computer;
 using Wirehome.Extensions.Devices.Features;

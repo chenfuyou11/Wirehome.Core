@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Wirehome.Core.EventAggregator;
 using Wirehome.Extensions.Messaging.Core;
 using Wirehome.Extensions.Messaging.Services;
 using Wirehome.Extensions.Messaging.SonyMessages;

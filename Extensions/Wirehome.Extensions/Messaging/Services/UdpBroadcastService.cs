@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using Wirehome.Contracts.Logging;
 using Wirehome.Extensions.Contracts;
 using Wirehome.Extensions.Messaging.Core;
-
+using Wirehome.Core.EventAggregator;
 
 namespace Wirehome.Extensions.Messaging.Services
 {

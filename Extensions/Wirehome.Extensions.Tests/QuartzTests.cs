@@ -1,88 +1,88 @@
-﻿using Wirehome.Extensions;
-using Wirehome.Extensions.Quartz;
-using Quartz;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Wirehome.Contracts.Core;
-using System.Threading.Tasks;
-using System;
-using System.Threading;
-using Quartz.Impl.Matchers;
-using Wirehome.Extensions.Devices;
-using Wirehome.Extensions.Messaging.Core;
-using Wirehome.Core;
+﻿//using Wirehome.Extensions;
+//using Wirehome.Extensions.Quartz;
+//using Quartz;
+//using Microsoft.VisualStudio.TestTools.UnitTesting;
+//using Wirehome.Contracts.Core;
+//using System.Threading.Tasks;
+//using System;
+//using System.Threading;
+//using Quartz.Impl.Matchers;
+//using Wirehome.Extensions.Devices;
+//using Wirehome.Extensions.Messaging.Core;
+//using Wirehome.Core;
 
-namespace Wirehome.Extensions.Tests
-{
-    [TestClass]
-    public class QuartzTests
-    {
-        [TestMethod]
-        public void RegisterQuartzShouldConfigureIoc()
-        {
-            var container = new Container(new ControllerOptions());
-            container.RegisterSingleton<IContainer>(() => container);
-            container.RegisterQuartz();
+//namespace Wirehome.Extensions.Tests
+//{
+//    [TestClass]
+//    public class QuartzTests
+//    {
+//        [TestMethod]
+//        public void RegisterQuartzShouldConfigureIoc()
+//        {
+//            var container = new Container(new ControllerOptions());
+//            container.RegisterSingleton<IContainer>(() => container);
+//            container.RegisterQuartz();
             
-            var scheduler = container.GetInstance<IScheduler>();
-        }
+//            var scheduler = container.GetInstance<IScheduler>();
+//        }
 
-        [TestMethod]
-        public async Task RegisterQuartzShouldConfigureIoc2()
-        {
-            var container = new Container(new ControllerOptions());
-            container.RegisterSingleton<IContainer>(() => container);
-            container.RegisterQuartz();
+//        [TestMethod]
+//        public async Task RegisterQuartzShouldConfigureIoc2()
+//        {
+//            var container = new Container(new ControllerOptions());
+//            container.RegisterSingleton<IContainer>(() => container);
+//            container.RegisterQuartz();
 
-            var scheduler = container.GetInstance<IScheduler>();
+//            var scheduler = container.GetInstance<IScheduler>();
             
-            var key = await scheduler.ScheduleIntervalWithContext<TestJob, TestContext>(TimeSpan.FromSeconds(1), new TestContext { Data = 5 });
+//            var key = await scheduler.ScheduleIntervalWithContext<TestJob, TestContext>(TimeSpan.FromSeconds(1), new TestContext { Data = 5 });
 
-            await scheduler.Start();
+//            await scheduler.Start();
     
-            await Task.Delay(10000);
-        }
+//            await Task.Delay(10000);
+//        }
 
-        [TestMethod]
-        public async Task RegisterQuartzShouldConfigureIoc3()
-        {
-            var container = new Container(new ControllerOptions());
-            container.RegisterSingleton<IContainer>(() => container);
-            container.RegisterSingleton<IEventAggregator, EventAggregator>();
-            container.RegisterQuartz();
+//        [TestMethod]
+//        public async Task RegisterQuartzShouldConfigureIoc3()
+//        {
+//            var container = new Container(new ControllerOptions());
+//            container.RegisterSingleton<IContainer>(() => container);
+//            container.RegisterSingleton<IEventAggregator, EventAggregator>();
+//            container.RegisterQuartz();
 
-            //container.RegisterType<DenonStateLightJob>();
+//            //container.RegisterType<DenonStateLightJob>();
 
-            CancellationTokenSource _cancelationTokenSource = new CancellationTokenSource();
+//            CancellationTokenSource _cancelationTokenSource = new CancellationTokenSource();
 
-            var scheduler = container.GetInstance<IScheduler>();
+//            var scheduler = container.GetInstance<IScheduler>();
 
-            await scheduler.ScheduleIntervalWithContext<DenonStateJob, string>(TimeSpan.FromSeconds(1), "192.168.0.101", _cancelationTokenSource.Token);
+//            await scheduler.ScheduleIntervalWithContext<DenonStateJob, string>(TimeSpan.FromSeconds(1), "192.168.0.101", _cancelationTokenSource.Token);
 
-            await scheduler.Start();
+//            await scheduler.Start();
 
-            await Task.Delay(10000);
-        }
+//            await Task.Delay(10000);
+//        }
 
-        //
-    }
+//        //
+//    }
 
-    public class TestContext
-    {
-        public int Data { get; set; }
-    }
+//    public class TestContext
+//    {
+//        public int Data { get; set; }
+//    }
 
-    public class TestJob : IJob
-    {
-        public Task Execute(IJobExecutionContext context)
-        {
-            if(context.JobDetail.JobDataMap.TryGetValue("context", out object value))
-            {
+//    public class TestJob : IJob
+//    {
+//        public Task Execute(IJobExecutionContext context)
+//        {
+//            if(context.JobDetail.JobDataMap.TryGetValue("context", out object value))
+//            {
 
-            }
+//            }
 
-            context.Result = new TestContext { Data = 5 };
+//            context.Result = new TestContext { Data = 5 };
 
-            return Task.CompletedTask;
-        }
-    }
-}
+//            return Task.CompletedTask;
+//        }
+//    }
+//}

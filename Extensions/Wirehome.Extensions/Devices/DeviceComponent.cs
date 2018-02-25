@@ -5,6 +5,7 @@ using Wirehome.Contracts.Components.Commands;
 using Wirehome.Extensions.Messaging.Core;
 using System.Threading.Tasks;
 using Wirehome.Contracts.Components.States;
+using Wirehome.Core.EventAggregator;
 
 namespace Wirehome.Extensions.Devices
 {

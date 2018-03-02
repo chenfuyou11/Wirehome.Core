@@ -137,7 +137,7 @@ namespace Wirehome.Core.EventAggregator
             return latestSubscriptions;
         }
 
-        public List<BaseCommandHandler> GetCurrentSubscriptions(Type messageType, MessageFilter filter = null)
+        public List<BaseCommandHandler> GetCurrentSubscriptions(Type messageType, object message, MessageFilter filter = null)
         {
             var latestSubscriptions = GetCurrentSubscriptions();
             var msgTypeInfo = messageType.GetTypeInfo();
@@ -147,9 +147,9 @@ namespace Wirehome.Core.EventAggregator
             {
                 var subscription = latestSubscriptions[idx];
 
-                if (!subscription.Type.GetTypeInfo().IsAssignableFrom(msgTypeInfo)) continue;
+                if (!subscription.MessageType.GetTypeInfo().IsAssignableFrom(msgTypeInfo)) continue;
 
-                if (!subscription.IsFilterMatch(filter)) continue;
+                if (!subscription.IsFilterMatch(filter, message)) continue;
                 
                 filteredSubscription.Add(subscription);
             }

@@ -29,7 +29,7 @@ namespace Wirehome.Extensions.Tests
             aggregator.Subscribe<TestMessage>(message => { });
             aggregator.Subscribe<OtherMessage>(message => { });
 
-            var result = aggregator.GetSubscriptors<TestMessage>();
+            var result = aggregator.GetSubscriptors<TestMessage>(null);
 
             Assert.AreEqual(1, result.Count);
         }
@@ -43,7 +43,7 @@ namespace Wirehome.Extensions.Tests
             aggregator.Subscribe<TestMessage>(message => { });
             aggregator.Subscribe<OtherMessage>(message => { });
 
-            var result = aggregator.GetSubscriptors<DerivedTestMessage>();
+            var result = aggregator.GetSubscriptors<DerivedTestMessage>(null);
 
             Assert.AreEqual(1, result.Count);
         }
@@ -85,7 +85,7 @@ namespace Wirehome.Extensions.Tests
             aggregator.Subscribe<TestMessage>(message => { }, "x");
 
 
-            var result = aggregator.GetSubscriptors<TestMessage>();
+            var result = aggregator.GetSubscriptors<TestMessage>(null);
 
             Assert.AreEqual(1, result.Count);
         }
@@ -312,7 +312,7 @@ namespace Wirehome.Extensions.Tests
 
             aggregator.ClearSubscriptions();
 
-            var result = aggregator.GetSubscriptors<TestMessage>();
+            var result = aggregator.GetSubscriptors<TestMessage>(null);
             Assert.AreEqual(result.Count, 0);
         }
 

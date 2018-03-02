@@ -1,25 +1,21 @@
 ﻿using System;
+using Wirehome.Core.Extensions;
 
 namespace Wirehome.Core.EventAggregator
 {
-    public class MessageFilter : IEquatable<MessageFilter>
+    public class MessageFilter
     {
         public string SimpleFilter { get; set; }
-        public bool IsDefault { get; set; }
-
-        public bool Equals(MessageFilter other)
+        public virtual string GetCustomFilter(object message) => string.Empty;
+        
+        public bool EvaluateFilter(MessageFilter other, object message)
         {
-            if (other == null || string.Compare(SimpleFilter, other.SimpleFilter, StringComparison.OrdinalIgnoreCase) != 0 || IsDefault != other.IsDefault) return false;
+            if (other == null || SimpleFilter.Compare(other.SimpleFilter) != 0) return false;
+            if (GetCustomFilter(message).Compare(GetCustomFilter(message)) != 0) return false;
             return true;
         }
 
-        public static implicit operator MessageFilter(string simpleFilter)
-        {
-            if(simpleFilter.IndexOf("@") > -1)
-            {
-                return new MessageFilter { IsDefault = true };
-            }
-            return new MessageFilter { SimpleFilter = simpleFilter };
-        }
+        public static implicit operator MessageFilter(string simpleFilter) => new MessageFilter { SimpleFilter = simpleFilter };
     }
+    
 }

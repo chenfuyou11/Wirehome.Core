@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Wirehome.Core
 {
-    public interface IService
+    public interface IService : IDisposable
     {
-        Task Initialize(); // TODO: Support multiple calls.
+        Task Initialize();
     }
 }

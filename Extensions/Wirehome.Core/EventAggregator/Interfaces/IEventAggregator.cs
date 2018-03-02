@@ -11,7 +11,7 @@ namespace Wirehome.Core.EventAggregator
         bool IsSubscribed(Guid token);
         void UnSubscribe(Guid token);
 
-        List<BaseCommandHandler> GetSubscriptors<T>(MessageFilter filter = null);
+        List<BaseCommandHandler> GetSubscriptors<T>(object message, MessageFilter filter = null);
 
         SubscriptionToken Subscribe<T>(Action<IMessageEnvelope<T>> action, MessageFilter filter = null);
         SubscriptionToken Subscribe(Type messageType, Delegate action, MessageFilter filter = null);

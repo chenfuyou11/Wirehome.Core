@@ -20,9 +20,9 @@ namespace Wirehome.Core.EventAggregator
         private readonly Subscriptions _subscriptions = new Subscriptions();
         public Func<BehaviorChain> DefaultBehavior { get; set; } = () => new BehaviorChain().WithTimeout(TimeSpan.FromMilliseconds(2000));
 
-        public List<BaseCommandHandler> GetSubscriptors<T>(MessageFilter filter = null)
+        public List<BaseCommandHandler> GetSubscriptors<T>(object message, MessageFilter filter = null)
         {
-            return _subscriptions.GetCurrentSubscriptions(typeof(T), filter);
+            return _subscriptions.GetCurrentSubscriptions(typeof(T), message, filter);
         }
 
         public async Task<R> QueryAsync<T, R>
@@ -33,7 +33,7 @@ namespace Wirehome.Core.EventAggregator
            BehaviorChain behaviors = null
         ) where R : class
         {
-            var localSubscriptions = GetSubscriptors<T>(filter).OfType<IAsyncCommandHandler>();
+            var localSubscriptions = GetSubscriptors<T>(message, filter).OfType<IAsyncCommandHandler>();
 
             if (!localSubscriptions.Any()) return default;
             if (localSubscriptions.Skip(1).Any()) throw new Exception($"Cannot send [{typeof(T).Name}] message with result to more than two subscriptors");

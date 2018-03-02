@@ -5,25 +5,25 @@ namespace Wirehome.Core.EventAggregator
     public abstract class BaseCommandHandler
     {
         internal Guid Token { get; }
-        internal Type Type { get; }
-        internal MessageFilter Filter { get; }
+        internal Type MessageType { get; }
+        internal MessageFilter SubscriptionFilter { get; }
         internal object Handler { get; }
 
         protected BaseCommandHandler(Type type, Guid token, object handler, MessageFilter filter)
         {
-            Type = type;
+            MessageType = type;
             Token = token;
             Handler = handler;
-            Filter = filter;
+            SubscriptionFilter = filter;
         }
 
-        public bool IsFilterMatch(MessageFilter messageFilter)
+        public bool IsFilterMatch(MessageFilter messageFilter, object message)
         {
             if (messageFilter?.SimpleFilter == "*") return true;
 
-            if (Filter == null && messageFilter != null) return false;
+            if (SubscriptionFilter == null && messageFilter != null) return false;
 
-            return Filter?.Equals(messageFilter) ?? true;
+            return SubscriptionFilter?.EvaluateFilter(messageFilter, message) ?? true;
         }
     }
 }

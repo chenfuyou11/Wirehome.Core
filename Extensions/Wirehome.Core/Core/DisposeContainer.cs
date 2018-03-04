@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Wirehome.Core
 {
@@ -9,6 +10,9 @@ namespace Wirehome.Core
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
         private readonly object _disposeLock = new object();
         private volatile bool _disposed;
+        private readonly CancellationTokenSource _cancelationTokenSource = new CancellationTokenSource();
+
+        public CancellationToken Token => _cancelationTokenSource.Token;
 
         public DisposeContainer(params IDisposable[] disposables)
         {
@@ -30,6 +34,8 @@ namespace Wirehome.Core
             if (_disposed) return;
             lock (_disposeLock)
             {
+                _cancelationTokenSource.Cancel();
+
                 if (_disposed) return;
                 foreach (var d in _disposables)
                 {

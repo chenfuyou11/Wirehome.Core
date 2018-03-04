@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Quartz;
+using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters.Drivers;
@@ -7,36 +9,46 @@ using Wirehome.ComponentModel.Capabilities;
 using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
+using Wirehome.ComponentModel.Events;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core;
 using Wirehome.Core.Communication.I2C;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
+using Wirehome.Core.Services.Quartz;
 
 namespace Wirehome.ComponentModel.Adapters
 {
     public abstract class CCToolsBaseAdapter : Adapter
     {
-        private readonly object _syncRoot = new object();
         protected readonly ILogger _log;
         protected readonly II2CBusService _i2CBusService;
-        protected II2CPortExpanderDriver _portExpanderDriver;
+        protected readonly IEventAggregator _eventAggregator;
+        protected readonly IScheduler _scheduler;
+        private readonly object _syncRoot = new object();
+        private int _poolDurationWarning;
         
+        protected II2CPortExpanderDriver _portExpanderDriver;
         private byte[] _committedState;
         private byte[] _state;
-        private readonly IEventAggregator _eventAggregator;
-
-        protected CCToolsBaseAdapter(IEventAggregator eventAggregator, II2CBusService i2CBusService, ILogger log)
+        
+        protected CCToolsBaseAdapter(IAdapterServiceFactory adapterServiceFactory)
         {
-            _i2CBusService = i2CBusService ?? throw new ArgumentNullException(nameof(i2CBusService));
-            _log = log ?? throw new ArgumentNullException(nameof(log));
-            _eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
+            _i2CBusService = adapterServiceFactory.GetI2CService();
+            _log = adapterServiceFactory.GetLogger();
+            _eventAggregator = adapterServiceFactory.GetEventAggregator();
+            _scheduler = adapterServiceFactory.GetScheduler();
         }
 
-        public override Task Initialize()
+        public override async Task Initialize()
         {
+            var poolInterval = (IntValue)this[AdapterProperties.PoolInterval];
+            _poolDurationWarning = (IntValue)this[AdapterProperties.PollDurationWarningThreshold];
+
             _state = new byte[_portExpanderDriver.StateSize];
             _committedState = new byte[_portExpanderDriver.StateSize];
+
+            await _scheduler.ScheduleIntervalWithContext<CCToolsSchedulerJob, CCToolsBaseAdapter>(TimeSpan.FromMilliseconds(poolInterval), this, _disposables.Token).ConfigureAwait(false);
 
             _disposables.Add(_eventAggregator.SubscribeForAsyncResult<DeviceCommand>(async messageEnvelope =>
             {
@@ -60,11 +72,21 @@ namespace Wirehome.ComponentModel.Adapters
                 return null;
 
             }, new DeviceFilter<DeviceCommand>()));
-
-            return Task.CompletedTask;
         }
 
         public void FetchState()
+        {
+            var stopwatch = Stopwatch.StartNew();
+            FetchStateCore();
+            stopwatch.Stop();
+
+            if (stopwatch.ElapsedMilliseconds > _poolDurationWarning)
+            {
+                _log.Warning($"Polling device '{Uid}' took {stopwatch.ElapsedMilliseconds} ms.");
+            }
+        }
+
+        public void FetchStateCore()
         {
             lock (_syncRoot)
             {
@@ -91,14 +113,13 @@ namespace Wirehome.ComponentModel.Adapters
                     {
                         return;
                     }
+                    
+                    var properyChangeEvent = new PropertyChangedEvent(Uid, PowerState.StateName, new BooleanValue(oldPinState), new BooleanValue(newPinState));
+                    properyChangeEvent[PropertyChangedEventProperty.PinNumber] = (IntValue)i;
 
-                    var newBinaryState = newPinState ? BinaryState.High : BinaryState.Low;
-                    var oldBinaryState = oldPinState ? BinaryState.High : BinaryState.Low;
-
-                    // TODO Fire event
+                    _eventAggregator.Publish(properyChangeEvent);
                 }
                 
-
                 var statesText = BitConverter.ToString(oldState) + "->" + BitConverter.ToString(newState);
                 _log.Info("'" + Uid + "' fetched different state (" + statesText + ")");
             }

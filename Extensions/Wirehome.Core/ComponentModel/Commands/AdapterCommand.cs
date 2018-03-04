@@ -1,6 +1,4 @@
-﻿
-
-using Wirehome.ComponentModel.ValueTypes;
+﻿using Wirehome.ComponentModel.ValueTypes;
 
 namespace Wirehome.ComponentModel.Commands
 {
@@ -12,7 +10,4 @@ namespace Wirehome.ComponentModel.Commands
             this[CommandProperties.DeviceUid] = (StringValue)deviceUid;
         }
     }
-
-    
-
 }

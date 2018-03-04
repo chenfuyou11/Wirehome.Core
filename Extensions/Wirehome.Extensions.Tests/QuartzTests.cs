@@ -1,15 +1,12 @@
-﻿//using Wirehome.Extensions;
-//using Wirehome.Extensions.Quartz;
+﻿//using Wirehome.Extensions.Quartz;
 //using Quartz;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using Wirehome.Contracts.Core;
 //using System.Threading.Tasks;
 //using System;
 //using System.Threading;
-//using Quartz.Impl.Matchers;
 //using Wirehome.Extensions.Devices;
-//using Wirehome.Extensions.Messaging.Core;
 //using Wirehome.Core;
+//using Microsoft.VisualStudio.TestTools.UnitTesting;
+//using Wirehome.Core.EventAggregator;
 
 //namespace Wirehome.Extensions.Tests
 //{
@@ -22,7 +19,7 @@
 //            var container = new Container(new ControllerOptions());
 //            container.RegisterSingleton<IContainer>(() => container);
 //            container.RegisterQuartz();
-            
+
 //            var scheduler = container.GetInstance<IScheduler>();
 //        }
 
@@ -34,11 +31,11 @@
 //            container.RegisterQuartz();
 
 //            var scheduler = container.GetInstance<IScheduler>();
-            
+
 //            var key = await scheduler.ScheduleIntervalWithContext<TestJob, TestContext>(TimeSpan.FromSeconds(1), new TestContext { Data = 5 });
 
 //            await scheduler.Start();
-    
+
 //            await Task.Delay(10000);
 //        }
 
@@ -75,7 +72,7 @@
 //    {
 //        public Task Execute(IJobExecutionContext context)
 //        {
-//            if(context.JobDetail.JobDataMap.TryGetValue("context", out object value))
+//            if (context.JobDetail.JobDataMap.TryGetValue("context", out object value))
 //            {
 
 //            }

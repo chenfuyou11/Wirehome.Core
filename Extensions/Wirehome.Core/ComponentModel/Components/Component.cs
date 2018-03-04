@@ -34,30 +34,32 @@ namespace Wirehome.ComponentModel.Components
 
         public async Task Initialize()
         {
-            foreach(var adapter in _adapters)
+            foreach (var adapter in _adapters)
             {
                 var adapterCapabilities = await _eventAggregator.QueryAsync<DeviceCommand, DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid), new DeviceFilter<DeviceCommand>()).ConfigureAwait(false);
                 adapterCapabilities.SupportedStates.ForEach(state => state.SetAdapterReference(adapter));
                 _capabilities.AddRangeNewOnly(adapterCapabilities.SupportedStates.ToDictionary(key => ((StringValue)key[StateProperties.StateName]).ToString(), val => val));
+
+                //TODO register to change state events
             }
         }
 
         public Maybe<IValue> GetStateValue(string stateName)
-        {           
+        {
             if (!_capabilities.ContainsKey(stateName)) return Maybe<IValue>.None;
             var value = _capabilities[stateName][StateProperties.Value];
             return Maybe<IValue>.From(_converters[stateName].Convert(value));
         }
-        
+
         public async Task ExecuteCommand(Command command)
         {
-            foreach(var state in _capabilities.Values.Where(capability => ((StringListValue)capability[StateProperties.SupportedCommands]).Value.Contains(command.Type)))
+            foreach (var state in _capabilities.Values.Where(capability => ((StringListValue)capability[StateProperties.SupportedCommands]).Value.Contains(command.Type)))
             {
                 await _eventAggregator.Publish(state.Adapter.GetDeviceCommand(command)).ConfigureAwait(false);
             }
         }
 
-        public List<string> AllTags
+        public IReadOnlyList<string> AllTags
         {
             get
             {
@@ -66,8 +68,24 @@ namespace Wirehome.ComponentModel.Components
                     _tagCache = new List<string>(Tags);
                     _tagCache.AddRange(_capabilities.Values.SelectMany(x => x.Tags));
                 }
-                return _tagCache;
+                return _tagCache.AsReadOnly();
             }
         }
+
+        public IEnumerable<string> SupportedCapabilities => _capabilities.Values
+                                                                         .Select(cap => cap.GetPropertyValue(StateProperties.CapabilityName))
+                                                                         .Where(cap => cap.HasValue)
+                                                                         .Select(cap => cap.Value)
+                                                                         .Cast<StringValue>()
+                                                                         .Select(cap => cap.Value)
+                                                                         .Distinct();
+
+        public IEnumerable<string> SupportedStates => _capabilities.Values
+                                                                   .Select(cap => cap.GetPropertyValue(StateProperties.StateName))
+                                                                   .Where(cap => cap.HasValue)
+                                                                   .Select(cap => cap.Value)
+                                                                   .Cast<StringValue>()
+                                                                   .Select(cap => cap.Value)
+                                                                   .Distinct();
     }
 }

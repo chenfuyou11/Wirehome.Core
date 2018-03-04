@@ -11,7 +11,7 @@ namespace Wirehome.ComponentModel.Capabilities
         public PowerState()
         {
             this[StateProperties.StateName] = new StringValue(nameof(PowerState));
-            this[StateProperties.Value] = new StringValue(Constants.Capabilities.PowerController);
+            this[StateProperties.CapabilityName] = new StringValue(Constants.Capabilities.PowerController);
             this[StateProperties.Value] = new StringValue();
             this[StateProperties.ValueList] = new StringListValue(PowerStateValue.ON, PowerStateValue.OFF);
             this[StateProperties.SupportedCommands] = new StringListValue(CommandType.TurnOn, CommandType.TurnOff);

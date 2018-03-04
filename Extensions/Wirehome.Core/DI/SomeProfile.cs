@@ -14,6 +14,4 @@ namespace Wirehome.Core.DI
                                                               .ForMember(m => m.Type, p => p.Ignore());
         }
     }
-
-
 }

@@ -101,7 +101,7 @@ namespace Wirehome.Extensions.Devices.Sony
         {
             _cancelationTokenSource.Cancel();
            // _eventAggregator.UnSubscribe(_statusSubscription);
-            _scheduler.Shutdown();
+
         }
 
         public override IComponentFeatureStateCollection GetState()

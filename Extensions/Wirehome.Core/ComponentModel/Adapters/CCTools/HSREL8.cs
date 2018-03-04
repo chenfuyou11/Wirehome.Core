@@ -10,7 +10,7 @@ namespace Wirehome.ComponentModel.Adapters
 {
     public class HSREL8Adapter : CCToolsBaseAdapter
     {
-        public HSREL8Adapter(IEventAggregator eventAggregator, II2CBusService i2CBusService, ILogger log) : base(eventAggregator, i2CBusService, log) {}
+        public HSREL8Adapter(IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory) {}
         
         public override async Task Initialize()
         {

@@ -59,7 +59,4 @@ namespace Wirehome.ComponentModel
             _events.OnNext(new PropertyChangedEvent(property.Type, oldValue, value));
         }
     }
-
-    
-
 }

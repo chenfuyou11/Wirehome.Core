@@ -8,6 +8,8 @@ namespace Wirehome.ComponentModel.Adapters
     {
         public const string I2cAddress = "I2cAddress";
         public const string PinNumber = "PortNumber";
+        public const string PoolInterval = "PoolInterval";
+        public const string PollDurationWarningThreshold = "PollDurationWarningThreshold";
 
         public const string AdapterName = "AdapterName";
         public const string AdapterAuthor = "AdapterAuthor";

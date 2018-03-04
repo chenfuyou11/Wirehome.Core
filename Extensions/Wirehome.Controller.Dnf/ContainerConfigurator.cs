@@ -6,7 +6,7 @@ using Wirehome.Extensions.Extensions;
 using Wirehome.Extensions.Messaging;
 using Wirehome.Extensions.Messaging.Services;
 using Wirehome.Raspberry;
-using Wirehome.Extensions.Messaging.Core;
+using WWirehome.Core.Utils;
 
 namespace Wirehome.Controller.Dnf
 {

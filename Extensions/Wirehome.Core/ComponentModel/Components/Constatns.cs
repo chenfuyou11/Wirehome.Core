@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Wirehome.ComponentModel.Component
+namespace Wirehome.ComponentModel.Components
 {
     public static class Tag
     {

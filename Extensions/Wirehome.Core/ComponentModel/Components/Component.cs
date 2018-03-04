@@ -10,8 +10,9 @@ using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
+using Wirehome.Core.DI;
 
-namespace Wirehome.ComponentModel.Component
+namespace Wirehome.ComponentModel.Components
 {
     public sealed class Component : BaseObject, IService
     {
@@ -19,22 +20,14 @@ namespace Wirehome.ComponentModel.Component
         private readonly DisposeContainer _disposables = new DisposeContainer();
         private List<string> _tagCache;
         private Dictionary<string, State> _capabilities { get; } = new Dictionary<string, State>();
-        private List<AdapterReference> _adapters { get; } = new List<AdapterReference>();
-        private Dictionary<string, IValueConverter> _statePropertyConverters { get; } = new Dictionary<string, IValueConverter>();
+        [Map] private IList<AdapterReference> _adapters { get; set; } = new List<AdapterReference>();
+        [Map] private Dictionary<string, IValueConverter> _converters { get; set; } = new Dictionary<string, IValueConverter>();
 
-        public bool IsEnabled { get; }
-        
-        
+        public bool IsEnabled { get; private set; }
+
         public Component(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
-            // Subscribing for commands - this will allow to control command via EventAggregator
-            //_disposables.Add(_eventAggregator.Subscribe<Command>(ExecuteCommand));
-        }
-
-        public void AddAdapter(AdapterReference adapterUid)
-        {
-            _adapters.Add(adapterUid);
         }
 
         public void Dispose() => _disposables.Dispose();
@@ -49,33 +42,28 @@ namespace Wirehome.ComponentModel.Component
             }
         }
 
-        public void RegisterPropertyConverter(string propertyName, IValueConverter valueConverter)
-        {
-            _statePropertyConverters.Add(propertyName, valueConverter);
-        }
-
         public Maybe<IValue> GetStateValue(string stateName)
-        {
+        {           
             if (!_capabilities.ContainsKey(stateName)) return Maybe<IValue>.None;
             var value = _capabilities[stateName][StateProperties.Value];
-            return Maybe<IValue>.From(_statePropertyConverters[stateName].Convert(value));
+            return Maybe<IValue>.From(_converters[stateName].Convert(value));
         }
         
         public async Task ExecuteCommand(Command command)
         {
-            foreach(var state in _capabilities.Values.Where(c => ((StringListValue)c[StateProperties.SupportedCommands]).Value.Contains(command.Type)))
+            foreach(var state in _capabilities.Values.Where(capability => ((StringListValue)capability[StateProperties.SupportedCommands]).Value.Contains(command.Type)))
             {
                 await _eventAggregator.Publish(state.Adapter.GetDeviceCommand(command)).ConfigureAwait(false);
             }
         }
 
-        new public List<string> Tags
+        public List<string> AllTags
         {
             get
             {
                 if (_tagCache == null)
                 {
-                    _tagCache = new List<string>(base.Tags);
+                    _tagCache = new List<string>(Tags);
                     _tagCache.AddRange(_capabilities.Values.SelectMany(x => x.Tags));
                 }
                 return _tagCache;

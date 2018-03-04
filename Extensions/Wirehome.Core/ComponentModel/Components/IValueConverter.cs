@@ -1,6 +1,6 @@
 ﻿using Wirehome.ComponentModel.ValueTypes;
 
-namespace Wirehome.ComponentModel.Component
+namespace Wirehome.ComponentModel.Components
 {
     public interface IValueConverter
     {

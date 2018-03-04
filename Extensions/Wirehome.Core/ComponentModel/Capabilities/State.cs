@@ -1,6 +1,6 @@
 ﻿using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.Commands;
-using Wirehome.ComponentModel.Component;
+using Wirehome.ComponentModel.Components;
 using Wirehome.ComponentModel.ValueTypes;
 
 namespace Wirehome.ComponentModel.Capabilities

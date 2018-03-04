@@ -6,10 +6,10 @@ using Wirehome.ComponentModel.Adapters.Drivers;
 using Wirehome.ComponentModel.Capabilities;
 using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.Commands;
+using Wirehome.ComponentModel.Commands.Responses;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core;
 using Wirehome.Core.Communication.I2C;
-using Wirehome.Core.ComponentModel.Commands.Responses;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
 

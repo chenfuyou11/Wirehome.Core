@@ -8,8 +8,8 @@ namespace Wirehome.ComponentModel.Capabilities
     {
         public BrightnessState()
         {
-            StateName = nameof(BrightnessState);
-            Capability = Constants.Capabilities.BrightnessController;
+            //StateName = nameof(BrightnessState);
+            //Capability = Constants.Capabilities.BrightnessController;
 
             this[StateProperties.Value] = new DoubleValue();
             this[StateProperties.MaxValue] = new DoubleValue(100.0);

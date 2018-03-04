@@ -1,6 +1,6 @@
 ﻿using Wirehome.ComponentModel.Commands;
 
-namespace Wirehome.ComponentModel.Component
+namespace Wirehome.ComponentModel.Components
 {
     public class AdapterReference : BaseObject
     {

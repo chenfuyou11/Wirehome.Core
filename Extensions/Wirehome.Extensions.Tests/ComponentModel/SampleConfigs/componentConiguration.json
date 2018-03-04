@@ -1,0 +1,42 @@
+﻿{
+  "Wirehome": 
+  {
+    "Components": [
+      {
+        "Uid": "Lamp1",
+        "IsEnabled": true,
+        "AdapterRefs": [
+          {
+            "Uid": "HSRel8_1",
+            "Properties": {
+              "PinNumber": "1"
+            }
+          }
+        ],
+        "Converters": {
+          "PowerState": "PowerConverter"
+        },
+        "Tags": 
+          {
+            "APP_CAPTION": "MyC",
+            "APP_SORT_VALUE": "2"
+          }
+        ,
+        "Classes": [
+          "Window",
+          "Lamp"
+        ]
+      }
+    ],
+
+    "Adapters": [
+      {
+        "Uid": "HSRel8_1",
+        "Type": "HSREL8Adapter",
+        "Properties": {
+          "I2cAddress": "100"
+        }
+      }
+    ]
+  }
+}

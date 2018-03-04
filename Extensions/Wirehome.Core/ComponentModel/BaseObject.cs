@@ -12,16 +12,14 @@ namespace Wirehome.ComponentModel
     public class BaseObject
     {
         private readonly Subject<Event> _events = new Subject<Event>();
-        private Dictionary<string, Property> _properties { get; } = new Dictionary<string, Property>();
-
-        public IReadOnlyDictionary<string, Property> Properties => _properties.AsReadOnly();
-
-        public string Uid { get; set; }
+        private Dictionary<string, Property> _properties { get; set; } = new Dictionary<string, Property>();
+        protected bool SupressPropertyChangeEvent { get; set; }
+        public string Uid { get; protected set; }
         public string Type { get; protected set; }
-        public List<string> Tags { get; } = new List<string>();
+        public List<string> Tags { get; private set; } = new List<string>();
         public IObservable<Event> Events => _events.AsObservable();
-        protected bool SupressPropertyChangeEvent {get; set;}
-
+        public IReadOnlyDictionary<string, Property> Properties => _properties.AsReadOnly();
+        
         public IValue this[string propertyName]
         {
             get => GetPropertyValue(propertyName).Value ?? throw new KeyNotFoundException();

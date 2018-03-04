@@ -177,6 +177,10 @@
       <Project>{50737d30-ad0d-4832-b675-fda4c27c58ca}</Project>
       <Name>Wirehome</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Wirehome.Core\Wirehome.Core.csproj">
+      <Project>{07450904-b03a-4caa-9d3d-8ea980e5080e}</Project>
+      <Name>Wirehome.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Wirehome.Extensions\Wirehome.Extensions.csproj">
       <Project>{118ef925-83ff-456e-9898-34da5ee417ef}</Project>
       <Name>Wirehome.Extensions</Name>

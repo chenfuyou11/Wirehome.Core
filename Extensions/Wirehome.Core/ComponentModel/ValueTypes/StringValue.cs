@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Wirehome.ComponentModel.ValueTypes
 {
-    public class StringListValue : ValueObject, IValue
+    public class StringValue : ValueObject, IValue
     {
-        public StringListValue(params string[] value) => Value = value;
+        public StringValue(string value = default) => Value = value;
 
-        public string[] Value
+        public string Value
         {
             get;
         }
@@ -17,6 +17,8 @@ namespace Wirehome.ComponentModel.ValueTypes
             yield return Value;
         }
 
-
+        public static implicit operator StringValue(string value) => new StringValue(value);
+        public static implicit operator string(StringValue value) => value.Value;
+        public override string ToString() => Value.ToString();
     }
 }

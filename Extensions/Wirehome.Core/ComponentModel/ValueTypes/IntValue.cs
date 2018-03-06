@@ -19,6 +19,7 @@ namespace Wirehome.ComponentModel.ValueTypes
 
         public static implicit operator IntValue(int value) => new IntValue(value);
         public static implicit operator int(IntValue value) => value.Value;
+        public override string ToString() => Value.ToString();
 
     }    
 }

@@ -4,6 +4,7 @@ using Wirehome.Core.EventAggregator;
 
 namespace Wirehome.Core.DI
 {
+    //TODO change this to Container class 
     public class Registrar
     {
         public void Register(Container container)

@@ -6,13 +6,14 @@ using System.Reactive.Linq;
 using Wirehome.ComponentModel.Events;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.Extensions;
+using Wirehome.Core.DI;
 
 namespace Wirehome.ComponentModel
 {
     public class BaseObject
     {
         private readonly Subject<Event> _events = new Subject<Event>();
-        private Dictionary<string, Property> _properties { get; set; } = new Dictionary<string, Property>();
+        [Map] private Dictionary<string, Property> _properties { get; set; } = new Dictionary<string, Property>();
         protected bool SupressPropertyChangeEvent { get; set; }
         public string Uid { get; protected set; }
         public string Type { get; protected set; }
@@ -56,7 +57,7 @@ namespace Wirehome.ComponentModel
 
             if (SupressPropertyChangeEvent || value.Equals(oldValue)) return;
 
-            _events.OnNext(new PropertyChangedEvent(property.Type, oldValue, value));
+            _events.OnNext(new PropertyChangedEvent(Uid, property.Type, oldValue, value));
         }
     }
 }

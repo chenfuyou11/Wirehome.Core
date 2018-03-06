@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using Wirehome.ComponentModel;
 using Wirehome.ComponentModel.Components;
 
 namespace Wirehome.Core.ComponentModel.Configuration
@@ -26,7 +27,15 @@ namespace Wirehome.Core.ComponentModel.Configuration
         [JsonProperty("Classes")]
         public IList<string> Classes { get; set; }
 
-        public string Type { get; set; } = "Test";
+        [JsonProperty("Triggers")]
+        public IList<TriggerDTO> Triggers { get; set; }
+
+        [JsonProperty("Properties")]
+        [JsonConverter(typeof(PropertyDictionaryConverter))]
+        public Dictionary<string, Property> Properties { get; set; }
+
+        [JsonProperty("Type")]
+        public string Type { get; set; }
     }
 
 

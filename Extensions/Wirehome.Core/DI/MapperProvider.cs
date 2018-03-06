@@ -19,9 +19,10 @@ namespace Wirehome.Core.DI
             var mce = new MapperConfigurationExpression();
             mce.ConstructServicesUsing(_container.GetInstance);
 
-            var profiles = typeof(SomeProfile).Assembly.GetTypes()
-                .Where(t => typeof(Profile).IsAssignableFrom(t))
-                .ToList();
+            var profiles = typeof(WirehomeMappingProfile).Assembly
+                                                         .GetTypes()
+                                                         .Where(t => typeof(Profile).IsAssignableFrom(t))
+                                                         .ToList();
 
             mce.AddProfiles(profiles);
 

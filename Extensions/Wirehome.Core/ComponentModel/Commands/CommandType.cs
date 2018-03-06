@@ -4,6 +4,8 @@
     {
         public const string TurnOff = "turn-off";
         public const string TurnOn = "turn-on";
+        public const string SwitchPowerState = "switch-power-state";
+
         public const string MoveUp = "move-up";
         public const string MoveDown = "move-down";
         public const string Open = "open";

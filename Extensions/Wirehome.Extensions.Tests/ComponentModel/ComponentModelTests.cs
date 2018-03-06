@@ -31,10 +31,7 @@ namespace Wirehome.Extensions.Tests
             reg.Register(container);
 
             var mapper = container.GetInstance<IMapper>();
-
             var component = mapper.Map<IList<ComponentDTO>, IList<Component>>(result.Wirehome.Components);
-           
-
 
             //var component = factory.Create(result.Wirehome.Components.FirstOrDefault());
 

@@ -21,6 +21,7 @@ namespace Wirehome.ComponentModel.Components
         private List<string> _tagCache;
         private Dictionary<string, State> _capabilities { get; } = new Dictionary<string, State>();
         [Map] private IList<AdapterReference> _adapters { get; set; } = new List<AdapterReference>();
+        [Map] private IList<Trigger> _triggers { get; set; } = new List<Trigger>();
         [Map] private Dictionary<string, IValueConverter> _converters { get; set; } = new Dictionary<string, IValueConverter>();
 
         public bool IsEnabled { get; private set; }

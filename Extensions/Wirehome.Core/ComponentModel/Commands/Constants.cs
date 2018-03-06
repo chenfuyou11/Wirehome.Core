@@ -7,5 +7,6 @@ namespace Wirehome.ComponentModel.Commands
     public static class CommandProperties
     {
         public const string DeviceUid = "DeviceUid";
+        public const string CommandSource = "CommandSource";
     }
 }

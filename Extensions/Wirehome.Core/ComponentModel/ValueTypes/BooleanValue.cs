@@ -16,5 +16,7 @@ namespace Wirehome.ComponentModel.ValueTypes
         {
             yield return Value;
         }
+
+        public override string ToString() => Value.ToString();
     }
 }

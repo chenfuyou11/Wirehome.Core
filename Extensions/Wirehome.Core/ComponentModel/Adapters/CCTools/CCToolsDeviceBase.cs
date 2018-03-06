@@ -62,6 +62,9 @@ namespace Wirehome.ComponentModel.Adapters
                     var state = message[PowerState.StateName] as StringValue;
                     var pinNumber = message[AdapterProperties.PinNumber] as IntValue;
 
+                    //TODO read source and invoke event change with this source to distinct with change outside program code
+                    //message[CommandProperties.CommandSource]
+
                     SetPortState(pinNumber.Value, PowerStateValue.ToBinaryState(state), true);
                 }
                 else if(message.Type == CommandType.DiscoverCapabilities)

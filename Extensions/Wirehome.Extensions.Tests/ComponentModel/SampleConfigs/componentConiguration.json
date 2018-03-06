@@ -5,6 +5,9 @@
       {
         "Uid": "Lamp1",
         "IsEnabled": true,
+        "Properties": {
+          "Test": "2"
+        },
         "AdapterRefs": [
           {
             "Uid": "HSRel8_1",
@@ -13,15 +16,27 @@
             }
           }
         ],
+        "Triggers": [
+          {
+            "Event": {
+              "Type": "property-changed",
+              "Properties": {
+                "SourceDeviceUid": "HSPE16InputOnly_1",
+                "PinNumber": "2"
+              }
+            },
+            "Command": {
+              "Type": "SwitchPowerState"
+            }
+          }
+        ],
         "Converters": {
           "PowerState": "PowerConverter"
         },
-        "Tags": 
-          {
-            "APP_CAPTION": "MyC",
-            "APP_SORT_VALUE": "2"
-          }
-        ,
+        "Tags": {
+          "APP_CAPTION": "MyC",
+          "APP_SORT_VALUE": "2"
+        },
         "Classes": [
           "Window",
           "Lamp"
@@ -35,6 +50,15 @@
         "Type": "HSREL8Adapter",
         "Properties": {
           "I2cAddress": "100",
+          "PoolInterval": 500,
+          "PollDurationWarningThreshold": 2000
+        }
+      },
+      {
+        "Uid": "HSPE16InputOnly_1",
+        "Type": "HSPE16InputOnlyAdapter",
+        "Properties": {
+          "I2cAddress": "200",
           "PoolInterval": 500,
           "PollDurationWarningThreshold": 2000
         }

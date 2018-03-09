@@ -124,7 +124,7 @@ namespace Wirehome.Core.Extensions
             return collection;
         }
 
-        public static K ElementAtOrNull<T, K>(this Dictionary<T, K> dictionary, T lookupValue) where K: class
+        public static K ElementAtOrNull<T, K>(this IDictionary<T, K> dictionary, T lookupValue) where K: class
         {
             return dictionary.ContainsKey(lookupValue) ? dictionary[lookupValue] : null;
         }
@@ -139,7 +139,7 @@ namespace Wirehome.Core.Extensions
             foreach (T item in collection) action(item);
         }
 
-        public static void AddRangeNewOnly<TKey, TValue>(this Dictionary<TKey, TValue> dic, Dictionary<TKey, TValue> dicToAdd)
+        public static void AddRangeNewOnly<TKey, TValue>(this IDictionary<TKey, TValue> dic, IDictionary<TKey, TValue> dicToAdd)
         {
             dicToAdd.ForEach(x => { if (!dic.ContainsKey(x.Key)) dic.Add(x.Key, x.Value); });
         }
@@ -147,5 +147,16 @@ namespace Wirehome.Core.Extensions
         public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) => new ReadOnlyDictionary<TKey, TValue>(dictionary);
         
 
+        public static bool IsEqual(this Dictionary<string, string> source, Dictionary<string, string> dest)
+        {
+            if (source.Count != dest?.Count) return false;
+            foreach (var attribute in source)
+            {
+                if (!dest.ContainsKey(attribute.Key)) return false;
+
+                if (dest[attribute.Key].Compare(attribute.Value) != 0) return false;
+            }   
+            return true;
+        }
     }
 }

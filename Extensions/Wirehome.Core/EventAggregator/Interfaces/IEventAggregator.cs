@@ -11,14 +11,14 @@ namespace Wirehome.Core.EventAggregator
         bool IsSubscribed(Guid token);
         void UnSubscribe(Guid token);
 
-        List<BaseCommandHandler> GetSubscriptors<T>(object message, MessageFilter filter = null);
+        List<BaseCommandHandler> GetSubscriptors<T>(RoutingFilter filter = null);
 
-        SubscriptionToken Subscribe<T>(Action<IMessageEnvelope<T>> action, MessageFilter filter = null);
-        SubscriptionToken Subscribe(Type messageType, Delegate action, MessageFilter filter = null);
-        SubscriptionToken Subscribe(Type messageType, Func<Delegate> actionFactory, MessageFilter filter = null);
+        SubscriptionToken Subscribe<T>(Action<IMessageEnvelope<T>> action, RoutingFilter filter = null);
+        SubscriptionToken Subscribe(Type messageType, Delegate action, RoutingFilter filter = null);
+        SubscriptionToken Subscribe(Type messageType, Func<Delegate> actionFactory, RoutingFilter filter = null);
 
-        SubscriptionToken SubscribeAsync<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter = null);
-        SubscriptionToken SubscribeForAsyncResult<T>(Func<IMessageEnvelope<T>, Task<object>> action, MessageFilter filter = null);
+        SubscriptionToken SubscribeAsync<T>(Func<IMessageEnvelope<T>, Task> action, RoutingFilter filter = null);
+        SubscriptionToken SubscribeForAsyncResult<T>(Func<IMessageEnvelope<T>, Task<object>> action, RoutingFilter filter = null);
 
         IObservable<IMessageEnvelope<T>> Observe<T>();
         Func<BehaviorChain> DefaultBehavior { get; set; }
@@ -26,7 +26,7 @@ namespace Wirehome.Core.EventAggregator
         Task<R> QueryAsync<T, R>
         (
             T message,
-            MessageFilter filter = null,
+            RoutingFilter filter = null,
             CancellationToken cancellationToken = default,
             BehaviorChain behaviors = null
         ) where R : class;
@@ -35,7 +35,7 @@ namespace Wirehome.Core.EventAggregator
         (
             T message,
             R expectedResult,
-            MessageFilter filter = null,
+            RoutingFilter filter = null,
             CancellationToken cancellationToken = default,
             BehaviorChain behaviors = null
         ) where R : class;
@@ -43,7 +43,7 @@ namespace Wirehome.Core.EventAggregator
         IObservable<R> QueryWithResults<T, R>
         (
             T message,
-            MessageFilter filter = null,
+            RoutingFilter filter = null,
             CancellationToken cancellationToken = default,
             BehaviorChain behaviors = null
         ) where R : class;
@@ -51,7 +51,7 @@ namespace Wirehome.Core.EventAggregator
        Task QueryWithRepublishResult<T, R>
        (
            T message,
-           MessageFilter filter = null,
+           RoutingFilter filter = null,
            CancellationToken cancellationToken = default,
            BehaviorChain behaviors = null
        ) where R : class;
@@ -59,7 +59,7 @@ namespace Wirehome.Core.EventAggregator
         Task Publish<T>
         (
             T message,
-            MessageFilter filter = null,
+            RoutingFilter filter = null,
             CancellationToken cancellationToken = default,
             BehaviorChain behaviors = null
         );

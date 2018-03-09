@@ -1,29 +1,30 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Wirehome.Core.EventAggregator
 {
     public abstract class BaseCommandHandler
     {
         internal Guid Token { get; }
-        internal Type MessageType { get; }
-        internal MessageFilter SubscriptionFilter { get; }
+        internal TypeInfo MessageType { get; }
+        internal RoutingFilter SubscriptionFilter { get; }
         internal object Handler { get; }
 
-        protected BaseCommandHandler(Type type, Guid token, object handler, MessageFilter filter)
+        protected BaseCommandHandler(Type type, Guid token, object handler, RoutingFilter filter)
         {
-            MessageType = type;
+            MessageType = type.GetTypeInfo();
             Token = token;
             Handler = handler;
             SubscriptionFilter = filter;
         }
 
-        public bool IsFilterMatch(MessageFilter messageFilter, object message)
+        public bool IsFilterMatch(RoutingFilter messageFilter)
         {
-            if (messageFilter?.SimpleFilter == "*") return true;
+            if (messageFilter?.RoutingKey == "*") return true;
 
             if (SubscriptionFilter == null && messageFilter != null) return false;
 
-            return SubscriptionFilter?.EvaluateFilter(messageFilter, message) ?? true;
+            return SubscriptionFilter?.EvaluateFilter(messageFilter) ?? true;
         }
     }
 }

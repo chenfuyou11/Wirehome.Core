@@ -5,18 +5,15 @@ using System.Text;
 namespace Wirehome.Core.EventAggregator
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class MessageFilterAttribute : Attribute
+    public class RoutingFilterAttribute : Attribute
     {
-        public MessageFilterAttribute(string simpleFilter)
+        public RoutingFilterAttribute(string simpleFilter)
         {
             SimpleFilter = simpleFilter;
         }
 
         public string SimpleFilter { get; }
 
-        public MessageFilter ToMessageFilter()
-        {
-            return new MessageFilter { SimpleFilter = this.SimpleFilter };
-        }
+        public RoutingFilter ToMessageFilter() => new RoutingFilter(SimpleFilter);
     }
 }

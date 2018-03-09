@@ -1,4 +1,5 @@
-﻿using Quartz;
+﻿using Nito.AsyncEx;
+using Quartz;
 using System;
 using System.Collections;
 using System.Diagnostics;
@@ -10,6 +11,7 @@ using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
 using Wirehome.ComponentModel.Events;
+using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core;
 using Wirehome.Core.Communication.I2C;
@@ -25,7 +27,7 @@ namespace Wirehome.ComponentModel.Adapters
         protected readonly II2CBusService _i2CBusService;
         protected readonly IEventAggregator _eventAggregator;
         protected readonly IScheduler _scheduler;
-        private readonly object _syncRoot = new object();
+        private readonly AsyncLock _mutex = new AsyncLock();
         private int _poolDurationWarning;
         
         protected II2CPortExpanderDriver _portExpanderDriver;
@@ -38,6 +40,8 @@ namespace Wirehome.ComponentModel.Adapters
             _log = adapterServiceFactory.GetLogger();
             _eventAggregator = adapterServiceFactory.GetEventAggregator();
             _scheduler = adapterServiceFactory.GetScheduler();
+
+            _requierdProperties.Add(AdapterProperties.PinNumber);
         }
 
         public override async Task Initialize()
@@ -50,7 +54,7 @@ namespace Wirehome.ComponentModel.Adapters
 
             await _scheduler.ScheduleIntervalWithContext<CCToolsSchedulerJob, CCToolsBaseAdapter>(TimeSpan.FromMilliseconds(poolInterval), this, _disposables.Token).ConfigureAwait(false);
 
-            _disposables.Add(_eventAggregator.SubscribeForAsyncResult<DeviceCommand>(async messageEnvelope =>
+            _disposables.Add(_eventAggregator.SubscribeForDeviceQuery<DeviceCommand>(async messageEnvelope =>
             {
                 var message = messageEnvelope.Message;
                 if(message.Type == CommandType.QueryCommand)
@@ -69,18 +73,18 @@ namespace Wirehome.ComponentModel.Adapters
                 }
                 else if(message.Type == CommandType.DiscoverCapabilities)
                 {
-                    return new DiscoveryResponse(new PowerState());
+                    return new DiscoveryResponse(RequierdProperties(), new PowerState());
                 }
 
                 return null;
 
-            }, new DeviceFilter<DeviceCommand>()));
+            }, Uid));
         }
 
-        public void FetchState()
+        public async Task FetchState()
         {
             var stopwatch = Stopwatch.StartNew();
-            FetchStateCore();
+            await FetchStateCore().ConfigureAwait(false);
             stopwatch.Stop();
 
             if (stopwatch.ElapsedMilliseconds > _poolDurationWarning)
@@ -89,9 +93,9 @@ namespace Wirehome.ComponentModel.Adapters
             }
         }
 
-        public void FetchStateCore()
+        public async Task FetchStateCore()
         {
-            lock (_syncRoot)
+            using (await _mutex.LockAsync())
             {
                 var newState = _portExpanderDriver.Read();
                 if (newState.SequenceEqual(_state))
@@ -116,15 +120,15 @@ namespace Wirehome.ComponentModel.Adapters
                     {
                         return;
                     }
-                    
-                    var properyChangeEvent = new PropertyChangedEvent(Uid, PowerState.StateName, new BooleanValue(oldPinState), new BooleanValue(newPinState));
-                    properyChangeEvent[PropertyChangedEventProperty.PinNumber] = (IntValue)i;
 
-                    _eventAggregator.Publish(properyChangeEvent);
+                    var properyChangeEvent = new PropertyChangedEvent(Uid, PowerState.StateName, new BooleanValue(oldPinState), new BooleanValue(newPinState));
+                    properyChangeEvent[AdapterProperties.PinNumber] = (IntValue)i;
+
+                    await _eventAggregator.PublishDeviceEvent(properyChangeEvent, _requierdProperties).ConfigureAwait(false);
+
+                    var statesText = BitConverter.ToString(oldState) + "->" + BitConverter.ToString(newState);
+                    _log.Info("'" + Uid + "' fetched different state (" + statesText + ")");
                 }
-                
-                var statesText = BitConverter.ToString(oldState) + "->" + BitConverter.ToString(newState);
-                _log.Info("'" + Uid + "' fetched different state (" + statesText + ")");
             }
         }
 
@@ -132,7 +136,7 @@ namespace Wirehome.ComponentModel.Adapters
         {
             if (state == null) throw new ArgumentNullException(nameof(state));
 
-            lock (_syncRoot)
+            using (_mutex.Lock())
             {
                 Buffer.BlockCopy(state, 0, _state, 0, state.Length);
             }
@@ -140,7 +144,7 @@ namespace Wirehome.ComponentModel.Adapters
         
         protected void CommitChanges(bool force = false)
         {
-            lock (_syncRoot)
+            using (_mutex.Lock())
             {
                 if (!force && _state.SequenceEqual(_committedState))
                 {
@@ -156,7 +160,7 @@ namespace Wirehome.ComponentModel.Adapters
 
         internal BinaryState GetPortState(int id)
         {
-            lock (_syncRoot)
+            using (_mutex.Lock())
             {
                 return _state.GetBit(id) ? BinaryState.High : BinaryState.Low;
             }
@@ -164,7 +168,7 @@ namespace Wirehome.ComponentModel.Adapters
 
         internal void SetPortState(int pinNumber, BinaryState state, bool commit)
         {
-            lock (_syncRoot)
+            using (_mutex.Lock())
             {
                 _state.SetBit(pinNumber, state == BinaryState.High);
 

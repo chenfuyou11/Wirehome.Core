@@ -1,5 +1,4 @@
-﻿using Wirehome.Extensions.Messaging.Core;
-using Microsoft.Reactive.Testing;
+﻿using Microsoft.Reactive.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -7,8 +6,6 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
-using Wirehome.Core;
-using Wirehome.Motion.Model;
 using Wirehome.Core.EventAggregator;
 
 namespace Wirehome.Extensions.Tests
@@ -26,8 +23,8 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.Subscribe<TestMessage>(message => { });
-            aggregator.Subscribe<OtherMessage>(message => { });
+            aggregator.Subscribe<TestMessage>(handler => { });
+            aggregator.Subscribe<OtherMessage>(handler => { });
 
             var result = aggregator.GetSubscriptors<TestMessage>(null);
 
@@ -40,10 +37,10 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.Subscribe<TestMessage>(message => { });
-            aggregator.Subscribe<OtherMessage>(message => { });
+            aggregator.Subscribe<TestMessage>(handler => { });
+            aggregator.Subscribe<OtherMessage>(handler => { });
 
-            var result = aggregator.GetSubscriptors<DerivedTestMessage>(null);
+            var result = aggregator.GetSubscriptors<DerivedTestMessage>();
 
             Assert.AreEqual(1, result.Count);
         }
@@ -53,8 +50,8 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.Subscribe<TestMessage>(message => { });
-            aggregator.Subscribe<TestMessage>(message => { }, "x");
+            aggregator.Subscribe<TestMessage>(handler => { });
+            aggregator.Subscribe<TestMessage>(handler => { }, "x");
 
 
             var result = aggregator.GetSubscriptors<TestMessage>("x");
@@ -67,8 +64,8 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.Subscribe<TestMessage>(message => { });
-            aggregator.Subscribe<TestMessage>(message => { });
+            aggregator.Subscribe<TestMessage>(handler => { });
+            aggregator.Subscribe<TestMessage>(handler => { });
 
 
             var result = aggregator.GetSubscriptors<TestMessage>("x");
@@ -81,11 +78,11 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.Subscribe<TestMessage>(message => { });
-            aggregator.Subscribe<TestMessage>(message => { }, "x");
+            aggregator.Subscribe<TestMessage>(handler => { });
+            aggregator.Subscribe<TestMessage>(handler => { }, "x");
 
 
-            var result = aggregator.GetSubscriptors<TestMessage>(null);
+            var result = aggregator.GetSubscriptors<TestMessage>();
 
             Assert.AreEqual(1, result.Count);
         }
@@ -95,8 +92,8 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.Subscribe<TestMessage>(message => { });
-            aggregator.Subscribe<TestMessage>(message => { }, "x");
+            aggregator.Subscribe<TestMessage>(handler => { });
+            aggregator.Subscribe<TestMessage>(handler => { }, "x");
 
 
             var result = aggregator.GetSubscriptors<TestMessage>("*");
@@ -104,27 +101,14 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(2, result.Count);
         }
 
-        [TestMethod]
-        public void GetSubscriptors_WhenSubscribeAsDefaultSubscriber_ShouldReturnonlyDefaultSubscribers()
-        {
-            var aggregator = InitAggregator();
-
-            aggregator.Subscribe<TestMessage>(message => { });
-            aggregator.Subscribe<TestMessage>(message => { }, "@");
-
-
-            var result = aggregator.GetSubscriptors<TestMessage>("@");
-
-            Assert.AreEqual(1, result.Count);
-        }
-
+     
 
         [TestMethod]
         public async Task QueryAsync_WhenSubscribed_ShouldReturnProperResult()
         {
             var aggregator = InitAggregator();
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(10).ConfigureAwait(false);
                 return "Test";
@@ -140,7 +124,7 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(10).ConfigureAwait(false);
                 return "Test";
@@ -157,13 +141,13 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(50).ConfigureAwait(false);
                 return "Slower";
             });
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(10).ConfigureAwait(false);
                 return "Faster";
@@ -177,7 +161,7 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(10).ConfigureAwait(false);
                 return "Test";
@@ -194,7 +178,7 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(100).ConfigureAwait(false);
                 return "Test";
@@ -208,7 +192,7 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(10).ConfigureAwait(false);
                 throw new TestException();
@@ -224,7 +208,7 @@ namespace Wirehome.Extensions.Tests
             var aggregator = InitAggregator();
             int i = 1;
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(10).ConfigureAwait(false);
                 if (i-- > 0) throw new Exception("Test");
@@ -244,7 +228,7 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(50).ConfigureAwait(false);
                 return "OK";
@@ -262,7 +246,7 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            var subscription = aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            var subscription = aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(50).ConfigureAwait(false);
                 return "OK";
@@ -278,7 +262,7 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            var subscription = aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            var subscription = aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(50).ConfigureAwait(false);
                 return "OK";
@@ -296,14 +280,14 @@ namespace Wirehome.Extensions.Tests
         {
             var aggregator = InitAggregator();
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(50).ConfigureAwait(false);
                 return "OK";
 
             });
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(50).ConfigureAwait(false);
                 return "OK";
@@ -322,13 +306,13 @@ namespace Wirehome.Extensions.Tests
             var aggregator = InitAggregator();
             var expected = new List<string> { "Test", "Test2" };
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(10).ConfigureAwait(false);
                 return expected[0];
             });
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(30).ConfigureAwait(false);
                 return expected[1];
@@ -346,13 +330,13 @@ namespace Wirehome.Extensions.Tests
             var aggregator = InitAggregator();
             var expected = new List<string> { "Test", "Test2" };
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(100).ConfigureAwait(false);
                 return expected[1];
             });
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(100).ConfigureAwait(false);
                 return expected[0];
@@ -391,7 +375,7 @@ namespace Wirehome.Extensions.Tests
             var aggregator = InitAggregator();
             bool isWorking = false;
             
-            aggregator.Subscribe<TestMessage>(message =>
+            aggregator.Subscribe<TestMessage>(handler =>
             {
                 isWorking = true;
             });
@@ -424,7 +408,7 @@ namespace Wirehome.Extensions.Tests
             var aggregator = InitAggregator();
             bool isWorking = false;
 
-            aggregator.SubscribeForAsyncResult<TestMessage>(async message =>
+            aggregator.SubscribeForAsyncResult<TestMessage>(async handler =>
             {
                 await Task.Delay(10).ConfigureAwait(false);
                 return new OtherMessage();

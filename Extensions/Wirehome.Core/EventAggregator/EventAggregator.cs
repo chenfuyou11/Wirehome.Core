@@ -20,20 +20,20 @@ namespace Wirehome.Core.EventAggregator
         private readonly Subscriptions _subscriptions = new Subscriptions();
         public Func<BehaviorChain> DefaultBehavior { get; set; } = () => new BehaviorChain().WithTimeout(TimeSpan.FromMilliseconds(2000));
 
-        public List<BaseCommandHandler> GetSubscriptors<T>(object message, MessageFilter filter = null)
+        public List<BaseCommandHandler> GetSubscriptors<T>(RoutingFilter filter = null)
         {
-            return _subscriptions.GetCurrentSubscriptions(typeof(T), message, filter);
+            return _subscriptions.GetCurrentSubscriptions(typeof(T), filter);
         }
 
         public async Task<R> QueryAsync<T, R>
         (
            T message,
-           MessageFilter filter = null,
+           RoutingFilter filter = null,
            CancellationToken cancellationToken = default,
            BehaviorChain behaviors = null
         ) where R : class
         {
-            var localSubscriptions = GetSubscriptors<T>(message, filter).OfType<IAsyncCommandHandler>();
+            var localSubscriptions = GetSubscriptors<T>(filter).OfType<IAsyncCommandHandler>();
 
             if (!localSubscriptions.Any()) return default;
             if (localSubscriptions.Skip(1).Any()) throw new Exception($"Cannot send [{typeof(T).Name}] message with result to more than two subscriptors");
@@ -55,7 +55,7 @@ namespace Wirehome.Core.EventAggregator
         (
             T message,
             R expectedResult,
-            MessageFilter filter = null,
+            RoutingFilter filter = null,
             CancellationToken cancellationToken = default,
             BehaviorChain behaviors = null
         ) where R : class
@@ -71,7 +71,7 @@ namespace Wirehome.Core.EventAggregator
         public IObservable<R> QueryWithResults<T, R>
         (
             T message,
-            MessageFilter filter = null,
+            RoutingFilter filter = null,
             CancellationToken cancellationToken = default,
             BehaviorChain behaviors = null
         ) where R : class
@@ -97,7 +97,7 @@ namespace Wirehome.Core.EventAggregator
         public async Task QueryWithRepublishResult<T, R>
         (
             T message,
-            MessageFilter filter = null,
+            RoutingFilter filter = null,
             CancellationToken cancellationToken = default,
             BehaviorChain behaviors = null
         ) where R : class
@@ -121,7 +121,7 @@ namespace Wirehome.Core.EventAggregator
         public async Task Publish<T>
         (
            T message,
-           MessageFilter filter = null,
+           RoutingFilter filter = null,
            CancellationToken cancellationToken = default,
            BehaviorChain behaviors = null
         )
@@ -141,27 +141,27 @@ namespace Wirehome.Core.EventAggregator
             await result.WhenAll(cancellationToken).Unwrap().ConfigureAwait(false);
         }
 
-        public SubscriptionToken SubscribeForAsyncResult<T>(Func<IMessageEnvelope<T>, Task<object>> action, MessageFilter filter = null)
+        public SubscriptionToken SubscribeForAsyncResult<T>(Func<IMessageEnvelope<T>, Task<object>> action, RoutingFilter filter = null)
         {
             return new SubscriptionToken(_subscriptions.RegisterAsyncWithResult(action, filter), this);
         }
 
-        public SubscriptionToken SubscribeAsync<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter = null)
+        public SubscriptionToken SubscribeAsync<T>(Func<IMessageEnvelope<T>, Task> action, RoutingFilter filter = null)
         {
             return new SubscriptionToken(_subscriptions.RegisterAsync(action, filter), this);
         }
 
-        public SubscriptionToken Subscribe<T>(Action<IMessageEnvelope<T>> action, MessageFilter filter = null)
+        public SubscriptionToken Subscribe<T>(Action<IMessageEnvelope<T>> action, RoutingFilter filter = null)
         {
             return new SubscriptionToken(_subscriptions.Register(action, filter), this);
         }
 
-        public SubscriptionToken Subscribe(Type messageType, Delegate action, MessageFilter filter = null)
+        public SubscriptionToken Subscribe(Type messageType, Delegate action, RoutingFilter filter = null)
         {
             return new SubscriptionToken(_subscriptions.Register(messageType, action, filter), this);
         }
 
-        public SubscriptionToken Subscribe(Type messageType, Func<Delegate> actionFactory, MessageFilter filter = null)
+        public SubscriptionToken Subscribe(Type messageType, Func<Delegate> actionFactory, RoutingFilter filter = null)
         {
             return new SubscriptionToken(_subscriptions.Register(messageType, actionFactory, filter), this);
         }

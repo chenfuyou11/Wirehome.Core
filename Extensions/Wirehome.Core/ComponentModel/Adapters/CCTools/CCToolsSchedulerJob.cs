@@ -9,8 +9,7 @@ namespace Wirehome.ComponentModel.Adapters
         public Task Execute(IJobExecutionContext context)
         {
             var adapter = context.GetDataContext<CCToolsBaseAdapter>();
-            adapter.FetchState();
-            return Task.CompletedTask;
+            return adapter.FetchState();
         }
     }
 }

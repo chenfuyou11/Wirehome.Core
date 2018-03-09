@@ -1,4 +1,5 @@
 ﻿using System;
+using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core;
 
@@ -10,16 +11,16 @@ namespace Wirehome.ComponentModel.Events
         {
             Type = EventType.PropertyChanged;
             Uid = Guid.NewGuid().ToString();
-            this[PropertyChangedEventProperty.PropertyName] = (StringValue)changedPropertyName;
-            this[PropertyChangedEventProperty.SourceDeviceUid] = (StringValue)deviceUID;
-            this[PropertyChangedEventProperty.NewValue] = newValue;
-            this[PropertyChangedEventProperty.OldValue] = oldValue;
-            this[PropertyChangedEventProperty.EventTime] = (DateTimeValue)SystemTime.Now;
+            this[StateProperties.StateName] = (StringValue)changedPropertyName;
+            this[EventProperties.SourceDeviceUid] = (StringValue)deviceUID;
+            this[EventProperties.NewValue] = newValue;
+            this[EventProperties.OldValue] = oldValue;
+            this[EventProperties.EventTime] = (DateTimeValue)SystemTime.Now;
         }
-        public string PropertyChangedName => (StringValue)this[PropertyChangedEventProperty.PropertyName];
-        public IValue NewValue => this[PropertyChangedEventProperty.NewValue];
-        public IValue OldValue => this[PropertyChangedEventProperty.OldValue];
-        public DateTimeOffset EventTime => (DateTimeValue)this[PropertyChangedEventProperty.EventTime];
-        public string SourceDeviceUid => (StringValue)this[PropertyChangedEventProperty.SourceDeviceUid];
+        public string PropertyChangedName => (StringValue)this[StateProperties.StateName];
+        public IValue NewValue => this[EventProperties.NewValue];
+        public IValue OldValue => this[EventProperties.OldValue];
+        public DateTimeOffset EventTime => (DateTimeValue)this[EventProperties.EventTime];
+        public string SourceDeviceUid => (StringValue)this[EventProperties.SourceDeviceUid];
     }
 }

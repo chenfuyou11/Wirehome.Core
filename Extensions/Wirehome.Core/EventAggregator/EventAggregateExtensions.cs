@@ -14,7 +14,7 @@ namespace Wirehome.Core.EventAggregator
        (
            this IEventAggregator eventAggregate,
            T message,
-           MessageFilter filter = null,
+           RoutingFilter filter = null,
            CancellationToken cancellationToken = default,
            TimeSpan? timeout = null,
            int retryCount = 0,
@@ -37,8 +37,8 @@ namespace Wirehome.Core.EventAggregator
                     var delegateType = Expression.GetActionType(methodInfo.GetParameters().Select(p => p.ParameterType).ToArray());
                     var interfaceMap = type.ServiceType.GetInterfaceMap(handlerInterface);
 
-                    var messageFilterAttribute = interfaceMap.TargetMethods.FirstOrDefault()?.GetCustomAttributes(false)?.Where(at => at is MessageFilterAttribute).Cast<MessageFilterAttribute>().FirstOrDefault();
-                    MessageFilter messageFilter = null;
+                    var messageFilterAttribute = interfaceMap.TargetMethods.FirstOrDefault()?.GetCustomAttributes(false)?.Where(at => at is RoutingFilterAttribute).Cast<RoutingFilterAttribute>().FirstOrDefault();
+                    RoutingFilter messageFilter = null;
                     if (messageFilterAttribute != null)
                     {
                         messageFilter = messageFilterAttribute.ToMessageFilter();

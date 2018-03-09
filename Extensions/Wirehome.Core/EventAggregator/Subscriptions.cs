@@ -14,7 +14,7 @@ namespace Wirehome.Core.EventAggregator
         private int _localSubscriptionRevision;
         private BaseCommandHandler[] _localSubscriptions;
 
-        internal Guid RegisterAsyncWithResult<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter)
+        internal Guid RegisterAsyncWithResult<T>(Func<IMessageEnvelope<T>, Task> action, RoutingFilter filter)
         {
             var type = typeof(T);
             var key = Guid.NewGuid();
@@ -29,7 +29,7 @@ namespace Wirehome.Core.EventAggregator
             return key;
         }
 
-        internal Guid RegisterAsync<T>(Func<IMessageEnvelope<T>, Task> action, MessageFilter filter)
+        internal Guid RegisterAsync<T>(Func<IMessageEnvelope<T>, Task> action, RoutingFilter filter)
         {
             var type = typeof(T);
             var key = Guid.NewGuid();
@@ -44,19 +44,19 @@ namespace Wirehome.Core.EventAggregator
             return key;
         }
 
-        internal Guid Register<T>(Action<IMessageEnvelope<T>> action, MessageFilter filter)
+        internal Guid Register<T>(Action<IMessageEnvelope<T>> action, RoutingFilter filter)
         {
             return RegisterCore(typeof(T), action, filter);
         }
 
-        internal Guid Register(Type messageType, Delegate action, MessageFilter filter)
+        internal Guid Register(Type messageType, Delegate action, RoutingFilter filter)
         {
             ValidateDelegate(messageType, action);
 
             return RegisterCore(messageType, action, filter);
         }
 
-        internal Guid Register(Type messageType, Func<Delegate> action, MessageFilter filter)
+        internal Guid Register(Type messageType, Func<Delegate> action, RoutingFilter filter)
         {
             //ValidateDelegate(messageType, action);
 
@@ -73,7 +73,7 @@ namespace Wirehome.Core.EventAggregator
             }
         }
 
-        private Guid RegisterCore(Type messageType, object action, MessageFilter filter)
+        private Guid RegisterCore(Type messageType, object action, RoutingFilter filter)
         {
             var type = messageType;
             var key = Guid.NewGuid();
@@ -137,7 +137,7 @@ namespace Wirehome.Core.EventAggregator
             return latestSubscriptions;
         }
 
-        public List<BaseCommandHandler> GetCurrentSubscriptions(Type messageType, object message, MessageFilter filter = null)
+        public List<BaseCommandHandler> GetCurrentSubscriptions(Type messageType, RoutingFilter filter = null)
         {
             var latestSubscriptions = GetCurrentSubscriptions();
             var msgTypeInfo = messageType.GetTypeInfo();
@@ -147,9 +147,9 @@ namespace Wirehome.Core.EventAggregator
             {
                 var subscription = latestSubscriptions[idx];
 
-                if (!subscription.MessageType.GetTypeInfo().IsAssignableFrom(msgTypeInfo)) continue;
+                if (!subscription.MessageType.IsAssignableFrom(msgTypeInfo)) continue;
 
-                if (!subscription.IsFilterMatch(filter, message)) continue;
+                if (!subscription.IsFilterMatch(filter)) continue;
                 
                 filteredSubscription.Add(subscription);
             }

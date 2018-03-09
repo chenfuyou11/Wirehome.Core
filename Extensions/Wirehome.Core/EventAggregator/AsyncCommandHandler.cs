@@ -6,7 +6,7 @@ namespace Wirehome.Core.EventAggregator
 
     public sealed class AsyncCommandHandler : BaseCommandHandler, IAsyncCommandHandler
     {
-        public AsyncCommandHandler(Type type, Guid token, object handler, MessageFilter filter) : base(type, token, handler, filter)
+        public AsyncCommandHandler(Type type, Guid token, object handler, RoutingFilter filter) : base(type, token, handler, filter)
         {
         }
 

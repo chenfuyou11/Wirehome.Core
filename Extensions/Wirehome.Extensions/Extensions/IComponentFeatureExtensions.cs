@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using WWirehome.Core.Utils;
+using Wirehome.Core.Utils;
 
 namespace Wirehome.Extensions.Extensions
 {

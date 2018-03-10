@@ -1,12 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
 using System;
 using System.Collections.Generic;
-using System.Reactive.Subjects;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Wirehome.ComponentModel.Events;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.Extensions;
-using Wirehome.Core.DI;
+using Wirehome.Core.Services.DependencyInjection;
 
 namespace Wirehome.ComponentModel
 {

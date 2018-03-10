@@ -17,6 +17,7 @@ using Wirehome.Core;
 using Wirehome.Core.Communication.I2C;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
+using Wirehome.Core.Services.Logging;
 using Wirehome.Core.Services.Quartz;
 
 namespace Wirehome.ComponentModel.Adapters
@@ -37,7 +38,7 @@ namespace Wirehome.ComponentModel.Adapters
         protected CCToolsBaseAdapter(IAdapterServiceFactory adapterServiceFactory)
         {
             _i2CBusService = adapterServiceFactory.GetI2CService();
-            _log = adapterServiceFactory.GetLogger();
+            _log = adapterServiceFactory.GetLogger().CreatePublisher($"{nameof(CCToolsBaseAdapter)}_{Uid}");
             _eventAggregator = adapterServiceFactory.GetEventAggregator();
             _scheduler = adapterServiceFactory.GetScheduler();
 

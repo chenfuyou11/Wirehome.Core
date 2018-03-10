@@ -3,7 +3,7 @@ using AutoMapper.Configuration;
 using SimpleInjector;
 using System.Linq;
 
-namespace Wirehome.Core.DI
+namespace Wirehome.Core.Services.DependencyInjection
 {
     public class MapperProvider
     {

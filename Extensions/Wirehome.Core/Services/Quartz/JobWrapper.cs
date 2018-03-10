@@ -2,6 +2,7 @@
 using System;
 using Quartz;
 using System.Threading.Tasks;
+using Wirehome.Core.Services.DependencyInjection;
 
 namespace Wirehome.Core.Services.Quartz
 {

@@ -16,6 +16,9 @@ namespace Wirehome.Core.ComponentModel.Configuration
         [JsonProperty("Properties")]
         [JsonConverter(typeof(PropertyDictionaryConverter))]
         public Dictionary<string, Property> Properties { get; set; }
+
+        [JsonProperty("Tags")]
+        public IDictionary<string, string> Tags { get; set; }
     }
 
 

@@ -1,15 +1,19 @@
 ﻿using Microsoft.Reactive.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using System.IO;
-using System.Threading.Tasks;
-using Wirehome.ComponentModel.Components;
-using Wirehome.Core.ComponentModel.Configuration;
-using System.Linq;
+using Moq;
+using Quartz;
+using Quartz.Spi;
 using SimpleInjector;
-using AutoMapper;
-using Wirehome.Core.DI;
-using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Wirehome.ComponentModel.Adapters;
+using Wirehome.ComponentModel.Configuration;
+using Wirehome.Core.Communication.I2C;
+using Wirehome.Core.EventAggregator;
+using Wirehome.Core.Services.DependencyInjection;
+using Wirehome.Core.Services.Logging;
+using Wirehome.Core.Services.Quartz;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -22,21 +26,44 @@ namespace Wirehome.Extensions.Tests
         public async Task TestReadComponentsFromConfig()
         {
             var file = ReadConfig("componentConiguration");
+            var container = PrepareContainer();
 
-            var result = JsonConvert.DeserializeObject<WirehomeConfig>(file);
-            //var factory = new ComponentFactory(new EventAggregator());
+            var confService = container.GetInstance<IConfigurationService>();
+            var components = confService.ReadConfiguration(file);
 
-            var container = new Container();
-            var reg = new Registrar();
-            reg.Register(container);
+            foreach(var component in components)
+            {
+                await component.Initialize().ConfigureAwait(false);
+            }
+        }
 
-            var mapper = container.GetInstance<IMapper>();
-            var component = mapper.Map<IList<ComponentDTO>, IList<Component>>(result.Wirehome.Components);
+        private IContainer PrepareContainer()
+        {
+            var reg = new WirehomeContainer(new ControllerOptions())
+            {
+                RegisterBaseServices = RegisterContainerServices
+            };
+            return reg.RegisterServices();
 
-            //var component = factory.Create(result.Wirehome.Components.FirstOrDefault());
+        }
 
-            
+        private void RegisterContainerServices(Container container)
+        {
+            var i2cServiceBus = Mock.Of<II2CBusService>();
 
+            container.RegisterSingleton<IEventAggregator, EventAggregator>();
+            container.RegisterSingleton<IConfigurationService, ConfigurationService>();
+            container.RegisterSingleton(i2cServiceBus);
+            container.RegisterSingleton<ILogService, LogService>();
+            container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
+
+            //Quartz
+            container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();
+            container.RegisterSingleton<ISchedulerFactory, SimpleInjectorSchedulerFactory>();
+            container.Register(() => container.GetInstance<ISchedulerFactory>().GetScheduler().Result);
+
+            //Auto mapper
+            container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper());
         }
 
         [TestMethod]

@@ -4,8 +4,9 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Wirehome.ComponentModel;
+using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Components;
-using WWirehome.Core.Utils;
+using Wirehome.Core.Utils;
 
 namespace Wirehome.Core.ComponentModel.Configuration
 {
@@ -40,4 +41,5 @@ namespace Wirehome.Core.ComponentModel.Configuration
         public override bool CanConvert(Type objectType) => typeof(IDictionary<string, Property>).IsAssignableFrom(objectType);
         public override bool CanWrite => false;
     }
+
 }

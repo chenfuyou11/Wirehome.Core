@@ -1,7 +1,7 @@
 ﻿using Quartz;
-using Wirehome.Core;
 using Wirehome.Core.Communication.I2C;
 using Wirehome.Core.EventAggregator;
+using Wirehome.Core.Services.Logging;
 
 namespace Wirehome.ComponentModel.Adapters
 {
@@ -9,7 +9,7 @@ namespace Wirehome.ComponentModel.Adapters
     {
         IEventAggregator GetEventAggregator();
         II2CBusService GetI2CService();
-        ILogger GetLogger();
+        ILogService GetLogger();
         IScheduler GetScheduler();
     }
 }

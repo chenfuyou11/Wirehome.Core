@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Wirehome.Core
+namespace Wirehome.Core.Services.DependencyInjection
 {
     public interface IContainer
     {

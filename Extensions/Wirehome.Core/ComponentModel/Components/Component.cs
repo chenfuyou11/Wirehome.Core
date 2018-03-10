@@ -1,19 +1,19 @@
-﻿using System.Linq;
+﻿using CSharpFunctionalExtensions;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
 using Wirehome.ComponentModel.Capabilities;
 using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
+using Wirehome.ComponentModel.Events;
+using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
-using Wirehome.Core.DI;
-using Wirehome.ComponentModel.Events;
-using Wirehome.ComponentModel.Extensions;
-using System;
+using Wirehome.Core.Services.DependencyInjection;
 
 namespace Wirehome.ComponentModel.Components
 {
@@ -43,16 +43,21 @@ namespace Wirehome.ComponentModel.Components
                 var adapterCapabilities = await _eventAggregator.QueryDeviceAsync<DeviceCommand, DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid)).ConfigureAwait(false);
                 adapterCapabilities.SupportedStates.ForEach(state => state.SetAdapterReference(adapter));
                 _capabilities.AddRangeNewOnly(adapterCapabilities.SupportedStates.ToDictionary(key => ((StringValue)key[StateProperties.StateName]).ToString(), val => val));
-                var routerAttributes = GetAdapterRouterAttributes(adapter, adapterCapabilities);
 
+                var routerAttributes = GetAdapterRouterAttributes(adapter, adapterCapabilities.RequierdProperties);
                 _disposables.Add(_eventAggregator.SubscribeForDeviceEvent<Event>(DeviceEventHandler, adapter.Uid, routerAttributes));
+            }
+
+            foreach(var trigger in _triggers)
+            {
+                //TODO init triggers
             }
         }
 
-        private Dictionary<string, string> GetAdapterRouterAttributes(AdapterReference adapter, DiscoveryResponse adapterCapabilities)
+        private Dictionary<string, string> GetAdapterRouterAttributes(AdapterReference adapter, IList<string> requierdProperties)
         {
             var routerAttributes = new Dictionary<string, string>();
-            foreach (var adapterProperty in adapterCapabilities.RequierdProperties)
+            foreach (var adapterProperty in requierdProperties)
             {
                 if (!adapter.Properties.ContainsKey(adapterProperty)) throw new Exception($"Adapter {adapter.Uid} in component {Uid} missing configuration property {adapterProperty}");
                 routerAttributes.Add(adapterProperty, adapter.Properties[adapterProperty].ToString());
@@ -61,30 +66,37 @@ namespace Wirehome.ComponentModel.Components
             return routerAttributes;
         }
 
-        public Task DeviceEventHandler(IMessageEnvelope<Event> message)
+        public async Task DeviceEventHandler(IMessageEnvelope<Event> deviceEvent)
         {
-            var deviceEvent = message.Message;
-            var propertyName = (StringValue)deviceEvent[StateProperties.StateName];
-
-            if(!_capabilities.ContainsKey(propertyName)) return Task.CompletedTask;
+            var propertyName = (StringValue)deviceEvent.Message[StateProperties.StateName];
+            if (!_capabilities.ContainsKey(propertyName)) return;
 
             var state = _capabilities[propertyName];
-            state.Properties[StateProperties.Value].Value = deviceEvent[StateProperties.Value];
-            //TODO add value change event
+            var oldValue = state.Properties[StateProperties.Value].Value;
+            var newValue = deviceEvent.Message[StateProperties.Value];
 
-            return Task.CompletedTask;
+            if (oldValue.Equals(newValue)) return;
+
+            state.Properties[StateProperties.Value].Value = newValue;
+
+            await _eventAggregator.PublishDeviceEvent(new PropertyChangedEvent(Uid, propertyName, oldValue, newValue)).ConfigureAwait(false);
         }
 
         public Maybe<IValue> GetStateValue(string stateName)
         {
             if (!_capabilities.ContainsKey(stateName)) return Maybe<IValue>.None;
             var value = _capabilities[stateName][StateProperties.Value];
-            return Maybe<IValue>.From(_converters[stateName].Convert(value));
+            if (_converters.ContainsKey(stateName))
+            {
+                value = _converters[stateName].Convert(value);
+            }
+            return Maybe<IValue>.From(value);
         }
 
         public async Task ExecuteCommand(Command command)
         {
-            foreach (var state in _capabilities.Values.Where(capability => ((StringListValue)capability[StateProperties.SupportedCommands]).Value.Contains(command.Type)))
+            // TODO use valueconverter before publish
+            foreach (var state in _capabilities.Values.Where(capability => capability.IsCommandSupported(command)))
             {
                 await _eventAggregator.Publish(state.Adapter.GetDeviceCommand(command)).ConfigureAwait(false);
             }

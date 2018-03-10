@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Wirehome.Core
+namespace Wirehome.Core.Services.Logging
 {
     public interface ILogger
     {

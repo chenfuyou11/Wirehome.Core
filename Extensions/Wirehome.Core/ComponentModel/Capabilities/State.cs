@@ -1,4 +1,5 @@
-﻿using Wirehome.ComponentModel.Capabilities.Constants;
+﻿using System.Linq;
+using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Components;
 using Wirehome.ComponentModel.ValueTypes;
@@ -15,6 +16,9 @@ namespace Wirehome.ComponentModel.Capabilities
         {
             this[StateProperties.TimeOfValue] = new DateTimeValue();
         }
+
+        public bool IsCommandSupported(Command command) => ((StringListValue)this[StateProperties.SupportedCommands]).Value.Contains(command.Type);
+
     }
 
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace WWirehome.Core.Utils
+namespace Wirehome.Core.Utils
 {
     public static class AssemblyHelper
     {

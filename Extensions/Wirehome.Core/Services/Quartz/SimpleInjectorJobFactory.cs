@@ -1,7 +1,7 @@
-﻿using Quartz.Spi;
+﻿using Quartz;
+using Quartz.Spi;
 using System;
-using Quartz;
-
+using Wirehome.Core.Services.DependencyInjection;
 
 namespace Wirehome.Core.Services.Quartz
 {

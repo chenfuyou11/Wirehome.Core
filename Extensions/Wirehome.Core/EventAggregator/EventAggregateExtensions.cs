@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Wirehome.Core.Services.DependencyInjection;
 
 namespace Wirehome.Core.EventAggregator
 {

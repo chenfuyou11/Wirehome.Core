@@ -16,7 +16,7 @@ namespace Wirehome.ComponentModel
         [Map] private Dictionary<string, Property> _properties { get; set; } = new Dictionary<string, Property>();
         protected bool SupressPropertyChangeEvent { get; set; }
         public string Uid { get; protected set; }
-        public string Type { get; protected set; }
+        public string Type { get; set; }
         public List<string> Tags { get; private set; } = new List<string>();
         public IObservable<Event> Events => _events.AsObservable();
         public IReadOnlyDictionary<string, Property> Properties => _properties.AsReadOnly();

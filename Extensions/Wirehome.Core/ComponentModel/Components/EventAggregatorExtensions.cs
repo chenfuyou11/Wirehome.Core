@@ -36,5 +36,10 @@ namespace Wirehome.ComponentModel.Extensions
             return eventAggregator.Publish(message, new RoutingFilter(message[EventProperties.SourceDeviceUid].ToString(),
                 attributes.ToDictionary(k => k, v => message.Properties[v].ToString())));
         }
+
+        public static Task PublishDeviceCommnd<T>(this IEventAggregator eventAggregator, T message) where T : Command
+        {
+            return eventAggregator.Publish(message, new RoutingFilter(message[CommandProperties.DeviceUid].ToString()));
+        }
     }
 }

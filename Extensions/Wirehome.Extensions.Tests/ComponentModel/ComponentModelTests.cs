@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters;
+using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Configuration;
 using Wirehome.Core.Communication.I2C;
 using Wirehome.Core.EventAggregator;
@@ -17,24 +18,22 @@ using Wirehome.Core.Services.Quartz;
 
 namespace Wirehome.Extensions.Tests
 {
-
     [TestClass]
     public class ComponentModelTests : ReactiveTest
     {
-
         [TestMethod]
         public async Task TestReadComponentsFromConfig()
         {
             var file = ReadConfig("componentConiguration");
             var container = PrepareContainer();
-
             var confService = container.GetInstance<IConfigurationService>();
-            var components = confService.ReadConfiguration(file);
 
-            foreach(var component in components)
-            {
-                await component.Initialize().ConfigureAwait(false);
-            }
+            var configuration = await confService.ReadConfiguration(file).ConfigureAwait(false);
+
+            var lamp = configuration.Components.FirstOrDefault(c => c.Uid == "Lamp1");
+            await lamp.ExecuteCommand(new Command { Type = CommandType.TurnOn }).ConfigureAwait(false);
+
+            await Task.Delay(5000);
         }
 
         private IContainer PrepareContainer()
@@ -44,7 +43,6 @@ namespace Wirehome.Extensions.Tests
                 RegisterBaseServices = RegisterContainerServices
             };
             return reg.RegisterServices();
-
         }
 
         private void RegisterContainerServices(Container container)
@@ -60,7 +58,6 @@ namespace Wirehome.Extensions.Tests
             //Quartz
             container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();
             container.RegisterSingleton<ISchedulerFactory, SimpleInjectorSchedulerFactory>();
-            container.Register(() => container.GetInstance<ISchedulerFactory>().GetScheduler().Result);
 
             //Auto mapper
             container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper());
@@ -86,27 +83,21 @@ namespace Wirehome.Extensions.Tests
 
                 //var adapterReference = new AdapterReference();
                 //adapterReference[AdapterProperties.PinNumber] = new IntValue(1);
-                
+
                 //await adapter.Initialize().ConfigureAwait(false);
 
                 //component.AddAdapter(adapterReference);
 
                 //await component.Initialize().ConfigureAwait(false);
-
             }
             catch (System.Exception ee)
             {
-
                 throw;
             }
-           
 
-           // Assert.AreEqual(true, lampDictionary[LivingroomId].GetIsTurnedOn());
+            // Assert.AreEqual(true, lampDictionary[LivingroomId].GetIsTurnedOn());
         }
 
         private string ReadConfig(string message) => File.ReadAllText($@"ComponentModel\SampleConfigs\{message}.json");
-
-
-
     }
 }

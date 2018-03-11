@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using Wirehome.ComponentModel.Components;
+﻿using System.Threading.Tasks;
 
 namespace Wirehome.ComponentModel.Configuration
 {
     public interface IConfigurationService
     {
-        IList<Component> ReadConfiguration(string rawConfig);
+        Task<WirehomeConfiguration> ReadConfiguration(string rawConfig);
     }
 }

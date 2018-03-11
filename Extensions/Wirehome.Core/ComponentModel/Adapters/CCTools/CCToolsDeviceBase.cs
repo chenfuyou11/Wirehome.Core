@@ -27,20 +27,20 @@ namespace Wirehome.ComponentModel.Adapters
         protected readonly ILogger _log;
         protected readonly II2CBusService _i2CBusService;
         protected readonly IEventAggregator _eventAggregator;
-        protected readonly IScheduler _scheduler;
+        protected readonly ISchedulerFactory _schedulerFactory;
         private readonly AsyncLock _mutex = new AsyncLock();
         private int _poolDurationWarning;
-        
+
         protected II2CPortExpanderDriver _portExpanderDriver;
         private byte[] _committedState;
         private byte[] _state;
-        
+
         protected CCToolsBaseAdapter(IAdapterServiceFactory adapterServiceFactory)
         {
             _i2CBusService = adapterServiceFactory.GetI2CService();
             _log = adapterServiceFactory.GetLogger().CreatePublisher($"{nameof(CCToolsBaseAdapter)}_{Uid}");
             _eventAggregator = adapterServiceFactory.GetEventAggregator();
-            _scheduler = adapterServiceFactory.GetScheduler();
+            _schedulerFactory = adapterServiceFactory.GetSchedulerFactory();
 
             _requierdProperties.Add(AdapterProperties.PinNumber);
         }
@@ -53,33 +53,34 @@ namespace Wirehome.ComponentModel.Adapters
             _state = new byte[_portExpanderDriver.StateSize];
             _committedState = new byte[_portExpanderDriver.StateSize];
 
-            await _scheduler.ScheduleIntervalWithContext<CCToolsSchedulerJob, CCToolsBaseAdapter>(TimeSpan.FromMilliseconds(poolInterval), this, _disposables.Token).ConfigureAwait(false);
+            var scheduler = await _schedulerFactory.GetScheduler().ConfigureAwait(false);
+            await scheduler.ScheduleIntervalWithContext<CCToolsSchedulerJob, CCToolsBaseAdapter>(TimeSpan.FromMilliseconds(poolInterval), this, _disposables.Token).ConfigureAwait(false);
 
-            _disposables.Add(_eventAggregator.SubscribeForDeviceQuery<DeviceCommand>(async messageEnvelope =>
+            _disposables.Add(_eventAggregator.SubscribeForDeviceQuery<DeviceCommand>(DeviceCommandHandler, Uid));
+        }
+
+        public async Task<object> DeviceCommandHandler(IMessageEnvelope<DeviceCommand> messageEnvelope)
+        {
+            var message = messageEnvelope.Message;
+            if (message.Type == CommandType.QueryCommand)
             {
-                var message = messageEnvelope.Message;
-                if(message.Type == CommandType.QueryCommand)
-                {
-                    
-                }
-                else if (message.Type == CommandType.UpdateCommand)
-                {
-                    var state = message[PowerState.StateName] as StringValue;
-                    var pinNumber = message[AdapterProperties.PinNumber] as IntValue;
+            }
+            else if (message.Type == CommandType.UpdateCommand)
+            {
+                var state = message[PowerState.StateName] as StringValue;
+                var pinNumber = message[AdapterProperties.PinNumber] as IntValue;
 
-                    //TODO read source and invoke event change with this source to distinct with change outside program code
-                    //message[CommandProperties.CommandSource]
+                //TODO read source and invoke event change with this source to distinct with change outside program code
+                //message[CommandProperties.CommandSource]
 
-                    SetPortState(pinNumber.Value, PowerStateValue.ToBinaryState(state), true);
-                }
-                else if(message.Type == CommandType.DiscoverCapabilities)
-                {
-                    return new DiscoveryResponse(RequierdProperties(), new PowerState());
-                }
+                SetPortState(pinNumber.Value, PowerStateValue.ToBinaryState(state), true);
+            }
+            else if (message.Type == CommandType.DiscoverCapabilities)
+            {
+                return new DiscoveryResponse(RequierdProperties(), new PowerState());
+            }
 
-                return null;
-
-            }, Uid));
+            return null;
         }
 
         public async Task FetchState()
@@ -142,7 +143,7 @@ namespace Wirehome.ComponentModel.Adapters
                 Buffer.BlockCopy(state, 0, _state, 0, state.Length);
             }
         }
-        
+
         protected void CommitChanges(bool force = false)
         {
             using (_mutex.Lock())
@@ -153,7 +154,7 @@ namespace Wirehome.ComponentModel.Adapters
                 }
 
                 _portExpanderDriver.Write(_state);
-                Buffer.BlockCopy(_state, 0,  _committedState, 0, _state.Length);
+                Buffer.BlockCopy(_state, 0, _committedState, 0, _state.Length);
 
                 _log.Verbose("Board '" + Uid + "' committed state '" + BitConverter.ToString(_state) + "'.");
             }

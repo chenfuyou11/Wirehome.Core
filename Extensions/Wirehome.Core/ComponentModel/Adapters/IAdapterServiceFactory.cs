@@ -10,6 +10,6 @@ namespace Wirehome.ComponentModel.Adapters
         IEventAggregator GetEventAggregator();
         II2CBusService GetI2CService();
         ILogService GetLogger();
-        IScheduler GetScheduler();
+        ISchedulerFactory GetSchedulerFactory();
     }
 }

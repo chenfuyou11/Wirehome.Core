@@ -98,7 +98,7 @@ namespace Wirehome.ComponentModel.Components
             // TODO use valueconverter before publish
             foreach (var state in _capabilities.Values.Where(capability => capability.IsCommandSupported(command)))
             {
-                await _eventAggregator.Publish(state.Adapter.GetDeviceCommand(command)).ConfigureAwait(false);
+                await _eventAggregator.PublishDeviceCommnd(state.Adapter.GetDeviceCommand(command)).ConfigureAwait(false);
             }
         }
 

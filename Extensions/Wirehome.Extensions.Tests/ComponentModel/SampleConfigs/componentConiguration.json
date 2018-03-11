@@ -49,7 +49,7 @@
         "Uid": "HSRel8_1",
         "Type": "HSREL8Adapter",
         "Properties": {
-          "I2cAddress": "100",
+          "I2cAddress": 100,
           "PoolInterval": 500,
           "PollDurationWarningThreshold": 2000
         }
@@ -58,7 +58,7 @@
         "Uid": "HSPE16InputOnly_1",
         "Type": "HSPE16InputOnlyAdapter",
         "Properties": {
-          "I2cAddress": "200",
+          "I2cAddress": 101,
           "PoolInterval": 500,
           "PollDurationWarningThreshold": 2000
         }

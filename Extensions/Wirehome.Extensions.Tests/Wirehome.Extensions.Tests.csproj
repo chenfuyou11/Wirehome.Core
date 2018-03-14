@@ -38,9 +38,6 @@
     <None Update="Alexa\SampleMessages\Power.On.Response.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ComponentModel\SampleConfigs\componentConiguration.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

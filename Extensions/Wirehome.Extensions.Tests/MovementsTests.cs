@@ -1,22 +1,19 @@
-﻿using Moq;
-using System;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Collections.Generic;
-using Force.DeepCloner;
+﻿using Force.DeepCloner;
 using Microsoft.Reactive.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Wirehome.Contracts.Sensors;
-using Wirehome.Contracts.Logging;
-using Wirehome.Contracts.Environment;
-using Wirehome.Extensions.Messaging.Core;
-using Wirehome.Contracts.Core;
-using Wirehome.Motion.Model;
-using Wirehome.Motion;
+using Moq;
+using System;
+using System.Collections.Generic;
+using System.Reactive;
+using System.Reactive.Linq;
 using Wirehome.Contracts.Components.States;
-using Wirehome.Core;
-using System.Linq;
+using Wirehome.Contracts.Core;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Logging;
+using Wirehome.Contracts.Sensors;
 using Wirehome.Core.EventAggregator;
+using Wirehome.Motion;
+using Wirehome.Motion.Model;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -53,7 +50,7 @@ namespace Wirehome.Extensions.Tests
 
             service.Start();
             scheduler.AdvanceToEnd(motionEvents);
-            
+
             Assert.AreEqual(true, lampDictionary[ToiletId].GetIsTurnedOn());
             Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
             Assert.AreEqual(true, lampDictionary[LivingroomId].GetIsTurnedOn());
@@ -200,11 +197,9 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(false, lampDictionary[ToiletId].GetIsTurnedOn());
         }
 
-
         [TestMethod]
         public void WhenLeaveFromOnePersonRoomWithConfusionShouldTurnOffWhenConfusionResolved()
         {
-            
             var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, null,
                   OnNext(Time.Tics(500), new MotionEnvelope(ToiletId)),
                   OnNext(Time.Tics(1000), new MotionEnvelope(KitchenId)),
@@ -219,7 +214,6 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(false, lampDictionary[ToiletId].GetIsTurnedOn());
         }
 
-
         [TestMethod]
         public void WhenLeaveFromRoomWithNoConfusionShouldTurnOffLightAfterSomeTime()
         {
@@ -227,7 +221,7 @@ namespace Wirehome.Extensions.Tests
               OnNext(Time.Tics(500), new MotionEnvelope(KitchenId)),
               OnNext(Time.Tics(1500), new MotionEnvelope(HallwayToiletId))
             );
-            
+
             service.Start();
 
             scheduler.AdvanceJustAfterEnd(motionEvents);
@@ -235,7 +229,6 @@ namespace Wirehome.Extensions.Tests
             scheduler.AdvanceTo(Time.Tics(2500));
             Assert.AreEqual(false, lampDictionary[KitchenId].GetIsTurnedOn());
         }
-
 
         [TestMethod]
         public void WhenNoMoveInRoomShouldTurnOffAfterTurnOffTimeout()
@@ -280,7 +273,6 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
         }
 
-
         [TestMethod]
         public void WhenCrossPassingNumberOfPeopleSlouldBeCorrect()
         {
@@ -312,7 +304,6 @@ namespace Wirehome.Extensions.Tests
         {
             var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, () => new IEventDecoder[] { new DisableAutomationDecoder() });
 
-
             var testEvents = scheduler.CreateHotObservable(
                 OnNext(Time.Tics(500), GenPowerOnEvent()),
                 OnNext(Time.Tics(1500), GenPowerOffEvent()),
@@ -331,7 +322,6 @@ namespace Wirehome.Extensions.Tests
         {
             var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, () => new IEventDecoder[] { new DisableAutomationDecoder() });
 
-
             var testEvents = scheduler.CreateHotObservable(
                 OnNext(Time.Tics(500), GenPowerOnEvent()),
                 OnNext(Time.Tics(1500), GenPowerOffEvent())
@@ -349,7 +339,6 @@ namespace Wirehome.Extensions.Tests
         {
             var (service, motionEvents, scheduler, lampDictionary, dateTime) = SetupEnviroment(null, () => new IEventDecoder[] { new DisableAutomationDecoder() });
 
-
             var testEvents = scheduler.CreateHotObservable(
                 OnNext(Time.Tics(500), GenPowerOnEvent()),
                 OnNext(Time.Tics(1500), GenPowerOffEvent()),
@@ -363,7 +352,6 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(false, service.IsAutomationDisabled(KitchenId));
         }
 
-
         [TestMethod]
         public void WhenTurnOnJustAfterTurnOffServiceShouldIncreaseTurnOffTimeout()
         {
@@ -372,7 +360,6 @@ namespace Wirehome.Extensions.Tests
                 OnNext(Time.Tics(500), new MotionEnvelope(KitchenId)),
                 OnNext(Time.Tics(12000), new MotionEnvelope(KitchenId))
             );
-
 
             service.Start();
             scheduler.AdvanceJustAfterEnd(motionEvents);
@@ -390,7 +377,7 @@ namespace Wirehome.Extensions.Tests
                 OnNext(Time.Tics(3000), new MotionEnvelope(HallwayToiletId)),
                 OnNext(Time.Tics(4000), new MotionEnvelope(KitchenId))
             );
-            
+
             service.Start();
             scheduler.AdvanceJustAfter(TimeSpan.FromSeconds(2));
             Assert.AreEqual(true, lampDictionary[LivingroomId].GetIsTurnedOn());
@@ -409,7 +396,6 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(false, lampDictionary[HallwayLivingroomId].GetIsTurnedOn());
             Assert.AreEqual(false, lampDictionary[HallwayToiletId].GetIsTurnedOn());
             Assert.AreEqual(true, lampDictionary[KitchenId].GetIsTurnedOn());
-
         }
 
         [TestMethod]
@@ -425,7 +411,7 @@ namespace Wirehome.Extensions.Tests
             );
 
             service.Start();
-            
+
             scheduler.AdvanceJustAfter(TimeSpan.FromSeconds(4));
             Assert.AreEqual(1, service.GetCurrentNumberOfPeople(KitchenId));
             Assert.AreEqual(1, service.GetCurrentNumberOfPeople(BathroomId));
@@ -437,7 +423,6 @@ namespace Wirehome.Extensions.Tests
             scheduler.AdvanceJustAfter(TimeSpan.FromSeconds(5));
             Assert.AreEqual(false, lampDictionary[HallwayToiletId].GetIsTurnedOn());
         }
-
 
         [TestMethod]
         public void MoveCloseToRoomWithOtherPersonShouldConfuzeVectorsNearThatRoom()
@@ -469,7 +454,6 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public void Test()
         {
-           
         }
 
         #region Setup
@@ -496,7 +480,7 @@ namespace Wirehome.Extensions.Tests
         SetupEnviroment(AreaDescriptor areaDescription = null, Func<IEventDecoder[]> sampleDecoder = null, params Recorded<Notification<MotionEnvelope>>[] messages)
         {
             AreaDescriptor area = areaDescription ?? new AreaDescriptor();
-            
+
             var hallwayDetectorToilet = CreateMotionDetector(HallwayToiletId);
             var hallwayDetectorLivingRoom = CreateMotionDetector(HallwayLivingroomId);
             var toiletDetector = CreateMotionDetector(ToiletId);
@@ -529,12 +513,11 @@ namespace Wirehome.Extensions.Tests
                 { BalconyId, balconyLamp },
                 { StaircaseId, staircaseLamp }
             };
-        
+
             var daylightService = Mock.Of<IDaylightService>();
             Mock.Get(daylightService).Setup(x => x.Sunrise).Returns(TimeSpan.FromHours(8));
             Mock.Get(daylightService).Setup(x => x.Sunset).Returns(TimeSpan.FromHours(20));
 
-           
             var eventAggregator = Mock.Of<IEventAggregator>();
             var dateTimeService = Mock.Of<IDateTimeService>();
             var scheduler = new TestScheduler();
@@ -552,7 +535,7 @@ namespace Wirehome.Extensions.Tests
 
             Mock.Get(observableTimer).Setup(x => x.GenerateTime(motionConfiguration.PeriodicCheckTime)).Returns(scheduler.CreateColdObservable(GenerateTestTime(TimeSpan.FromSeconds(TIMER_DURATION), motionConfiguration.PeriodicCheckTime)));
 
-            var lightAutomation = new LightAutomationService(eventAggregator, daylightService, logService, concurrencyProvider, dateTimeService,  motionConfigurationProvider, observableTimer);
+            var lightAutomation = new LightAutomationService(eventAggregator, daylightService, logService, concurrencyProvider, dateTimeService, motionConfigurationProvider, observableTimer);
 
             var descriptors = new List<RoomInitializer>
             {
@@ -569,7 +552,6 @@ namespace Wirehome.Extensions.Tests
             var toiletArea = area.DeepClone();
             toiletArea.MaxPersonCapacity = 1;
             descriptors.Add(new RoomInitializer(toiletDetector.Id, new[] { hallwayDetectorToilet.Id }, toiletLamp, sampleDecoder?.Invoke(), toiletArea));
-
 
             lightAutomation.RegisterRooms(descriptors);
             lightAutomation.Initialize();
@@ -628,8 +610,6 @@ namespace Wirehome.Extensions.Tests
             return new PowerStateChangeEvent(PowerStateValue.Off, PowerStateChangeEvent.ManualSource);
         }
 
-
-
-        #endregion
+        #endregion Setup
     }
 }

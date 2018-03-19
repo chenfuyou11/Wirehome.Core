@@ -1,21 +1,18 @@
-﻿using System;
+﻿using Force.DeepCloner;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Reactive.Linq;
-using System.Linq;
 using System.Collections.Immutable;
-using Force.DeepCloner;
-using Wirehome.Contracts.Services;
-using Wirehome.Contracts.Logging;
-using Wirehome.Contracts.Environment;
-using Wirehome.Extensions.Core;
-using Wirehome.Extensions.Messaging.Core;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Wirehome.Contracts.Core;
-using Wirehome.Extensions.Extensions;
-using Wirehome.Motion.Model;
+using Wirehome.Contracts.Environment;
+using Wirehome.Contracts.Logging;
+using Wirehome.Core;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
-using Wirehome.Core;
+using Wirehome.Extensions.Extensions;
+using Wirehome.Motion.Model;
 
 namespace Wirehome.Motion
 {
@@ -27,6 +24,7 @@ namespace Wirehome.Motion
         private readonly IDaylightService _daylightService;
         private readonly Contracts.Logging.ILogger _logger;
         private readonly IConcurrencyProvider _concurrencyProvider;
+        //TODO is this necessary?
         private readonly IDateTimeService _dateTimeService;
         private readonly IObservableTimer _observableTimer;
         private readonly MotionConfiguration _motionConfiguration;
@@ -69,7 +67,7 @@ namespace Wirehome.Motion
             if (!roomInitializers.Any()) throw new Exception("No detectors found to automate");
 
             //TODO Check if component is real lamp - wait for new component implementation
-            _rooms = roomInitializers.Select(roomInitializer => roomInitializer.ToRoom(_motionConfiguration, _concurrencyProvider.Scheduler, _daylightService, _dateTimeService, _concurrencyProvider, _logger))
+            _rooms = roomInitializers.Select(roomInitializer => roomInitializer.ToRoom(_motionConfiguration, _daylightService, _dateTimeService, _concurrencyProvider, _logger))
                                                              .ToImmutableDictionary(k => k.Uid, v => v);
 
             var missingRooms = _rooms.Select(m => m.Value)
@@ -80,14 +78,18 @@ namespace Wirehome.Motion
             if (missingRooms.Count > 0) throw new Exception($"Following neighbors have not registered rooms: {string.Join(", ", missingRooms)}");
 
             _rooms.Values.ForEach(room => room.BuildNeighborsCache(GetNeighbors(room.Uid)));
-            
         }
 
         public void DisableAutomation(string roomId) => _rooms[roomId].DisableAutomation();
+
         public void DisableAutomation(string roomId, TimeSpan time) => _rooms[roomId].DisableAutomation(time);
+
         public void EnableAutomation(string roomId) => _rooms[roomId].EnableAutomation();
+
         public bool IsAutomationDisabled(string roomId) => _rooms[roomId].AutomationDisabled;
+
         public int GetCurrentNumberOfPeople(string roomId) => _rooms[roomId].NumberOfPersonsInArea;
+
         public AreaDescriptor GetAreaDescriptor(string roomId) => _rooms[roomId].AreaDescriptor.ShallowClone();
 
         public void Dispose()
@@ -95,6 +97,7 @@ namespace Wirehome.Motion
             _disposeContainer.Dispose();
             _rooms.Values.ForEach(room => room.Dispose());
         }
+
         public int NumberOfPersonsInHouse => _rooms.Sum(md => md.Value.NumberOfPersonsInArea);
         public int NumberOfConfusions => _confusedVectors.Count;
         public MotionConfiguration Configuration => _motionConfiguration.ShallowClone();
@@ -123,7 +126,7 @@ namespace Wirehome.Motion
         {
             _rooms?[point.Start.Uid]?.MarkMotion(point.Start.TimeStamp);
         }
-        
+
         private IDisposable CheckMotion() => AnalyzeMove().ObserveOn(_concurrencyProvider.Task).Subscribe(HandleVector, HandleError);
 
         private void HandleVector(MotionVector motionVector)
@@ -194,7 +197,7 @@ namespace Wirehome.Motion
         {
             _rooms.Values.ForEach(room => room.Update());
         }
-       
+
         private void MarkVector(MotionVector motionVector)
         {
             // If there was not confused vector from this point we don't start another
@@ -207,7 +210,9 @@ namespace Wirehome.Motion
         }
 
         private bool IsProperVector(MotionPoint start, MotionPoint potencialEnd) => AreNeighbors(start, potencialEnd) && start.IsMovePhisicallyPosible(potencialEnd, _motionConfiguration.MotionMinDiff);
+
         private bool AreNeighbors(MotionPoint p1, MotionPoint p2) => _rooms?[p1.Uid]?.Neighbors?.Contains(p2.Uid) ?? false;
+
         private IEnumerable<Room> GetNeighbors(string roomId) => _rooms.Where(x => _rooms[roomId].Neighbors.Contains(x.Key)).Select(y => y.Value);
     }
 }

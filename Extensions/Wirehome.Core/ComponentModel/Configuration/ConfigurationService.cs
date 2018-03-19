@@ -38,7 +38,7 @@ namespace Wirehome.ComponentModel.Configuration
             var components = _mapper.Map<IList<ComponentDTO>, IList<Component>>(result.Wirehome.Components);
             foreach (var component in components)
             {
-                await component.Initialize().ConfigureAwait(false);
+                await component.Initialize();
             }
             return components;
         }
@@ -54,7 +54,7 @@ namespace Wirehome.ComponentModel.Configuration
                 if (adapterType == null) throw new Exception($"Could not find adapter {adapterType}");
                 var adapter = (Adapter)_mapper.Map(adapterConfig, typeof(AdapterDTO), adapterType);
 
-                await adapter.Initialize().ConfigureAwait(false);
+                await adapter.Initialize();
                 adapters.Add(adapter);
             }
             

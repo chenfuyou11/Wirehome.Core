@@ -42,7 +42,7 @@ namespace Wirehome.Core.EventAggregator
             var subscriber = localSubscriptions.First();
             var invokeChain = BuildBehaviorChain(behaviors, subscriber);
 
-            return await invokeChain.HandleAsync<T, R>(messageEnvelope).ConfigureAwait(false);
+            return await invokeChain.HandleAsync<T, R>(messageEnvelope);
         }
 
         private IAsyncCommandHandler BuildBehaviorChain(BehaviorChain behaviors, IAsyncCommandHandler subscriber)
@@ -60,7 +60,7 @@ namespace Wirehome.Core.EventAggregator
             BehaviorChain behaviors = null
         ) where R : class
         {
-            var result = await QueryAsync<T, R>(message, filter, cancellationToken, behaviors).ConfigureAwait(false);
+            var result = await QueryAsync<T, R>(message, filter, cancellationToken, behaviors);
             if (!EqualityComparer<R>.Default.Equals(result, expectedResult))
             {
                 throw new WrongResultException(result, expectedResult);
@@ -111,11 +111,11 @@ namespace Wirehome.Core.EventAggregator
             var publishTask = localSubscriptions.Select(async x =>
             {
                 var invokeChain = BuildBehaviorChain(behaviors, x);
-                var result = await invokeChain.HandleAsync<T, R>(messageEnvelope).ConfigureAwait(false);
-                await Publish(result).ConfigureAwait(false);
+                var result = await invokeChain.HandleAsync<T, R>(messageEnvelope);
+                await Publish(result);
             });
 
-            await publishTask.WhenAll(cancellationToken).Unwrap().ConfigureAwait(false);
+            await publishTask.WhenAll(cancellationToken).Unwrap();
         }
 
         public async Task Publish<T>
@@ -138,7 +138,7 @@ namespace Wirehome.Core.EventAggregator
             }
             );
 
-            await result.WhenAll(cancellationToken).Unwrap().ConfigureAwait(false);
+            await result.WhenAll(cancellationToken).Unwrap();
         }
 
         public SubscriptionToken SubscribeForAsyncResult<T>(Func<IMessageEnvelope<T>, Task<object>> action, RoutingFilter filter = null)

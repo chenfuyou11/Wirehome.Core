@@ -19,7 +19,7 @@ namespace Wirehome.Core.EventAggregator
             {
                 try
                 {
-                    return await _asyncCommandHandler.HandleAsync<T, R>(message).ConfigureAwait(false);
+                    return await _asyncCommandHandler.HandleAsync<T, R>(message);
                 }
                 catch when (_retryCount-- > 0) { }
             }

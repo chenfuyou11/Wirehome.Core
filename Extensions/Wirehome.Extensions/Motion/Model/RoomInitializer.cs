@@ -23,10 +23,10 @@ namespace Wirehome.Motion.Model
         public AreaDescriptor AreaInitializer { get; }
         public IEnumerable<IEventDecoder> EventDecoders { get; }
 
-        public Room ToRoom(MotionConfiguration config, IScheduler scheduler, IDaylightService daylightService, 
+        public Room ToRoom(MotionConfiguration config, IDaylightService daylightService, 
                            IDateTimeService dateTimeService, IConcurrencyProvider concurrencyProvider, ILogger logger)
         {
-            return new Room(MotionDetectorUid, Neighbors, Lamp, scheduler, daylightService, dateTimeService, concurrencyProvider, logger, AreaInitializer, config, EventDecoders);
+            return new Room(MotionDetectorUid, Neighbors, Lamp, daylightService, dateTimeService, concurrencyProvider, logger, AreaInitializer, config, EventDecoders);
         }
     }
 }

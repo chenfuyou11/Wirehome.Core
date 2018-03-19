@@ -25,7 +25,6 @@ namespace Wirehome.Motion
     {
         private readonly ConditionsValidator _turnOnConditionsValidator = new ConditionsValidator();
         private readonly ConditionsValidator _turnOffConditionsValidator = new ConditionsValidator();
-        private readonly IScheduler _scheduler;
         private readonly MotionConfiguration _motionConfiguration;
         private readonly Wirehome.Core.DisposeContainer _disposeContainer = new Wirehome.Core.DisposeContainer();
         private IMotionLamp Lamp { get; }
@@ -58,7 +57,7 @@ namespace Wirehome.Motion
             // return $"{Uid} [Last move: {LastMotion}] [Persons: {NumberOfPersonsInArea}] [Lamp: {(Lamp as MotionLamp)?.GetIsTurnedOn()}]";
         }
 
-        public Room(string uid, IEnumerable<string> neighbors, IMotionLamp lamp, IScheduler scheduler, IDaylightService daylightService,
+        public Room(string uid, IEnumerable<string> neighbors, IMotionLamp lamp, IDaylightService daylightService,
                     IDateTimeService dateTimeService, IConcurrencyProvider concurrencyProvider, ILogger logger, AreaDescriptor areaDescriptor, 
                     MotionConfiguration motionConfiguration, IEnumerable<IEventDecoder> eventsDecoders)
         {
@@ -80,7 +79,6 @@ namespace Wirehome.Motion
             _turnOffConditionsValidator.WithCondition(ConditionRelation.And, new IsTurnOffAutomaionCondition(this));
             
             _logger = logger;
-            _scheduler = scheduler;
             _motionConfiguration = motionConfiguration;
             _concurrencyProvider = concurrencyProvider;
             _eventsDecoders = eventsDecoders;
@@ -193,7 +191,7 @@ namespace Wirehome.Motion
         internal void DisableAutomation(TimeSpan time)
         {
             DisableAutomation();
-            _AutomationEnableOn = _scheduler.Now + time;
+            _AutomationEnableOn = _concurrencyProvider.Scheduler.Now + time;
         }
 
         internal IList<MotionPoint> GetConfusingPoints(MotionVector vector) => NeighborsCache.ToList()
@@ -269,7 +267,7 @@ namespace Wirehome.Motion
 
         private void CheckForTurnOnAutomationAgain()
         {
-            if (AutomationDisabled && _scheduler.Now > _AutomationEnableOn)
+            if (AutomationDisabled && _concurrencyProvider.Scheduler.Now > _AutomationEnableOn)
             {
                 EnableAutomation();
             }
@@ -311,7 +309,7 @@ namespace Wirehome.Motion
             _TurnOffTimeOut.Reset();
         }
 
-        private void RegisterTurnOffTime() => _LastAutoTurnOff = _scheduler.Now;
+        private void RegisterTurnOffTime() => _LastAutoTurnOff = _concurrencyProvider.Scheduler.Now;
         private bool CanTurnOnLamp() => _turnOnConditionsValidator.Validate() != ConditionState.NotFulfilled;
         private bool CanTurnOffLamp() => _turnOffConditionsValidator.Validate() != ConditionState.NotFulfilled;
     }

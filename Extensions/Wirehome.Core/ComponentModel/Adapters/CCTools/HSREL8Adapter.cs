@@ -16,7 +16,7 @@ namespace Wirehome.ComponentModel.Adapters
             var address = (IntValue)this[AdapterProperties.I2cAddress];
             _portExpanderDriver = new MAX7311Driver(new I2CSlaveAddress(address.Value), _i2CBusService);
 
-            await base.Initialize().ConfigureAwait(false);
+            await base.Initialize();
 
             SetState(new byte[] { 0x00, 255 });
             CommitChanges(true);

@@ -53,8 +53,8 @@ namespace Wirehome.ComponentModel.Adapters
             _state = new byte[_portExpanderDriver.StateSize];
             _committedState = new byte[_portExpanderDriver.StateSize];
 
-            var scheduler = await _schedulerFactory.GetScheduler().ConfigureAwait(false);
-            await scheduler.ScheduleIntervalWithContext<CCToolsSchedulerJob, CCToolsBaseAdapter>(TimeSpan.FromMilliseconds(poolInterval), this, _disposables.Token).ConfigureAwait(false);
+            var scheduler = await _schedulerFactory.GetScheduler();
+            await scheduler.ScheduleIntervalWithContext<CCToolsSchedulerJob, CCToolsBaseAdapter>(TimeSpan.FromMilliseconds(poolInterval), this, _disposables.Token);
 
             _disposables.Add(_eventAggregator.SubscribeForDeviceQuery<DeviceCommand>(DeviceCommandHandler, Uid));
         }
@@ -86,7 +86,7 @@ namespace Wirehome.ComponentModel.Adapters
         public async Task FetchState()
         {
             var stopwatch = Stopwatch.StartNew();
-            await FetchStateCore().ConfigureAwait(false);
+            await FetchStateCore();
             stopwatch.Stop();
 
             if (stopwatch.ElapsedMilliseconds > _poolDurationWarning)
@@ -126,7 +126,7 @@ namespace Wirehome.ComponentModel.Adapters
                     var properyChangeEvent = new PropertyChangedEvent(Uid, PowerState.StateName, new BooleanValue(oldPinState), new BooleanValue(newPinState));
                     properyChangeEvent[AdapterProperties.PinNumber] = (IntValue)i;
 
-                    await _eventAggregator.PublishDeviceEvent(properyChangeEvent, _requierdProperties).ConfigureAwait(false);
+                    await _eventAggregator.PublishDeviceEvent(properyChangeEvent, _requierdProperties);
 
                     var statesText = BitConverter.ToString(oldState) + "->" + BitConverter.ToString(newState);
                     _log.Info("'" + Uid + "' fetched different state (" + statesText + ")");

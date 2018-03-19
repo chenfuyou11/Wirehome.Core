@@ -40,7 +40,7 @@ namespace Wirehome.ComponentModel.Components
         {
             foreach (var adapter in _adapters)
             {
-                var adapterCapabilities = await _eventAggregator.QueryDeviceAsync<DeviceCommand, DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid)).ConfigureAwait(false);
+                var adapterCapabilities = await _eventAggregator.QueryDeviceAsync<DeviceCommand, DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid));
                 adapterCapabilities.SupportedStates.ForEach(state => state.SetAdapterReference(adapter));
                 _capabilities.AddRangeNewOnly(adapterCapabilities.SupportedStates.ToDictionary(key => ((StringValue)key[StateProperties.StateName]).ToString(), val => val));
 
@@ -66,7 +66,7 @@ namespace Wirehome.ComponentModel.Components
             return routerAttributes;
         }
 
-        public async Task DeviceEventHandler(IMessageEnvelope<Event> deviceEvent)
+        private async Task DeviceEventHandler(IMessageEnvelope<Event> deviceEvent)
         {
             var propertyName = (StringValue)deviceEvent.Message[StateProperties.StateName];
             if (!_capabilities.ContainsKey(propertyName)) return;
@@ -79,7 +79,7 @@ namespace Wirehome.ComponentModel.Components
 
             state.Properties[StateProperties.Value].Value = newValue;
 
-            await _eventAggregator.PublishDeviceEvent(new PropertyChangedEvent(Uid, propertyName, oldValue, newValue)).ConfigureAwait(false);
+            await _eventAggregator.PublishDeviceEvent(new PropertyChangedEvent(Uid, propertyName, oldValue, newValue));
         }
 
         public Maybe<IValue> GetStateValue(string stateName)
@@ -98,7 +98,7 @@ namespace Wirehome.ComponentModel.Components
             // TODO use valueconverter before publish
             foreach (var state in _capabilities.Values.Where(capability => capability.IsCommandSupported(command)))
             {
-                await _eventAggregator.PublishDeviceCommnd(state.Adapter.GetDeviceCommand(command)).ConfigureAwait(false);
+                await _eventAggregator.PublishDeviceCommnd(state.Adapter.GetDeviceCommand(command));
             }
         }
 

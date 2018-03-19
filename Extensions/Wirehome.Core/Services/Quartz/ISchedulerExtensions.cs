@@ -19,7 +19,7 @@ namespace Wirehome.Core.Services.Quartz
                 .WithSimpleSchedule(x => x.WithInterval(interval).RepeatForever())
                 .Build();
             
-            await scheduler.ScheduleJob(job, trigger, token).ConfigureAwait(false);
+            await scheduler.ScheduleJob(job, trigger, token);
 
             return job.Key;
         }
@@ -47,7 +47,7 @@ namespace Wirehome.Core.Services.Quartz
                                              .WithSimpleSchedule(x => x.WithInterval(interval).RepeatForever())
                                              .Build();
 
-            await scheduler.ScheduleJob(job, trigger, token).ConfigureAwait(false);
+            await scheduler.ScheduleJob(job, trigger, token);
 
             return job.Key;
         }

@@ -6,5 +6,6 @@
         public const string OldValue = "old-value";
         public const string NewValue = "new-value";
         public const string EventTime = "event-time";
+        public const string EventType = "EventType";
     }
 }

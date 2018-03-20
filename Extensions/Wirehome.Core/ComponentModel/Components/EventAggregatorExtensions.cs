@@ -21,9 +21,12 @@ namespace Wirehome.ComponentModel.Extensions
             return eventAggregator.SubscribeForAsyncResult<T>(action, new RoutingFilter(uid));
         }
 
-        public static IDisposable SubscribeForDeviceEvent<T>(this IEventAggregator eventAggregator, Func<IMessageEnvelope<T>, Task> action, string uid, IDictionary<string, string> attributes) where T : BaseObject
+        public static IDisposable SubscribeForDeviceEvent(this IEventAggregator eventAggregator, Func<IMessageEnvelope<Event>, Task> action, IDictionary<string, string> attributes, string eventType = EventType.PropertyChanged)
         {
-            return eventAggregator.SubscribeAsync<T>(action, new RoutingFilter(uid, attributes));
+            var routingKey = attributes[EventProperties.SourceDeviceUid];
+            attributes.Add(EventProperties.EventType, eventType);
+
+            return eventAggregator.SubscribeAsync(action, new RoutingFilter(routingKey, attributes));
         }
 
         public static Task PublishDeviceEvent<T>(this IEventAggregator eventAggregator, T message) where T : Event
@@ -31,10 +34,14 @@ namespace Wirehome.ComponentModel.Extensions
             return eventAggregator.Publish(message, new RoutingFilter(message[EventProperties.SourceDeviceUid].ToString()));
         }
 
-        public static Task PublishDeviceEvent<T>(this IEventAggregator eventAggregator, T message, IList<string> attributes) where T : Event
+        public static Task PublishDeviceEvent<T>(this IEventAggregator eventAggregator, T message, IList<string> routerAttributes) where T : Event
         {
-            return eventAggregator.Publish(message, new RoutingFilter(message[EventProperties.SourceDeviceUid].ToString(),
-                attributes.ToDictionary(k => k, v => message.Properties[v].ToString())));
+            var routing = routerAttributes.ToDictionary(k => k, v => message.Properties[v].Value.ToString());
+
+            routing.Add(EventProperties.SourceDeviceUid, message[EventProperties.SourceDeviceUid].ToString());
+            routing.Add(EventProperties.EventType, message.Type);
+
+            return eventAggregator.Publish(message, new RoutingFilter(message[EventProperties.SourceDeviceUid].ToString(), routing));
         }
 
         public static Task PublishDeviceCommnd<T>(this IEventAggregator eventAggregator, T message) where T : Command

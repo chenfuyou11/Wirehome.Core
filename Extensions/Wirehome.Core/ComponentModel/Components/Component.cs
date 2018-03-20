@@ -45,12 +45,12 @@ namespace Wirehome.ComponentModel.Components
                 _capabilities.AddRangeNewOnly(adapterCapabilities.SupportedStates.ToDictionary(key => ((StringValue)key[StateProperties.StateName]).ToString(), val => val));
 
                 var routerAttributes = GetAdapterRouterAttributes(adapter, adapterCapabilities.RequierdProperties);
-                _disposables.Add(_eventAggregator.SubscribeForDeviceEvent<Event>(DeviceEventHandler, adapter.Uid, routerAttributes));
+                _disposables.Add(_eventAggregator.SubscribeForDeviceEvent(DeviceEventHandler, routerAttributes));
             }
 
             foreach(var trigger in _triggers)
             {
-                //TODO init triggers
+                _disposables.Add(_eventAggregator.SubscribeForDeviceEvent(DeviceTriggerHandler, trigger.Event.GetPropertiesStrings(), trigger.Event.Type));
             }
         }
 
@@ -62,8 +62,18 @@ namespace Wirehome.ComponentModel.Components
                 if (!adapter.Properties.ContainsKey(adapterProperty)) throw new Exception($"Adapter {adapter.Uid} in component {Uid} missing configuration property {adapterProperty}");
                 routerAttributes.Add(adapterProperty, adapter.Properties[adapterProperty].ToString());
             }
+            routerAttributes.Add(EventProperties.SourceDeviceUid, adapter.Uid);
 
             return routerAttributes;
+        }
+
+        public async Task ExecuteCommand(Command command)
+        {
+            // TODO use valueconverter before publish and maybe queue?
+            foreach (var state in _capabilities.Values.Where(capability => capability.IsCommandSupported(command)))
+            {
+                await _eventAggregator.PublishDeviceCommnd(state.Adapter.GetDeviceCommand(command));
+            }
         }
 
         private async Task DeviceEventHandler(IMessageEnvelope<Event> deviceEvent)
@@ -82,6 +92,16 @@ namespace Wirehome.ComponentModel.Components
             await _eventAggregator.PublishDeviceEvent(new PropertyChangedEvent(Uid, propertyName, oldValue, newValue));
         }
 
+        private async Task DeviceTriggerHandler(IMessageEnvelope<Event> deviceEvent)
+        {
+            var trigger = _triggers.FirstOrDefault(t => t.Event.Equals(deviceEvent.Message));
+            if (trigger != null)
+            {
+                await ExecuteCommand(trigger.Command);
+            }
+        }
+
+        // TODO Change to message?
         public Maybe<IValue> GetStateValue(string stateName)
         {
             if (!_capabilities.ContainsKey(stateName)) return Maybe<IValue>.None;
@@ -91,15 +111,6 @@ namespace Wirehome.ComponentModel.Components
                 value = _converters[stateName].Convert(value);
             }
             return Maybe<IValue>.From(value);
-        }
-
-        public async Task ExecuteCommand(Command command)
-        {
-            // TODO use valueconverter before publish
-            foreach (var state in _capabilities.Values.Where(capability => capability.IsCommandSupported(command)))
-            {
-                await _eventAggregator.PublishDeviceCommnd(state.Adapter.GetDeviceCommand(command));
-            }
         }
 
         public IReadOnlyList<string> AllTags

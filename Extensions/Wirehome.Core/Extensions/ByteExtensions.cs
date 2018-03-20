@@ -36,6 +36,8 @@ namespace Wirehome.Core.Extensions
             return (source & (0x1UL << index)) > 0UL;
         }
 
+        public static string ToBitString(this byte[] bytes) => BitConverter.ToString(bytes);
+
         private static ulong SetBit(this ulong target, int index, bool state)
         {
             if (index > 7) throw new ArgumentOutOfRangeException(nameof(index));

@@ -128,8 +128,7 @@ namespace Wirehome.ComponentModel.Adapters
 
                     await _eventAggregator.PublishDeviceEvent(properyChangeEvent, _requierdProperties);
 
-                    var statesText = BitConverter.ToString(oldState) + "->" + BitConverter.ToString(newState);
-                    _log.Info("'" + Uid + "' fetched different state (" + statesText + ")");
+                    _log.Info($"'{Uid}' fetched different state ({oldState.ToBitString()}->{newState.ToBitString()})");
                 }
             }
         }

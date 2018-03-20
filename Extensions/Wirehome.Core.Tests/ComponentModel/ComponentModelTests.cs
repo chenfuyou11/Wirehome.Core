@@ -15,6 +15,10 @@ using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Services.DependencyInjection;
 using Wirehome.Core.Services.Logging;
 using Wirehome.Core.Services.Quartz;
+using Wirehome.ComponentModel.Extensions;
+using Wirehome.ComponentModel.Events;
+using Wirehome.ComponentModel.Capabilities;
+using Wirehome.ComponentModel.ValueTypes;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -27,13 +31,19 @@ namespace Wirehome.Extensions.Tests
             var file = ReadConfig("componentConiguration");
             var container = PrepareContainer();
             var confService = container.GetInstance<IConfigurationService>();
+            var eventAggregator = container.GetInstance<IEventAggregator>();
 
             var configuration = await confService.ReadConfiguration(file).ConfigureAwait(false);
 
-            var lamp = configuration.Components.FirstOrDefault(c => c.Uid == "Lamp1");
-            await lamp.ExecuteCommand(new Command { Type = CommandType.TurnOn }).ConfigureAwait(false);
+            var properyChangeEvent = new PropertyChangedEvent("HSPE16InputOnly_1", PowerState.StateName, new BooleanValue(false), new BooleanValue(true));
+            properyChangeEvent[AdapterProperties.PinNumber] = (IntValue)2;
 
-            await Task.Delay(5000);
+            await eventAggregator.PublishDeviceEvent(properyChangeEvent, new string[] { AdapterProperties.PinNumber });
+
+            //var lamp = configuration.Components.FirstOrDefault(c => c.Uid == "Lamp1");
+            //await lamp.ExecuteCommand(new Command { Type = CommandType.TurnOn }).ConfigureAwait(false);
+
+            //await Task.Delay(5000);
         }
 
         private IContainer PrepareContainer()

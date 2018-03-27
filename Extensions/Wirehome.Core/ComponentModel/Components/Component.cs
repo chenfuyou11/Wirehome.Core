@@ -17,6 +17,7 @@ using Wirehome.Core.Services.DependencyInjection;
 
 namespace Wirehome.ComponentModel.Components
 {
+    // TODO what about adapters that don't know the state (tv controled only by IR)
     public sealed class Component : ComponentBase
     {
         private readonly IEventAggregator _eventAggregator;

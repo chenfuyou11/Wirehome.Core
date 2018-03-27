@@ -6,6 +6,6 @@ namespace Wirehome.ComponentModel.Capabilities.Constants
     {
         public const string PowerController = "PowerController";
         public const string BrightnessController = "BrightnessController";
+        public const string RTVController = "RTVController";
     }
-
 }

@@ -14,16 +14,22 @@ namespace Wirehome.ComponentModel.Components
 {
     public abstract class ComponentBase : BaseObject, IService
     {
+        private bool _isInitialized;
+
         protected BufferBlock<CommandJob<object>> _commandQueue = new BufferBlock<CommandJob<object>>();
         protected readonly DisposeContainer _disposables = new DisposeContainer();
-
         protected Dictionary<string, Func<Command, Task<object>>> _asyncQueryHandlers = new Dictionary<string, Func<Command, Task<object>>>();
         protected Dictionary<string, Func<Command, Task>> _asyncCommandHandlers = new Dictionary<string, Func<Command, Task>>();
         protected Dictionary<string, Action<Command>> _commandHandlers = new Dictionary<string, Action<Command>>();
 
         public void Dispose() => _disposables.Dispose();
 
-        public virtual Task Initialize() => HandleCommands();
+        public virtual async Task Initialize()
+        {
+            HandleCommands();
+
+            _isInitialized = true;
+        }
 
         public ComponentBase() => RegisterCommandHandlers();
 
@@ -93,6 +99,8 @@ namespace Wirehome.ComponentModel.Components
 
         public async Task<object> ExecuteCommand(Command command, CancellationToken callerCancelationToken = default)
         {
+            if (!_isInitialized) throw new Exception($"Component {Uid} is not initialized");
+
             var commandJob = new CommandJob<object>(command);
             var sendResult = await _commandQueue.SendAsync(commandJob, CancellationTokenSource.CreateLinkedTokenSource(callerCancelationToken, _disposables.Token).Token);
             //TODO Test for exceptions

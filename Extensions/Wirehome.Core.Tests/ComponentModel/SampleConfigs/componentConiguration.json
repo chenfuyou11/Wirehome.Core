@@ -1,6 +1,5 @@
 ﻿{
-  "Wirehome": 
-  {
+  "Wirehome": {
     "Components": [
       {
         "Uid": "Lamp1",
@@ -61,6 +60,15 @@
           "I2cAddress": 101,
           "PoolInterval": 500,
           "PollDurationWarningThreshold": 2000
+        }
+      },
+      {
+        "Uid": "Denon",
+        "Type": "DenonAmplifier",
+        "Properties": {
+          "Hostname": "192.168.0.107",
+          "PoolInterval": 500,
+          "Zone": 1
         }
       }
     ]

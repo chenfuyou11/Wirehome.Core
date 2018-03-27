@@ -19,7 +19,6 @@
         public const string QueryCommand = "QueryCommand";
         public const string UpdateCommand = "UpdateCommand";
         public const string DiscoverCapabilities = "DiscoverCapabilities";
-
-        
+        public const string RefreshCommand = "RefreshCommand";
     }
 }

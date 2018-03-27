@@ -85,7 +85,7 @@ namespace Wirehome.Core.Extensions
 
                 throw new InvalidOperationException("Not supported result in Timeout");
             }
-            
+
             return (result as Task<R>)?.Result;
         }
 
@@ -96,5 +96,17 @@ namespace Wirehome.Core.Extensions
             return tcs.Task;
         }
 
+        /// <summary>
+        /// Convert Task to Task<object> to allow tread as same operation
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        public static async Task<object> ToEmptyResultTask(this Task task)
+        {
+            await task;
+            return Task.FromResult(0);
+        }
+
+        public static Task<object> ToStaticTaskResult(this object task) => Task.FromResult(task);
     }
 }

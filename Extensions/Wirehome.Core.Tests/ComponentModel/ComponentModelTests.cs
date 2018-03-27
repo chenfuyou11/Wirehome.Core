@@ -19,6 +19,8 @@ using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.Events;
 using Wirehome.ComponentModel.Capabilities;
 using Wirehome.ComponentModel.ValueTypes;
+using System.Collections.Generic;
+using Wirehome.Core.Tests.ComponentModel;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -28,15 +30,11 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public async Task TestReadComponentsFromConfig()
         {
-            var file = ReadConfig("componentConiguration");
-            var container = PrepareContainer();
-            var confService = container.GetInstance<IConfigurationService>();
-            var eventAggregator = container.GetInstance<IEventAggregator>();
+            var config = await CommonIntegrationcs.ReadConfiguration("componentConiguration");
+            var eventAggregator = config.container.GetInstance<IEventAggregator>();
 
-            var configuration = await confService.ReadConfiguration(file).ConfigureAwait(false);
-
-            var properyChangeEvent = new PropertyChangedEvent("HSPE16InputOnly_1", PowerState.StateName, new BooleanValue(false), new BooleanValue(true));
-            properyChangeEvent[AdapterProperties.PinNumber] = (IntValue)2;
+            var properyChangeEvent = new PropertyChangedEvent("HSPE16InputOnly_1", PowerState.StateName, new BooleanValue(false),
+                                     new BooleanValue(true), new Dictionary<string, IValue>() { { AdapterProperties.PinNumber, new IntValue(2) } });
 
             await eventAggregator.PublishDeviceEvent(properyChangeEvent, new string[] { AdapterProperties.PinNumber });
 
@@ -46,31 +44,8 @@ namespace Wirehome.Extensions.Tests
             //await Task.Delay(5000);
         }
 
-        private IContainer PrepareContainer()
+        public void Test(KeyValuePair<string, IValue> value)
         {
-            var reg = new WirehomeContainer(new ControllerOptions())
-            {
-                RegisterBaseServices = RegisterContainerServices
-            };
-            return reg.RegisterServices();
-        }
-
-        private void RegisterContainerServices(Container container)
-        {
-            var i2cServiceBus = Mock.Of<II2CBusService>();
-
-            container.RegisterSingleton<IEventAggregator, EventAggregator>();
-            container.RegisterSingleton<IConfigurationService, ConfigurationService>();
-            container.RegisterSingleton(i2cServiceBus);
-            container.RegisterSingleton<ILogService, LogService>();
-            container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
-
-            //Quartz
-            container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();
-            container.RegisterSingleton<ISchedulerFactory, SimpleInjectorSchedulerFactory>();
-
-            //Auto mapper
-            container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper());
         }
 
         [TestMethod]
@@ -107,7 +82,5 @@ namespace Wirehome.Extensions.Tests
 
             // Assert.AreEqual(true, lampDictionary[LivingroomId].GetIsTurnedOn());
         }
-
-        private string ReadConfig(string message) => File.ReadAllText($@"ComponentModel\SampleConfigs\{message}.json");
     }
 }

@@ -17,10 +17,9 @@ using Wirehome.Core.Services.DependencyInjection;
 
 namespace Wirehome.ComponentModel.Components
 {
-    public sealed class Component : BaseObject, IService
+    public sealed class Component : ComponentBase
     {
         private readonly IEventAggregator _eventAggregator;
-        private readonly DisposeContainer _disposables = new DisposeContainer();
         private List<string> _tagCache;
         private Dictionary<string, State> _capabilities { get; } = new Dictionary<string, State>();
         [Map] private IList<AdapterReference> _adapters { get; set; } = new List<AdapterReference>();
@@ -34,9 +33,7 @@ namespace Wirehome.ComponentModel.Components
             _eventAggregator = eventAggregator;
         }
 
-        public void Dispose() => _disposables.Dispose();
-
-        public async Task Initialize()
+        public override async Task Initialize()
         {
             foreach (var adapter in _adapters)
             {
@@ -48,7 +45,7 @@ namespace Wirehome.ComponentModel.Components
                 _disposables.Add(_eventAggregator.SubscribeForDeviceEvent(DeviceEventHandler, routerAttributes));
             }
 
-            foreach(var trigger in _triggers)
+            foreach (var trigger in _triggers)
             {
                 _disposables.Add(_eventAggregator.SubscribeForDeviceEvent(DeviceTriggerHandler, trigger.Event.GetPropertiesStrings(), trigger.Event.Type));
             }

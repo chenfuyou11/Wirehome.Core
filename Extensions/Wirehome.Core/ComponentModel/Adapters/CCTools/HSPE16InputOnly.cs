@@ -1,6 +1,6 @@
-﻿
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters.Drivers;
+using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.Communication.I2C;
 
@@ -23,8 +23,9 @@ namespace Wirehome.ComponentModel.Adapters
             byte[] setupAsInputs = { 0x06, 0xFF, 0xFF };
             _i2CBusService.Write(i2cAddress, setupAsInputs);
 
-            await FetchState();
+            await ExecuteCommand(new Command(CommandType.RefreshCommand));
         }
+
         //public HSPE16InputOnlyAdapter(string id, I2CSlaveAddress address, II2CBusService i2CBusService, ILogger log)
         //    : base(id, new MAX7311Driver(address, i2CBusService), log)
         //{

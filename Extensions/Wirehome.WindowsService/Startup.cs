@@ -49,7 +49,7 @@ namespace Wirehome.WindowsService
             loggerFactory.AddNLog();
             app.AddNLogWeb();
 
-            app.UseSwaggerUi(typeof(Startup).GetTypeInfo().Assembly, new SwaggerUiSettings());
+            app.UseSwaggerUi(typeof(Startup).GetTypeInfo().Assembly); //TODO new SwaggerUiSettings<());
 
             app.UseExceptionHandler(options =>
             {

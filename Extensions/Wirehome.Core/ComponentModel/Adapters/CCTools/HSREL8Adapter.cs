@@ -18,8 +18,7 @@ namespace Wirehome.ComponentModel.Adapters
 
             await base.Initialize();
 
-            SetState(new byte[] { 0x00, 255 });
-            CommitChanges(true);
+            SetState(new byte[] { 0x00, 255 }, true);
         }
     }
 }

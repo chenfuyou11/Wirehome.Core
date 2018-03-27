@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core;
@@ -7,7 +8,7 @@ namespace Wirehome.ComponentModel.Events
 {
     public class PropertyChangedEvent : Event
     {
-        public PropertyChangedEvent(string deviceUID, string changedPropertyName, IValue oldValue, IValue newValue)
+        public PropertyChangedEvent(string deviceUID, string changedPropertyName, IValue oldValue, IValue newValue, IDictionary<string, IValue> additionalProperties = null)
         {
             Type = EventType.PropertyChanged;
             Uid = Guid.NewGuid().ToString();
@@ -16,6 +17,14 @@ namespace Wirehome.ComponentModel.Events
             this[EventProperties.NewValue] = newValue;
             this[EventProperties.OldValue] = oldValue;
             this[EventProperties.EventTime] = (DateTimeValue)SystemTime.Now;
+            
+            if(additionalProperties != null)
+            {
+                foreach(var val in additionalProperties)
+                {
+                    SetPropertyValue(val.Key, val.Value);
+                }
+            }
         }
         public string PropertyChangedName => (StringValue)this[StateProperties.StateName];
         public IValue NewValue => this[EventProperties.NewValue];

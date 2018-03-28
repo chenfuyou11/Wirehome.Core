@@ -12,7 +12,7 @@ using Wirehome.Core.Extensions;
 
 namespace Wirehome.ComponentModel.Components
 {
-    public abstract class ComponentBase : BaseObject, IService
+    public abstract class Actor : BaseObject, IService
     {
         private bool _isInitialized;
 
@@ -31,7 +31,7 @@ namespace Wirehome.ComponentModel.Components
             _isInitialized = true;
         }
 
-        public ComponentBase() => RegisterCommandHandlers();
+        public Actor() => RegisterCommandHandlers();
 
         private void RegisterCommandHandlers()
         {

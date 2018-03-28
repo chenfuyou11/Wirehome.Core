@@ -5,7 +5,7 @@ using Wirehome.Core;
 
 namespace Wirehome.ComponentModel.Adapters
 {
-    public abstract class Adapter : ComponentBase
+    public abstract class Adapter : Actor
     {
         protected readonly List<string> _requierdProperties = new List<string>();
 

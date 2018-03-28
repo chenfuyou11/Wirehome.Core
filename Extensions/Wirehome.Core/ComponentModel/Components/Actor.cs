@@ -14,7 +14,7 @@ namespace Wirehome.ComponentModel.Components
 {
     public abstract class Actor : BaseObject, IService
     {
-        private bool _isInitialized;
+        protected bool _isInitialized;
 
         protected BufferBlock<CommandJob<object>> _commandQueue = new BufferBlock<CommandJob<object>>();
         protected readonly DisposeContainer _disposables = new DisposeContainer();
@@ -104,11 +104,7 @@ namespace Wirehome.ComponentModel.Components
             var commandJob = new CommandJob<object>(command);
             var sendResult = await _commandQueue.SendAsync(commandJob, CancellationTokenSource.CreateLinkedTokenSource(callerCancelationToken, _disposables.Token).Token);
             //TODO Test for exceptions
-            if (sendResult)
-            {
-                return commandJob.Result;
-            }
-            return null;
+            return await commandJob.Result;
         }
 
         private Task<object> ProcessCommand(Command message)

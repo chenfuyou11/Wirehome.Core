@@ -9,8 +9,10 @@ using Wirehome.ComponentModel.Configuration;
 using Wirehome.Core.Communication.I2C;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Services.DependencyInjection;
+using Wirehome.Core.Services.Http;
 using Wirehome.Core.Services.Logging;
 using Wirehome.Core.Services.Quartz;
+using Wirehome.Core.Extensions;
 
 namespace Wirehome.Core.Tests.ComponentModel
 {
@@ -20,9 +22,13 @@ namespace Wirehome.Core.Tests.ComponentModel
 
         public static async Task<(WirehomeConfiguration config, IContainer container)> ReadConfiguration(string configName)
         {
-            var file = CommonIntegrationcs.ReadConfig(configName);
             var container = CommonIntegrationcs.PrepareContainer();
             var confService = container.GetInstance<IConfigurationService>();
+            var logger = container.GetInstance<ILogService>();
+            await container.StartupServices(logger.CreatePublisher("DI"));
+
+            var file = CommonIntegrationcs.ReadConfig(configName);
+
             var configuration = await confService.ReadConfiguration(file).ConfigureAwait(false);
 
             return (configuration, container);
@@ -40,12 +46,16 @@ namespace Wirehome.Core.Tests.ComponentModel
         private static void RegisterContainerServices(Container container)
         {
             var i2cServiceBus = Mock.Of<II2CBusService>();
+            var logService = Mock.Of<ILogService>();
+            var logger = Mock.Of<ILogger>();
+            Mock.Get(logService).Setup(x => x.CreatePublisher(It.IsAny<string>())).Returns(logger);
 
             container.RegisterSingleton<IEventAggregator, EventAggregator.EventAggregator>();
             container.RegisterSingleton<IConfigurationService, ConfigurationService>();
             container.RegisterSingleton(i2cServiceBus);
-            container.RegisterSingleton<ILogService, LogService>();
+            container.RegisterSingleton(logService);
             container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
+            container.RegisterSingleton<IHttpMessagingService, HttpMessagingService>();
 
             //Quartz
             container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();

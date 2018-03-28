@@ -42,25 +42,30 @@ namespace Wirehome.ComponentModel.Adapters
 
         public override async Task Initialize()
         {
-            var poolInterval = (IntValue)this[AdapterProperties.PoolInterval];
+            var poolInterval = this[AdapterProperties.PoolInterval].ToTimeSpan();
             _poolDurationWarning = (IntValue)this[AdapterProperties.PollDurationWarningThreshold];
 
             _state = new byte[_portExpanderDriver.StateSize];
             _committedState = new byte[_portExpanderDriver.StateSize];
 
-            var scheduler = await _schedulerFactory.GetScheduler();
-            await scheduler.ScheduleIntervalWithContext<RefreshStateJob, Adapter>(TimeSpan.FromMilliseconds(poolInterval), this, _disposables.Token);
+            await ScheduleDeviceRefresh<RefreshStateJob>(poolInterval);
 
             _disposables.Add(_eventAggregator.SubscribeForDeviceQuery<DeviceCommand>(DeviceCommandHandler, Uid));
 
             base.Initialize();
         }
 
-        private Task<object> DeviceCommandHandler(IMessageEnvelope<DeviceCommand> messageEnvelope) => ExecuteCommand(messageEnvelope.Message, messageEnvelope.CancellationToken);
+        private Task<object> DeviceCommandHandler(IMessageEnvelope<DeviceCommand> messageEnvelope)
+        {
+            return ExecuteCommand(messageEnvelope.Message, messageEnvelope.CancellationToken);
+        }
 
         protected Task RefreshCommandHandler(Command message) => FetchState();
 
-        protected Task<object> DiscoverCapabilitiesHandler(Command message) => new DiscoveryResponse(RequierdProperties(), new PowerState()).ToStaticTaskResult();
+        protected Task<object> DiscoverCapabilitiesHandler(Command message)
+        {
+            return new DiscoveryResponse(RequierdProperties(), new PowerState()).ToStaticTaskResult();
+        }
 
         protected void UpdateCommandHandler(Command message)
         {

@@ -26,21 +26,16 @@ namespace Wirehome.ComponentModel.Adapters
     {
         protected readonly ILogger _log;
         protected readonly II2CBusService _i2CBusService;
-        protected readonly IEventAggregator _eventAggregator;
-        protected readonly ISchedulerFactory _schedulerFactory;
 
         private int _poolDurationWarning;
-
         protected II2CPortExpanderDriver _portExpanderDriver;
         private byte[] _committedState;
         private byte[] _state;
 
-        protected CCToolsBaseAdapter(IAdapterServiceFactory adapterServiceFactory)
+        protected CCToolsBaseAdapter(IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory)
         {
             _i2CBusService = adapterServiceFactory.GetI2CService();
             _log = adapterServiceFactory.GetLogger().CreatePublisher($"{nameof(CCToolsBaseAdapter)}_{Uid}");
-            _eventAggregator = adapterServiceFactory.GetEventAggregator();
-            _schedulerFactory = adapterServiceFactory.GetSchedulerFactory();
 
             _requierdProperties.Add(AdapterProperties.PinNumber);
         }
@@ -54,7 +49,7 @@ namespace Wirehome.ComponentModel.Adapters
             _committedState = new byte[_portExpanderDriver.StateSize];
 
             var scheduler = await _schedulerFactory.GetScheduler();
-            await scheduler.ScheduleIntervalWithContext<CCToolsSchedulerJob, CCToolsBaseAdapter>(TimeSpan.FromMilliseconds(poolInterval), this, _disposables.Token);
+            await scheduler.ScheduleIntervalWithContext<RefreshStateJob, Adapter>(TimeSpan.FromMilliseconds(poolInterval), this, _disposables.Token);
 
             _disposables.Add(_eventAggregator.SubscribeForDeviceQuery<DeviceCommand>(DeviceCommandHandler, Uid));
 

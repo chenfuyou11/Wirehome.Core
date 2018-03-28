@@ -35,7 +35,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
                 return new DenonStatus
                 {
                     ActiveInput = xml.Descendants("InputFuncSelect").FirstOrDefault()?.Value?.Trim(),
-                    PowerStatus = xml.Descendants("Power").FirstOrDefault()?.Value?.Trim().ToLower() == "on" ? BinaryState.High : BinaryState.Low,
+                    PowerStatus = xml.Descendants("Power").FirstOrDefault()?.Value?.Trim().ToLower() == "on" ? true : false,
                     MasterVolume = NormalizeVolume(xml.Descendants("MasterVolume").FirstOrDefault()?.Value?.Trim().ToFloat()),
                     Mute = xml.Descendants("Mute").FirstOrDefault()?.Value?.Trim().ToLower() == "on"
                 };

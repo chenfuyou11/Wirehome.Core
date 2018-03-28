@@ -14,7 +14,7 @@ namespace Wirehome.ComponentModel.Capabilities
             this[StateProperties.MaxValue] = new DoubleValue(100.0);
             this[StateProperties.MinValue] = new DoubleValue(0.0);
             this[StateProperties.StateName] = new StringValue(nameof(VolumeState));
-            this[StateProperties.CapabilityName] = new StringValue(Constants.Capabilities.RTVController);
+            this[StateProperties.CapabilityName] = new StringValue(Constants.Capabilities.SpeakerController);
             this[StateProperties.SupportedCommands] = new StringListValue(CommandType.VolumeUpCommand, CommandType.VolumeDownCommand, CommandType.VolumeSetCommand);
         }
     }

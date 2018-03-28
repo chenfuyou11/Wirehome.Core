@@ -9,7 +9,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
         private static Dictionary<string, string> _surroundApiMap;
         private static Dictionary<string, string> _surroundResultMap;
 
-        public static string GetApiCommand(string surroundMode)
+        public static string MapApiCommand(string surroundMode)
         {
             return _surroundApiMap[surroundMode];
         }

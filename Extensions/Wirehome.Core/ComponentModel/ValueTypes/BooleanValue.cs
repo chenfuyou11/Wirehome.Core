@@ -5,7 +5,7 @@ namespace Wirehome.ComponentModel.ValueTypes
 {
     public class BooleanValue : ValueObject, IValue
     {
-        public BooleanValue(bool value) => Value = value;
+        public BooleanValue(bool value = default) => Value = value;
 
         public bool Value
         {
@@ -16,6 +16,10 @@ namespace Wirehome.ComponentModel.ValueTypes
         {
             yield return Value;
         }
+
+        public static implicit operator BooleanValue(bool value) => new BooleanValue(value);
+
+        public static implicit operator bool(BooleanValue value) => value.Value;
 
         public override string ToString() => Value.ToString();
     }

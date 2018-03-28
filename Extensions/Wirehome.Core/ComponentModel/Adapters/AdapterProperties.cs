@@ -10,10 +10,11 @@ namespace Wirehome.ComponentModel.Adapters
         public const string PinNumber = "PinNumber";
         public const string PoolInterval = "PoolInterval";
         public const string PollDurationWarningThreshold = "PollDurationWarningThreshold";
+        public const string Hostname = "Hostname";
+        public const string Zone = "Zone";
 
         public const string AdapterName = "AdapterName";
         public const string AdapterAuthor = "AdapterAuthor";
         public const string AdapterDescription = "AdapterDescription";
-
     }
 }

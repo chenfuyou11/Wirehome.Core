@@ -21,10 +21,10 @@ namespace Wirehome.ComponentModel
         public List<string> Tags { get; private set; } = new List<string>();
         public IObservable<Event> Events => _events.AsObservable();
         public IReadOnlyDictionary<string, Property> Properties => _properties.AsReadOnly();
-        
+
         public IValue this[string propertyName]
         {
-            get => GetPropertyValue(propertyName).Value ?? throw new KeyNotFoundException();
+            get => GetPropertyValue(propertyName).Value ?? throw new KeyNotFoundException($"Property {propertyName} not found on component {Uid}");
             set { SetPropertyValue(propertyName, value); }
         }
 
@@ -62,6 +62,5 @@ namespace Wirehome.ComponentModel
         }
 
         public IDictionary<string, string> GetPropertiesStrings() => _properties.Values.ToDictionary(k => k.Type, v => v.Value.ToString());
-        
     }
 }

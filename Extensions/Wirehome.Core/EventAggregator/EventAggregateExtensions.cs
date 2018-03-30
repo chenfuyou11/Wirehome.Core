@@ -10,20 +10,33 @@ namespace Wirehome.Core.EventAggregator
 {
     public static class EventAggregateExtensions
     {
-       public static Task<R> QueryAsync<T, R>
-       (
-           this IEventAggregator eventAggregate,
-           T message,
-           RoutingFilter filter = null,
-           CancellationToken cancellationToken = default,
-           TimeSpan? timeout = null,
-           int retryCount = 0,
-           bool async = false
-       ) where R : class
-       {
+        public static Task<R> QueryAsync<T, R>
+        (
+            this IEventAggregator eventAggregate,
+            T message,
+            RoutingFilter filter = null,
+            CancellationToken cancellationToken = default,
+            TimeSpan? timeout = null,
+            int retryCount = 0,
+            bool async = false
+        ) where R : class
+        {
             var chain = new BehaviorChain().WithTimeout(timeout).WithRetry(retryCount).WithAsync(async);
             return eventAggregate.QueryAsync<T, R>(message, filter, cancellationToken, chain);
-       }
+        }
+
+        public static Task<R> QueryWitTimeoutAsync<T, R>
+        (
+            this IEventAggregator eventAggregate,
+            T message,
+            RoutingFilter filter = null,
+            CancellationToken cancellationToken = default,
+            TimeSpan? timeout = null
+        ) where R : class
+        {
+            var chain = new BehaviorChain().WithTimeout(timeout);
+            return eventAggregate.QueryAsync<T, R>(message, filter, cancellationToken, chain);
+        }
 
         public static void RegisterHandlers(this IEventAggregator eventAggregator, IContainer container)
         {
@@ -43,8 +56,8 @@ namespace Wirehome.Core.EventAggregator
                     {
                         messageFilter = messageFilterAttribute.ToMessageFilter();
                     }
-                    
-                    if(type.Lifestyle == Lifestyle.Singleton)
+
+                    if (type.Lifestyle == Lifestyle.Singleton)
                     {
                         eventAggregator.Subscribe(messageType, Delegate.CreateDelegate(delegateType, container.GetInstance(type.ServiceType), methodInfo.Name), messageFilter);
                     }

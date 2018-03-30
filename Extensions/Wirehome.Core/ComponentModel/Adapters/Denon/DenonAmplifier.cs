@@ -62,12 +62,15 @@ namespace Wirehome.ComponentModel.Adapters.Denon
             _powerState = await UpdateState<BooleanValue>(PowerState.StateName, _powerState, state.PowerStatus);
         }
 
-        protected Task<object> DiscoverCapabilitiesHandler(Command message) => new DiscoveryResponse(RequierdProperties(), new PowerState(),
-                                                                                                                           new VolumeState(),
-                                                                                                                           new MuteState(),
-                                                                                                                           new InputSourceState(),
-                                                                                                                           new SurroundSoundState()
-                                                                                                    ).ToStaticTaskResult();
+        protected async Task<object> DiscoverCapabilitiesHandler(Command message)
+        {
+            return new DiscoveryResponse(RequierdProperties(), new PowerState(),
+                                                                                                                            new VolumeState(),
+                                                                                                                            new MuteState(),
+                                                                                                                            new InputSourceState(),
+                                                                                                                            new SurroundSoundState()
+                                                                                                     ).ToStaticTaskResult();
+        }
 
         protected async Task TurnOnCommandHandler(Command message)
         {

@@ -48,22 +48,25 @@ namespace Wirehome.ComponentModel.Adapters
             _state = new byte[_portExpanderDriver.StateSize];
             _committedState = new byte[_portExpanderDriver.StateSize];
 
-            await ScheduleDeviceRefresh<RefreshStateJob>(poolInterval);
+            //TODO
+            //await ScheduleDeviceRefresh<RefreshStateJob>(poolInterval);
 
-            _disposables.Add(_eventAggregator.SubscribeForDeviceQuery<DeviceCommand>(DeviceCommandHandler, Uid));
+            //_disposables.Add(_eventAggregator.SubscribeForDeviceQuery<DeviceCommand>(DeviceCommandHandler, Uid));
 
             base.Initialize();
         }
 
-        private Task<object> DeviceCommandHandler(IMessageEnvelope<DeviceCommand> messageEnvelope)
-        {
-            return ExecuteCommand(messageEnvelope.Message, messageEnvelope.CancellationToken);
-        }
+        //private Task<object> DeviceCommandHandler(IMessageEnvelope<DeviceCommand> messageEnvelope)
+        //{
+        //    return ExecuteCommand(messageEnvelope.Message, messageEnvelope.CancellationToken);
+        //}
 
         protected Task RefreshCommandHandler(Command message) => FetchState();
 
-        protected Task<object> DiscoverCapabilitiesHandler(Command message)
+        protected async Task<object> DiscoverCapabilitiesHandler(Command message)
         {
+            await Task.Delay(2000);
+
             return new DiscoveryResponse(RequierdProperties(), new PowerState()).ToStaticTaskResult();
         }
 

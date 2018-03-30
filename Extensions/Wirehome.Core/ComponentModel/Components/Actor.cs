@@ -93,18 +93,25 @@ namespace Wirehome.ComponentModel.Components
             {
                 var command = await _commandQueue.ReceiveAsync(_disposables.Token);
                 var result = await ProcessCommand(command.Command);
+                AssertForWrappedTask(result);
                 command.SetResult(result);
             }
         }
 
-        public async Task<object> ExecuteCommand(Command command, CancellationToken callerCancelationToken = default)
+        private static void AssertForWrappedTask(object result)
+        {
+            if (result.GetType().Namespace == "System.Threading.Tasks") throw new Exception("Result from handler wan not unwrapped properly");
+        }
+
+        public Task<object> ExecuteCommand(Command command, CancellationToken callerCancelationToken = default)
         {
             if (!_isInitialized) throw new Exception($"Component {Uid} is not initialized");
 
             var commandJob = new CommandJob<object>(command);
-            var sendResult = await _commandQueue.SendAsync(commandJob, CancellationTokenSource.CreateLinkedTokenSource(callerCancelationToken, _disposables.Token).Token);
+            //CancellationTokenSource.CreateLinkedTokenSource(callerCancelationToken, _disposables.Token).Token
+            var sendResult = _commandQueue.Post(commandJob);
             //TODO Test for exceptions
-            return await commandJob.Result;
+            return commandJob.Result;
         }
 
         private Task<object> ProcessCommand(Command message)

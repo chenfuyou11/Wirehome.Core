@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Wirehome.ComponentModel.Adapters;
@@ -90,12 +91,21 @@ namespace Wirehome.ComponentModel.Components
         {
             while (await _commandQueue.OutputAvailableAsync(_disposables.Token))
             {
-                var command = await _commandQueue.ReceiveAsync(_disposables.Token);
-                var result = await ProcessCommand(command.Command);
-                AssertForWrappedTask(result);
-                command.SetResult(result);
+                try
+                {
+                    var command = await _commandQueue.ReceiveAsync(_disposables.Token);
+                    var result = await ProcessCommand(command.Command);
+                    AssertForWrappedTask(result);
+                    command.SetResult(result);
+                }
+                catch (Exception ex)
+                {
+                    LogException(ex);
+                }
             }
         }
+
+        protected abstract void LogException(Exception ex);
 
         private static void AssertForWrappedTask(object result)
         {
@@ -119,7 +129,7 @@ namespace Wirehome.ComponentModel.Components
             }
             else if (_asyncCommandHandlers.ContainsKey(message.Type))
             {
-                return _asyncCommandHandlers?[message.Type]?.Invoke(message).ToEmptyResultTask();
+                return _asyncCommandHandlers?[message.Type]?.Invoke(message).Cast<object>(0);
             }
             else if (_commandHandlers.ContainsKey(message.Type))
             {

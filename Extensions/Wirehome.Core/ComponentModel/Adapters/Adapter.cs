@@ -7,6 +7,7 @@ using Wirehome.ComponentModel.Events;
 using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.EventAggregator;
+using Wirehome.Core.Services.Logging;
 using Wirehome.Core.Services.Quartz;
 
 namespace Wirehome.ComponentModel.Adapters
@@ -15,6 +16,7 @@ namespace Wirehome.ComponentModel.Adapters
     {
         protected readonly IEventAggregator _eventAggregator;
         protected readonly ISchedulerFactory _schedulerFactory;
+        protected readonly ILogger _logger;
         protected readonly List<string> _requierdProperties = new List<string>();
 
         public IList<string> RequierdProperties() => _requierdProperties;
@@ -23,6 +25,7 @@ namespace Wirehome.ComponentModel.Adapters
         {
             _eventAggregator = adapterServiceFactory.GetEventAggregator();
             _schedulerFactory = adapterServiceFactory.GetSchedulerFactory();
+            _logger = adapterServiceFactory.GetLogger().CreatePublisher($"Adapter_{Uid}_Logger");
         }
 
         protected async Task<T> UpdateState<T>(string stateName, T oldValue, T newValue) where T : IValue
@@ -37,6 +40,11 @@ namespace Wirehome.ComponentModel.Adapters
             var scheduler = await _schedulerFactory.GetScheduler();
             await scheduler.ScheduleIntervalWithContext<T, Adapter>(interval, this, _disposables.Token);
             await scheduler.Start(_disposables.Token);
+        }
+
+        protected override void LogException(Exception ex)
+        {
+            _logger.Error(ex, "Unhanded adapter exception");
         }
     }
 }

@@ -14,11 +14,15 @@ namespace Wirehome.Core.Tests.Mocks
 {
     public class TestAdapter : Adapter
     {
+        private object locki = new object();
+        public int Counter { get; private set; }
+
         public DiscoveryResponse DiscoveryResponse { get; set; }
 
         public TestAdapter(string uid, IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory)
         {
             Uid = uid;
+            DiscoveryResponse = new DiscoveryResponse(null, new PowerState());
         }
 
         public override async Task Initialize()
@@ -33,9 +37,31 @@ namespace Wirehome.Core.Tests.Mocks
             return ExecuteCommand(messageEnvelope.Message);
         }
 
+        protected async Task RefreshCommandHandler(Command messageEnvelope)
+        {
+            lock (locki)
+            {
+                Counter++;
+
+                if (Counter > 1)
+                {
+                    Counter += 100;
+                }
+            }
+
+            await Task.Delay(100);
+
+            lock (locki)
+            {
+                Counter--;
+            }
+
+            // return DiscoveryResponse;
+        }
+
         protected async Task<object> DiscoverCapabilitiesHandler(Command message)
         {
-            await Task.Delay(2000);
+            await Task.Delay(100);
 
             return DiscoveryResponse;
         }

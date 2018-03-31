@@ -65,11 +65,11 @@ namespace Wirehome.ComponentModel.Adapters.Denon
         protected async Task<object> DiscoverCapabilitiesHandler(Command message)
         {
             return new DiscoveryResponse(RequierdProperties(), new PowerState(),
-                                                                                                                            new VolumeState(),
-                                                                                                                            new MuteState(),
-                                                                                                                            new InputSourceState(),
-                                                                                                                            new SurroundSoundState()
-                                                                                                     ).ToStaticTaskResult();
+                                                               new VolumeState(),
+                                                               new MuteState(),
+                                                               new InputSourceState(),
+                                                               new SurroundSoundState()
+                                          );
         }
 
         protected async Task TurnOnCommandHandler(Command message)

@@ -10,10 +10,10 @@ namespace Wirehome.ComponentModel.Extensions
 {
     public static class EventAggregatorExtensions
     {
-        public static Task<R> QueryDeviceAsync<T, R>(this IEventAggregator eventAggregator, T message, TimeSpan timeout = default) where T : BaseObject
+        public static Task<R> QueryDeviceAsync<R>(this IEventAggregator eventAggregator, DeviceCommand message, TimeSpan timeout = default)
                                                                                                        where R : BaseObject
         {
-            return eventAggregator.QueryWitTimeoutAsync<T, R>(message, new RoutingFilter(message?[CommandProperties.DeviceUid]?.ToString() ?? string.Empty), timeout: timeout);
+            return eventAggregator.QueryAsync<DeviceCommand, R>(message, new RoutingFilter(message?[CommandProperties.DeviceUid]?.ToString() ?? string.Empty));
         }
 
         public static IDisposable SubscribeForDeviceQuery<T>(this IEventAggregator eventAggregator, Func<IMessageEnvelope<T>, Task<object>> action, string uid) where T : BaseObject

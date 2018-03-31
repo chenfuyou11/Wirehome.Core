@@ -37,7 +37,7 @@ namespace Wirehome.ComponentModel.Components
         {
             foreach (var adapter in _adapters)
             {
-                var adapterCapabilities = await _eventAggregator.QueryDeviceAsync<DeviceCommand, DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid));
+                var adapterCapabilities = await _eventAggregator.QueryDeviceAsync<DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid));
                 adapterCapabilities.SupportedStates.ForEach(state => state.SetAdapterReference(adapter));
                 _capabilities.AddRangeNewOnly(adapterCapabilities.SupportedStates.ToDictionary(key => ((StringValue)key[StateProperties.StateName]).ToString(), val => val));
 
@@ -62,6 +62,11 @@ namespace Wirehome.ComponentModel.Components
             routerAttributes.Add(EventProperties.SourceDeviceUid, adapter.Uid);
 
             return routerAttributes;
+        }
+
+        protected override void LogException(Exception ex)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task ExecuteCommand(Command command)

@@ -96,19 +96,6 @@ namespace Wirehome.Core.Extensions
             return tcs.Task;
         }
 
-        /// <summary>
-        /// Convert Task to Task<object> to allow tread as same operation
-        /// </summary>
-        /// <param name="task"></param>
-        /// <returns></returns>
-        public static async Task<object> ToEmptyResultTask(this Task task)
-        {
-            await task;
-            return Task.FromResult(0);
-        }
-
-        public static Task<object> ToStaticTaskResult(this object task) => Task.FromResult(task);
-
         public static Task<T> Cast<T>(this Task<object> task)
         {
             var tcs = new TaskCompletionSource<T>();
@@ -120,6 +107,21 @@ namespace Wirehome.Core.Extensions
                     tcs.TrySetCanceled();
                 else
                     tcs.TrySetResult((T)t.Result);
+            }, TaskContinuationOptions.ExecuteSynchronously);
+            return tcs.Task;
+        }
+
+        public static Task<T> Cast<T>(this Task task, T defaultValue)
+        {
+            var tcs = new TaskCompletionSource<T>();
+            task.ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                    tcs.TrySetException(t.Exception.InnerExceptions);
+                else if (t.IsCanceled)
+                    tcs.TrySetCanceled();
+                else
+                    tcs.TrySetResult(defaultValue);
             }, TaskContinuationOptions.ExecuteSynchronously);
             return tcs.Task;
         }

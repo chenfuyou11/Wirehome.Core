@@ -67,5 +67,18 @@ namespace Wirehome.Extensions.Tests
             Assert.AreEqual(1, result.SupportedStates.Length);
             Assert.IsInstanceOfType(result.SupportedStates[0], typeof(PowerState));
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(TimeoutException))]
+        public async Task AdapterCommandViaEventAggregatorExecuteShouldTimeoutWhenExecuteToLong()
+        {
+            var container = CommonIntegrationcs.PrepareContainer();
+            var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
+            var eventAggregator = container.GetInstance<IEventAggregator>();
+            var adapter = new TestAdapter("adapter1", adapterServiceFactory);
+            await adapter.Initialize();
+
+            var result = await eventAggregator.QueryDeviceAsync<DiscoveryResponse>(DeviceCommand.GenerateDiscoverCommand(adapter.Uid), TimeSpan.FromMilliseconds(100));
+        }
     }
 }

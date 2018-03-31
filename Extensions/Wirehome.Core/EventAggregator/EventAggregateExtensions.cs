@@ -29,9 +29,10 @@ namespace Wirehome.Core.EventAggregator
         (
             this IEventAggregator eventAggregate,
             T message,
+            TimeSpan? timeout,
             RoutingFilter filter = null,
-            CancellationToken cancellationToken = default,
-            TimeSpan? timeout = null
+            CancellationToken cancellationToken = default
+
         ) where R : class
         {
             var chain = new BehaviorChain().WithTimeout(timeout);

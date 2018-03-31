@@ -115,9 +115,13 @@ namespace Wirehome.ComponentModel.Components
         public Task<object> ExecuteCommand(Command command)
         {
             if (!_isInitialized) throw new Exception($"Component {Uid} is not initialized");
+            return QueueJob(command).Unwrap();
+        }
 
+        private async Task<Task<object>> QueueJob(Command command)
+        {
             var commandJob = new CommandJob<object>(command);
-            var sendResult = _commandQueue.Post(commandJob);
+            var sendResult = await _commandQueue.SendAsync(commandJob);
             return commandJob.Result;
         }
 

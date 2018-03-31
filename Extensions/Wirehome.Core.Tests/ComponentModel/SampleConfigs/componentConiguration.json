@@ -98,6 +98,14 @@
         "Properties": {
           "Hostname": "192.168.0.102"
         }
+      },
+      {
+        "Uid": "Sony",
+        "Type": "SonyBraviaAdapter",
+        "Properties": {
+          "Hostname": "192.168.0.102",
+          "AuthKey": "344fb7d28691ba43c9045e9d38fa3c83a0587620fc14a79a958db4ff5d30e0e7"
+        }
       }
     ]
   }

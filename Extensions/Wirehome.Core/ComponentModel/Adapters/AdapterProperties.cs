@@ -16,6 +16,7 @@ namespace Wirehome.ComponentModel.Adapters
         public const string Password = "Password";
         public const string Port = "Port";
         public const string MAC = "MAC";
+        public const string AuthKey = "AuthKey";
 
         public const string AdapterName = "AdapterName";
         public const string AdapterAuthor = "AdapterAuthor";

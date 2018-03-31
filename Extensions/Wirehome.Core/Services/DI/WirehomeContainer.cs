@@ -7,9 +7,9 @@ using System.Linq;
 using System.Reflection;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Configuration;
-using Wirehome.Core.Communication.I2C;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Native;
+using Wirehome.Core.Services.I2C;
 using Wirehome.Core.Services.Logging;
 using Wirehome.Core.Services.Quartz;
 
@@ -28,22 +28,22 @@ namespace Wirehome.Core.Services.DependencyInjection
             _container.RegisterSingleton(options);
         }
 
-         public Action<Container> RegisterBaseServices { get; set; } = container =>
-         {
-             container.RegisterSingleton<IEventAggregator, EventAggregator.EventAggregator>();
-             container.RegisterSingleton<IConfigurationService, ConfigurationService>();
-             container.RegisterSingleton<II2CBusService, I2CBusService>();
-             container.RegisterSingleton<ILogService, LogService>();
-             container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
+        public Action<Container> RegisterBaseServices { get; set; } = container =>
+        {
+            container.RegisterSingleton<IEventAggregator, EventAggregator.EventAggregator>();
+            container.RegisterSingleton<IConfigurationService, ConfigurationService>();
+            container.RegisterSingleton<II2CBusService, I2CBusService>();
+            container.RegisterSingleton<ILogService, LogService>();
+            container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
 
              //Quartz
              container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();
-             container.RegisterSingleton<ISchedulerFactory, SimpleInjectorSchedulerFactory>();
-             container.Register(() => container.GetInstance<ISchedulerFactory>().GetScheduler().Result);
+            container.RegisterSingleton<ISchedulerFactory, SimpleInjectorSchedulerFactory>();
+            container.Register(() => container.GetInstance<ISchedulerFactory>().GetScheduler().Result);
 
              //Auto mapper
              container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper());
-         };
+        };
 
         public IContainer RegisterServices()
         {
@@ -129,7 +129,6 @@ namespace Wirehome.Core.Services.DependencyInjection
             _container.Register(service, implementation, Lifestyle.Singleton);
         }
 
-
         public void RegisterService<TContract, TImplementation>(int priority = 0) where TContract : class, IService where TImplementation : class, TContract
         {
             RegisterSingleton<TContract, TImplementation>();
@@ -197,6 +196,5 @@ namespace Wirehome.Core.Services.DependencyInjection
 
             return result;
         }
-
     }
 }

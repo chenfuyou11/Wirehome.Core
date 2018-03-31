@@ -14,11 +14,10 @@ using Wirehome.ComponentModel.Events;
 using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core;
-using Wirehome.Core.Communication.I2C;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
+using Wirehome.Core.Services.I2C;
 using Wirehome.Core.Services.Logging;
-using Wirehome.Core.Services.Quartz;
 
 namespace Wirehome.ComponentModel.Adapters
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using Wirehome.Core.Communication.I2C;
+using Wirehome.Core.Services.I2C;
 
 namespace Wirehome.ComponentModel.Adapters.Drivers
 {

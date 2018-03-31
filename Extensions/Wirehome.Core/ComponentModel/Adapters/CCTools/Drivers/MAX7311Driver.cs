@@ -1,5 +1,5 @@
 ﻿using System;
-using Wirehome.Core.Communication.I2C;
+using Wirehome.Core.Services.I2C;
 
 namespace Wirehome.ComponentModel.Adapters.Drivers
 {
@@ -15,10 +15,11 @@ namespace Wirehome.ComponentModel.Adapters.Drivers
         // Register 6-7=Configuration
         // Register 8=Timeout
         private readonly byte[] _inputWriteBuffer = { 0 };
+
         private readonly byte[] _inputReadBuffer = new byte[2];
         private readonly byte[] _outputWriteBuffer = { 2, 0, 0 };
         private readonly byte[] _configurationWriteBuffer = { 6, 0, 0 };
-        
+
         public MAX7311Driver(I2CSlaveAddress address, II2CBusService i2CBus)
         {
             _address = address;

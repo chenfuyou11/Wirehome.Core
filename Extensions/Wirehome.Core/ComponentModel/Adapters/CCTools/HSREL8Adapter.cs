@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters.Drivers;
 using Wirehome.ComponentModel.ValueTypes;
-using Wirehome.Core.Communication.I2C;
+using Wirehome.Core.Services.I2C;
 
 namespace Wirehome.ComponentModel.Adapters
 {

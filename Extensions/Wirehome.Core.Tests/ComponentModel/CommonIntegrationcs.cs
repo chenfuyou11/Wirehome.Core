@@ -6,13 +6,13 @@ using System.IO;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Configuration;
-using Wirehome.Core.Communication.I2C;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Services.DependencyInjection;
 using Wirehome.Core.Services.Http;
 using Wirehome.Core.Services.Logging;
 using Wirehome.Core.Services.Quartz;
 using Wirehome.Core.Extensions;
+using Wirehome.Core.Services.I2C;
 
 namespace Wirehome.Core.Tests.ComponentModel
 {

@@ -8,7 +8,7 @@ using Wirehome.Core.Extensions;
 
 namespace Wirehome.ComponentModel.Adapters.Denon
 {
-    public class DenonAmplifier : Adapter
+    public class DenonAdapter : Adapter
     {
         public const int DEFAULT_POOL_INTERVAL = 1000;
 
@@ -22,7 +22,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
         private int _zone;
         private TimeSpan _poolInterval;
 
-        public DenonAmplifier(IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory)
+        public DenonAdapter(IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory)
         {
         }
 
@@ -30,10 +30,10 @@ namespace Wirehome.ComponentModel.Adapters.Denon
         {
             base.Initialize();
 
-            _hostName = Properties[AdapterProperties.Hostname].Value as StringValue;
+            _hostName = Properties[AdapterProperties.Hostname].Value.ToStringValue();
             _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpan();
-            // TODO make it as parameter??
-            _zone = Properties[AdapterProperties.Zone].Value as IntValue;
+            //TODO make zone as required parameter
+            _zone = Properties[AdapterProperties.Zone].Value.ToIntValue();
 
             await ScheduleDeviceRefresh<RefreshLightStateJob>(_poolInterval);
             await ExecuteCommand(Command.RefreshCommand);
@@ -62,14 +62,14 @@ namespace Wirehome.ComponentModel.Adapters.Denon
             _powerState = await UpdateState<BooleanValue>(PowerState.StateName, _powerState, state.PowerStatus);
         }
 
-        protected async Task<object> DiscoverCapabilitiesHandler(Command message)
+        protected Task<object> DiscoverCapabilitiesHandler(Command message)
         {
             return new DiscoveryResponse(RequierdProperties(), new PowerState(),
                                                                new VolumeState(),
                                                                new MuteState(),
                                                                new InputSourceState(),
                                                                new SurroundSoundState()
-                                          );
+                                          ).ToTaskResult<object>();
         }
 
         protected async Task TurnOnCommandHandler(Command message)
@@ -100,7 +100,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         protected async Task VolumeUpCommandHandler(Command command)
         {
-            var volume = _volume + command["ChangeFactor"].ToDoubleValue();
+            var volume = _volume + command[CommandProperties.ChangeFactor].ToDoubleValue();
             var normalized = NormalizeVolume(volume);
 
             // Results are unpredictyble so we ignore them
@@ -118,7 +118,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         protected async Task VolumeDownCommandHandler(Command command)
         {
-            var volume = _volume - command["ChangeFactor"].ToDoubleValue();
+            var volume = _volume - command[CommandProperties.ChangeFactor].ToDoubleValue();
             var normalized = NormalizeVolume(volume);
 
             await _eventAggregator.QueryAsync<DenonControlMessage, string>(new DenonControlMessage
@@ -135,7 +135,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         protected async Task VolumeSetCommandHandler(Command command)
         {
-            var volume = command["Value"].ToDoubleValue();
+            var volume = command[CommandProperties.Value].ToDoubleValue();
             var normalized = NormalizeVolume(volume);
 
             await _eventAggregator.QueryAsync<DenonControlMessage, string>(new DenonControlMessage
@@ -189,7 +189,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
         protected async Task SelectInputCommandHandler(Command message)
         {
             if (_fullState == null) throw new Exception("Cannot change input source on Denon device becouse device info was not downloaded from device");
-            var inputName = message["InputSource"].ToStringValue();
+            var inputName = message[CommandProperties.InputSource].ToStringValue();
             var input = _fullState.TranslateInputName(inputName, _zone.ToString());
             if (input?.Length == 0) throw new Exception($"Input {inputName} was not found on available device input sources");
 
@@ -210,7 +210,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
         {
             //Surround support only in main zone
             if (_zone != 1) return;
-            var surroundMode = message["SurroundMode"].ToStringValue();
+            var surroundMode = message[CommandProperties.SurroundMode].ToStringValue();
             var mode = DenonSurroundModes.MapApiCommand(surroundMode);
             if (mode?.Length == 0) throw new Exception($"Surroundmode {mode} was not found on available surround modes");
 

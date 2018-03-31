@@ -12,6 +12,10 @@ namespace Wirehome.ComponentModel.Adapters
         public const string PollDurationWarningThreshold = "PollDurationWarningThreshold";
         public const string Hostname = "Hostname";
         public const string Zone = "Zone";
+        public const string UserName = "UserName";
+        public const string Password = "Password";
+        public const string Port = "Port";
+        public const string MAC = "MAC";
 
         public const string AdapterName = "AdapterName";
         public const string AdapterAuthor = "AdapterAuthor";

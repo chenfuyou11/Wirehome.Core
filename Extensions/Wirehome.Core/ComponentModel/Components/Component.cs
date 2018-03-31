@@ -13,13 +13,16 @@ using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
 using Wirehome.Core.Services.DependencyInjection;
+using Wirehome.Core.Services.Logging;
 
 namespace Wirehome.ComponentModel.Components
 {
     // TODO what about adapters that don't know the state (tv controled only by IR)
-    public sealed class Component : Actor
+    public class Component : Actor
     {
         private readonly IEventAggregator _eventAggregator;
+        private readonly ILogger _logger;
+
         private List<string> _tagCache;
         private Dictionary<string, State> _capabilities { get; } = new Dictionary<string, State>();
         [Map] private IList<AdapterReference> _adapters { get; set; } = new List<AdapterReference>();
@@ -28,9 +31,10 @@ namespace Wirehome.ComponentModel.Components
 
         public bool IsEnabled { get; private set; }
 
-        public Component(IEventAggregator eventAggregator)
+        public Component(IEventAggregator eventAggregator, ILogService logService)
         {
             _eventAggregator = eventAggregator;
+            _logger = logService.CreatePublisher($"Component_{Uid}_logger");
         }
 
         public override async Task Initialize()
@@ -49,6 +53,8 @@ namespace Wirehome.ComponentModel.Components
             {
                 _disposables.Add(_eventAggregator.SubscribeForDeviceEvent(DeviceTriggerHandler, trigger.Event.GetPropertiesStrings(), trigger.Event.Type));
             }
+
+            base.Initialize();
         }
 
         private Dictionary<string, string> GetAdapterRouterAttributes(AdapterReference adapter, IList<string> requierdProperties)
@@ -64,18 +70,22 @@ namespace Wirehome.ComponentModel.Components
             return routerAttributes;
         }
 
-        protected override void LogException(Exception ex)
-        {
-            throw new NotImplementedException();
-        }
+        protected override void LogException(Exception ex) => _logger.Error(ex, $"Unhanded component {Uid} exception");
 
-        public async Task ExecuteCommand(Command command)
+        /// <summary>
+        /// All command not handled by the component directly are routed to adapters
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        protected override async Task<object> UnhandledCommand(Command command)
         {
             // TODO use valueconverter before publish and maybe queue?
             foreach (var state in _capabilities.Values.Where(capability => capability.IsCommandSupported(command)))
             {
                 await _eventAggregator.PublishDeviceCommnd(state.Adapter.GetDeviceCommand(command));
             }
+
+            return null;
         }
 
         private async Task DeviceEventHandler(IMessageEnvelope<Event> deviceEvent)
@@ -103,45 +113,45 @@ namespace Wirehome.ComponentModel.Components
             }
         }
 
-        // TODO Change to message?
-        public Maybe<IValue> GetStateValue(string stateName)
+        protected Task<object> SupportedCapabilitiesCommandHandler(Command command) => _capabilities.Values
+                                                                                                .Select(cap => cap.GetPropertyValue(StateProperties.StateName))
+                                                                                                .Where(cap => cap.HasValue)
+                                                                                                .Select(cap => cap.Value)
+                                                                                                .Cast<StringValue>()
+                                                                                                .Select(cap => cap.Value)
+                                                                                                .Distinct()
+                                                                                                .ToTaskResult<object>();
+
+        protected Task<object> SupportedCStatesCommandHandler(Command command) => _capabilities.Values
+                                                                                   .Select(cap => cap.GetPropertyValue(StateProperties.StateName))
+                                                                                   .Where(cap => cap.HasValue)
+                                                                                   .Select(cap => cap.Value)
+                                                                                   .Cast<StringValue>()
+                                                                                   .Select(cap => cap.Value)
+                                                                                   .Distinct()
+                                                                                   .ToTaskResult<object>();
+
+        protected Task<object> SupportedTagsCommandHandler(Command command)
         {
-            if (!_capabilities.ContainsKey(stateName)) return Maybe<IValue>.None;
+            if (_tagCache == null)
+            {
+                _tagCache = new List<string>(Tags);
+                _tagCache.AddRange(_capabilities.Values.SelectMany(x => x.Tags));
+            }
+            return _tagCache.AsReadOnly().ToTaskResult<object>();
+        }
+
+        protected Task<object> GetStateCommandHandler(Command command)
+        {
+            var stateName = command[CommandProperties.StateName].ToStringValue();
+
+            if (!_capabilities.ContainsKey(stateName)) return Maybe<IValue>.None.ToTaskResult<object>();
             var value = _capabilities[stateName][StateProperties.Value];
             if (_converters.ContainsKey(stateName))
             {
                 value = _converters[stateName].Convert(value);
             }
-            return Maybe<IValue>.From(value);
+            return Maybe<IValue>.From(value).ToTaskResult<object>();
         }
-
-        public IReadOnlyList<string> AllTags
-        {
-            get
-            {
-                if (_tagCache == null)
-                {
-                    _tagCache = new List<string>(Tags);
-                    _tagCache.AddRange(_capabilities.Values.SelectMany(x => x.Tags));
-                }
-                return _tagCache.AsReadOnly();
-            }
-        }
-
-        public IEnumerable<string> SupportedCapabilities => _capabilities.Values
-                                                                         .Select(cap => cap.GetPropertyValue(StateProperties.CapabilityName))
-                                                                         .Where(cap => cap.HasValue)
-                                                                         .Select(cap => cap.Value)
-                                                                         .Cast<StringValue>()
-                                                                         .Select(cap => cap.Value)
-                                                                         .Distinct();
-
-        public IEnumerable<string> SupportedStates => _capabilities.Values
-                                                                   .Select(cap => cap.GetPropertyValue(StateProperties.StateName))
-                                                                   .Where(cap => cap.HasValue)
-                                                                   .Select(cap => cap.Value)
-                                                                   .Cast<StringValue>()
-                                                                   .Select(cap => cap.Value)
-                                                                   .Distinct();
     }
 }

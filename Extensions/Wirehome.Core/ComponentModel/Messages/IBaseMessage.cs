@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Wirehome.ComponentModel
+namespace Wirehome.ComponentModel.Messaging
 {
     public interface IBaseMessage
     {

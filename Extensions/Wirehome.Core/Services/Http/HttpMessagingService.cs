@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel;
+using Wirehome.ComponentModel.Messaging;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
 

@@ -2,7 +2,7 @@
 using System.Net;
 using System;
 
-namespace Wirehome.ComponentModel
+namespace Wirehome.ComponentModel.Messaging
 {
     public interface IHttpMessage : IBaseMessage
     {

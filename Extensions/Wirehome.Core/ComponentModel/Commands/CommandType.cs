@@ -33,9 +33,16 @@
         // Surround
         public const string SelectSurroundModeCommand = "SelectSurroundModeCommand";
 
-        // Obsolate?
-        public const string QueryCommand = "QueryCommand";
+        // Playback
+        public const string PlayCommand = "PlayCommand";
 
-        public const string UpdateCommand = "UpdateCommand";
+        public const string StopCommand = "StopCommand";
+
+        // Component
+        public const string SupportedCapabilitiesCommand = "SupportedCapabilitiesCommand";
+
+        public const string SupportedStatesCommand = "SupportedStatesCommand";
+        public const string SupportedTagsCommand = "SupportedTagsCommand";
+        public const string GetStateCommand = "GetStateCommand";
     }
 }

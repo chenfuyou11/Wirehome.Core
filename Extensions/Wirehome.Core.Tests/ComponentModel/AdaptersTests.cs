@@ -27,7 +27,7 @@ namespace Wirehome.Extensions.Tests
             var adapter = new TestAdapter("adapter1", adapterServiceFactory);
             await adapter.Initialize();
 
-            var result = await adapter.ExecuteCommand(Command.DiscoverCapabilitiesCommand).Cast<DiscoveryResponse>();
+            var result = await adapter.ExecuteCommand<DiscoveryResponse>(Command.DiscoverCapabilitiesCommand);
 
             Assert.AreEqual(1, result.SupportedStates.Length);
             Assert.IsInstanceOfType(result.SupportedStates[0], typeof(PowerState));
@@ -78,7 +78,7 @@ namespace Wirehome.Extensions.Tests
             var adapter = new TestAdapter("adapter1", adapterServiceFactory);
             await adapter.Initialize();
 
-            var result = await eventAggregator.QueryDeviceAsync<DiscoveryResponse>(DeviceCommand.GenerateDiscoverCommand(adapter.Uid), TimeSpan.FromMilliseconds(100));
+            var result = await eventAggregator.QueryDeviceAsync<DiscoveryResponse>(DeviceCommand.GenerateDiscoverCommand(adapter.Uid), TimeSpan.FromMilliseconds(20));
         }
     }
 }

@@ -53,24 +53,35 @@
           "PollDurationWarningThreshold": 2000
         }
       },
-      //{
-      //  "Uid": "HSPE16InputOnly_1",
-      //  "Type": "HSPE16InputOnlyAdapter",
-      //  "Properties": {
-      //    "I2cAddress": 101,
-      //    "PoolInterval": 500,
-      //    "PollDurationWarningThreshold": 2000
-      //  }
-      //},
-      //{
-      //  "Uid": "Denon",
-      //  "Type": "DenonAmplifier",
-      //  "Properties": {
-      //    "Hostname": "192.168.0.101",
-      //    "PoolInterval": 500,
-      //    "Zone": 1
-      //  }
-      //}
+      {
+        "Uid": "HSPE16InputOnly_1",
+        "Type": "HSPE16InputOnlyAdapter",
+        "Properties": {
+          "I2cAddress": 101,
+          "PoolInterval": 500,
+          "PollDurationWarningThreshold": 2000
+        }
+      },
+      {
+        "Uid": "Denon",
+        "Type": "DenonAdapter",
+        "Properties": {
+          "Hostname": "192.168.0.101",
+          "PoolInterval": 500,
+          "Zone": 1
+        }
+      },
+      {
+        "Uid": "Kodi",
+        "Type": "KodiAdapter",
+        "Properties": {
+          "Hostname": "192.168.0.102",
+          "Port": 500,
+          "PoolInterval": 500,
+          "UserName": "dnf",
+          "Password": "Kajak123"
+        }
+      }
     ]
   }
 }

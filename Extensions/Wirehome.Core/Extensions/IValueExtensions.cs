@@ -11,6 +11,8 @@ namespace Wirehome.Core.Extensions
 
         public static StringValue ToStringValue(this IValue value) => (value as StringValue)?.Value;
 
+        public static IntValue ToIntValue(this IValue value) => (value as IntValue)?.Value;
+
         public static TimeSpan ToTimeSpan(this IValue value) => TimeSpan.FromMilliseconds((double)(value as IntValue)?.Value);
     }
 }

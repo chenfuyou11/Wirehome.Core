@@ -8,5 +8,6 @@ namespace Wirehome.ComponentModel.Capabilities.Constants
         public const string BrightnessController = "BrightnessController";
         public const string SpeakerController = "SpeakerController";
         public const string InputController = "InputController";
+        public const string PlaybackController = "PlaybackController";
     }
 }

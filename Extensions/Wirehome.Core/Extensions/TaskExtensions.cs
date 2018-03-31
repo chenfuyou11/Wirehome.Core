@@ -125,5 +125,7 @@ namespace Wirehome.Core.Extensions
             }, TaskContinuationOptions.ExecuteSynchronously);
             return tcs.Task;
         }
+
+        public static Task<T> ToTaskResult<T>(this T data) => Task.FromResult<T>(data);
     }
 }

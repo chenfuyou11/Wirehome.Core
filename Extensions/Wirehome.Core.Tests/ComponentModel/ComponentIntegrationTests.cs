@@ -25,7 +25,7 @@ using Wirehome.Core.Tests.ComponentModel;
 namespace Wirehome.Extensions.Tests
 {
     [TestClass]
-    public class ComponentModelTests : ReactiveTest
+    public class ComponentIntegrationTests : ReactiveTest
     {
         [TestMethod]
         public async Task TestReadComponentsFromConfig()

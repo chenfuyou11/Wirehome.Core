@@ -118,6 +118,8 @@ namespace Wirehome.ComponentModel.Components
             return QueueJob(command).Unwrap();
         }
 
+        public Task<T> ExecuteCommand<T>(Command command) => ExecuteCommand(command).Cast<T>();
+
         private async Task<Task<object>> QueueJob(Command command)
         {
             var commandJob = new CommandJob<object>(command);
@@ -125,23 +127,30 @@ namespace Wirehome.ComponentModel.Components
             return commandJob.Result;
         }
 
-        private Task<object> ProcessCommand(Command message)
+        private Task<object> ProcessCommand(Command command)
         {
-            if (_asyncQueryHandlers.ContainsKey(message.Type))
+            if (_asyncQueryHandlers.ContainsKey(command.Type))
             {
-                return _asyncQueryHandlers?[message.Type]?.Invoke(message);
+                return _asyncQueryHandlers?[command.Type]?.Invoke(command);
             }
-            else if (_asyncCommandHandlers.ContainsKey(message.Type))
+            else if (_asyncCommandHandlers.ContainsKey(command.Type))
             {
-                return _asyncCommandHandlers?[message.Type]?.Invoke(message).Cast<object>(0);
+                return _asyncCommandHandlers?[command.Type]?.Invoke(command).Cast<object>(0);
             }
-            else if (_commandHandlers.ContainsKey(message.Type))
+            else if (_commandHandlers.ContainsKey(command.Type))
             {
-                _commandHandlers?[message.Type]?.Invoke(message);
+                _commandHandlers?[command.Type]?.Invoke(command);
                 return Task.FromResult<object>(0);
             }
+            else
+            {
+                return UnhandledCommand(command);
+            }
+        }
 
-            throw new Exception($"Component {Uid} cannot process command because there is no registered handler for {message.Type}");
+        protected virtual Task<object> UnhandledCommand(Command command)
+        {
+            throw new Exception($"Component {Uid} cannot process command because there is no registered handler for {command.Type}");
         }
     }
 }

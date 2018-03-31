@@ -42,9 +42,6 @@ namespace Wirehome.ComponentModel.Adapters
             await scheduler.Start(_disposables.Token);
         }
 
-        protected override void LogException(Exception ex)
-        {
-            _logger.Error(ex, "Unhanded adapter exception");
-        }
+        protected override void LogException(Exception ex) => _logger.Error(ex, $"Unhanded adapter {Uid} exception");
     }
 }

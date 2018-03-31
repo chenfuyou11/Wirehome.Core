@@ -79,7 +79,24 @@
           "Port": 500,
           "PoolInterval": 500,
           "UserName": "dnf",
-          "Password": "Kajak123"
+          "Password": "Kodi123"
+        }
+      },
+      {
+        "Uid": "PC",
+        "Type": "PcAdapter",
+        "Properties": {
+          "Hostname": "192.168.0.102",
+          "Port": 500,
+          "PoolInterval": 500,
+          "MAC": "9C-5C-8E-C2-01-62"
+        }
+      },
+      {
+        "Uid": "Samsung",
+        "Type": "SamsungAdapter",
+        "Properties": {
+          "Hostname": "192.168.0.102"
         }
       }
     ]

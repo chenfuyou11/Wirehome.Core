@@ -1,5 +1,4 @@
-﻿
-namespace Wirehome.Core.Communication.I2C
+﻿namespace Wirehome.Core.Services.I2C
 {
     public interface II2CBusService : IService
     {

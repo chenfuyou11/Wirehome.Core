@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Wirehome.Core.Communication.I2C
+namespace Wirehome.Core.Services.I2C
 {
     public struct I2CSlaveAddress
     {

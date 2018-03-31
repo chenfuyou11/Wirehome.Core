@@ -19,7 +19,7 @@ namespace Wirehome.Core.Extensions
                 var service = services.Dequeue();
                 try
                 {
-                    await service.Initialize().ConfigureAwait(false);
+                    await service.Initialize();
                 }
                 catch (Exception exception)
                 {

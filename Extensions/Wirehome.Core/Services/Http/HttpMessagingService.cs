@@ -2,7 +2,6 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Wirehome.ComponentModel;
 using Wirehome.ComponentModel.Messaging;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
@@ -33,12 +32,12 @@ namespace Wirehome.Core.Services.Http
 
             if (httpMessage.RequestType == "POST")
             {
-                return await SendPostRequest(message).ConfigureAwait(false);
+                return await SendPostRequest(message);
             }
             else
             if (httpMessage.RequestType == "GET")
             {
-                return await SendGetRequest(message).ConfigureAwait(false);
+                return await SendGetRequest(message);
             }
 
             return null;
@@ -49,9 +48,9 @@ namespace Wirehome.Core.Services.Http
             using (var httpClient = new HttpClient())
             {
                 var address = message.Message.MessageAddress();
-                var httpResponse = await httpClient.GetAsync(address).ConfigureAwait(false);
+                var httpResponse = await httpClient.GetAsync(address);
                 httpResponse.EnsureSuccessStatusCode();
-                var responseBody = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var responseBody = await httpResponse.Content.ReadAsStringAsync();
 
                 return message.Message.ParseResult(responseBody, message.ResponseType);
             }
@@ -89,9 +88,9 @@ namespace Wirehome.Core.Services.Http
                 {
                     content.Headers.ContentType = new MediaTypeHeaderValue(message.Message.ContentType);
                 }
-                var response = await httpClient.PostAsync(address, content).ConfigureAwait(false);
+                var response = await httpClient.PostAsync(address, content);
                 response.EnsureSuccessStatusCode();
-                var responseBody = await response.Content.ReadAsStringAsync(Encoding.UTF8).ConfigureAwait(false);
+                var responseBody = await response.Content.ReadAsStringAsync(Encoding.UTF8);
 
                 return message.Message.ParseResult(responseBody, message.ResponseType);
             }

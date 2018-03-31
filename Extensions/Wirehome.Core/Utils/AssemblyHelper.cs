@@ -16,10 +16,7 @@ namespace Wirehome.Core.Utils
             return assemblies.Where(x => x.FullName.IndexOf(applicationNameName) > -1);
         }
 
-        public static IEnumerable<Type> GetAllInherited<T>()
-        {
-            return GetProjectAssemblies().SelectMany(s => s.GetTypes())
-                                         .Where(p => typeof(T).IsAssignableFrom(p) && !p.IsAbstract);
-        }
+        public static IEnumerable<Type> GetAllInherited<T>() => GetProjectAssemblies().SelectMany(s => s.GetTypes())
+                                                                                      .Where(p => typeof(T).IsAssignableFrom(p) && !p.IsAbstract);
     }
 }

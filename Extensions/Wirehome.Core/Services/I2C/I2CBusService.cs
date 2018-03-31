@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Wirehome.Core.Native;
 using Wirehome.Core.Services.Logging;
 
-namespace Wirehome.Core.Communication.I2C
+namespace Wirehome.Core.Services.I2C
 {
     public sealed class I2CBusService : II2CBusService
     {
@@ -56,7 +56,7 @@ namespace Wirehome.Core.Communication.I2C
                 {
                     device = GetDevice(address.Value, useCache);
                     var result = action(device);
-                    
+
                     if (result.Status != NativeI2cTransferStatus.FullTransfer)
                     {
                         _log.Warning($"Transfer failed. Address={address.Value} Status={result.Status} TransferredBytes={result.BytesTransferred}");

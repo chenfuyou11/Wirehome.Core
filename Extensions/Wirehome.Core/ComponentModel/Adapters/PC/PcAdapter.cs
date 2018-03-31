@@ -50,7 +50,7 @@ namespace Wirehome.ComponentModel.Adapters.Pc
                 Port = _port,
                 Service = "Status",
                 RequestType = "GET"
-            }).ConfigureAwait(false);
+            });
 
             _input = await UpdateState<StringValue>(InputSourceState.StateName, _input, state.ActiveInput);
             _volume = await UpdateState<DoubleValue>(VolumeState.StateName, _volume, state.MasterVolume);
@@ -72,7 +72,7 @@ namespace Wirehome.ComponentModel.Adapters.Pc
             await _eventAggregator.QueryAsync<WakeOnLanMessage, string>(new WakeOnLanMessage
             {
                 MAC = _mac
-            }).ConfigureAwait(false);
+            });
             _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(true));
         }
 
@@ -83,7 +83,7 @@ namespace Wirehome.ComponentModel.Adapters.Pc
                 Address = _hostname,
                 Service = "Power",
                 Message = new PowerPost { State = ComputerPowerState.Hibernate }
-            }).ConfigureAwait(false);
+            });
             _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(false));
         }
 
@@ -96,7 +96,7 @@ namespace Wirehome.ComponentModel.Adapters.Pc
                 Address = _hostname,
                 Service = "Volume",
                 Message = new VolumePost { Volume = volume }
-            }).ConfigureAwait(false);
+            });
 
             _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
         }
@@ -109,7 +109,7 @@ namespace Wirehome.ComponentModel.Adapters.Pc
                 Address = _hostname,
                 Service = "Volume",
                 Message = new VolumePost { Volume = volume }
-            }).ConfigureAwait(false);
+            });
 
             _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
         }
@@ -122,7 +122,7 @@ namespace Wirehome.ComponentModel.Adapters.Pc
                 Address = _hostname,
                 Service = "Volume",
                 Message = new VolumePost { Volume = volume }
-            }).ConfigureAwait(false);
+            });
 
             _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
         }
@@ -134,7 +134,7 @@ namespace Wirehome.ComponentModel.Adapters.Pc
                 Address = _hostname,
                 Service = "Mute",
                 Message = new MutePost { Mute = true }
-            }).ConfigureAwait(false);
+            });
 
             _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(true));
         }
@@ -146,7 +146,7 @@ namespace Wirehome.ComponentModel.Adapters.Pc
                 Address = _hostname,
                 Service = "Mute",
                 Message = new MutePost { Mute = false }
-            }).ConfigureAwait(false);
+            });
 
             _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(false));
         }
@@ -160,7 +160,7 @@ namespace Wirehome.ComponentModel.Adapters.Pc
                 Address = _hostname,
                 Service = "InputSource",
                 Message = new InputSourcePost { Input = inputName }
-            }).ConfigureAwait(false);
+            });
 
             _input = await UpdateState(InputSourceState.StateName, _input, inputName);
         }

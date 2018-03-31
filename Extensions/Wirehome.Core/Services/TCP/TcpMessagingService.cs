@@ -13,6 +13,7 @@ namespace Wirehome.Core.Services.Tcp
     {
         private readonly ILogger _logService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly DisposeContainer _disposeContainer = new DisposeContainer();
 
         public TcpMessagingService(ILogService logService, IEventAggregator eventAggregator)
         {
@@ -22,14 +23,13 @@ namespace Wirehome.Core.Services.Tcp
 
         public Task Initialize()
         {
-            _eventAggregator.SubscribeForAsyncResult<ITcpMessage>(MessageHandler);
+            _disposeContainer.Add(_eventAggregator.SubscribeForAsyncResult<ITcpMessage>(MessageHandler));
             return Task.CompletedTask;
         }
 
-        private Task<object> MessageHandler(IMessageEnvelope<ITcpMessage> message)
-        {
-            return SendMessage(message);
-        }
+        public void Dispose() => _disposeContainer.Dispose();
+
+        private Task<object> MessageHandler(IMessageEnvelope<ITcpMessage> message) => SendMessage(message);
 
         private async Task<object> SendMessage(IMessageEnvelope<ITcpMessage> message)
         {
@@ -38,12 +38,12 @@ namespace Wirehome.Core.Services.Tcp
                 using (var socket = new TcpClient())
                 {
                     var uri = new Uri($"tcp://{message.Message.MessageAddress()}");
-                    await socket.ConnectAsync(uri.Host, uri.Port).ConfigureAwait(false);
+                    await socket.ConnectAsync(uri.Host, uri.Port);
                     using (var stream = socket.GetStream())
                     {
                         var messageBytes = message.Message.Serialize();
-                        await stream.WriteAsync(messageBytes, 0, messageBytes.Length, message.CancellationToken).ConfigureAwait(false);
-                        return await ReadString(stream).ConfigureAwait(false);
+                        await stream.WriteAsync(messageBytes, 0, messageBytes.Length, message.CancellationToken);
+                        return await ReadString(stream);
                     }
                 }
             }
@@ -62,16 +62,12 @@ namespace Wirehome.Core.Services.Tcp
 
             do
             {
-                bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
                 result.AddRange(buffer.Take(bytesRead));
             }
             while (bytesRead == buffer.Length);
 
             return System.Text.Encoding.UTF8.GetString(result.ToArray());
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

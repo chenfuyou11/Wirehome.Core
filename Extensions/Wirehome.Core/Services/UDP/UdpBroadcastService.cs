@@ -11,6 +11,7 @@ namespace Wirehome.Core.Services.UDP
     {
         private readonly ILogger _logService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly DisposeContainer _disposeContainer = new DisposeContainer();
 
         public UdpBroadcastService(ILogService logService, IEventAggregator eventAggregator)
         {
@@ -18,13 +19,11 @@ namespace Wirehome.Core.Services.UDP
             _eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
         }
 
-        public void Dispose()
-        {
-        }
+        public void Dispose() => _disposeContainer.Dispose();
 
         public Task Initialize()
         {
-            _eventAggregator.SubscribeForAsyncResult<IUdpBroadcastMessage>(MessageHandler);
+            _disposeContainer.Add(_eventAggregator.SubscribeForAsyncResult<IUdpBroadcastMessage>(MessageHandler));
             return Task.CompletedTask;
         }
 
@@ -44,7 +43,7 @@ namespace Wirehome.Core.Services.UDP
                     socket.Connect(uri.Host, uri.Port);
                     socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 0);
                     var messageBytes = message.Message.Serialize();
-                    await socket.SendAsync(messageBytes, messageBytes.Length).ConfigureAwait(false);
+                    await socket.SendAsync(messageBytes, messageBytes.Length);
                 }
             }
             catch (Exception ex)

@@ -108,5 +108,20 @@ namespace Wirehome.Core.Extensions
         }
 
         public static Task<object> ToStaticTaskResult(this object task) => Task.FromResult(task);
+
+        public static Task<T> Cast<T>(this Task<object> task)
+        {
+            var tcs = new TaskCompletionSource<T>();
+            task.ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                    tcs.TrySetException(t.Exception.InnerExceptions);
+                else if (t.IsCanceled)
+                    tcs.TrySetCanceled();
+                else
+                    tcs.TrySetResult((T)t.Result);
+            }, TaskContinuationOptions.ExecuteSynchronously);
+            return tcs.Task;
+        }
     }
 }

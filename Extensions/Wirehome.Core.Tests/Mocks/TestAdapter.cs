@@ -14,9 +14,11 @@ namespace Wirehome.Core.Tests.Mocks
 {
     public class TestAdapter : Adapter
     {
-        public TestAdapter(IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory)
+        public DiscoveryResponse DiscoveryResponse { get; set; }
+
+        public TestAdapter(string uid, IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory)
         {
-            Uid = "adapter_1";
+            Uid = uid;
         }
 
         public override async Task Initialize()
@@ -28,14 +30,14 @@ namespace Wirehome.Core.Tests.Mocks
 
         private Task<object> DeviceCommandHandler(IMessageEnvelope<DeviceCommand> messageEnvelope)
         {
-            return ExecuteCommand(messageEnvelope.Message, messageEnvelope.CancellationToken);
+            return ExecuteCommand(messageEnvelope.Message);
         }
 
         protected async Task<object> DiscoverCapabilitiesHandler(Command message)
         {
             await Task.Delay(2000);
 
-            return new DiscoveryResponse(RequierdProperties(), new PowerState());
+            return DiscoveryResponse;
         }
     }
 }

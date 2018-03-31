@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Wirehome.ComponentModel.Adapters;
@@ -103,14 +102,12 @@ namespace Wirehome.ComponentModel.Components
             if (result.GetType().Namespace == "System.Threading.Tasks") throw new Exception("Result from handler wan not unwrapped properly");
         }
 
-        public Task<object> ExecuteCommand(Command command, CancellationToken callerCancelationToken = default)
+        public Task<object> ExecuteCommand(Command command)
         {
             if (!_isInitialized) throw new Exception($"Component {Uid} is not initialized");
 
             var commandJob = new CommandJob<object>(command);
-            //CancellationTokenSource.CreateLinkedTokenSource(callerCancelationToken, _disposables.Token).Token
             var sendResult = _commandQueue.Post(commandJob);
-            //TODO Test for exceptions
             return commandJob.Result;
         }
 

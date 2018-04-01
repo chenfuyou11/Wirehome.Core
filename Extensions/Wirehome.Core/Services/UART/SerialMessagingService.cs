@@ -101,7 +101,6 @@ namespace Wirehome.Core.Services.Uart
                             {
                                 var message = handler.Deserialize(_dataReader, messageBodySize);
                                 await _eventAggregator.Publish(message);
-                                //await _messageBroker.Publish("SerialService", message);
 
                                 _logService.Info($"Received UART message handled by {handler.GetType().Name}, Message details: [{message}]");
                             }

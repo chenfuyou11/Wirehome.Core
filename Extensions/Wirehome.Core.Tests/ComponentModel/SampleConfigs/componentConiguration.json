@@ -1,9 +1,54 @@
 ﻿{
   "Wirehome": {
+    "Areas": [
+      {
+        "Uid": "Backyard",
+        "Inner": [
+          {
+            "Uid": "House",
+            "Inner": [
+              {
+                "Uid": "Kitchen"
+              },
+              {
+                "Uid": "Bedroom"
+              },
+              {
+                "Uid": "Toilet"
+              },
+              {
+                "Uid": "Bathroom"
+              },
+              {
+                "Uid": "Livingroom",
+                "Components": [
+                  {
+                    "Uid": "Lamp1"
+                  },
+                  {
+                    "Uid": "RemoteLamp"
+                  }
+                ]
+              },
+              {
+                "Uid": "Balcony"
+              },
+              {
+                "Uid": "Hallway"
+              }
+
+            ]
+          },
+          {
+            "Uid": "Staircase"
+          }
+        ]
+      }
+    ],
     "Components": [
       {
         "Uid": "Lamp1",
-        "IsEnabled": true,
+        "IsEnabled": true, // Move this to properties or enable in area?
         "Properties": {
           "Test": "2"
         },
@@ -39,6 +84,19 @@
         "Classes": [
           "Window",
           "Lamp"
+        ]
+      },
+      {
+        "Uid": "RemoteLamp",
+        "IsEnabled": true,
+        "AdapterRefs": [
+          {
+            "Uid": "HardwareBridge",
+            "Properties": {
+              "System": "AllOn", // AllOff, Switch1, Switch2, Switch3, Switch4, Switch5, AllOn
+              "Unit": "A" // A, B, C, D
+            }
+          }
         ]
       }
     ],
@@ -105,6 +163,13 @@
         "Properties": {
           "Hostname": "192.168.0.102",
           "AuthKey": "344fb7d28691ba43c9045e9d38fa3c83a0587620fc14a79a958db4ff5d30e0e7"
+        }
+      },
+      {
+        "Uid": "HardwareBridge",
+        "Type": "HardwareBridgeAdapter",
+        "Properties": {
+          "I2cAddress": 101
         }
       }
     ]

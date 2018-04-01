@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.2.2" />
-    <PackageReference Include="ConfigureAwait.Fody" Version="2.0.0" />
+    <PackageReference Include="ConfigureAwait.Fody" Version="2.1.0" />
     <PackageReference Include="CSharpFunctionalExtensions" Version="1.10.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />

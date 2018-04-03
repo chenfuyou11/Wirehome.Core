@@ -150,7 +150,7 @@ namespace Wirehome.ComponentModel.Components
 
         protected virtual Task<object> UnhandledCommand(Command command)
         {
-            throw new Exception($"Component {Uid} cannot process command because there is no registered handler for {command.Type}");
+            throw new Exception($"Component [{Uid}] cannot process command because there is no registered handler for [{command.Type}]");
         }
     }
 }

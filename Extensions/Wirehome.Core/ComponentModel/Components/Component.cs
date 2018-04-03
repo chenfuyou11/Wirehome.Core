@@ -39,6 +39,8 @@ namespace Wirehome.ComponentModel.Components
 
         public override async Task Initialize()
         {
+            if (!IsEnabled) return;
+
             foreach (var adapter in _adapters)
             {
                 var adapterCapabilities = await _eventAggregator.QueryDeviceAsync<DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid));

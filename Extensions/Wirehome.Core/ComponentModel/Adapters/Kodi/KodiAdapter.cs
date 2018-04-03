@@ -36,7 +36,7 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
             base.Initialize();
 
             _hostname = Properties[AdapterProperties.Hostname].Value.ToStringValue();
-            _port = Properties[AdapterProperties.Hostname].Value.ToIntValue();
+            _port = Properties[AdapterProperties.Port].Value.ToIntValue();
             _userName = Properties[AdapterProperties.UserName].Value.ToStringValue();
             _Password = Properties[AdapterProperties.Password].Value.ToStringValue();
             _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpan();

@@ -18,7 +18,7 @@ namespace Wirehome.Core.Extensions
             return collection;
         }
 
-        public static K ElementAtOrNull<T, K>(this IDictionary<T, K> dictionary, T lookupValue) where K: class
+        public static K ElementAtOrNull<T, K>(this IDictionary<T, K> dictionary, T lookupValue) where K : class
         {
             return dictionary.ContainsKey(lookupValue) ? dictionary[lookupValue] : null;
         }
@@ -39,7 +39,6 @@ namespace Wirehome.Core.Extensions
         }
 
         public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) => new ReadOnlyDictionary<TKey, TValue>(dictionary);
-        
 
         public static bool IsEqual(this Dictionary<string, string> source, Dictionary<string, string> dest)
         {
@@ -65,6 +64,35 @@ namespace Wirehome.Core.Extensions
                 if (!dest[attribute.Key].Equals(attribute.Value)) return false;
             }
             return true;
+        }
+
+        public static IEnumerable<T> Expand<T>(this IEnumerable<T> source, Func<T, IEnumerable<T>> elementSelector)
+        {
+            var stack = new Stack<IEnumerator<T>>();
+            var e = source.GetEnumerator();
+            try
+            {
+                while (true)
+                {
+                    while (e.MoveNext())
+                    {
+                        var item = e.Current;
+                        yield return item;
+                        var elements = elementSelector(item);
+                        if (elements == null) continue;
+                        stack.Push(e);
+                        e = elements.GetEnumerator();
+                    }
+                    if (stack.Count == 0) break;
+                    e.Dispose();
+                    e = stack.Pop();
+                }
+            }
+            finally
+            {
+                e.Dispose();
+                while (stack.Count != 0) stack.Pop().Dispose();
+            }
         }
     }
 }

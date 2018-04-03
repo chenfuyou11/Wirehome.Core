@@ -30,12 +30,14 @@ namespace Wirehome.ComponentModel
 
         public virtual Maybe<IValue> GetPropertyValue(string propertyName, IValue defaultValue = null)
         {
-            var property = _properties[propertyName];
-            if (property == null)
+            if (!_properties.ContainsKey(propertyName))
             {
                 return defaultValue != null ? Maybe<IValue>.From(defaultValue) : Maybe<IValue>.None;
             }
-            return Maybe<IValue>.From(property.Value);
+            else
+            {
+                return Maybe<IValue>.From(_properties[propertyName].Value);
+            }
         }
 
         public virtual void SetPropertyValue(string propertyName, IValue value)

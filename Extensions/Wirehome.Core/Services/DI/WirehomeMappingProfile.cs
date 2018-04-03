@@ -3,6 +3,7 @@ using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Components;
 using Wirehome.ComponentModel.Events;
+using Wirehome.Core.ComponentModel.Areas;
 using Wirehome.Core.ComponentModel.Configuration;
 using Wirehome.Core.Utils;
 
@@ -19,8 +20,9 @@ namespace Wirehome.Core.Services.DependencyInjection
             CreateMap<TriggerDTO, Trigger>();
             CreateMap<CommandDTO, Command>();
             CreateMap<EventDTO, Event>();
+            CreateMap<AreaDTO, Area>();
 
-            foreach(var adapter in AssemblyHelper.GetAllInherited<Adapter>())
+            foreach (var adapter in AssemblyHelper.GetAllInherited<Adapter>())
             {
                 CreateMap(typeof(AdapterDTO), adapter).ConstructUsingServiceLocator();
             }

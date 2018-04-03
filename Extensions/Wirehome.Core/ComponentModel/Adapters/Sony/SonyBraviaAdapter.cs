@@ -12,7 +12,7 @@ namespace Wirehome.ComponentModel.Adapters.Sony
     // TODO test when power off
     public class SonyBraviaAdapter : Adapter
     {
-        public const int DEFAULT_POOL_INTERVAL = 1000;
+        private const int DEFAULT_POOL_INTERVAL = 1000;
 
         private BooleanValue _powerState;
         private DoubleValue _volume;
@@ -23,7 +23,7 @@ namespace Wirehome.ComponentModel.Adapters.Sony
         private string _hostname;
         private string _authorisationKey;
 
-        public Dictionary<string, string> _inputSourceMap = new Dictionary<string, string>
+        private Dictionary<string, string> _inputSourceMap = new Dictionary<string, string>
         {
             { "HDMI1", "AAAAAgAAABoAAABaAw==" },
             { "HDMI2", "AAAAAgAAABoAAABbAw==" },

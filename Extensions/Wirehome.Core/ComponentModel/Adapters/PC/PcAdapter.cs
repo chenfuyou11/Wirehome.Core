@@ -39,7 +39,7 @@ namespace Wirehome.ComponentModel.Adapters.Pc
             _mac = Properties[AdapterProperties.MAC].Value.ToStringValue();
             _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpan();
 
-            return ScheduleDeviceRefresh<RefreshLightStateJob>(_poolInterval);
+            return ScheduleDeviceRefresh<RefreshStateJob>(_poolInterval);
         }
 
         protected async Task RefreshCommandHandler(Command message)

@@ -2,11 +2,9 @@
 
 namespace Wirehome.Core.ComponentModel.Configuration
 {
-    public class WirehomeConfig
+    public class WirehomeConfigDTO
     {
         [JsonProperty("Wirehome")]
-        public WirehomeRoot Wirehome { get; set; }
+        public WirehomeDTO Wirehome { get; set; }
     }
-
-
 }

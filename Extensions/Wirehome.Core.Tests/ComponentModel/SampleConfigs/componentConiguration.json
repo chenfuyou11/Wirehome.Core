@@ -3,10 +3,10 @@
     "Areas": [
       {
         "Uid": "Backyard",
-        "Inner": [
+        "Areas": [
           {
             "Uid": "House",
-            "Inner": [
+            "Areas": [
               {
                 "Uid": "Kitchen"
               },
@@ -48,9 +48,9 @@
     "Components": [
       {
         "Uid": "Lamp1",
-        "IsEnabled": true, // Move this to properties or enable in area?
+        "IsEnabled": false, // Move this to properties or enable in area?
         "Properties": {
-          "Test": "2"
+          "FriendlyName": "Blue lamp"
         },
         "AdapterRefs": [
           {
@@ -88,7 +88,7 @@
       },
       {
         "Uid": "RemoteLamp",
-        "IsEnabled": true,
+        "IsEnabled": false,
         "AdapterRefs": [
           {
             "Uid": "HardwareBridge",

@@ -115,45 +115,47 @@ namespace Wirehome.ComponentModel.Components
             }
         }
 
-        protected Task<object> SupportedCapabilitiesCommandHandler(Command command) => _capabilities.Values
+        protected IReadOnlyCollection<string> SupportedCapabilitiesCommandHandler(Command command) => _capabilities.Values
                                                                                                 .Select(cap => cap.GetPropertyValue(StateProperties.StateName))
                                                                                                 .Where(cap => cap.HasValue)
                                                                                                 .Select(cap => cap.Value)
                                                                                                 .Cast<StringValue>()
                                                                                                 .Select(cap => cap.Value)
                                                                                                 .Distinct()
-                                                                                                .ToTaskResult<object>();
+                                                                                                .ToList()
+                                                                                                .AsReadOnly();
 
-        protected Task<object> SupportedCStatesCommandHandler(Command command) => _capabilities.Values
+        protected IReadOnlyCollection<string> SupportedStatesCommandHandler(Command command) => _capabilities.Values
                                                                                    .Select(cap => cap.GetPropertyValue(StateProperties.StateName))
                                                                                    .Where(cap => cap.HasValue)
                                                                                    .Select(cap => cap.Value)
                                                                                    .Cast<StringValue>()
                                                                                    .Select(cap => cap.Value)
                                                                                    .Distinct()
-                                                                                   .ToTaskResult<object>();
+                                                                                   .ToList()
+                                                                                   .AsReadOnly();
 
-        protected Task<object> SupportedTagsCommandHandler(Command command)
+        protected IReadOnlyCollection<string> SupportedTagsCommandHandler(Command command)
         {
             if (_tagCache == null)
             {
                 _tagCache = new List<string>(Tags);
                 _tagCache.AddRange(_capabilities.Values.SelectMany(x => x.Tags));
             }
-            return _tagCache.AsReadOnly().ToTaskResult<object>();
+            return _tagCache.AsReadOnly();
         }
 
-        protected Task<object> GetStateCommandHandler(Command command)
+        protected Maybe<IValue> GetStateCommandHandler(Command command)
         {
             var stateName = command[CommandProperties.StateName].ToStringValue();
 
-            if (!_capabilities.ContainsKey(stateName)) return Maybe<IValue>.None.ToTaskResult<object>();
+            if (!_capabilities.ContainsKey(stateName)) return Maybe<IValue>.None;
             var value = _capabilities[stateName][StateProperties.Value];
             if (_converters.ContainsKey(stateName))
             {
                 value = _converters[stateName].Convert(value);
             }
-            return Maybe<IValue>.From(value).ToTaskResult<object>();
+            return Maybe<IValue>.From(value);
         }
     }
 }

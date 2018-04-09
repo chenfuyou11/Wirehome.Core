@@ -28,14 +28,14 @@ namespace Wirehome.ComponentModel.Adapters.Samsung
             _hostname = Properties[AdapterProperties.Hostname].Value.ToStringValue();
         }
 
-        protected Task<object> DiscoverCapabilitiesHandler(Command message)
+        protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
         {
             //TODO Add read only state
             return new DiscoveryResponse(RequierdProperties(), new PowerState(),
                                                                new VolumeState(),
                                                                new MuteState(),
                                                                new InputSourceState()
-                                          ).ToTaskResult<object>();
+                                          );
         }
 
         protected async Task TurnOnCommandHandler(Command message)

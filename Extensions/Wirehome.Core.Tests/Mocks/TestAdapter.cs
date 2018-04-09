@@ -55,8 +55,6 @@ namespace Wirehome.Core.Tests.Mocks
             {
                 Counter--;
             }
-
-            // return DiscoveryResponse;
         }
 
         protected async Task<object> DiscoverCapabilitiesHandler(Command message)

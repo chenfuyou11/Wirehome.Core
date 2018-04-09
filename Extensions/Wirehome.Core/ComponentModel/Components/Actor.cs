@@ -1,6 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +11,7 @@ using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.Core;
 using Wirehome.Core.Extensions;
+using System.Linq.Expressions;
 
 namespace Wirehome.ComponentModel.Components
 {
@@ -35,49 +38,73 @@ namespace Wirehome.ComponentModel.Components
 
         private void RegisterCommandHandlers()
         {
+            var handlers = GetHandlers();
+
+            RegisterAsyncQueryHandlers(handlers);
+            RegisterAsyncCommandsHandlers(handlers);
+            RegisterActionHandlers(handlers);
+            RegisterSpecificTaskHandler(handlers);
+            RegisterCustomTypeHandlers(handlers);
+        }
+
+        private Dictionary<string, MethodInfo> GetHandlers()
+        {
+            var handlers = new Dictionary<string, MethodInfo>();
             Regex r = new Regex(@"^(?<Name>\w*)Handler", RegexOptions.Compiled);
-            RegisterAsyncQueryHandlers(r);
-            RegisterAsyncCommandsHandlers(r);
-            RegisterActionHandlers(r);
-        }
-
-        private void RegisterAsyncQueryHandlers(Regex r)
-        {
-            foreach (var handler in GetType().GetMethodsBySignature(typeof(Task<object>), typeof(Command)))
+            foreach (var handler in GetType().GetMethodsBySignature(typeof(Command)))
             {
-                var command = GetCommandName(r, handler);
-                if (command.HasValue)
+                var commandName = GetCommandName(r, handler);
+                if (commandName.HasValue)
                 {
-                    _asyncQueryHandlers.Add(command.Value, (Func<Command, Task<object>>)Delegate.CreateDelegate(typeof(Func<Command, Task<object>>), this, handler, false));
+                    handlers.Add(commandName.Value, handler);
                 }
             }
+            return handlers;
         }
 
-        private void RegisterAsyncCommandsHandlers(Regex r)
+        private void RegisterAsyncQueryHandlers(Dictionary<string, MethodInfo> handlers)
         {
-            foreach (var handler in GetType().GetMethodsBySignature(typeof(Task), typeof(Command)))
+            var filtered = handlers.Where(h => h.Value.ReturnType == typeof(Task<object>)).ToList();
+            foreach (var handler in filtered)
             {
-                var command = GetCommandName(r, handler);
-                if (command.HasValue)
-                {
-                    _asyncCommandHandlers.Add(command.Value, (Func<Command, Task>)Delegate.CreateDelegate(typeof(Func<Command, Task>), this, handler, false));
-                }
+                _asyncQueryHandlers.Add(handler.Key, (Func<Command, Task<object>>)Delegate.CreateDelegate(typeof(Func<Command, Task<object>>), this, handler.Value, false));
             }
+            handlers.RemoveRange(filtered.Select(f => f.Key));
         }
 
-        private void RegisterActionHandlers(Regex r)
+        private void RegisterAsyncCommandsHandlers(Dictionary<string, MethodInfo> handlers)
         {
-            foreach (var handler in GetType().GetMethodsBySignature(typeof(void), typeof(Command)))
+            var filtered = handlers.Where(h => h.Value.ReturnType == typeof(Task)).ToList();
+            foreach (var handler in filtered)
             {
-                var command = GetCommandName(r, handler);
-                if (command.HasValue)
-                {
-                    _commandHandlers.Add(command.Value, (Action<Command>)Delegate.CreateDelegate(typeof(Action<Command>), this, handler, false));
-                }
+                _asyncCommandHandlers.Add(handler.Key, (Func<Command, Task>)Delegate.CreateDelegate(typeof(Func<Command, Task>), this, handler.Value, false));
             }
+            handlers.RemoveRange(filtered.Select(f => f.Key));
         }
 
-        private Maybe<string> GetCommandName(Regex r, System.Reflection.MethodInfo handler)
+        private void RegisterActionHandlers(Dictionary<string, MethodInfo> handlers)
+        {
+            var filtered = handlers.Where(h => h.Value.ReturnType == typeof(void)).ToList();
+            foreach (var handler in filtered)
+            {
+                _commandHandlers.Add(handler.Key, (Action<Command>)Delegate.CreateDelegate(typeof(Action<Command>), this, handler.Value, false));
+            }
+            handlers.RemoveRange(filtered.Select(f => f.Key));
+        }
+
+        private void RegisterSpecificTaskHandler(Dictionary<string, MethodInfo> handlers)
+        {
+            var filtered = handlers.Where(h => h.Value.ReturnType.BaseType == typeof(Task)).ToList();
+            filtered.ForEach(handler => _asyncQueryHandlers.Add(handler.Key, handler.Value.WrapTaskToGenericTask(this)));
+            handlers.RemoveRange(filtered.Select(f => f.Key));
+        }
+
+        private void RegisterCustomTypeHandlers(Dictionary<string, MethodInfo> handlers)
+        {
+            handlers.ForEach(handler => _asyncQueryHandlers.Add(handler.Key, handler.Value.WrapSimpleTypeToGenericTask(this)));
+        }
+
+        private Maybe<string> GetCommandName(Regex r, MethodInfo handler)
         {
             var match = r.Match(handler.Name);
             if (match?.Success ?? false)

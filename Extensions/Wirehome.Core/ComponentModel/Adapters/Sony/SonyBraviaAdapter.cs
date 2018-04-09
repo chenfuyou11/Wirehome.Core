@@ -68,13 +68,13 @@ namespace Wirehome.ComponentModel.Adapters.Sony
             });
         }
 
-        protected Task<object> DiscoverCapabilitiesHandler(Command message)
+        protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
         {
             return new DiscoveryResponse(RequierdProperties(), new PowerState(),
                                                                new VolumeState(),
                                                                new MuteState(),
                                                                new InputSourceState()
-                                          ).ToTaskResult<object>();
+                                          );
         }
 
         protected async Task TurnOnCommandHandler(Command message)

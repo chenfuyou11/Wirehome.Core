@@ -38,6 +38,14 @@ namespace Wirehome.Core.Extensions
             dicToAdd.ForEach(x => { if (!dic.ContainsKey(x.Key)) dic.Add(x.Key, x.Value); });
         }
 
+        public static void RemoveRange<TKey, TValue>(this Dictionary<TKey, TValue> dic, IEnumerable<TKey> toRemove)
+        {
+            foreach (var el in toRemove)
+            {
+                dic.Remove(el);
+            }
+        }
+
         public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) => new ReadOnlyDictionary<TKey, TValue>(dictionary);
 
         public static bool IsEqual(this Dictionary<string, string> source, Dictionary<string, string> dest)

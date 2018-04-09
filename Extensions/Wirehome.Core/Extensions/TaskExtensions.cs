@@ -126,6 +126,6 @@ namespace Wirehome.Core.Extensions
             return tcs.Task;
         }
 
-        public static Task<T> ToTaskResult<T>(this T data) => Task.FromResult<T>(data);
+        public static Task<object> ToGenericTaskResult<TResult>(Task<TResult> source) => source.ContinueWith(t => (object)t.Result);
     }
 }

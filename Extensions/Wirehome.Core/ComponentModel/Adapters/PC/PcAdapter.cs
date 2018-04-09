@@ -58,13 +58,13 @@ namespace Wirehome.ComponentModel.Adapters.Pc
             _powerState = await UpdateState<BooleanValue>(PowerState.StateName, _powerState, state.PowerStatus);
         }
 
-        protected Task<object> DiscoverCapabilitiesHandler(Command message)
+        protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
         {
             return new DiscoveryResponse(RequierdProperties(), new PowerState(),
                                                                new VolumeState(),
                                                                new MuteState(),
                                                                new InputSourceState()
-                                          ).ToTaskResult<object>();
+                                          );
         }
 
         protected async Task TurnOnCommandHandler(Command message)

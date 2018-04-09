@@ -61,10 +61,8 @@ namespace Wirehome.ComponentModel.Adapters
 
         protected Task RefreshCommandHandler(Command message) => FetchState();
 
-        protected async Task<object> DiscoverCapabilitiesHandler(Command message)
+        protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
         {
-            await Task.Delay(2000);
-
             return new DiscoveryResponse(RequierdProperties(), new PowerState());
         }
 
@@ -75,11 +73,11 @@ namespace Wirehome.ComponentModel.Adapters
             SetPortState(pinNumber.Value, PowerStateValue.ToBinaryState(state), true);
         }
 
-        protected Task<object> QueryCommandHandler(Command message)
+        protected BinaryState QueryCommandHandler(Command message)
         {
             var state = message[PowerState.StateName] as StringValue;
             var pinNumber = message[AdapterProperties.PinNumber] as IntValue;
-            return Task.FromResult<object>(GetPortState(pinNumber));
+            return GetPortState(pinNumber);
         }
 
         private async Task FetchState()

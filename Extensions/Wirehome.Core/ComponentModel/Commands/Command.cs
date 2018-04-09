@@ -24,5 +24,7 @@ namespace Wirehome.ComponentModel.Commands
             Type = commandType;
             CancellationToken = cancellationToken;
         }
+
+        public static implicit operator Command(string value) => new Command(value);
     }
 }

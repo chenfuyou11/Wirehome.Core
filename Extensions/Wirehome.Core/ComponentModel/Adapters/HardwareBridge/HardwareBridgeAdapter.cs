@@ -35,14 +35,14 @@ namespace Wirehome.ComponentModel.Adapters.Denon
         {
         }
 
-        protected Task<object> DiscoverCapabilitiesHandler(Command message)
+        protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
         {
             return new DiscoveryResponse(RequierdProperties(), new PowerState(),
                                                                new VolumeState(),
                                                                new MuteState(),
                                                                new InputSourceState(),
                                                                new SurroundSoundState()
-                                          ).ToTaskResult<object>();
+                                          );
         }
 
         protected async Task TurnOnCommandHandler(Command message)

@@ -49,13 +49,13 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
             //TODO pool state
         }
 
-        protected Task<object> DiscoverCapabilitiesHandler(Command message)
+        protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
         {
             return new DiscoveryResponse(RequierdProperties(), new PowerState(),
                                                                new VolumeState(),
                                                                new MuteState(),
                                                                new PlaybackState()
-                                          ).ToTaskResult<object>();
+                                          );
         }
 
         protected async Task TurnOnCommandHandler(Command message)

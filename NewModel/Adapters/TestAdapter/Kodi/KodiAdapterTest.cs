@@ -8,7 +8,7 @@ using Wirehome.Core.Extensions;
 
 namespace Wirehome.ComponentModel.Adapters.Kodi
 {
-    public class KodiAdapter : Adapter
+    public class KodiAdapterTest : Adapter
     {
         public const int DEFAULT_POOL_INTERVAL = 1000;
 
@@ -26,21 +26,13 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
         //TODO read this value in refresh?
         private int? PlayerId { get; }
 
-        public KodiAdapter(IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory)
+        public KodiAdapterTest(IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory)
         {
         }
 
         public override Task Initialize()
         {
-            base.Initialize();
-
-            _hostname = Properties[AdapterProperties.Hostname].Value.ToStringValue();
-            _port = Properties[AdapterProperties.Port].Value.ToIntValue();
-            _userName = Properties[AdapterProperties.UserName].Value.ToStringValue();
-            _Password = Properties[AdapterProperties.Password].Value.ToStringValue();
-            _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpan();
-
-            return ScheduleDeviceRefresh<RefreshStateJob>(_poolInterval);
+            return base.Initialize();
         }
 
         protected async Task RefreshCommandHandler(Command message)
@@ -57,16 +49,9 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
                                           );
         }
 
-        protected async Task TurnOnCommandHandler(Command message)
+        protected string TestCommandHandler(Command message)
         {
-            //await _eventAggregator.QueryAsync<ComputerControlMessage, string>(new ComputerControlMessage
-            //{
-            //    Address = _hostname,
-            //    Service = "Process",
-            //    Message = new ProcessPost { ProcessName = "kodi", Start = true },
-            //    Port = 5000
-            //});
-            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(true));
+            return "Dominik";
         }
 
         protected async Task TurnOffCommandHandler(Command message)

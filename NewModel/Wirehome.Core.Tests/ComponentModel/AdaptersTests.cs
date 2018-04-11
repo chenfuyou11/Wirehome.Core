@@ -18,6 +18,8 @@ using System.Reflection;
 using System.Globalization;
 using Wirehome.Core.Utils;
 using Newtonsoft.Json;
+using System.Runtime.Loader;
+using System.IO;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -89,18 +91,26 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public async Task GenerateAdapter()
         {
+            var container = CommonIntegrationcs.PrepareContainer();
+            var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
             var roslynGenerator = new RoslynAsseblyGenerator();
+            var assembly = roslynGenerator.GenerateAssembly("adapter.dll", GetAdapterDir(), AssemblyHelper.GetReferencedAssemblies(typeof(Adapter)));
 
-            var xxx = typeof(Attribute).Assembly.CodeBase;
+            if (assembly.IsSuccess)
+            {
+                Assembly asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(assembly.Value);
+                var adapterType = asm.GetType("Wirehome.ComponentModel.Adapters.Kodi.KodiAdapterTest");
+                var adapter = Activator.CreateInstance(adapterType, new Object[] { adapterServiceFactory }) as Adapter;
 
-            roslynGenerator.GenerateAssembly("KodiAdapter.dll", @"W:\Projects\HA4IoT\NewModel\Wirehome.Core\ComponentModel\Adapters\Kodi", 
-                AssemblyHelper.GetReferencedAssemblies(typeof(Adapter)));
-            //roslynGenerator.GenerateAssembly("KodiAdapter.dll", @"W:\Projects\Test\RoslynTest",
-            //   new string[]
-            //   {
-            //        //@"w:\Projects\HA4IoT\packages\Newtonsoft.Json.10.0.3\lib\netstandard1.3\Newtonsoft.Json.dll",
-            //        //@"w:\Projects\HA4IoT\NewModel\Wirehome.Core.Model\bin\Debug\netstandard2.0\Wirehome.Core.Model.dll"
-            //   });
+                await adapter.Initialize();
+                var result = await adapter.ExecuteCommand("TestCommand");
+            }
+        }
+
+        private string GetAdapterDir()
+        {
+            var dir = Directory.GetCurrentDirectory();
+            return Path.Combine(dir.Substring(0, dir.IndexOf("Wirehome.Core.Tests")), @"Adapters\TestAdapter\Kodi");
         }
     }
 }

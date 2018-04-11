@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Wirehome.Contracts\Wirehome.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\OLD\Wirehome.Contracts\Wirehome.Contracts.old.csproj" />
     <ProjectReference Include="..\..\Wirehome.Extensions\Wirehome.Extensions.csproj" />
   </ItemGroup>
 

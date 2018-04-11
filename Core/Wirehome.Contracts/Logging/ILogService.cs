@@ -1,12 +1,8 @@
-﻿using Wirehome.Contracts.Services;
-
-namespace Wirehome.Contracts.Logging
+﻿
+namespace Wirehome.Core.Services.Logging
 {
     public interface ILogService : IService
     {
-        int WarningsCount { get; }
-        int ErrorsCount { get; }
-        
         ILogger CreatePublisher(string source);
     }
 }

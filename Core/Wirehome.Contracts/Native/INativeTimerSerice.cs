@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Wirehome.Contracts.Core
+namespace Wirehome.Core.Interface.Native
 {
     public interface INativeTimerSerice
     {

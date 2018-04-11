@@ -22,9 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Wirehome.Contracts\Wirehome.Contracts.csproj" />
+    <ProjectReference Include="..\..\Core\Wirehome.Model\Wirehome.Model.csproj" />
     <ProjectReference Include="..\..\Core\Wirehome\Wirehome.csproj" />
-    <ProjectReference Include="..\..\NewModel\Wirehome.Core\Wirehome.Core.csproj" />
+    <ProjectReference Include="..\..\OLD\Wirehome.Contracts\Wirehome.Contracts.old.csproj" />
+    <ProjectReference Include="..\..\OLD\Wirehome\Wirehome.old.csproj" />
     <ProjectReference Include="..\Wirehome.Alexa.Model\Wirehome.Alexa.Model.csproj" />
   </ItemGroup>
 

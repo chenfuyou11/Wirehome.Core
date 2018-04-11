@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Wirehome.Contracts.Core
+namespace Wirehome.Core.Interface.Native
 {
     public interface INativeSerialDevice : IDisposable
     {

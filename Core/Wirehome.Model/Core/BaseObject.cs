@@ -63,6 +63,6 @@ namespace Wirehome.ComponentModel
             _events.OnNext(new PropertyChangedEvent(Uid, property.Type, oldValue, value));
         }
 
-        public IDictionary<string, string> GetPropertiesStrings() => _properties.Values.ToDictionary(k => k.Type, v => v.Value.ToString());
+        public IDictionary<string, string> GetPropertiesStrings() => _properties.Values.ToDictionary(k => k.Type, v => v.Value?.ToString());
     }
 }

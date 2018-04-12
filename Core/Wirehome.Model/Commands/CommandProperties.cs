@@ -13,8 +13,9 @@ namespace Wirehome.ComponentModel.Commands
         public const string Value = "Value";
         public const string InputSource = "InputSource";
         public const string SurroundMode = "SurroundMode";
-        public const string DipswitchCode = "DipswitchCode";
         public const string Repeat = "Repeat";
         public const string Code = "Code";
+        public const string System = "System";
+        public const string Unit = "Unit";
     }
 }

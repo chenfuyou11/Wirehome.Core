@@ -29,6 +29,7 @@ namespace Wirehome.Core.Services.Roslyn
 
             return compilationResult.Success ? Result.Ok(path) : Result.Fail<string>(ReadCompilationErrors(compilationResult));
         }
+        
 
         private string ReadCompilationErrors(Microsoft.CodeAnalysis.Emit.EmitResult compilationResult)
         {

@@ -3,9 +3,9 @@
     public static class EventProperties
     {
         public const string SourceDeviceUid = "SourceDeviceUid";
-        public const string OldValue = "old-value";
-        public const string NewValue = "new-value";
-        public const string EventTime = "event-time";
+        public const string OldValue = "OldValue";
+        public const string NewValue = "NewValue";
+        public const string EventTime = "EventTime";
         public const string EventType = "EventType";
     }
 }

@@ -21,9 +21,11 @@ namespace Wirehome.Core.Hardware.RemoteSockets
 
         public uint Code => _code;
 
-        public static DipswitchCode ParseCode(string code, RemoteSocketCommand command)
+        public static DipswitchCode ParseCode(string system, string unit, RemoteSocketCommand command)
         {
-            return null;
+            var sys = (DipswitchSystemCode)Enum.Parse(typeof(DipswitchSystemCode), system);
+            var un = (DipswitchUnitCode)Enum.Parse(typeof(DipswitchUnitCode), unit);
+            return new DipswitchCode(sys, un, command);
         }
 
         public static DipswitchCode ParseCode(uint code)

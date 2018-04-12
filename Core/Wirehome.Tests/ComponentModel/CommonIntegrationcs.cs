@@ -13,6 +13,7 @@ using Wirehome.Core.Services.Quartz;
 using Wirehome.Core.Extensions;
 using Wirehome.Core.Services.I2C;
 using Wirehome.Core.Services;
+using Wirehome.Core.Interface.Native;
 
 namespace Wirehome.Core.Tests.ComponentModel
 {
@@ -45,6 +46,8 @@ namespace Wirehome.Core.Tests.ComponentModel
 
         private static void RegisterContainerServices(Container container)
         {
+            var nativeSerial = Mock.Of<INativeSerialDevice>();
+            var serial = Mock.Of<ISerialMessagingService>();
             var i2cServiceBus = Mock.Of<II2CBusService>();
             var logService = Mock.Of<ILogService>();
             var logger = Mock.Of<ILogger>();
@@ -54,8 +57,12 @@ namespace Wirehome.Core.Tests.ComponentModel
             container.RegisterSingleton<IConfigurationService, ConfigurationService>();
             container.RegisterSingleton(i2cServiceBus);
             container.RegisterSingleton(logService);
+            container.RegisterSingleton(nativeSerial);
+            container.RegisterSingleton(serial);
             container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
             container.RegisterSingleton<IHttpMessagingService, HttpMessagingService>();
+            //container.RegisterSingleton<ISerialMessagingService, SerialMessagingService>();
+
 
             //Quartz
             container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();

@@ -13,6 +13,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 {
     public class InfraredBridgeAdapter : Adapter
     {
+        private const int DEAFULT_REPEAT = 3;
         private IntValue _pinNumber;
         private IntValue _I2cAddress;
 
@@ -44,9 +45,8 @@ namespace Wirehome.ComponentModel.Adapters.Denon
         protected async Task SendCodeCommandHandler(Command message)
         {
             var commandCode = message[CommandProperties.Code].ToIntValue().Value;
-            var repeat = GetPropertyValue(CommandProperties.Repeat, new IntValue(3)).Value.ToIntValue();
+            var repeat = base.GetPropertyValue(CommandProperties.Repeat, new IntValue(DEAFULT_REPEAT)).Value.ToIntValue();
             
-
             await _eventAggregator.Publish(new InfraredMessage((uint)commandCode, (byte)_I2cAddress.Value, (byte)_pinNumber.Value, (byte)repeat.Value), RoutingFilter.MessageWrite);
 
             // TODO do we have all info?

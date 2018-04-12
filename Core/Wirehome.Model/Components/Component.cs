@@ -97,9 +97,9 @@ namespace Wirehome.ComponentModel.Components
 
             var state = _capabilities[propertyName];
             var oldValue = state.Properties[StateProperties.Value].Value;
-            var newValue = deviceEvent.Message[StateProperties.Value];
+            var newValue = deviceEvent.Message[EventProperties.NewValue];
 
-            if (oldValue.Equals(newValue)) return;
+            if (newValue.Equals(oldValue)) return;
 
             state.Properties[StateProperties.Value].Value = newValue;
 

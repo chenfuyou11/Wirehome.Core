@@ -5,6 +5,8 @@ namespace Wirehome.ComponentModel.Commands
     public class Command : BaseObject
     {
         public static Command RefreshCommand = new Command(CommandType.RefreshCommand);
+        public static Command TurnOnCommand = new Command(CommandType.TurnOnCommand);
+        public static Command TurnOffCommand = new Command(CommandType.TurnOffCommand);
         public static Command DiscoverCapabilitiesCommand = new Command(CommandType.DiscoverCapabilities);
 
         public CancellationToken CancellationToken { get; }

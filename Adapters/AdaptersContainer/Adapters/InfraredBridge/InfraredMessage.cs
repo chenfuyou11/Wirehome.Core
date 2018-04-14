@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Wirehome.Core.Hardware.IR;
-using Wirehome.Core.Hardware.RemoteSockets;
 using Wirehome.Core.Interface.Messaging;
 using Wirehome.Core.Interface.Native;
 
@@ -14,7 +13,6 @@ namespace Wirehome.Extensions.Messaging
         public byte System { get; }
         public uint Code { get; }
         public byte Bits { get; }
-
         public byte Pin { get; }
         public byte Address { get; }
         public byte Repeats { get; } = 1;
@@ -35,10 +33,8 @@ namespace Wirehome.Extensions.Messaging
         }
 
         public IfraredSystem IfraredSystem => (IfraredSystem)System;
-        
         public MessageType Type() => MessageType.Infrared;
         public override string ToString() => $"System: {IfraredSystem}, Code: {Code}, Bits: {Bits}";
-        
         public bool CanSerialize(string messageType) => messageType == GetType().Name;
         public bool CanDeserialize(byte messageType, byte messageSize) => messageType == (byte)Type() && messageSize == 6;
         public int GetAddress() => Address;
@@ -56,13 +52,7 @@ namespace Wirehome.Extensions.Messaging
             return package.ToArray();
         }
 
-        public object Deserialize(IBinaryReader reader, byte? messageSize = null)
-        {
-            var system = reader.ReadByte();
-            var code = reader.ReadUInt32();
-            var bits = reader.ReadByte();
+        public object Deserialize(IBinaryReader reader, byte? messageSize = null) => new InfraredMessage(reader.ReadByte(), reader.ReadUInt32(), reader.ReadByte());
 
-            return new InfraredMessage(system, code, bits);
-        }
     }
 }

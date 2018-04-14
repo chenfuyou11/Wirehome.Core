@@ -4,10 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{982ABB4E-A5DC-4C78-87A3-30BF49DD5764}"
+	ProjectSection(SolutionItems) = preProject
+		Core\Documentation.md = Core\Documentation.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{FC699828-F953-4DA6-978B-EE8BFB988390}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome", "Core\Wirehome\Wirehome.csproj", "{50737D30-AD0D-4832-B675-FDA4C27C58CA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.Extensions", "Extensions\Wirehome.Extensions\Wirehome.Extensions.csproj", "{118EF925-83FF-456E-9898-34DA5EE417EF}"
 EndProject
@@ -41,8 +42,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.old", "OLD\Wirehom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.Contracts.old", "OLD\Wirehome.Contracts\Wirehome.Contracts.old.csproj", "{D0A58FA5-62F1-4876-A220-D2F2A00F66B2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAdapter", "Adapters\TestAdapter\TestAdapter.csproj", "{A548E9FB-442A-4725-AA65-3763B44C1BA2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.Contracts", "Core\Wirehome.Contracts\Wirehome.Contracts.csproj", "{7E497F7E-36B1-49F3-93A2-D0CD987F1F56}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wirehome.Controller", "Core\Wirehome.Controller\Wirehome.Controller.csproj", "{57A56A49-15A4-424D-BA08-CF3AB35FB0C3}"
@@ -50,6 +49,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.Utils", "Core\Wirehome.Utils\Wirehome.Utils.csproj", "{6B6FEE1D-5366-44D4-B363-B8D1F7900788}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.EventAggregator", "Core\Wirehome.EventAggregator\Wirehome.EventAggregator.csproj", "{D24B514D-A412-49AF-97A9-A0B08EFB7085}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdaptersContainer", "Adapters\AdaptersContainer\AdaptersContainer.csproj", "{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.Services", "Core\Wirehome.Services\Wirehome.Services.csproj", "{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,34 +72,6 @@ Global
 		Release|x86 (For local) = Release|x86 (For local)
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|Any CPU (For Cloud Components).ActiveCfg = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|Any CPU (For Cloud Components).Build.0 = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|ARM.Build.0 = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|x64.Build.0 = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|x86.Build.0 = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|x86 (For local).ActiveCfg = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Debug|x86 (For local).Build.0 = Debug|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|Any CPU (For Cloud Components).ActiveCfg = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|Any CPU (For Cloud Components).Build.0 = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|ARM.ActiveCfg = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|ARM.Build.0 = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|ARM (For Raspberry Pi).ActiveCfg = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|ARM (For Raspberry Pi).Build.0 = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|x64.ActiveCfg = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|x64.Build.0 = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|x86.ActiveCfg = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|x86.Build.0 = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|x86 (For local).ActiveCfg = Release|Any CPU
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA}.Release|x86 (For local).Build.0 = Release|Any CPU
 		{118EF925-83FF-456E-9898-34DA5EE417EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{118EF925-83FF-456E-9898-34DA5EE417EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{118EF925-83FF-456E-9898-34DA5EE417EF}.Debug|Any CPU (For Cloud Components).ActiveCfg = Debug|Any CPU
@@ -461,34 +436,6 @@ Global
 		{D0A58FA5-62F1-4876-A220-D2F2A00F66B2}.Release|x86.Build.0 = Release|Any CPU
 		{D0A58FA5-62F1-4876-A220-D2F2A00F66B2}.Release|x86 (For local).ActiveCfg = Release|Any CPU
 		{D0A58FA5-62F1-4876-A220-D2F2A00F66B2}.Release|x86 (For local).Build.0 = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|Any CPU (For Cloud Components).ActiveCfg = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|Any CPU (For Cloud Components).Build.0 = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|ARM.Build.0 = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|x64.Build.0 = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|x86.Build.0 = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|x86 (For local).ActiveCfg = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Debug|x86 (For local).Build.0 = Debug|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|Any CPU (For Cloud Components).ActiveCfg = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|Any CPU (For Cloud Components).Build.0 = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|ARM.ActiveCfg = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|ARM.Build.0 = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|ARM (For Raspberry Pi).ActiveCfg = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|ARM (For Raspberry Pi).Build.0 = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|x64.ActiveCfg = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|x64.Build.0 = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|x86.ActiveCfg = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|x86.Build.0 = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|x86 (For local).ActiveCfg = Release|Any CPU
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2}.Release|x86 (For local).Build.0 = Release|Any CPU
 		{7E497F7E-36B1-49F3-93A2-D0CD987F1F56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7E497F7E-36B1-49F3-93A2-D0CD987F1F56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E497F7E-36B1-49F3-93A2-D0CD987F1F56}.Debug|Any CPU (For Cloud Components).ActiveCfg = Debug|Any CPU
@@ -599,12 +546,67 @@ Global
 		{D24B514D-A412-49AF-97A9-A0B08EFB7085}.Release|x86.Build.0 = Release|Any CPU
 		{D24B514D-A412-49AF-97A9-A0B08EFB7085}.Release|x86 (For local).ActiveCfg = Release|Any CPU
 		{D24B514D-A412-49AF-97A9-A0B08EFB7085}.Release|x86 (For local).Build.0 = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|Any CPU (For Cloud Components).ActiveCfg = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|Any CPU (For Cloud Components).Build.0 = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|ARM.Build.0 = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|x64.Build.0 = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|x86.Build.0 = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|x86 (For local).ActiveCfg = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Debug|x86 (For local).Build.0 = Debug|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|Any CPU (For Cloud Components).ActiveCfg = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|Any CPU (For Cloud Components).Build.0 = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|ARM.ActiveCfg = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|ARM.Build.0 = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|ARM (For Raspberry Pi).ActiveCfg = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|ARM (For Raspberry Pi).Build.0 = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|x64.ActiveCfg = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|x64.Build.0 = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|x86.ActiveCfg = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|x86.Build.0 = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|x86 (For local).ActiveCfg = Release|Any CPU
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}.Release|x86 (For local).Build.0 = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|Any CPU (For Cloud Components).ActiveCfg = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|Any CPU (For Cloud Components).Build.0 = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|ARM.Build.0 = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|ARM (For Raspberry Pi).ActiveCfg = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|ARM (For Raspberry Pi).Build.0 = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|x64.Build.0 = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|x86.Build.0 = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|x86 (For local).ActiveCfg = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Debug|x86 (For local).Build.0 = Debug|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|Any CPU (For Cloud Components).ActiveCfg = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|Any CPU (For Cloud Components).Build.0 = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|ARM.ActiveCfg = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|ARM.Build.0 = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|ARM (For Raspberry Pi).ActiveCfg = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|ARM (For Raspberry Pi).Build.0 = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|x64.ActiveCfg = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|x64.Build.0 = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|x86.ActiveCfg = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|x86.Build.0 = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|x86 (For local).ActiveCfg = Release|Any CPU
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}.Release|x86 (For local).Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{50737D30-AD0D-4832-B675-FDA4C27C58CA} = {982ABB4E-A5DC-4C78-87A3-30BF49DD5764}
 		{118EF925-83FF-456E-9898-34DA5EE417EF} = {FC699828-F953-4DA6-978B-EE8BFB988390}
 		{EF3F54E4-3236-4C1C-B594-280AFC35893A} = {FC699828-F953-4DA6-978B-EE8BFB988390}
 		{6FD3FCE8-2F1F-493E-BDAB-3F2C6B2F3EFC} = {FC699828-F953-4DA6-978B-EE8BFB988390}
@@ -619,11 +621,12 @@ Global
 		{B34005E7-50FD-4E6D-A9C5-FF044D58A2CF} = {982ABB4E-A5DC-4C78-87A3-30BF49DD5764}
 		{37D57963-0F87-40C5-9F05-C96F1C343A15} = {D6C8677E-7CFE-40AC-9037-D523D8824DAD}
 		{D0A58FA5-62F1-4876-A220-D2F2A00F66B2} = {D6C8677E-7CFE-40AC-9037-D523D8824DAD}
-		{A548E9FB-442A-4725-AA65-3763B44C1BA2} = {D8E749E8-9967-4DD3-91BD-6B05010FB5DB}
 		{7E497F7E-36B1-49F3-93A2-D0CD987F1F56} = {982ABB4E-A5DC-4C78-87A3-30BF49DD5764}
 		{57A56A49-15A4-424D-BA08-CF3AB35FB0C3} = {982ABB4E-A5DC-4C78-87A3-30BF49DD5764}
 		{6B6FEE1D-5366-44D4-B363-B8D1F7900788} = {982ABB4E-A5DC-4C78-87A3-30BF49DD5764}
 		{D24B514D-A412-49AF-97A9-A0B08EFB7085} = {982ABB4E-A5DC-4C78-87A3-30BF49DD5764}
+		{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B} = {D8E749E8-9967-4DD3-91BD-6B05010FB5DB}
+		{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4} = {982ABB4E-A5DC-4C78-87A3-30BF49DD5764}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67048500-54F1-4071-B01E-6215AD81A909}

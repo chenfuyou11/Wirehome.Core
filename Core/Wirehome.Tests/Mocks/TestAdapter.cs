@@ -22,7 +22,7 @@ namespace Wirehome.Core.Tests.Mocks
         public TestAdapter(string uid, IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory)
         {
             Uid = uid;
-            DiscoveryResponse = new DiscoveryResponse(null, new PowerState());
+            DiscoveryResponse = new DiscoveryResponse(new PowerState());
         }
 
         public override async Task Initialize()

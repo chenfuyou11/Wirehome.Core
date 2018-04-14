@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="SimpleInjector" Version="4.1.1" />
+    <PackageReference Include="SimpleInjector" Version="4.2.0" />
   </ItemGroup>
 
 </Project>

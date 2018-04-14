@@ -11,6 +11,7 @@ using Wirehome.Core.Services;
 using Wirehome.Core.Hardware.RemoteSockets;
 using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.Capabilities.Constants;
+using Wirehome.ComponentModel.Events;
 
 namespace Wirehome.ComponentModel.Adapters.Denon
 {
@@ -47,8 +48,14 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         public async Task RemoteSocketChangeHandler(IMessageEnvelope<RemoteSocketMessage> message)
         {
-            // save registred and forward all
-            //_state[message.Message.Pin] = await UpdateState(TemperatureState.StateName, _state[message.Message.Pin], message.Message.Temperature);
+            var code = message.Message.DipswitchCode;
+
+            if (_state.ContainsKey(code.ToShortCode()))
+            {
+                await UpdateState(code);
+            }
+
+            await _eventAggregator.PublishDeviceEvent(new DipswitchEvent(Uid, code));
         }
 
         protected async Task TurnOnCommandHandler(Command message)
@@ -56,13 +63,15 @@ namespace Wirehome.ComponentModel.Adapters.Denon
             var system = message[CommandProperties.System].ToStringValue();
             var unit = message[CommandProperties.Unit].ToStringValue();
             var repeat = GetPropertyValue(CommandProperties.Repeat, new IntValue(DEFAULT_REPEAT)).Value.ToIntValue();
-            var code = DipswitchCode.ParseCode(system, unit, RemoteSocketCommand.TurnOn);
+            var code = DipswitchCode.ParseCode(system, unit, nameof(RemoteSocketCommand.TurnOn));
 
             await _eventAggregator.Publish(new RemoteSocketMessage(code, (byte)_I2cAddress.Value, (byte)_pinNumber.Value, (byte)repeat.Value), RoutingFilter.MessageWrite);
+            await UpdateState(code);
+        }
 
-            // TODO do we have all info?
-            var commandCode = $"{system}|{unit}";
-            _state[commandCode] = await UpdateState(PowerState.StateName, _state.ElementAtOrNull(commandCode), new StringValue(PowerStateValue.ON));
+        private async Task UpdateState(DipswitchCode code)
+        {
+            _state[code.ToShortCode()] = await UpdateState(PowerState.StateName, _state.ElementAtOrNull(code.ToShortCode()), new StringValue(PowerStateValue.ON));
         }
 
         protected async Task TurnOffCommandHandler(Command message)
@@ -70,18 +79,17 @@ namespace Wirehome.ComponentModel.Adapters.Denon
             var system = message[CommandProperties.System].ToStringValue();
             var unit = message[CommandProperties.Unit].ToStringValue();
             var repeat = GetPropertyValue(CommandProperties.Repeat, new IntValue(DEFAULT_REPEAT)).Value.ToIntValue();
-            var code = DipswitchCode.ParseCode(system, unit, RemoteSocketCommand.TurnOff);
+            var code = DipswitchCode.ParseCode(system, unit, nameof(RemoteSocketCommand.TurnOff));
 
             await _eventAggregator.Publish(new RemoteSocketMessage(code, (byte)_I2cAddress.Value, (byte)_pinNumber.Value, (byte)repeat.Value), RoutingFilter.MessageWrite);
             
             var commandCode = $"{system}|{unit}";
-            
             _state[commandCode] = await UpdateState(PowerState.StateName, _state.ElementAtOrNull(commandCode), new StringValue(PowerStateValue.OFF));
         }
 
         protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
         {
-            return new DiscoveryResponse(RequierdProperties(), new PowerState());
+            return new DiscoveryResponse(new List<EventSource> { new EventSource(EventType.DipswitchCode) }, new PowerState());
         }
     }
 }

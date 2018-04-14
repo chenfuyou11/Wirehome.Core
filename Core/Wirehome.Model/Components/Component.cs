@@ -17,7 +17,6 @@ using Wirehome.Core.Services.Logging;
 
 namespace Wirehome.ComponentModel.Components
 {
-    // TODO what about adapters that don't know the state (tv controled only by IR)
     public class Component : Actor
     {
         private readonly IEventAggregator _eventAggregator;
@@ -25,6 +24,8 @@ namespace Wirehome.ComponentModel.Components
 
         private List<string> _tagCache;
         private Dictionary<string, State> _capabilities { get; } = new Dictionary<string, State>();
+        private Dictionary<string, AdapterReference> _adapterStateMap { get; } = new Dictionary<string, AdapterReference>();
+        private Dictionary<string, AdapterReference> _eventSources { get; } = new Dictionary<string, AdapterReference>();
         [Map] private IList<AdapterReference> _adapters { get; set; } = new List<AdapterReference>();
         [Map] private IList<Trigger> _triggers { get; set; } = new List<Trigger>();
         [Map] private Dictionary<string, IValueConverter> _converters { get; set; } = new Dictionary<string, IValueConverter>();
@@ -40,24 +41,45 @@ namespace Wirehome.ComponentModel.Components
         public override async Task Initialize()
         {
             if (!IsEnabled) return;
+            await InitializeAdapters();
+            InitializeTriggers();
 
-            foreach (var adapter in _adapters)
-            {
-                var adapterCapabilities = await _eventAggregator.QueryDeviceAsync<DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid));
-                adapterCapabilities.SupportedStates.ForEach(state => state.SetAdapterReference(adapter));
-                _capabilities.AddRangeNewOnly(adapterCapabilities.SupportedStates.ToDictionary(key => ((StringValue)key[StateProperties.StateName]).ToString(), val => val));
+            base.Initialize();
+        }
 
-                var routerAttributes = GetAdapterRouterAttributes(adapter, adapterCapabilities.RequierdProperties);
-                _disposables.Add(_eventAggregator.SubscribeForDeviceEvent(DeviceEventHandler, routerAttributes));
-            }
-
+        private void InitializeTriggers()
+        {
             foreach (var trigger in _triggers)
             {
                 _disposables.Add(_eventAggregator.SubscribeForDeviceEvent(DeviceTriggerHandler, trigger.Event.GetPropertiesStrings(), trigger.Event.Type));
             }
-
-            base.Initialize();
         }
+
+        private async Task InitializeAdapters()
+        {
+            foreach (var adapter in _adapters)
+            {
+                var capabilities = await _eventAggregator.QueryDeviceAsync<DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid));
+                MapCapabilitiesToAdapters(adapter, capabilities.SupportedStates);
+                BuildCapabilityStates(capabilities);
+                MapEventSourcesToAdapters(adapter, capabilities.EventSources);
+                SubscribeToAdapterEvents(adapter, capabilities.RequierdProperties);
+            }
+        }
+
+        private void BuildCapabilityStates(DiscoveryResponse capabilities) =>
+            _capabilities.AddRangeNewOnly(capabilities.SupportedStates.ToDictionary(key => ((StringValue)key[StateProperties.StateName]).ToString(), val => val));
+        
+
+        private void MapCapabilitiesToAdapters(AdapterReference adapter, State[] states) =>
+            states.ForEach(state => _adapterStateMap[state[StateProperties.StateName].ToStringValue()] = adapter);
+        
+
+        private void MapEventSourcesToAdapters(AdapterReference adapter, IList<EventSource> eventSources) =>
+            eventSources.ForEach(es => _eventSources[es[EventProperties.EventType].ToStringValue()] = adapter);
+
+        private void SubscribeToAdapterEvents(AdapterReference adapter, IList<string> requierdProperties) =>
+            _disposables.Add(_eventAggregator.SubscribeForDeviceEvent(DeviceEventHandler, GetAdapterRouterAttributes(adapter, requierdProperties)));
 
         private Dictionary<string, string> GetAdapterRouterAttributes(AdapterReference adapter, IList<string> requierdProperties)
         {
@@ -84,7 +106,8 @@ namespace Wirehome.ComponentModel.Components
             // TODO use valueconverter before publish and maybe queue?
             foreach (var state in _capabilities.Values.Where(capability => capability.IsCommandSupported(command)))
             {
-                await _eventAggregator.PublishDeviceCommnd(state.Adapter.GetDeviceCommand(command));
+                var adapter = _adapterStateMap[state[StateProperties.StateName].ToString()];
+                await _eventAggregator.PublishDeviceCommnd(adapter.GetDeviceCommand(command));
             }
 
             return null;

@@ -87,5 +87,14 @@ namespace Wirehome.Core.Extensions
             result = Expression.Call(typeof(Task), "FromResult", new Type[] { typeof(object) }, Expression.Convert(result, typeof(object)));
             return Expression.Lambda<Func<Command, Task<object>>>(result, commandParameter).Compile();
         }
+
+
+        public static Func<Command, Task<object>> WrapReturnTypeToGenericTask(this MethodInfo handler, object objectInstance)
+        {
+            var commandParameter = Expression.Parameter(typeof(Command), "commandParameter");
+            var result = Expression.Call(Expression.Constant(objectInstance), handler, commandParameter);
+            result = Expression.Call(typeof(Task), "FromResult", new Type[] { typeof(object) }, Expression.Convert(result, typeof(object)));
+            return Expression.Lambda<Func<Command, Task<object>>>(result, commandParameter).Compile();
+        }
     }
 }

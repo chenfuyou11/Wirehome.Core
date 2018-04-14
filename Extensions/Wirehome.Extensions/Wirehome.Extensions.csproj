@@ -17,13 +17,13 @@
     <PackageReference Include="DeepCloner" Version="0.10.2" />
     <PackageReference Include="HTTPnet" Version="2.1.0" />
     <PackageReference Include="Quartz" Version="3.0.4" />
-    <PackageReference Include="SimpleInjector" Version="4.1.1" />
+    <PackageReference Include="SimpleInjector" Version="4.2.0" />
     <PackageReference Include="System.Reactive" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Wirehome.Model\Wirehome.Model.csproj" />
-    <ProjectReference Include="..\..\Core\Wirehome\Wirehome.csproj" />
+    <ProjectReference Include="..\..\Core\Wirehome.Services\Wirehome.Services.csproj" />
     <ProjectReference Include="..\..\OLD\Wirehome.Contracts\Wirehome.Contracts.old.csproj" />
     <ProjectReference Include="..\..\OLD\Wirehome\Wirehome.old.csproj" />
     <ProjectReference Include="..\Wirehome.Alexa.Model\Wirehome.Alexa.Model.csproj" />

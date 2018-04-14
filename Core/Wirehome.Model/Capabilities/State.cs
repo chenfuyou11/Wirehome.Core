@@ -9,11 +9,6 @@ namespace Wirehome.ComponentModel.Capabilities
 {
     public class State : BaseObject
     {
-        public AdapterReference Adapter { get; private set; }
-
-        public void SetAdapterReference(AdapterReference adapter) => Adapter = adapter;
-        
-
         public State(StringValue ReadWriteMode = default)
         {
             if (ReadWriteMode == null) ReadWriteMode = ReadWriteModeValues.ReadWrite;

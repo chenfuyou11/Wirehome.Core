@@ -31,19 +31,12 @@ namespace Wirehome.Extensions.Messaging
             Pin = pin;
         }
 
-        private DipswitchCode DipswitchCode => DipswitchCode.ParseCode(Code);
+        public DipswitchCode DipswitchCode => DipswitchCode.ParseCode(Code);
 
         public MessageType Type() => MessageType.RemoteSocket;
-        public override string ToString()
-        {
-            var code = DipswitchCode;
-            if (code != null)
-            {
-                return $"Command: {code.Command}, System: {code.System}, Unit: {code.Unit}";
-            }
-
-            return $"Code: {Code}, Bits: {Bits}, Protocol: {Protocol}";
-        }
+        public override string ToString() => DipswitchCode != null ? $"Command: {DipswitchCode.Command}, System: {DipswitchCode.System}, Unit: {DipswitchCode.Unit}" 
+                                                                   : $"Code: {Code}, Bits: {Bits}, Protocol: {Protocol}";
+        
         public bool CanSerialize(string messageType) => messageType == GetType().Name;
         public bool CanDeserialize(byte messageType, byte messageSize) => messageType == (byte)Type() && messageSize == 6;
         public int GetAddress() => Address;

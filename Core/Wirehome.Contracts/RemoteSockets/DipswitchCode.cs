@@ -7,7 +7,6 @@ namespace Wirehome.Core.Hardware.RemoteSockets
         public DipswitchSystemCode System { get; }
         public DipswitchUnitCode Unit { get; }
         public RemoteSocketCommand Command { get; }
-
         private uint _code;
 
         public DipswitchCode(DipswitchSystemCode system, DipswitchUnitCode unit, RemoteSocketCommand command)
@@ -21,12 +20,12 @@ namespace Wirehome.Core.Hardware.RemoteSockets
 
         public uint Code => _code;
 
-        public static DipswitchCode ParseCode(string system, string unit, RemoteSocketCommand command)
-        {
-            var sys = (DipswitchSystemCode)Enum.Parse(typeof(DipswitchSystemCode), system);
-            var un = (DipswitchUnitCode)Enum.Parse(typeof(DipswitchUnitCode), unit);
-            return new DipswitchCode(sys, un, command);
-        }
+        public static DipswitchCode ParseCode(string system, string unit, string command) =>
+                     new DipswitchCode((DipswitchSystemCode)Enum.Parse(typeof(DipswitchSystemCode), system), 
+                                       (DipswitchUnitCode)Enum.Parse(typeof(DipswitchUnitCode), unit), 
+                                       (RemoteSocketCommand)Enum.Parse(typeof(RemoteSocketCommand), command)
+                                      );
+        
 
         public static DipswitchCode ParseCode(uint code)
         {
@@ -49,6 +48,8 @@ namespace Wirehome.Core.Hardware.RemoteSockets
             calc = SetCommand(calc, code.Command);
             return calc;
         }
+
+        public string ToShortCode() => $"{System.ToString()}|{Unit.ToString()}";
 
         private static RemoteSocketCommand? ParseCommand(uint code)
         {

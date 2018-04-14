@@ -1,8 +1,19 @@
 {
   "ExpandedNodes": [
     "",
-    "\\DNF"
+    "\\Core",
+    "\\Core\\Wirehome",
+    "\\Core\\Wirehome.Contracts",
+    "\\Core\\Wirehome.Contracts\\RemoteSockets",
+    "\\Core\\Wirehome.Model",
+    "\\Core\\Wirehome.Model\\Components",
+    "\\Core\\Wirehome.Model\\Extensions",
+    "\\Core\\Wirehome\\ComponentModel",
+    "\\Core\\Wirehome\\ComponentModel\\Adapters",
+    "\\Core\\Wirehome\\ComponentModel\\Adapters\\HardwareBridge",
+    "\\Core\\Wirehome\\ComponentModel\\Adapters\\HardwareBridge\\InfraredBridgeAdapter",
+    "\\Core\\Wirehome\\ComponentModel\\Adapters\\HardwareBridge\\RemoteSocketBridgeAdapter"
   ],
-  "SelectedNode": "\\DNF",
+  "SelectedNode": "\\Core\\Wirehome\\ComponentModel\\Adapters\\HardwareBridge\\InfraredBridgeAdapter\\InfraredMessage.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -14,6 +14,7 @@ using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
 using Wirehome.Core.Services.DependencyInjection;
 using Wirehome.Core.Services.Logging;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Components
 {

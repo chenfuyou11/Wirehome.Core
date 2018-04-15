@@ -8,6 +8,7 @@ using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.Extensions;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Adapters.Kodi
 {

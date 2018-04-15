@@ -12,6 +12,7 @@ using Wirehome.ComponentModel.Commands;
 using Wirehome.Core;
 using Wirehome.Core.Extensions;
 using System.Linq.Expressions;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Components
 {

@@ -12,6 +12,8 @@ using Wirehome.Core.Hardware.RemoteSockets;
 using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.Events;
+using Wirehome.Model.Events;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Adapters.Denon
 {
@@ -89,7 +91,8 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
         {
-            return new DiscoveryResponse(new List<EventSource> { new EventSource(EventType.DipswitchCode) }, new PowerState());
+            return new DiscoveryResponse(new List<EventSource> { new EventSource(EventType.DipswitchCode, EventDirections.Recieving),
+                                                                 new EventSource(EventType.DipswitchCode, EventDirections.Sending)}, new PowerState());
         }
     }
 }

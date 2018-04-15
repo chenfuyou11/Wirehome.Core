@@ -11,5 +11,12 @@ namespace Wirehome.ComponentModel.Components
     {
         public Event Event { get; set; }
         public Command Command { get; set; }
+        public Schedule Schedule { get; set; }
+
+    }
+
+    public class Schedule
+    {
+
     }
 }

@@ -7,6 +7,8 @@
         public const string NewValue = "NewValue";
         public const string EventTime = "EventTime";
         public const string EventType = "EventType";
+        public const string EventSource = "EventSource";
+        public const string EventDirection = "EventDirection";
 
         public const string System = "System";
         public const string Unit = "Unit";

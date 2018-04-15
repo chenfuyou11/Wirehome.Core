@@ -3,6 +3,7 @@ using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core;
 using Wirehome.Core.Hardware.RemoteSockets;
 using Wirehome.Core.Extensions;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Events
 {

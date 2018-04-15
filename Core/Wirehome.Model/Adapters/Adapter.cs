@@ -8,7 +8,7 @@ using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Services.Logging;
-using Wirehome.Core.Services.Quartz;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Adapters
 {

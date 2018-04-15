@@ -63,7 +63,7 @@
         "Triggers": [
           {
             "Event": {
-              "Type": "property-changed",
+              "Type": "PropertyChanged",
               "Properties": {
                 "SourceDeviceUid": "HSPE16InputOnly_1",
                 "PinNumber": "2"
@@ -170,9 +170,18 @@
         "Type": "RemoteSocketBridgeAdapter",
         "Properties": {
           "I2cAddress": 101,
-          "PinNumber":  12
+          "PinNumber": 12
+        }
+      },
+      {
+        "Uid": "RemoteIR",
+        "Type": "InfraredBridge",
+        "Properties": {
+          "I2cAddress": 101,
+          "PinNumber": 13
         }
       }
+
     ]
   }
 }

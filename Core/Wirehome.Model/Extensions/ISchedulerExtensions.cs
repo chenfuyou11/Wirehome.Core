@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Wirehome.Core.Services.Quartz
+namespace Wirehome.Model.Extensions
 {
     public static class QuartzExtensions
     {

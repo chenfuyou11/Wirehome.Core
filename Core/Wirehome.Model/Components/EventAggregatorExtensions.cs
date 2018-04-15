@@ -5,6 +5,7 @@ using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Events;
 using Wirehome.Core.EventAggregator;
 using System.Linq;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Extensions
 {

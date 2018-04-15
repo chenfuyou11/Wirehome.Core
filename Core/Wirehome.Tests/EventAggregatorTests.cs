@@ -7,6 +7,7 @@ using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
 using Wirehome.Core.EventAggregator;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.Extensions.Tests
 {

@@ -1,7 +1,7 @@
 ﻿using Quartz;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel.Commands;
-using Wirehome.Core.Services.Quartz;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Adapters
 {

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel.Commands;
 
-namespace Wirehome.Core.Extensions
+namespace Wirehome.Model.Extensions
 {
     public static class Extensions
     {

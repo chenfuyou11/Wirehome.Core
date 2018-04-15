@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.Services;
 using Wirehome.ComponentModel.Events;
+using Wirehome.Model.Events;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Adapters.Denon
 {
@@ -56,7 +58,8 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
         {
-            return new DiscoveryResponse(new List<EventSource> { new EventSource(EventType.WirelessIrCode) }, new PowerState());
+            return new DiscoveryResponse(new List<EventSource> { new EventSource(EventType.WirelessIrCode, EventDirections.Recieving),
+                                                                 new EventSource(EventType.WirelessIrCode, EventDirections.Sending)}, new PowerState());
         }
     }
 }

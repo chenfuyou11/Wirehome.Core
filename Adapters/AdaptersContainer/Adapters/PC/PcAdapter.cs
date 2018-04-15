@@ -9,6 +9,7 @@ using Wirehome.ComponentModel.Capabilities;
 using Wirehome.ComponentModel.Commands.Responses;
 using Wirehome.Core.Extensions;
 using Wirehome.Core.Interface.Messaging;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Adapters.Pc
 {
@@ -82,7 +83,7 @@ namespace Wirehome.ComponentModel.Adapters.Pc
             {
                 Address = _hostname,
                 Service = "Power",
-                Message = new PowerPost { State = ComputerPowerState.Hibernate }
+                Message = new PowerPost { State = 0 } //Hibernate
             });
             _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(false));
         }

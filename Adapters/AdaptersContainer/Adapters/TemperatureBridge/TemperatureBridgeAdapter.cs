@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.Services;
 using Wirehome.Model.ComponentModel.Capabilities.Constants;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Adapters.Denon
 {

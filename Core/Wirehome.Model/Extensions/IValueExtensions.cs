@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Wirehome.ComponentModel.ValueTypes;
 
-namespace Wirehome.Core.Extensions
+namespace Wirehome.Model.Extensions
 {
     public static class IValueExtensions
     {

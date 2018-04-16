@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Quartz;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,8 @@ namespace Wirehome.ComponentModel.Components
         private readonly ILogger _logger;
 
         private List<string> _tagCache;
+        private readonly ISchedulerFactory _schedulerFactory;
+
         private Dictionary<string, State> _capabilities { get; } = new Dictionary<string, State>();
         private Dictionary<string, AdapterReference> _adapterStateMap { get; } = new Dictionary<string, AdapterReference>();
         private Dictionary<string, AdapterReference> _eventSources { get; } = new Dictionary<string, AdapterReference>();
@@ -33,27 +36,39 @@ namespace Wirehome.ComponentModel.Components
 
         public bool IsEnabled { get; private set; }
 
-        public Component(IEventAggregator eventAggregator, ILogService logService)
+        public Component(IEventAggregator eventAggregator, ILogService logService, ISchedulerFactory schedulerFactory)
         {
             _eventAggregator = eventAggregator;
             _logger = logService.CreatePublisher($"Component_{Uid}_logger");
+            _schedulerFactory = schedulerFactory;
         }
 
         public override async Task Initialize()
         {
             if (!IsEnabled) return;
             await InitializeAdapters();
-            InitializeTriggers();
+            await InitializeTriggers();
 
             base.Initialize();
         }
 
-        private void InitializeTriggers()
+        private async Task InitializeTriggers()
         {
-            foreach (var trigger in _triggers)
+            foreach (var trigger in _triggers.Where(x => x.Schedule == null))
             {
                 _disposables.Add(_eventAggregator.SubscribeForDeviceEvent(DeviceTriggerHandler, trigger.Event.GetPropertiesStrings(), trigger.Event.Type));
             }
+
+            foreach (var trigger in _triggers.Where(x => x.Schedule != null))
+            {
+                
+            }
+
+
+           // var scheduler = await _schedulerFactory.GetScheduler();
+            //await scheduler.ScheduleIntervalWithContext
+            //await scheduler.ScheduleIntervalWithContext<T, Adapter>(interval, this, _disposables.Token);
+            //await scheduler.Start(_disposables.Token);
         }
 
         private async Task InitializeAdapters()

@@ -5,7 +5,8 @@ namespace Wirehome.Core
 {
     public static class SystemTime
     {
-        private static readonly ThreadLocal<Func<DateTimeOffset>> _timeFunc = new ThreadLocal<Func<DateTimeOffset>>(() => () => DateTimeOffset.Now);
+        private static readonly ThreadLocal<Func<DateTimeOffset>> _timeFunc = 
+                                new ThreadLocal<Func<DateTimeOffset>>(() => () => DateTimeOffset.Now);
 
         public static DateTimeOffset Today => _timeFunc.Value().Date;
         public static DateTimeOffset Now => _timeFunc.Value();

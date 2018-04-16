@@ -3,6 +3,7 @@ using Quartz.Impl.Matchers;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Wirehome.ComponentModel.Commands;
 
 namespace Wirehome.Model.Extensions
 {
@@ -50,6 +51,31 @@ namespace Wirehome.Model.Extensions
 
             return job.Key;
         }
+
+        //public static async Task<JobKey> ScheduleCommandContext<T, D>(this IScheduler scheduler, D data, CancellationToken token = default) where T : IJob
+        //                                                                                                                                    where D: Command
+        //{
+        //    var jobData = new JobDataMap
+        //    {
+        //        { "context", data }
+        //    };
+
+        //    IJobDetail job = JobBuilder.Create<T>()
+        //                               .WithIdentity($"{typeof(T).Name}_{Guid.NewGuid()}")
+        //                               .SetJobData(jobData)
+        //                               .Build();
+
+        //    ITrigger trigger = TriggerBuilder.Create()
+        //                                     .WithIdentity($"{nameof(ScheduleInterval)}_{Guid.NewGuid()}")
+        //                                     .
+        //                                     //.WithSimpleSchedule(x => x.WithInterval(interval).RepeatForever())
+        //                                     .Build();
+
+        //    await scheduler.ScheduleJob(job, trigger, token);
+
+        //    return job.Key;
+        //}
+
 
         public static T GetDataContext<T>(this IJobExecutionContext context) where T : class
         {

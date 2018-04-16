@@ -89,6 +89,16 @@
       {
         "Uid": "RemoteLamp",
         "IsEnabled": true,
+        "Triggers": [
+          {
+            "Schedule": {
+
+            },
+            "Command": {
+              "Type": "SwitchPowerState"
+            }
+          }
+        ],
         "AdapterRefs": [
           {
             "Uid": "RemoteSocket",

@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using Wirehome.Contracts.Areas;
-using Wirehome.Contracts.Components;
-using Wirehome.Contracts.Logging;
-using Wirehome.Contracts.Components.Features;
-using Wirehome.Contracts.Settings;
-using Wirehome.Contracts.Components.Commands;
-using Wirehome.Extensions.Contracts;
-using Wirehome.Contracts.Core;
-using System.Threading.Tasks;
-using HTTPnet.Core.Http;
-using HTTPnet.Core.Pipeline;
-using System.IO;
+﻿
+
 using Newtonsoft.Json;
-using Wirehome.Alexa.Model.Common;
-using System.Text;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Wirehome.Alexa.Model.Common;
 using Wirehome.Alexa.Model.Discovery;
-using Wirehome.Extensions.Exceptions;
+using Wirehome.Core.Exceptions;
+using Wirehome.Core.Services.Logging;
 
 namespace Wirehome.Extensions
 {

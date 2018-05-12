@@ -32,7 +32,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
             base.Initialize();
 
             _hostName = Properties[AdapterProperties.Hostname].Value.ToStringValue();
-            _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpan();
+            _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpanFromInt();
             //TODO make zone as required parameter
             _zone = Properties[AdapterProperties.Zone].Value.ToIntValue();
 

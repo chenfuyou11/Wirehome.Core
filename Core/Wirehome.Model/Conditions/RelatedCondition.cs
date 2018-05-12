@@ -7,9 +7,9 @@ namespace Wirehome.Conditions
     {
         public ConditionRelation Relation { get; private set; } = ConditionRelation.And;
 
-        public ICondition Condition { get; private set; }
+        public Condition Condition { get; private set; }
 
-        public RelatedCondition WithCondition(ICondition condition)
+        public RelatedCondition WithCondition(Condition condition)
         {
             if (condition == null) throw new ArgumentNullException(nameof(condition));
 

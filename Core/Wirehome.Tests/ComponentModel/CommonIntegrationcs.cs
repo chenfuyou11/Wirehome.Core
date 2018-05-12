@@ -14,37 +14,42 @@ using Wirehome.Core.Extensions;
 using Wirehome.Core.Services.I2C;
 using Wirehome.Core.Services;
 using Wirehome.Core.Interface.Native;
+using AutoMapper;
 
 namespace Wirehome.Core.Tests.ComponentModel
 {
     public static class CommonIntegrationcs
     {
+
         public static string ReadConfig(string message) => File.ReadAllText($@"ComponentModel\SampleConfigs\{message}.json");
 
         public static async Task<(WirehomeConfiguration config, IContainer container)> ReadConfiguration(string configName)
         {
-            var container = CommonIntegrationcs.PrepareContainer();
+            var adaptersRepo = Path.Combine(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..")), @"Adapters\AdaptersContainer\bin\Debug\netstandard2.0");
+
+            var container = PrepareContainer();
             var confService = container.GetInstance<IConfigurationService>();
             var logger = container.GetInstance<ILogService>();
             await container.StartupServices(logger.CreatePublisher("DI"));
-
-            var file = CommonIntegrationcs.ReadConfig(configName);
-
-            var configuration = await confService.ReadConfiguration(file).ConfigureAwait(false);
+            
+            var file = ReadConfig(configName);
+            
+            var configuration = await confService.ReadConfiguration(file, adaptersRepo).ConfigureAwait(false);
 
             return (configuration, container);
         }
 
         public static IContainer PrepareContainer()
         {
-            var reg = new WirehomeContainer(new ControllerOptions())
+            var reg = new WirehomeContainer(new ControllerOptions { AdapterRepository = @"W:\Projects\HA4IoT\Adapters\AdaptersContainer\bin\Debug\netstandard2.0" })
             {
                 RegisterBaseServices = RegisterContainerServices
             };
+
             return reg.RegisterServices();
         }
 
-        private static void RegisterContainerServices(Container container)
+        private static void RegisterContainerServices(Container container, string adapterRepo)
         {
             var nativeSerial = Mock.Of<INativeSerialDevice>();
             var serial = Mock.Of<ISerialMessagingService>();
@@ -68,8 +73,16 @@ namespace Wirehome.Core.Tests.ComponentModel
             container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();
             container.RegisterSingleton<ISchedulerFactory, SimpleInjectorSchedulerFactory>();
 
+            container.RegisterSingleton<IConfigurationPathService, TestConfigurationPathService>();
+
             //Auto mapper
-            container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper());
+            container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper(adapterRepo));
+
+        }
+
+        public class TestConfigurationPathService : IConfigurationPathService
+        {
+            public string GetAdapterRepositoryPath() => Path.Combine(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..")), @"Adapters\AdaptersContainer\bin\Debug\netstandard2.0");
         }
     }
 }

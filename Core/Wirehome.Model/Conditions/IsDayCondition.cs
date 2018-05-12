@@ -10,8 +10,8 @@ namespace Wirehome.Conditions.Specialized
         {
             if (daylightService == null) throw new ArgumentNullException(nameof(daylightService));
 
-            WithStart(daylightService.Sunrise);
-            WithEnd(daylightService.Sunset);
+            WithStart(() => daylightService.Sunrise);
+            WithEnd(() => daylightService.Sunset);
         }
     }
 }

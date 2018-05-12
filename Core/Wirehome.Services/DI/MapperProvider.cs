@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.Configuration;
 using SimpleInjector;
-using System.Linq;
 
 namespace Wirehome.Core.Services.DependencyInjection
 {
@@ -14,21 +13,15 @@ namespace Wirehome.Core.Services.DependencyInjection
             _container = container;
         }
 
-        public IMapper GetMapper()
+        public IMapper GetMapper(string adapterRepository)
         {
             var mce = new MapperConfigurationExpression();
             mce.ConstructServicesUsing(_container.GetInstance);
-
-            var profiles = typeof(WirehomeMappingProfile).Assembly
-                                                         .GetTypes()
-                                                         .Where(t => typeof(Profile).IsAssignableFrom(t))
-                                                         .ToList();
-
-            mce.AddProfiles(profiles);
-
+            mce.AddProfile(new WirehomeMappingProfile(adapterRepository));
+            
             var mc = new MapperConfiguration(mce);
             mc.AssertConfigurationIsValid();
-
+            
             return new Mapper(mc, t => _container.GetInstance(t));
         }
     }

@@ -14,5 +14,7 @@ namespace Wirehome.Core.Services.DependencyInjection
         public ICollection<ILogAdapter> LogAdapters { get; } = new Collection<ILogAdapter>();
 
         public ICollection<IService> CustomServices { get; } = new Collection<IService>();
+
+        public string AdapterRepository { get; set; }
     }
 }

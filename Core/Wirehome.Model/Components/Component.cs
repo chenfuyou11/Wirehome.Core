@@ -52,6 +52,8 @@ namespace Wirehome.ComponentModel.Components
             base.Initialize();
         }
 
+
+        //TODO Add conditions
         private async Task InitializeTriggers()
         {
             foreach (var trigger in _triggers.Where(x => x.Schedule == null))

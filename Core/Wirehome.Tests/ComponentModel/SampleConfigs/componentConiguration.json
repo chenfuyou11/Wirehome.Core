@@ -92,8 +92,19 @@
         "Triggers": [
           {
             "Schedule": {
-
+              "CronExpression": "0 0/5 * * * ?", // every 5 minutes https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontriggers.html
+              "Calendar": "PolishCalendar"
             },
+            "Conditions": [
+              {
+                "Type": "IsNightCondition",
+                "Relation": "AND"
+              },
+              {
+                "Type": "IsNightCondition",
+                "Relation": "AND"
+              }
+            ],
             "Command": {
               "Type": "SwitchPowerState"
             }
@@ -108,7 +119,33 @@
             }
           }
         ]
+      },
+      {
+        "Uid": "RemoteLamp2",
+        "IsEnabled": true,
+        "Triggers": [
+          {
+            "Schedule": {
+              "Times": {
+                "Start": "22:22:00"
+              }
+            },
+            "Command": {
+              "Type": "SwitchPowerState"
+            }
+          }
+        ],
+        "AdapterRefs": [
+          {
+            "Uid": "RemoteSocket",
+            "Properties": {
+              "System": "AllOn", // AllOff, Switch1, Switch2, Switch3, Switch4, Switch5, AllOn
+              "Unit": "D" // A, B, C, D
+            }
+          }
+        ]
       }
+
     ],
 
     "Adapters": [

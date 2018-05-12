@@ -42,7 +42,7 @@ namespace Wirehome.ComponentModel.Adapters
 
         public override async Task Initialize()
         {
-            var poolInterval = this[AdapterProperties.PoolInterval].ToTimeSpan();
+            var poolInterval = this[AdapterProperties.PoolInterval].ToTimeSpanFromInt();
             _poolDurationWarning = (IntValue)this[AdapterProperties.PollDurationWarningThreshold];
 
             _state = new byte[_portExpanderDriver.StateSize];

@@ -42,7 +42,7 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
             _port = Properties[AdapterProperties.Port].Value.ToIntValue();
             _userName = Properties[AdapterProperties.UserName].Value.ToStringValue();
             _Password = Properties[AdapterProperties.Password].Value.ToStringValue();
-            _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpan();
+            _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpanFromInt();
 
             return ScheduleDeviceRefresh<RefreshStateJob>(_poolInterval);
         }

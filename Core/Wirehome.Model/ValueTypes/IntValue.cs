@@ -22,5 +22,5 @@ namespace Wirehome.ComponentModel.ValueTypes
         public override string ToString() => Value.ToString();
 
         public static IntValue FromString(string value) => new IntValue(int.Parse(value));
-    }    
+    }
 }

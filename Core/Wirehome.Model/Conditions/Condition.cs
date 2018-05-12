@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Wirehome.ComponentModel;
 using Wirehome.Contracts.Conditions;
+using Wirehome.Core.Services.DependencyInjection;
 
 namespace Wirehome.Conditions
 {
-    public class Condition : ICondition
+    public class Condition : BaseObject
     {
         private readonly ConditionsValidator _relatedConditionsValidator;
 
@@ -29,7 +31,7 @@ namespace Wirehome.Conditions
                     : ConditionState.Fulfilled;
             }
 
-            if (RelatedConditions.Any())
+            if (RelatedConditions.Count > 0)
             {
                 _relatedConditionsValidator.WithDefaultState(thisState);
                 return _relatedConditionsValidator.Validate();
@@ -50,9 +52,7 @@ namespace Wirehome.Conditions
         
         public Condition WithExpression(Func<ConditionState> expression)
         {
-            if (expression == null) throw new ArgumentNullException(nameof(expression));
-
-            Expression = expression;
+            Expression = expression ?? throw new ArgumentNullException(nameof(expression));
             return this;
         }
 

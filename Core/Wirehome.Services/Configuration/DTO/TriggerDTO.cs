@@ -13,6 +13,12 @@ namespace Wirehome.Core.ComponentModel.Configuration
 
         [JsonProperty("Command")]
         public CommandDTO Command { get; set; }
+
+        [JsonProperty("Schedule")]
+        public ScheduleDTO Schedule { get; set; }
+
+        [JsonProperty("Condition")]
+        public ConditionDTO Condition { get; set; }
     }
 
 

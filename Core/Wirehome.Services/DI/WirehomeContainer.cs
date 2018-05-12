@@ -25,10 +25,10 @@ namespace Wirehome.Core.Services.DependencyInjection
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
-            _container.RegisterSingleton(options);
+            _container.RegisterSingleton(() => options);
         }
 
-        public Action<Container> RegisterBaseServices { get; set; } = container =>
+        public Action<Container, string> RegisterBaseServices { get; set; } = (container, adapterRepo) =>
         {
             container.RegisterSingleton<IEventAggregator, EventAggregator.EventAggregator>();
             container.RegisterSingleton<IConfigurationService, ConfigurationService>();
@@ -42,13 +42,13 @@ namespace Wirehome.Core.Services.DependencyInjection
             container.Register(() => container.GetInstance<ISchedulerFactory>().GetScheduler().Result);
 
              //Auto mapper
-             container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper());
+             container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper(adapterRepo));
         };
 
         public IContainer RegisterServices()
         {
-            _container.RegisterSingleton<IContainer>(this);
-            RegisterBaseServices(_container);
+            _container.RegisterSingleton<IContainer>(() => this);
+            RegisterBaseServices(_container, _options.AdapterRepository);
             return this;
         }
 

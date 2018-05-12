@@ -10,6 +10,9 @@ using Wirehome.Core.ComponentModel.Areas;
 using Wirehome.Core.ComponentModel.Configuration;
 using Wirehome.Core.Utils;
 using Wirehome.Core.Extensions;
+using System.IO;
+using System.Runtime.Loader;
+using Wirehome.Core.Services.Logging;
 
 namespace Wirehome.ComponentModel.Configuration
 {
@@ -17,20 +20,22 @@ namespace Wirehome.ComponentModel.Configuration
     {
         private readonly IMapper _mapper;
         private readonly IAdapterServiceFactory _adapterServiceFactory;
+        private readonly ILogger _logger;
 
-        public ConfigurationService(IMapper mapper, IAdapterServiceFactory adapterServiceFactory)
+        public ConfigurationService(IMapper mapper, IAdapterServiceFactory adapterServiceFactory, ILogService logService)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _adapterServiceFactory = adapterServiceFactory ?? throw new ArgumentNullException(nameof(adapterServiceFactory));
+            _logger = logService.CreatePublisher(nameof(ConfigurationService));
         }
 
-        public async Task<WirehomeConfiguration> ReadConfiguration(string rawConfig)
+        public async Task<WirehomeConfiguration> ReadConfiguration(string rawConfig, string adaptersRepoPath)
         {
             var result = JsonConvert.DeserializeObject<WirehomeConfigDTO>(rawConfig);
 
-            var adapters = await MapAdapters(result.Wirehome.Adapters);
+            var adapters = await MapAdapters(result.Wirehome.Adapters, adaptersRepoPath);
             var components = await MapComponents(result);
-            var areas = await MapAreas(result, components);
+            var areas = MapAreas(result, components);
 
             var configuration = new WirehomeConfiguration
             {
@@ -60,7 +65,7 @@ namespace Wirehome.ComponentModel.Configuration
             }
         }
 
-        private async Task<IList<Area>> MapAreas(WirehomeConfigDTO result, IList<Component> components)
+        private IList<Area> MapAreas(WirehomeConfigDTO result, IList<Component> components)
         {
             var areas = _mapper.Map<IList<AreaDTO>, IList<Area>>(result.Wirehome.Areas);
             MapComponentsToArea(result.Wirehome.Areas, components, areas);
@@ -94,22 +99,39 @@ namespace Wirehome.ComponentModel.Configuration
             return components;
         }
 
-        private async Task<IList<Adapter>> MapAdapters(IList<AdapterDTO> adapterConfigs)
+        private async Task<IList<Adapter>> MapAdapters(IList<AdapterDTO> adapterConfigs, string adaptersRepoPath)
         {
             var adapters = new List<Adapter>();
-            var types = AssemblyHelper.GetAllInherited<Adapter>();
+            var types = new List<Type>();
+
+            foreach (var assemblyPath in FindAdapterInRepository(adaptersRepoPath))
+            {
+                var adapterTypes = AssemblyHelper.GetAllInherited<Adapter>(AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath));
+                
+                types.AddRange(adapterTypes);
+            }
 
             foreach (var adapterConfig in adapterConfigs)
             {
-                var adapterType = types.FirstOrDefault(t => t.Name == adapterConfig.Type);
-                if (adapterType == null) throw new Exception($"Could not find adapter {adapterType}");
-                var adapter = (Adapter)_mapper.Map(adapterConfig, typeof(AdapterDTO), adapterType);
+                try
+                {
+                    var adapterType = types.Find(t => t.Name == adapterConfig.Type);
+                    if (adapterType == null) throw new Exception($"Could not find adapter {adapterType}");
+                    var adapter = (Adapter)_mapper.Map(adapterConfig, typeof(AdapterDTO), adapterType);
 
-                await adapter.Initialize();
-                adapters.Add(adapter);
+                    await adapter.Initialize();
+                    adapters.Add(adapter);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"Exception {ex.Message} while initializing adpater {adapterConfig.Type}");
+                }
             }
 
             return adapters;
         }
+
+        private IEnumerable<string> FindAdapterInRepository(string sourceDir, string filter = "*Adapter*.dll") =>
+        Directory.GetFiles(sourceDir, filter, SearchOption.AllDirectories);
     }
 }

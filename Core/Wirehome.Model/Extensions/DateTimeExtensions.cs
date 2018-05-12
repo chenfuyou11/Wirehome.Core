@@ -12,5 +12,15 @@ namespace Wirehome.Model.Extensions
 
         public static TimeSpan IncreaseByPercentage(this TimeSpan time, float percentage) => TimeSpan.FromTicks(time.Ticks + (long)(time.Ticks * (percentage / 100.0)));
 
+        public static bool IsTimeInRange(this TimeSpan time, TimeSpan from, TimeSpan until)
+        {
+            if (from < until)
+            {
+                return time >= from && time <= until;
+            }
+
+            return time >= from || time <= until;
+        }
+
     }
 }

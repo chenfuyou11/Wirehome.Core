@@ -1,6 +1,10 @@
 ﻿using System;
+using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Contracts.Conditions;
 using Wirehome.Core;
+using Wirehome.Core.Services.DependencyInjection;
+using Wirehome.Model.Conditions;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.Conditions.Specialized
 {
@@ -14,47 +18,40 @@ namespace Wirehome.Conditions.Specialized
             WithExpression(() => Check());
         }
 
-        private TimeSpan? StartAdjustment { get; set; }
-
-        private TimeSpan? EndAdjustment { get; set; }
 
         public TimeRangeCondition WithStart(Func<TimeSpan> start)
         {
-            if (start == null) throw new ArgumentNullException(nameof(start));
-
-            _startValueProvider = start;
+            _startValueProvider = start ?? throw new ArgumentNullException(nameof(start));
             return this;
         }
 
         public TimeRangeCondition WithEnd(Func<TimeSpan> end)
         {
-            if (end == null) throw new ArgumentNullException(nameof(end));
-
-            _endValueProvider = end;
+            _endValueProvider = end ?? throw new ArgumentNullException(nameof(end));
             return this;
         }
 
         public TimeRangeCondition WithStart(TimeSpan start)
         {
-            _startValueProvider = () => start;
+            Properties[ConditionProperiesConstants.StartTime].Value = new TimeSpanValue(start);
             return this;
         }
 
         public TimeRangeCondition WithEnd(TimeSpan end)
         {
-            _endValueProvider = () => end;
+            Properties[ConditionProperiesConstants.EndTime].Value = new TimeSpanValue(end);
             return this;
         }
 
         public TimeRangeCondition WithStartAdjustment(TimeSpan value)
         {
-            StartAdjustment = value;
+            Properties[ConditionProperiesConstants.StartAdjustment].Value = new TimeSpanValue(value);
             return this;
         }
 
         public TimeRangeCondition WithEndAdjustment(TimeSpan value)
         {
-            EndAdjustment = value;
+            Properties[ConditionProperiesConstants.EndAdjustment].Value = new TimeSpanValue(value);
             return this;
         }
 
@@ -65,22 +62,14 @@ namespace Wirehome.Conditions.Specialized
                 return ConditionState.NotFulfilled;
             }
 
-            TimeSpan startValue = _startValueProvider();
-            TimeSpan endValue = _endValueProvider();
+            TimeSpan startValue = GetPropertyValue(ConditionProperiesConstants.StartTime, (TimeSpanValue)_startValueProvider()).ToTimeSpanValue();
+            TimeSpan endValue = GetPropertyValue(ConditionProperiesConstants.EndTime, (TimeSpanValue)_endValueProvider()).ToTimeSpanValue();
 
-            if (StartAdjustment.HasValue)
-            {
-                startValue += StartAdjustment.Value;
-            }
+            startValue += GetPropertyValue(ConditionProperiesConstants.StartAdjustment, (TimeSpanValue)TimeSpan.Zero).ToTimeSpanValue();
+            endValue += GetPropertyValue(ConditionProperiesConstants.EndAdjustment, (TimeSpanValue)TimeSpan.Zero).ToTimeSpanValue();
 
-            if (EndAdjustment.HasValue)
-            {
-                endValue += EndAdjustment.Value;
-            }
-
-            var timeRangeChecker = new TimeRangeChecker();
             //TODO check
-            if (timeRangeChecker.IsTimeInRange(SystemTime.Now.TimeOfDay, startValue, endValue))
+            if (SystemTime.Now.TimeOfDay.IsTimeInRange(startValue, endValue))
             {
                 return ConditionState.Fulfilled;
             }

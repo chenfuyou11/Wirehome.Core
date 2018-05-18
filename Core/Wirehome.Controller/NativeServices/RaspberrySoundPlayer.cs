@@ -5,7 +5,7 @@ using Wirehome.Core.Interface.Native;
 
 namespace Wirehome.Raspberry.Core
 {
-    public class RaspberrySoundPlayer : INativeSoundPlayer
+    internal class RaspberrySoundPlayer : INativeSoundPlayer
     {
         private readonly MediaPlayer _player;
         public Action SoundEnd { get; set; }

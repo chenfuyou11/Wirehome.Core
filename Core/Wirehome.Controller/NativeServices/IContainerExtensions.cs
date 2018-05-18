@@ -4,7 +4,7 @@ using Wirehome.Raspberry.Core;
 
 namespace Wirehome.Raspberry
 {
-    public static class IContainerExtensions
+    internal static class IContainerExtensions
     {
         public static void RegisterRaspberryServices(this IContainer container)
         {

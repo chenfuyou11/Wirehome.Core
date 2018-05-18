@@ -4,7 +4,7 @@ using Wirehome.Core.Services.Logging;
 
 namespace Wirehome.Extensions
 {
-    public class RaspberryLoggingService : ILogAdapter
+    internal class RaspberryLoggingService : ILogAdapter
     {
         private readonly LoggingChannel _loggingChannel;
 

@@ -4,7 +4,7 @@ using Wirehome.Core.Interface.Native;
 
 namespace Wirehome.Raspberry
 {
-    public class RaspberryI2cDevice : INativeI2cDevice
+    internal class RaspberryI2cDevice : INativeI2cDevice
     {
         private readonly I2cDevice _i2CDevice;
  

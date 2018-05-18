@@ -7,7 +7,7 @@ using Wirehome.Core.Interface.Native;
 
 namespace Wirehome.Raspberry
 {
-    public class RaspberrySerialDevice : INativeSerialDevice
+    internal class RaspberrySerialDevice : INativeSerialDevice
     {
         private SerialDevice _serialDevice;
 

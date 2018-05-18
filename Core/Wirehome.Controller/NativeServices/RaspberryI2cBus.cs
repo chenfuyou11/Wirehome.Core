@@ -6,7 +6,7 @@ using Wirehome.Core.Interface.Native;
 
 namespace Wirehome.Raspberry
 {
-    public class RaspberryI2cBus : INativeI2cBus
+    internal class RaspberryI2cBus : INativeI2cBus
     {
         public INativeI2cDevice CreateDevice(string deviceId, int slaveAddress)
         {

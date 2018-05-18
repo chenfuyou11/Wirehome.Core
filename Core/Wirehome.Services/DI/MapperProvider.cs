@@ -20,7 +20,6 @@ namespace Wirehome.Core.Services.DependencyInjection
             mce.AddProfile(new WirehomeMappingProfile(adapterRepository));
             
             var mc = new MapperConfiguration(mce);
-            mc.AssertConfigurationIsValid();
             
             return new Mapper(mc, t => _container.GetInstance(t));
         }

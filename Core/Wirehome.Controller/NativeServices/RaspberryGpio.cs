@@ -4,7 +4,7 @@ using Wirehome.Core.Interface.Native;
 
 namespace Wirehome.Raspberry
 {
-    public class RaspberryGpio : INativeGpio
+    internal class RaspberryGpio : INativeGpio
     {
         private readonly GpioPin _gpioPin;
         public event Action ValueChanged;

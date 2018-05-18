@@ -6,7 +6,7 @@ using Wirehome.Core.Interface.Native;
 
 namespace Wirehome.Raspberry
 {
-    public class BinaryReader : IBinaryReader
+    internal class BinaryReader : IBinaryReader
     {
         private readonly DataReader _dataReader;
 

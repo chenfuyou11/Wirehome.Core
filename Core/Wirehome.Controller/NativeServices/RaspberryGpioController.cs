@@ -3,7 +3,7 @@ using Wirehome.Core.Interface.Native;
 
 namespace Wirehome.Raspberry
 {
-    public class RaspberryGpioController : INativeGpioController
+    internal class RaspberryGpioController : INativeGpioController
     {
         private readonly GpioController _gpioController;
 

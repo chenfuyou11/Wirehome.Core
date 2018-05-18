@@ -11,7 +11,7 @@
     <AssemblyName>Wirehome.Controller.Dnf</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.17134.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
@@ -98,7 +98,6 @@
   <ItemGroup>
     <Compile Include="NativeServices\BinaryReader.cs" />
     <Compile Include="NativeServices\IContainerExtensions.cs" />
-    <Compile Include="NativeServices\ILogAdapter.cs" />
     <Compile Include="NativeServices\RaspberryGpio.cs" />
     <Compile Include="NativeServices\RaspberryGpioController.cs" />
     <Compile Include="NativeServices\RaspberryI2cBus.cs" />
@@ -150,6 +149,18 @@
     <ProjectReference Include="..\..\Core\Wirehome.Contracts\Wirehome.Contracts.csproj">
       <Project>{ee5c16af-0acf-4d87-ad5a-d995832ddb6c}</Project>
       <Name>Wirehome.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Wirehome.EventAggregator\Wirehome.EventAggregator.csproj">
+      <Project>{d24b514d-a412-49af-97a9-a0b08efb7085}</Project>
+      <Name>Wirehome.EventAggregator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Wirehome.Model\Wirehome.Model.csproj">
+      <Project>{b46acfce-d828-45af-ae97-8e471e2b155b}</Project>
+      <Name>Wirehome.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Wirehome.Utils\Wirehome.Utils.csproj">
+      <Project>{6b6fee1d-5366-44d4-b363-b8d1f7900788}</Project>
+      <Name>Wirehome.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

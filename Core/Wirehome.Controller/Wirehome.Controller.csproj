@@ -7,8 +7,8 @@
     <ProjectGuid>{57A56A49-15A4-424D-BA08-CF3AB35FB0C3}</ProjectGuid>
     <OutputType>winmdobj</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Wirehome.Controller.Dnf</RootNamespace>
-    <AssemblyName>Wirehome.Controller.Dnf</AssemblyName>
+    <RootNamespace>Wirehome.Controller</RootNamespace>
+    <AssemblyName>Wirehome.Controller</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.17134.0</TargetPlatformVersion>
@@ -97,7 +97,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="NativeServices\BinaryReader.cs" />
-    <Compile Include="NativeServices\IContainerExtensions.cs" />
     <Compile Include="NativeServices\RaspberryGpio.cs" />
     <Compile Include="NativeServices\RaspberryGpioController.cs" />
     <Compile Include="NativeServices\RaspberryI2cBus.cs" />
@@ -157,6 +156,10 @@
     <ProjectReference Include="..\Wirehome.Model\Wirehome.Model.csproj">
       <Project>{b46acfce-d828-45af-ae97-8e471e2b155b}</Project>
       <Name>Wirehome.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Wirehome.Services\Wirehome.Services.csproj">
+      <Project>{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}</Project>
+      <Name>Wirehome.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\Wirehome.Utils\Wirehome.Utils.csproj">
       <Project>{6b6fee1d-5366-44d4-b363-b8d1f7900788}</Project>

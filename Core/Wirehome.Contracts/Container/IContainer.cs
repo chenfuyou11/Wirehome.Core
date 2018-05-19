@@ -12,7 +12,13 @@ namespace Wirehome.Core.Services.DependencyInjection
         object GetInstance(Type type);
 
         IList<TContract> GetInstances<TContract>() where TContract : class;
-        
+
+        IEnumerable<InstanceProducer> GetRegistredTypes();
+
+        Queue<IService> GetSerives();
+
+        IContainer RegisterServices();
+
         void RegisterSingleton<TImplementation>() where TImplementation : class;
 
         void RegisterSingleton<TImplementation>(Func<TImplementation> instanceCreator) where TImplementation : class;
@@ -34,14 +40,8 @@ namespace Wirehome.Core.Services.DependencyInjection
 
         void RegisterSingleton<T>(T service) where T : class;
 
-        bool ChackNativeImpelentationExists();
-
-        IEnumerable<InstanceProducer> GetSingletonRegistrations();
-
         void RegisterSingleton(Type service, object instance);
 
         void RegisterService<TContract, TImplementation>(int priority = 0) where TContract : class, IService where TImplementation : class, TContract;
-
-        Queue<IService> GetSerives();
     }
 }

@@ -2,7 +2,7 @@
 using Windows.Foundation.Diagnostics;
 using Wirehome.Core.Services.Logging;
 
-namespace Wirehome.Extensions
+namespace Wirehome.Raspberry
 {
     internal class RaspberryLoggingService : ILogAdapter
     {

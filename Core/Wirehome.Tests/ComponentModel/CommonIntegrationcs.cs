@@ -30,7 +30,9 @@ namespace Wirehome.Core.Tests.ComponentModel
             var container = PrepareContainer();
             var confService = container.GetInstance<IConfigurationService>();
             var logger = container.GetInstance<ILogService>();
-            await container.StartupServices(logger.CreatePublisher("DI"));
+
+            //TODO
+            //await container.StartupServices(logger.CreatePublisher("DI"));
             
             var file = ReadConfig(configName);
             

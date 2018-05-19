@@ -42,7 +42,7 @@ namespace Wirehome.Model.Extensions
 
         public static void RegisterHandlers(this IEventAggregator eventAggregator, IContainer container)
         {
-            foreach (var type in container.GetSingletonRegistrations().Where(x => x.ServiceType.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IHandler<>))))
+            foreach (var type in container.GetRegistredTypes().Where(x => x.ServiceType.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IHandler<>))))
             {
                 foreach (var handlerInterface in type.ServiceType.GetInterfaces()
                                                         .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IHandler<>) && x.GenericTypeArguments.Length == 1))

@@ -3,7 +3,7 @@ using Windows.Media.Core;
 using System;
 using Wirehome.Core.Interface.Native;
 
-namespace Wirehome.Raspberry.Core
+namespace Wirehome.Raspberry
 {
     internal class RaspberrySoundPlayer : INativeSoundPlayer
     {

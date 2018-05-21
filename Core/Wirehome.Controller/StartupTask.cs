@@ -1,6 +1,4 @@
-﻿using System.IO;
-using Windows.ApplicationModel.Background;
-using Wirehome.Core;
+﻿using Windows.ApplicationModel.Background;
 using Wirehome.Core.Interface.Native;
 using Wirehome.Core.Services.DependencyInjection;
 using Wirehome.Model.Core;

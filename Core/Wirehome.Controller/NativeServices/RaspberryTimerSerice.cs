@@ -2,7 +2,7 @@
 using Windows.System.Threading;
 using Wirehome.Core.Interface.Native;
 
-namespace Wirehome.Raspberry.Core
+namespace Wirehome.Raspberry
 {
     internal class RaspberryTimerSerice : INativeTimerSerice
     {

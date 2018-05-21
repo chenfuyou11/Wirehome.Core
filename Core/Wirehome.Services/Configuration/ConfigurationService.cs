@@ -29,8 +29,10 @@ namespace Wirehome.ComponentModel.Configuration
             _logger = logService.CreatePublisher(nameof(ConfigurationService));
         }
 
-        public async Task<WirehomeConfiguration> ReadConfiguration(string rawConfig, string adaptersRepoPath)
+        public async Task<WirehomeConfiguration> ReadConfiguration(string configPath, string adaptersRepoPath)
         {
+            var rawConfig = File.ReadAllText(configPath);
+
             var result = JsonConvert.DeserializeObject<WirehomeConfigDTO>(rawConfig);
 
             var adapters = await MapAdapters(result.Wirehome.Adapters, adaptersRepoPath);

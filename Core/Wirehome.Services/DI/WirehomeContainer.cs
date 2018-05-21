@@ -24,8 +24,6 @@ namespace Wirehome.Core.Services.DependencyInjection
         public WirehomeContainer(ControllerOptions options)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
-
-            _container.RegisterSingleton(() => options);
         }
 
         public Action<Container, string> RegisterBaseServices { get; set; } = (container, adapterRepo) =>
@@ -36,45 +34,32 @@ namespace Wirehome.Core.Services.DependencyInjection
             container.RegisterSingleton<ILogService, LogService>();
             container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
 
-             //Quartz
-             container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();
+            //Quartz
+            container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();
             container.RegisterSingleton<ISchedulerFactory, SimpleInjectorSchedulerFactory>();
             container.Register(() => container.GetInstance<ISchedulerFactory>().GetScheduler().Result);
 
-             //Auto mapper
-             container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper(adapterRepo));
+            //Auto mapper
+            container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper(adapterRepo));
         };
 
         public IContainer RegisterServices()
         {
             _container.RegisterSingleton<IContainer>(() => this);
+
             RegisterBaseServices(_container, _options.AdapterRepository);
+
+            _container.Verify();
+
+            ChackNativeImpelentationExists();
+
             return this;
         }
-
-        public void Verify()
-        {
-            _container.Verify();
-        }
-
-        public bool ChackNativeImpelentationExists()
+      
+        private bool ChackNativeImpelentationExists()
         {
             var registrations = _container.GetCurrentRegistrations();
-            if (!registrations.Any(x => x.ServiceType == typeof(INativeI2cBus)))
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public IList<InstanceProducer> GetCurrentRegistrations()
-        {
-            return _container.GetCurrentRegistrations().ToList();
-        }
-
-        public IEnumerable<InstanceProducer> GetSingletonRegistrations()
-        {
-            return _container.GetCurrentRegistrations();
+            return registrations.Any(x => x.ServiceType == typeof(INativeI2cBus));
         }
 
         public TContract GetInstance<TContract>() where TContract : class
@@ -102,6 +87,11 @@ namespace Wirehome.Core.Services.DependencyInjection
             }
 
             return services;
+        }
+
+        public IEnumerable<InstanceProducer> GetRegistredTypes()
+        {
+            return _container.GetCurrentRegistrations();
         }
 
         public void RegisterFactory<T>(Func<T> factory) where T : class
@@ -137,26 +127,26 @@ namespace Wirehome.Core.Services.DependencyInjection
 
         public void RegisterSingleton(Type service, object instance)
         {
-            _container.RegisterSingleton(service, instance);
+            _container.RegisterInstance(service, instance);
         }
 
         public void RegisterSingleton<T>(T service) where T : class
         {
-            _container.RegisterSingleton<T>(service);
+            _container.RegisterInstance<T>(service);
         }
 
         public void RegisterCollection<TItem>(IEnumerable<TItem> items) where TItem : class
         {
             if (items == null) throw new ArgumentNullException(nameof(items));
 
-            _container.RegisterCollection(items);
+            _container.Collection.Register(items);
         }
 
         public void RegisterCollection<TItem>(IEnumerable<Assembly> assemblies) where TItem : class
         {
             if (assemblies == null) throw new ArgumentNullException(nameof(assemblies));
 
-            _container.RegisterCollection(typeof(TItem), assemblies);
+            _container.Collection.Register(typeof(TItem), assemblies);
         }
 
         public void RegisterSingleton<TContract>(Func<TContract> instanceCreator) where TContract : class

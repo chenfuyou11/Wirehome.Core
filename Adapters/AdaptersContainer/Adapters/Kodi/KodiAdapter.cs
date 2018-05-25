@@ -34,9 +34,9 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
         {
         }
 
-        public override Task Initialize()
+        public override async Task Initialize()
         {
-            base.Initialize();
+            await base.Initialize().ConfigureAwait(false);
 
             _hostname = Properties[AdapterProperties.Hostname].Value.ToStringValue();
             _port = Properties[AdapterProperties.Port].Value.ToIntValue();
@@ -44,12 +44,13 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
             _Password = Properties[AdapterProperties.Password].Value.ToStringValue();
             _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpanFromInt();
 
-            return ScheduleDeviceRefresh<RefreshStateJob>(_poolInterval);
+             await ScheduleDeviceRefresh<RefreshStateJob>(_poolInterval).ConfigureAwait(false);
         }
 
-        protected async Task RefreshCommandHandler(Command message)
+        protected Task RefreshCommandHandler(Command message)
         {
             //TODO pool state
+            return Task.CompletedTask;
         }
 
         protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)

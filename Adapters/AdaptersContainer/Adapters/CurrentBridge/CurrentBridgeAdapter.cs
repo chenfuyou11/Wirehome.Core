@@ -26,7 +26,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         public override async Task Initialize()
         {
-            base.Initialize();
+            await base.Initialize().ConfigureAwait(false);
 
             var _i2cAddress = Properties[AdapterProperties.I2cAddress].Value.ToIntValue();
 

@@ -46,11 +46,11 @@ namespace Wirehome.ComponentModel.Adapters
             _state = new byte[_portExpanderDriver.StateSize];
             _committedState = new byte[_portExpanderDriver.StateSize];
 
-            await ScheduleDeviceRefresh<RefreshStateJob>(poolInterval);
+            await ScheduleDeviceRefresh<RefreshStateJob>(poolInterval).ConfigureAwait(false);
 
             _disposables.Add(_eventAggregator.SubscribeForDeviceQuery<DeviceCommand>(DeviceCommandHandler, Uid));
 
-            base.Initialize();
+            await base.Initialize().ConfigureAwait(false);
         }
 
         private Task<object> DeviceCommandHandler(IMessageEnvelope<DeviceCommand> messageEnvelope)

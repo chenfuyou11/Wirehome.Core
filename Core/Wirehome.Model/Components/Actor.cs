@@ -27,13 +27,13 @@ namespace Wirehome.ComponentModel.Components
         public void Dispose() => _disposables.Dispose();
 
 
-        public virtual async Task Initialize()
+        public virtual Task Initialize()
         {
-            HandleCommands();//, _disposables.Token);
+            Task.Run(HandleCommands, _disposables.Token);
 
             _isInitialized = true;
 
-           // return Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         protected Actor() => RegisterCommandHandlers();

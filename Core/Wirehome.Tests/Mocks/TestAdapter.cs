@@ -25,11 +25,11 @@ namespace Wirehome.Core.Tests.Mocks
             DiscoveryResponse = new DiscoveryResponse(new PowerState());
         }
 
-        public override async Task Initialize()
+        public override Task Initialize()
         {
             _disposables.Add(_eventAggregator.SubscribeForDeviceQuery<DeviceCommand>(DeviceCommandHandler, Uid));
 
-            base.Initialize();
+            return base.Initialize();
         }
 
         private Task<object> DeviceCommandHandler(IMessageEnvelope<DeviceCommand> messageEnvelope)

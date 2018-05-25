@@ -29,15 +29,15 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         public override async Task Initialize()
         {
-            base.Initialize();
+            await base.Initialize().ConfigureAwait(false);
 
             _hostName = Properties[AdapterProperties.Hostname].Value.ToStringValue();
             _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpanFromInt();
             //TODO make zone as required parameter
             _zone = Properties[AdapterProperties.Zone].Value.ToIntValue();
 
-            await ScheduleDeviceRefresh<RefreshLightStateJob>(_poolInterval);
-            await ExecuteCommand(CommandFatory.RefreshCommand);
+            await ScheduleDeviceRefresh<RefreshLightStateJob>(_poolInterval).ConfigureAwait(false);
+            await ExecuteCommand(CommandFatory.RefreshCommand).ConfigureAwait(false);
         }
 
         protected async Task RefreshCommandHandler(Command message)

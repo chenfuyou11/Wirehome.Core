@@ -30,7 +30,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         public override async Task Initialize()
         {
-            base.Initialize();
+            await base.Initialize().ConfigureAwait(false);
 
             _I2cAddress = Properties[AdapterProperties.I2cAddress].Value.ToIntValue();
             _pinNumber = Properties[AdapterProperties.PinNumber].Value.ToIntValue();
@@ -39,8 +39,9 @@ namespace Wirehome.ComponentModel.Adapters.Denon
             _disposables.Add(_eventAggregator.SubscribeAsync<RemoteSocketMessage>(InfraredHandler, RoutingFilter.MessageRead));
         }
         
-        public async Task InfraredHandler(IMessageEnvelope<RemoteSocketMessage> message)
+        public Task InfraredHandler(IMessageEnvelope<RemoteSocketMessage> message)
         {
+            return Task.CompletedTask;
             // save registred and forward all
             //_state[message.Message.Pin] = await UpdateState(TemperatureState.StateName, _state[message.Message.Pin], message.Message.Temperature);
         }

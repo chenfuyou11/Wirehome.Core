@@ -14,7 +14,7 @@ namespace Wirehome.ComponentModel.Adapters.Samsung
         private string _hostname;
 
         private BooleanValue _powerState;
-        private DoubleValue _volume;
+        //private DoubleValue _volume;
         private BooleanValue _mute;
         private StringValue _input;
 
@@ -24,7 +24,7 @@ namespace Wirehome.ComponentModel.Adapters.Samsung
 
         public override async Task Initialize()
         {
-            base.Initialize();
+            await base.Initialize().ConfigureAwait(false);
 
             _hostname = Properties[AdapterProperties.Hostname].Value.ToStringValue();
         }
@@ -39,9 +39,10 @@ namespace Wirehome.ComponentModel.Adapters.Samsung
                                           );
         }
 
-        protected async Task TurnOnCommandHandler(Command message)
+        protected Task TurnOnCommandHandler(Command message)
         {
             //TODO ADD infrared message
+            return Task.CompletedTask;
         }
 
         protected async Task TurnOffCommandHandler(Command message)
@@ -54,18 +55,18 @@ namespace Wirehome.ComponentModel.Adapters.Samsung
             _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(false));
         }
 
-        protected async Task VolumeUpCommandHandler(Command command)
+        protected Task VolumeUpCommandHandler(Command command)
         {
-            await _eventAggregator.QueryAsync<SamsungControlMessage, string>(new SamsungControlMessage
+            return _eventAggregator.QueryAsync<SamsungControlMessage, string>(new SamsungControlMessage
             {
                 Address = _hostname,
                 Code = "KEY_VOLUP"
             });
         }
 
-        protected async Task VolumeDownCommandHandler(Command command)
+        protected Task VolumeDownCommandHandler(Command command)
         {
-            await _eventAggregator.QueryAsync<SamsungControlMessage, string>(new SamsungControlMessage
+            return _eventAggregator.QueryAsync<SamsungControlMessage, string>(new SamsungControlMessage
             {
                 Address = _hostname,
                 Code = "KEY_VOLDOWN"

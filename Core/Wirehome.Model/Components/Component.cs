@@ -54,7 +54,7 @@ namespace Wirehome.ComponentModel.Components
 
 
         //TODO Add conditions
-        private async Task InitializeTriggers()
+        private Task InitializeTriggers()
         {
             foreach (var trigger in _triggers.Where(x => x.Schedule == null))
             {
@@ -66,7 +66,7 @@ namespace Wirehome.ComponentModel.Components
                 
             }
 
-
+            return Task.CompletedTask;
            // var scheduler = await _schedulerFactory.GetScheduler();
             //await scheduler.ScheduleIntervalWithContext
             //await scheduler.ScheduleIntervalWithContext<T, Adapter>(interval, this, _disposables.Token);

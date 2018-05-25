@@ -2,47 +2,51 @@
 {
     public static class CommandType
     {
-        public const string DiscoverCapabilities = "DiscoverCapabilities";
+        public const string DiscoverCapabilities = nameof(DiscoverCapabilities);
 
         //Refresh full device state
-        public const string RefreshCommand = "RefreshCommand";
+        public const string RefreshCommand = nameof(RefreshCommand);
 
         // Refresh only part of the states
-        public const string RefreshLightCommand = "RefreshLightCommand";
+        public const string RefreshLightCommand = nameof(RefreshLightCommand);
 
         // Power
-        public const string TurnOffCommand = "TurnOffCommand";
+        public const string TurnOffCommand = nameof(TurnOffCommand);
 
-        public const string TurnOnCommand = "TurnOnCommand";
-        public const string SwitchPowerCommand = "SwitchPowerCommand";
+        public const string TurnOnCommand = nameof(TurnOnCommand);
+        public const string SwitchPowerCommand = nameof(SwitchPowerCommand);
 
         // Volume
-        public const string VolumeUpCommand = "VolumeUpCommand";
-        public const string VolumeDownCommand = "VolumeDownCommand";
-        public const string VolumeSetCommand = "VolumeSetCommand";
+        public const string VolumeUpCommand = nameof(VolumeUpCommand);
+        public const string VolumeDownCommand = nameof(VolumeDownCommand);
+        public const string VolumeSetCommand = nameof(VolumeSetCommand);
 
         //Mute
-        public const string MuteCommand = "MuteCommand";
-        public const string UnmuteCommand = "UnmuteCommand";
+        public const string MuteCommand = nameof(MuteCommand);
+        public const string UnmuteCommand = nameof(UnmuteCommand);
 
         // Input
-        public const string SelectInputCommand = "SelectInputCommand";
+        public const string SelectInputCommand = nameof(SelectInputCommand);
 
         // Surround
-        public const string SelectSurroundModeCommand = "SelectSurroundModeCommand";
+        public const string SelectSurroundModeCommand = nameof(SelectSurroundModeCommand);
 
         // Playback
-        public const string PlayCommand = "PlayCommand";
-        public const string StopCommand = "StopCommand";
+        public const string PlayCommand = nameof(PlayCommand);
+        public const string StopCommand = nameof(StopCommand);
 
         //Code
-        public const string SendCode = "SendCode";
+        public const string SendCode = nameof(SendCode);
         
 
         // Component
-        public const string SupportedCapabilitiesCommand = "SupportedCapabilitiesCommand";
-        public const string SupportedStatesCommand = "SupportedStatesCommand";
-        public const string SupportedTagsCommand = "SupportedTagsCommand";
-        public const string GetStateCommand = "GetStateCommand";
+        public const string SupportedCapabilitiesCommand = nameof(SupportedCapabilitiesCommand);
+        public const string SupportedStatesCommand = nameof(SupportedStatesCommand);
+        public const string SupportedTagsCommand = nameof(SupportedTagsCommand);
+        public const string GetStateCommand = nameof(GetStateCommand);
+
+        //Controller
+        public const string GetComponentCommand = nameof(GetComponentCommand);
+        
     }
 }

@@ -293,7 +293,7 @@ namespace Wirehome.Motion
         {
             if (CanTurnOnLamp())
             {
-                Lamp.ExecuteCommand(Command.TurnOnCommand);
+                Lamp.ExecuteCommand(CommandFatory.TurnOnCommand);
             }
         }
 
@@ -301,7 +301,7 @@ namespace Wirehome.Motion
         {
             if (CanTurnOffLamp())
             {
-                Lamp.ExecuteCommand(Command.TurnOffCommand);
+                Lamp.ExecuteCommand(CommandFatory.TurnOffCommand);
             }
         }
 

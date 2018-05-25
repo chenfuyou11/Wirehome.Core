@@ -1,17 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.Core;
 using Wirehome.Core.Extensions;
-using System.Linq.Expressions;
 using Wirehome.Model.Extensions;
 
 namespace Wirehome.ComponentModel.Components
@@ -19,7 +17,7 @@ namespace Wirehome.ComponentModel.Components
     public abstract class Actor : BaseObject, IService
     {
         protected bool _isInitialized;
-
+        protected bool IsEnabled { get; private set; } = true;
         protected BufferBlock<CommandJob<object>> _commandQueue = new BufferBlock<CommandJob<object>>();
         protected readonly DisposeContainer _disposables = new DisposeContainer();
         protected Dictionary<string, Func<Command, Task<object>>> _asyncQueryHandlers = new Dictionary<string, Func<Command, Task<object>>>();
@@ -28,14 +26,17 @@ namespace Wirehome.ComponentModel.Components
 
         public void Dispose() => _disposables.Dispose();
 
+
         public virtual async Task Initialize()
         {
-            HandleCommands();
+            HandleCommands();//, _disposables.Token);
 
             _isInitialized = true;
+
+           // return Task.CompletedTask;
         }
 
-        public Actor() => RegisterCommandHandlers();
+        protected Actor() => RegisterCommandHandlers();
 
         private void RegisterCommandHandlers()
         {
@@ -119,9 +120,9 @@ namespace Wirehome.ComponentModel.Components
         {
             while (await _commandQueue.OutputAvailableAsync(_disposables.Token))
             {
+                var command = await _commandQueue.ReceiveAsync(_disposables.Token);
                 try
                 {
-                    var command = await _commandQueue.ReceiveAsync(_disposables.Token);
                     var result = await ProcessCommand(command.Command);
                     AssertForWrappedTask(result);
                     command.SetResult(result);
@@ -129,6 +130,7 @@ namespace Wirehome.ComponentModel.Components
                 catch (Exception ex)
                 {
                     LogException(ex);
+                    command.SetException(ex);
                 }
             }
         }
@@ -142,6 +144,7 @@ namespace Wirehome.ComponentModel.Components
 
         public Task<object> ExecuteCommand(Command command)
         {
+            if (!IsEnabled) throw new Exception($"Component {Uid} is disabled");
             if (!_isInitialized) throw new Exception($"Component {Uid} is not initialized");
             return QueueJob(command).Unwrap();
         }

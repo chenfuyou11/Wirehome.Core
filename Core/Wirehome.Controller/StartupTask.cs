@@ -12,7 +12,11 @@ namespace Wirehome.Controller.Dnf
         {
             var deferral = taskInstance.GetDeferral();
 
-            if (!await new WirehomeController(GetControllerOptions()).Run().ConfigureAwait(false))
+            try
+            {
+                await new WirehomeController(GetControllerOptions()).Initialize().ConfigureAwait(false);
+            }
+            catch (System.Exception)
             {
                 deferral.Complete();
             }

@@ -2,17 +2,17 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Components;
 using Wirehome.Core.ComponentModel.Areas;
 using Wirehome.Core.ComponentModel.Configuration;
-using Wirehome.Core.Utils;
 using Wirehome.Core.Extensions;
-using System.IO;
-using System.Runtime.Loader;
 using Wirehome.Core.Services.Logging;
+using Wirehome.Core.Utils;
 
 namespace Wirehome.ComponentModel.Configuration
 {
@@ -29,14 +29,14 @@ namespace Wirehome.ComponentModel.Configuration
             _logger = logService.CreatePublisher(nameof(ConfigurationService));
         }
 
-        public async Task<WirehomeConfiguration> ReadConfiguration(string configPath, string adaptersRepoPath)
+        public WirehomeConfiguration ReadConfiguration(string configPath, string adaptersRepoPath)
         {
             var rawConfig = File.ReadAllText(configPath);
 
             var result = JsonConvert.DeserializeObject<WirehomeConfigDTO>(rawConfig);
 
-            var adapters = await MapAdapters(result.Wirehome.Adapters, adaptersRepoPath);
-            var components = await MapComponents(result);
+            var adapters = MapAdapters(result.Wirehome.Adapters, adaptersRepoPath);
+            var components = MapComponents(result);
             var areas = MapAreas(result, components);
 
             var configuration = new WirehomeConfiguration
@@ -55,8 +55,6 @@ namespace Wirehome.ComponentModel.Configuration
         {
             var allUids = configuration.Adapters.Select(a => a.Uid).ToList();
             allUids.AddRange(configuration.Components.Select(c => c.Uid));
-
-            var xx = configuration.Areas.Expand(a => a.Areas);
 
             var duplicateKeys = allUids.GroupBy(x => x)
                                        .Where(group => group.Count() > 1)
@@ -91,17 +89,12 @@ namespace Wirehome.ComponentModel.Configuration
             }
         }
 
-        private async Task<IList<Component>> MapComponents(WirehomeConfigDTO result)
+        private IList<Component> MapComponents(WirehomeConfigDTO result)
         {
-            var components = _mapper.Map<IList<ComponentDTO>, IList<Component>>(result.Wirehome.Components);
-            foreach (var component in components)
-            {
-                await component.Initialize();
-            }
-            return components;
+            return _mapper.Map<IList<ComponentDTO>, IList<Component>>(result.Wirehome.Components);
         }
 
-        private async Task<IList<Adapter>> MapAdapters(IList<AdapterDTO> adapterConfigs, string adaptersRepoPath)
+        private IList<Adapter> MapAdapters(IList<AdapterDTO> adapterConfigs, string adaptersRepoPath)
         {
             var adapters = new List<Adapter>();
             var types = new List<Type>();
@@ -109,7 +102,7 @@ namespace Wirehome.ComponentModel.Configuration
             foreach (var assemblyPath in FindAdapterInRepository(adaptersRepoPath))
             {
                 var adapterTypes = AssemblyHelper.GetAllInherited<Adapter>(AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath));
-                
+
                 types.AddRange(adapterTypes);
             }
 
@@ -121,12 +114,11 @@ namespace Wirehome.ComponentModel.Configuration
                     if (adapterType == null) throw new Exception($"Could not find adapter {adapterType}");
                     var adapter = (Adapter)_mapper.Map(adapterConfig, typeof(AdapterDTO), adapterType);
 
-                    await adapter.Initialize();
                     adapters.Add(adapter);
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"Exception {ex.Message} while initializing adpater {adapterConfig.Type}");
+                    _logger.Error($"Exception {ex.Message} while initializing adapter {adapterConfig.Type}");
                 }
             }
 

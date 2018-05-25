@@ -29,12 +29,15 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public async Task AdapterCommandExecuteShouldGetResult()
         {
-            var container = CommonIntegrationcs.PrepareContainer();
+            var (controller, container) = await new ControllerBuilder().WithConfiguration("oneComponentConfiguration")
+                                                                       .BuildAndRun()
+                                                                       .ConfigureAwait(false);
+
             var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
             var adapter = new TestAdapter("adapter1", adapterServiceFactory);
             await adapter.Initialize();
 
-            var result = await adapter.ExecuteCommand<DiscoveryResponse>(Command.DiscoverCapabilitiesCommand);
+            var result = await adapter.ExecuteCommand<DiscoveryResponse>(CommandFatory.DiscoverCapabilitiesCommand);
 
             Assert.AreEqual(1, result.SupportedStates.Length);
             Assert.IsInstanceOfType(result.SupportedStates[0], typeof(PowerState));
@@ -43,7 +46,9 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public async Task MultiThreadAdapterCommandsExecuteShouldBeQueued()
         {
-            var container = CommonIntegrationcs.PrepareContainer();
+            var (controller, container) = await new ControllerBuilder().WithConfiguration("oneComponentConfiguration")
+                                                                       .BuildAndRun()
+                                                                       .ConfigureAwait(false);
             var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
             var adapter = new TestAdapter("adapter1", adapterServiceFactory);
             await adapter.Initialize();
@@ -52,7 +57,7 @@ namespace Wirehome.Extensions.Tests
 
             for (int i = 0; i < 10; i++)
             {
-                taskList.Add(Task.Run(() => adapter.ExecuteCommand(Command.RefreshCommand)));
+                taskList.Add(Task.Run(() => adapter.ExecuteCommand(CommandFatory.RefreshCommand)));
             }
 
             await Task.WhenAll(taskList);
@@ -63,7 +68,9 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public async Task AdapterCommandViaEventAggregatorExecuteShouldGetResult()
         {
-            var container = CommonIntegrationcs.PrepareContainer();
+            var (controller, container) = await new ControllerBuilder().WithConfiguration("oneComponentConfiguration")
+                                                                       .BuildAndRun()
+                                                                       .ConfigureAwait(false);
             var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
             var eventAggregator = container.GetInstance<IEventAggregator>();
             var adapter = new TestAdapter("adapter1", adapterServiceFactory);
@@ -79,7 +86,9 @@ namespace Wirehome.Extensions.Tests
         [ExpectedException(typeof(TimeoutException))]
         public async Task AdapterCommandViaEventAggregatorExecuteShouldTimeoutWhenExecuteToLong()
         {
-            var container = CommonIntegrationcs.PrepareContainer();
+            var (controller, container) = await new ControllerBuilder().WithConfiguration("oneComponentConfiguration")
+                                                                       .BuildAndRun()
+                                                                       .ConfigureAwait(false);
             var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
             var eventAggregator = container.GetInstance<IEventAggregator>();
             var adapter = new TestAdapter("adapter1", adapterServiceFactory);
@@ -91,7 +100,9 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public async Task GenerateAdapter()
         {
-            var container = CommonIntegrationcs.PrepareContainer();
+            var (controller, container) = await new ControllerBuilder().WithConfiguration("oneComponentConfiguration")
+                                                                       .BuildAndRun()
+                                                                       .ConfigureAwait(false);
             var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
             var roslynGenerator = new RoslynAsseblyGenerator();
             var assembly = roslynGenerator.GenerateAssembly("adapter.dll", GetAdapterDir(), AssemblyHelper.GetReferencedAssemblies(typeof(Adapter)));

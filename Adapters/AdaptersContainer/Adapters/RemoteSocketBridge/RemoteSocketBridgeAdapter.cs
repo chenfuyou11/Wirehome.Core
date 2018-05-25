@@ -1,17 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Wirehome.ComponentModel.Capabilities;
+using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
+using Wirehome.ComponentModel.Events;
+using Wirehome.ComponentModel.Extensions;
+using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
-using Wirehome.Extensions.Messaging;
-using System.Collections.Generic;
-using Wirehome.ComponentModel.ValueTypes;
-using Wirehome.Core.Services;
 using Wirehome.Core.Hardware.RemoteSockets;
-using Wirehome.ComponentModel.Extensions;
-using Wirehome.ComponentModel.Capabilities.Constants;
-using Wirehome.ComponentModel.Events;
+using Wirehome.Core.Services;
+using Wirehome.Extensions.Messaging;
 using Wirehome.Model.Events;
 using Wirehome.Model.Extensions;
 

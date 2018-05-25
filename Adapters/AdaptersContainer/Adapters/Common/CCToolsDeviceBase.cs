@@ -1,5 +1,4 @@
-﻿using Quartz;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +12,6 @@ using Wirehome.ComponentModel.Commands.Responses;
 using Wirehome.ComponentModel.Events;
 using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
-using Wirehome.Core;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
 using Wirehome.Core.Services.I2C;
@@ -140,7 +138,6 @@ namespace Wirehome.ComponentModel.Adapters
         }
 
         private bool GetPortState(int id) => _state.GetBit(id);
-        
 
         private void SetPortState(int pinNumber, bool state, bool commit)
         {

@@ -1,66 +1,15 @@
-﻿using Quartz;
-using Quartz.Spi;
-using SimpleInjector;
+﻿using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Wirehome.ComponentModel.Adapters;
-using Wirehome.ComponentModel.Configuration;
-using Wirehome.Core.EventAggregator;
-using Wirehome.Core.Interface.Native;
-using Wirehome.Core.Services.I2C;
-using Wirehome.Core.Services.Logging;
-using Wirehome.Core.Services.Quartz;
 
 namespace Wirehome.Core.Services.DependencyInjection
 {
     public class WirehomeContainer : IContainer
     {
         private readonly Container _container = new Container();
-        private readonly ControllerOptions _options;
-        private Dictionary<Type, int> _serviceInitalizationPriority = new Dictionary<Type, int>();
-
-        public WirehomeContainer(ControllerOptions options)
-        {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
-        }
-
-        public Action<Container, string> RegisterBaseServices { get; set; } = (container, adapterRepo) =>
-        {
-            container.RegisterSingleton<IEventAggregator, EventAggregator.EventAggregator>();
-            container.RegisterSingleton<IConfigurationService, ConfigurationService>();
-            container.RegisterSingleton<II2CBusService, I2CBusService>();
-            container.RegisterSingleton<ILogService, LogService>();
-            container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
-
-            //Quartz
-            container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();
-            container.RegisterSingleton<ISchedulerFactory, SimpleInjectorSchedulerFactory>();
-            container.Register(() => container.GetInstance<ISchedulerFactory>().GetScheduler().Result);
-
-            //Auto mapper
-            container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper(adapterRepo));
-        };
-
-        public IContainer RegisterServices()
-        {
-            _container.RegisterSingleton<IContainer>(() => this);
-
-            RegisterBaseServices(_container, _options.AdapterRepository);
-
-            _container.Verify();
-
-            ChackNativeImpelentationExists();
-
-            return this;
-        }
-      
-        private bool ChackNativeImpelentationExists()
-        {
-            var registrations = _container.GetCurrentRegistrations();
-            return registrations.Any(x => x.ServiceType == typeof(INativeI2cBus));
-        }
+        private readonly Dictionary<Type, int> _serviceInitalizationPriority = new Dictionary<Type, int>();
 
         public TContract GetInstance<TContract>() where TContract : class
         {
@@ -164,6 +113,16 @@ namespace Wirehome.Core.Services.DependencyInjection
         public void RegisterInitializer<T>(Action<T> initializer) where T : class
         {
             _container.RegisterInitializer<T>(initializer);
+        }
+
+        public void RegisterInstance<T>(T service) where T : class
+        {
+            _container.RegisterInstance(service);
+        }
+
+        public void Verify() 
+        {
+            _container.Verify();
         }
 
         public Queue<IService> GetSerives()

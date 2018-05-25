@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Wirehome.ComponentModel.Commands;
 
 namespace Wirehome.ComponentModel.Adapters
@@ -12,5 +13,6 @@ namespace Wirehome.ComponentModel.Adapters
         public CommandJob(Command command) => Command = command;
 
         public void SetResult(T result) => _result.SetResult(result);
+        public void SetException(Exception error) => _result.SetException(error);
     }
 }

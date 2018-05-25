@@ -37,11 +37,11 @@ namespace Wirehome.Core.ComponentModel.Configuration
 
                 var newProperty = new Property
                 {
-                    Type = property.Key,
+                    Key = property.Key,
                     Value = value
                 };
 
-                result.Add(newProperty.Type, newProperty);
+                result.Add(newProperty.Key, newProperty);
             }
             
             return result;

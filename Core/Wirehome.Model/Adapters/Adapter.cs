@@ -21,7 +21,7 @@ namespace Wirehome.ComponentModel.Adapters
 
         public IList<string> RequierdProperties() => _requierdProperties;
 
-        public Adapter(IAdapterServiceFactory adapterServiceFactory)
+        protected Adapter(IAdapterServiceFactory adapterServiceFactory)
         {
             _eventAggregator = adapterServiceFactory.GetEventAggregator();
             _schedulerFactory = adapterServiceFactory.GetSchedulerFactory();

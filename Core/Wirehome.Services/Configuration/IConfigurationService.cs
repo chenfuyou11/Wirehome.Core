@@ -4,6 +4,6 @@ namespace Wirehome.ComponentModel.Configuration
 {
     public interface IConfigurationService
     {
-        Task<WirehomeConfiguration> ReadConfiguration(string configPath, string adaptersRepoPath);
+        WirehomeConfiguration ReadConfiguration(string configPath, string adaptersRepoPath);
     }
 }

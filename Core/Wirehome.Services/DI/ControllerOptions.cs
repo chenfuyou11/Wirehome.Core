@@ -8,5 +8,6 @@ namespace Wirehome.Core.Services.DependencyInjection
         public string AdapterRepository { get; set; }
         public string ConfigurationPath { get; set; }
         public Action<IContainer> NativeServicesRegistration { get; set; }
+        public Action<IContainer, string> BaseServicesRegistration { get; set; }
     }
 }

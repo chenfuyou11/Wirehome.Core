@@ -34,7 +34,7 @@ namespace Wirehome.ComponentModel.Components
         [Map] private IList<Trigger> _triggers { get; set; } = new List<Trigger>();
         [Map] private Dictionary<string, IValueConverter> _converters { get; set; } = new Dictionary<string, IValueConverter>();
 
-        public bool IsEnabled { get; private set; }
+        
 
         public Component(IEventAggregator eventAggregator, ILogService logService, ISchedulerFactory schedulerFactory)
         {
@@ -49,7 +49,7 @@ namespace Wirehome.ComponentModel.Components
             await InitializeAdapters();
             await InitializeTriggers();
 
-            base.Initialize();
+            await base.Initialize();
         }
 
 
@@ -128,7 +128,7 @@ namespace Wirehome.ComponentModel.Components
                 await _eventAggregator.PublishDeviceCommnd(adapter.GetDeviceCommand(command));
             }
 
-            return null;
+           return base.UnhandledCommand(command);
         }
 
         private async Task DeviceEventHandler(IMessageEnvelope<Event> deviceEvent)

@@ -37,7 +37,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
             _zone = Properties[AdapterProperties.Zone].Value.ToIntValue();
 
             await ScheduleDeviceRefresh<RefreshLightStateJob>(_poolInterval);
-            await ExecuteCommand(Command.RefreshCommand);
+            await ExecuteCommand(CommandFatory.RefreshCommand);
         }
 
         protected async Task RefreshCommandHandler(Command message)

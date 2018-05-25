@@ -11,13 +11,13 @@ namespace Wirehome.Core.Services.DependencyInjection
 
         object GetInstance(Type type);
 
+        void Verify();
+
         IList<TContract> GetInstances<TContract>() where TContract : class;
 
         IEnumerable<InstanceProducer> GetRegistredTypes();
 
         Queue<IService> GetSerives();
-
-        IContainer RegisterServices();
 
         void RegisterSingleton<TImplementation>() where TImplementation : class;
 
@@ -43,5 +43,7 @@ namespace Wirehome.Core.Services.DependencyInjection
         void RegisterSingleton(Type service, object instance);
 
         void RegisterService<TContract, TImplementation>(int priority = 0) where TContract : class, IService where TImplementation : class, TContract;
+
+        void RegisterInstance<T>(T service) where T : class;
     }
 }

@@ -7,11 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ComponentModel\SampleConfigs\componentConiguration.json" />
+    <None Remove="ComponentModel\SampleConfigs\componentConfiguration.json" />
+    <None Remove="ComponentModel\SampleConfigs\oneComponentConfiguration.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ComponentModel\SampleConfigs\componentConiguration.json">
+    <Content Include="ComponentModel\SampleConfigs\oneComponentConfiguration.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ComponentModel\SampleConfigs\componentConfiguration.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

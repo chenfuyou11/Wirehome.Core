@@ -22,6 +22,15 @@ namespace Wirehome.ComponentModel
         public IObservable<Event> Events => _events.AsObservable();
         public IReadOnlyDictionary<string, Property> Properties => _properties.AsReadOnly();
 
+        public BaseObject() { }
+        public BaseObject(params Property[] properties)
+        {
+            foreach(var property in properties)
+            {
+                SetPropertyValue(property.Key, property.Value);
+            }
+        }
+
         public IValue this[string propertyName]
         {
             get => GetPropertyValue(propertyName).Value ?? throw new KeyNotFoundException($"Property {propertyName} not found on component {Uid}");
@@ -47,7 +56,7 @@ namespace Wirehome.ComponentModel
             {
                 property = new Property
                 {
-                    Type = propertyName
+                    Key = propertyName
                 };
                 _properties.Add(propertyName, property);
             }
@@ -60,9 +69,9 @@ namespace Wirehome.ComponentModel
 
             if (SupressPropertyChangeEvent || value.Equals(oldValue)) return;
 
-            _events.OnNext(new PropertyChangedEvent(Uid, property.Type, oldValue, value));
+            _events.OnNext(new PropertyChangedEvent(Uid, property.Key, oldValue, value));
         }
 
-        public IDictionary<string, string> GetPropertiesStrings() => _properties.Values.ToDictionary(k => k.Type, v => v.Value?.ToString());
+        public IDictionary<string, string> GetPropertiesStrings() => _properties.Values.ToDictionary(k => k.Key, v => v.Value?.ToString());
     }
 }

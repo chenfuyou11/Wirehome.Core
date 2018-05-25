@@ -222,7 +222,7 @@
       },
       {
         "Uid": "RemoteIR",
-        "Type": "InfraredBridge",
+        "Type": "InfraredBridgeAdapter",
         "Properties": {
           "I2cAddress": 101,
           "PinNumber": 13

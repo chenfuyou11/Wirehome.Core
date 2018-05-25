@@ -20,8 +20,10 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public async Task TestReadComponentsFromConfig()
         {
-            var config = await CommonIntegrationcs.ReadConfiguration("componentConiguration");
-            var eventAggregator = config.container.GetInstance<IEventAggregator>();
+            var (controller, container) = await new ControllerBuilder().WithConfiguration("oneComponentConfiguration")
+                                                                       .BuildAndRun()
+                                                                       .ConfigureAwait(false);
+            var eventAggregator = container.GetInstance<IEventAggregator>();
 
             var properyChangeEvent = new PropertyChangedEvent("HSPE16InputOnly_1", PowerState.StateName, new BooleanValue(false),
                                      new BooleanValue(true), new Dictionary<string, IValue>() { { AdapterProperties.PinNumber, new IntValue(2) } });
@@ -38,13 +40,14 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public async Task TestRemoteLamp()
         {
-            var config = await CommonIntegrationcs.ReadConfiguration("componentConiguration");
-            var eventAggregator = config.container.GetInstance<IEventAggregator>();
+            var (controller, container) = await new ControllerBuilder().WithConfiguration("oneComponentConfiguration")
+                                                                       .BuildAndRun()
+                                                                       .ConfigureAwait(false);
+            var eventAggregator = container.GetInstance<IEventAggregator>();
             
-            var lamp = config.config.Components.FirstOrDefault(c => c.Uid == "RemoteLamp");
-            await lamp.ExecuteCommand(Command.TurnOnCommand).ConfigureAwait(false);
-
-            
+            //TODO
+            //var lamp = config.config.Components.FirstOrDefault(c => c.Uid == "RemoteLamp");
+            //await lamp.ExecuteCommand(Command.TurnOnCommand).ConfigureAwait(false);
         }
 
     }

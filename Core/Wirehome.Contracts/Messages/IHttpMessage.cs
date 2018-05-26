@@ -4,8 +4,9 @@ using System;
 
 namespace Wirehome.Core.Interface.Messaging
 {
-    public interface IHttpMessage : IBaseMessage
+    public interface IHttpMessage 
     {
+        string Address { get; set; }
         KeyValuePair<string, string> AuthorisationHeader { get; set; }
         string ContentType { get; set; }
         CookieContainer Cookies { get; set; }

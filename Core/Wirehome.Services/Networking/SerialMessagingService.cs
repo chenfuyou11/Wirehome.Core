@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Wirehome.Core.Interface.Messaging;
-using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Interface.Native;
 using Wirehome.Core.Services.Logging;
 
@@ -11,20 +9,17 @@ namespace Wirehome.Core.Services
 {
     public class SerialMessagingService : ISerialMessagingService
     {
-        private readonly CancellationTokenSource _readCancellationTokenSource = new CancellationTokenSource();
         private IBinaryReader _dataReader;
 
         private readonly ILogger _logService;
         private readonly INativeSerialDevice _serialDevice;
-        private readonly List<IBinaryMessage> _messageHandlers = new List<IBinaryMessage>();
-        private readonly IEventAggregator _eventAggregator;
+        private readonly List<Func<byte, byte, IBinaryReader, Task<bool>>> _messageHandlers = new List<Func<byte, byte, IBinaryReader, Task<bool>>>();
         private readonly DisposeContainer _disposeContainer = new DisposeContainer();
 
-        public SerialMessagingService(INativeSerialDevice serialDevice, ILogService logService, IEventAggregator eventAggregator)
+        public SerialMessagingService(INativeSerialDevice serialDevice, ILogService logService)
         {
             _logService = logService.CreatePublisher(nameof(SerialMessagingService));
             _serialDevice = serialDevice ?? throw new ArgumentNullException(nameof(serialDevice));
-            _eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
         }
 
         public async Task Initialize()
@@ -35,10 +30,10 @@ namespace Wirehome.Core.Services
             _disposeContainer.Add(_dataReader);
             _disposeContainer.Add(_serialDevice);
 
-            Task.Run(async () => await Listen().ConfigureAwait(false));
+            var task = Task.Run(async () => await Listen().ConfigureAwait(false), _disposeContainer.Token);
         }
 
-        public void RegisterBinaryMessage(IBinaryMessage message) => _messageHandlers.Add(message);
+        public void RegisterMessageHandler(Func<byte, byte, IBinaryReader, Task<bool>> handler) => _messageHandlers.Add(handler);
         public void Dispose() => _disposeContainer.Dispose();
 
         private async Task Listen()
@@ -47,35 +42,15 @@ namespace Wirehome.Core.Services
             {
                 while (true)
                 {
-                    await ReadAsync(_readCancellationTokenSource.Token);
+                    await ReadAsync(_disposeContainer.Token);
                 }
-            }
-            catch (TaskCanceledException)
-            {
-                CloseDevice();
             }
             catch (Exception ex)
             {
                 _logService.Error(ex.ToString());
             }
-            finally
-            {
-                _dataReader.Dispose();
-            }
         }
 
-        private void CloseDevice()
-        {
-            _serialDevice.Dispose();
-        }
-
-        public void CancelRead()
-        {
-            if (_readCancellationTokenSource != null && !_readCancellationTokenSource.IsCancellationRequested)
-            {
-                _readCancellationTokenSource.Cancel();
-            }
-        }
 
         private async Task ReadAsync(CancellationToken cancellationToken)
         {
@@ -95,12 +70,9 @@ namespace Wirehome.Core.Services
                     {
                         foreach (var handler in _messageHandlers)
                         {
-                            if (handler.CanDeserialize(messageType, messageBodySize))
+                            if(await handler(messageType, messageBodySize, _dataReader))
                             {
-                                var message = handler.Deserialize(_dataReader);
-                                await _eventAggregator.Publish(message);
-
-                                _logService.Info($"Received UART message handled by {handler.GetType().Name}, Message details: [{message}]");
+                                break;
                             }
                         }
                     }

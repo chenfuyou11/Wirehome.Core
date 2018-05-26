@@ -16,9 +16,9 @@ namespace Wirehome.ComponentModel.Events
             this[EventProperties.SourceDeviceUid] = (StringValue)deviceUID;
             this[EventProperties.Unit] = (StringValue)code.Unit.ToString();
             this[EventProperties.System] = (StringValue)code.System.ToString();
-            this[EventProperties.Command] = (StringValue)code.Command.ToString();
+            this[EventProperties.CommandCode] = (StringValue)code.Command.ToString();
             this[EventProperties.EventTime] = (DateTimeValue)SystemTime.Now;
         }
-        public DipswitchCode DipswitchCode => DipswitchCode.ParseCode(this[EventProperties.System].ToStringValue(), this[EventProperties.Unit].ToStringValue(), this[EventProperties.Command].ToStringValue());
+        public DipswitchCode DipswitchCode => DipswitchCode.ParseCode(this[EventProperties.System].ToStringValue(), this[EventProperties.Unit].ToStringValue(), this[EventProperties.CommandCode].ToStringValue());
     }
 }

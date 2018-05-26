@@ -7,7 +7,7 @@ namespace Wirehome.Core.Interface.Messaging
     public class HttpMessage : IHttpMessage
     {
         public string Address { get; set; }
-
+        
         public string RequestType { get; set; }
         public string ContentType { get; set; }
         public CookieContainer Cookies { get; set; }

@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Wirehome.ComponentModel.Capabilities;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
-using Wirehome.Core.EventAggregator;
-using Wirehome.Core.Extensions;
-using Wirehome.Extensions.Messaging;
-using System.Collections.Generic;
 using Wirehome.ComponentModel.ValueTypes;
+using Wirehome.Core.Interface.Messaging;
+using Wirehome.Core.Interface.Native;
 using Wirehome.Core.Services;
 using Wirehome.Model.ComponentModel.Capabilities.Constants;
 using Wirehome.Model.Extensions;
@@ -32,20 +31,26 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
             foreach(var val in Properties[AdapterProperties.UsedPins].Value.ToStringList())
             {
-                var pin = IntValue.FromString(val);
-                await _eventAggregator.Publish(new CurrentMessage(pin, _i2cAddress));
-                _state.Add(pin, 0);
+                _state.Add(IntValue.FromString(val), 0);
             }
-            
-            _serialMessagingService.RegisterBinaryMessage(CurrentMessage.Empty);
-            _disposables.Add(_eventAggregator.SubscribeAsync<CurrentMessage>(CurrentChangeHandler, RoutingFilter.MessageRead));
+
+            _serialMessagingService.RegisterMessageHandler(MessageHandler);
         }
-        
-        public async Task CurrentChangeHandler(IMessageEnvelope<CurrentMessage> message)
+
+        public async Task<bool> MessageHandler(byte messageType, byte messageSize, IBinaryReader reader)
         {
-            _state[message.Message.Pin] = await UpdateState(CurrentState.StateName, _state[message.Message.Pin], message.Message.Current);
+            if (messageType == 5 && messageSize == 2)
+            {
+                var pin = reader.ReadByte();
+                var currentExists = reader.ReadByte();
+
+                _state[pin] = await UpdateState(CurrentState.StateName, pin, (IntValue)currentExists).ConfigureAwait(false);
+
+                return true;
+            }
+            return false;
         }
-        
+
         protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
         {
             return new DiscoveryResponse(RequierdProperties(), new CurrentState(ReadWriteModeValues.Read));

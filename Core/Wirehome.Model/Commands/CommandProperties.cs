@@ -6,16 +6,17 @@ namespace Wirehome.ComponentModel.Commands
 {
     public static class CommandProperties
     {
-        public const string DeviceUid = "DeviceUid";
-        public const string CommandSource = "CommandSource";
-        public const string StateName = "StateName";
-        public const string ChangeFactor = "ChangeFactor";
-        public const string Value = "Value";
-        public const string InputSource = "InputSource";
-        public const string SurroundMode = "SurroundMode";
-        public const string Repeat = "Repeat";
-        public const string Code = "Code";
-        public const string System = "System";
-        public const string Unit = "Unit";
+        public const string DeviceUid = nameof(DeviceUid);
+        public const string CommandSource = nameof(CommandSource);
+        public const string StateName = nameof(StateName);
+        public const string ChangeFactor = nameof(ChangeFactor);
+        public const string Value = nameof(Value);
+        public const string InputSource = nameof(InputSource);
+        public const string SurroundMode = nameof(SurroundMode);
+        public const string Repeat = nameof(Repeat);
+        public const string Code = nameof(Code);
+        public const string System = nameof(System);
+        public const string Bits = nameof(Bits);
+        public const string Unit = nameof(Unit);
     }
 }

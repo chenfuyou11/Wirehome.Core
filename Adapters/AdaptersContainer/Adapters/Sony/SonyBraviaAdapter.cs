@@ -55,7 +55,7 @@ namespace Wirehome.ComponentModel.Adapters.Sony
                 AuthorisationKey = _authorisationKey,
                 Path = "system",
                 Method = "getPowerStatus"
-            });
+            }).ConfigureAwait(false);
 
             //TODO
             //_powerState = await UpdateState<BooleanValue>(PowerState.StateName, _powerState, power);
@@ -66,7 +66,7 @@ namespace Wirehome.ComponentModel.Adapters.Sony
                 AuthorisationKey = _authorisationKey,
                 Path = "audio",
                 Method = "getVolumeInformation"
-            });
+            }).ConfigureAwait(false);
         }
 
         protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
@@ -85,8 +85,8 @@ namespace Wirehome.ComponentModel.Adapters.Sony
                 Address = _hostname,
                 AuthorisationKey = _authorisationKey,
                 Code = "AAAAAQAAAAEAAAAuAw=="
-            });
-            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(true));
+            }).ConfigureAwait(false);
+            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(true)).ConfigureAwait(false);
         }
 
         protected async Task TurnOffCommandHandler(Command message)
@@ -96,8 +96,8 @@ namespace Wirehome.ComponentModel.Adapters.Sony
                 Address = _hostname,
                 AuthorisationKey = _authorisationKey,
                 Code = "AAAAAQAAAAEAAAAvAw=="
-            });
-            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(false));
+            }).ConfigureAwait(false);
+            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(false)).ConfigureAwait(false);
         }
 
         protected async Task VolumeUpCommandHandler(Command command)
@@ -110,9 +110,9 @@ namespace Wirehome.ComponentModel.Adapters.Sony
                 Path = "audio",
                 Method = "setAudioVolume",
                 Params = new SonyAudioVolumeRequest("speaker", ((int)volume).ToString())
-            });
+            }).ConfigureAwait(false);
 
-            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
+            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume)).ConfigureAwait(false);
         }
 
         protected async Task VolumeDownCommandHandler(Command command)
@@ -125,9 +125,9 @@ namespace Wirehome.ComponentModel.Adapters.Sony
                 Path = "audio",
                 Method = "setAudioVolume",
                 Params = new SonyAudioVolumeRequest("speaker", ((int)volume).ToString())
-            });
+            }).ConfigureAwait(false);
 
-            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
+            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume)).ConfigureAwait(false);
         }
 
         protected async Task VolumeSetCommandHandler(Command command)
@@ -140,9 +140,9 @@ namespace Wirehome.ComponentModel.Adapters.Sony
                 Path = "audio",
                 Method = "setAudioVolume",
                 Params = new SonyAudioVolumeRequest("speaker", ((int)volume).ToString())
-            });
+            }).ConfigureAwait(false);
 
-            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
+            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume)).ConfigureAwait(false);
         }
 
         protected async Task MuteCommandHandler(Command message)
@@ -154,9 +154,9 @@ namespace Wirehome.ComponentModel.Adapters.Sony
                 Path = "audio",
                 Method = "setAudioMute",
                 Params = new SonyAudioMuteRequest(true)
-            });
+            }).ConfigureAwait(false);
 
-            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(true));
+            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(true)).ConfigureAwait(false);
         }
 
         protected async Task UnmuteCommandHandler(Command message)
@@ -168,9 +168,9 @@ namespace Wirehome.ComponentModel.Adapters.Sony
                 Path = "audio",
                 Method = "setAudioMute",
                 Params = new SonyAudioMuteRequest(false)
-            });
+            }).ConfigureAwait(false);
 
-            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(false));
+            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(false)).ConfigureAwait(false);
         }
 
         protected async Task SelectInputCommandHandler(Command message)
@@ -185,8 +185,8 @@ namespace Wirehome.ComponentModel.Adapters.Sony
                 Address = _hostname,
                 AuthorisationKey = _authorisationKey,
                 Code = cmd
-            });
-            _input = await UpdateState(InputSourceState.StateName, _input, inputName);
+            }).ConfigureAwait(false);
+            _input = await UpdateState(InputSourceState.StateName, _input, inputName).ConfigureAwait(false);
         }
     }
 }

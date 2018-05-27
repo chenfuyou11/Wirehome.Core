@@ -49,7 +49,7 @@ namespace Wirehome.Core.Tests.Mocks
                 }
             }
 
-            await Task.Delay(100);
+            await Task.Delay(100).ConfigureAwait(false);
 
             lock (locki)
             {
@@ -59,7 +59,7 @@ namespace Wirehome.Core.Tests.Mocks
 
         protected async Task<object> DiscoverCapabilitiesHandler(Command message)
         {
-            await Task.Delay(100);
+            await Task.Delay(100).ConfigureAwait(false);
 
             return DiscoveryResponse;
         }

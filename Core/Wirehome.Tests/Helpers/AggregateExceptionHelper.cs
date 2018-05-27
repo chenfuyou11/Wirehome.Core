@@ -38,7 +38,6 @@ namespace Wirehome.Extensions.Tests
                 return;
             }
 
-
             Assert.Fail($"Excepted {typeof(T).Name} Exception but no Exception was thrown");
         }
 
@@ -58,7 +57,6 @@ namespace Wirehome.Extensions.Tests
                 Assert.Fail($"Excepted {typeof(T).Name} Exception but {e.GetType().Name} Exception was thrown with message: {e.Message}");
                 return;
             }
-
 
             Assert.Fail($"Excepted {typeof(T).Name} Exception but no Exception was thrown");
         }
@@ -80,9 +78,7 @@ namespace Wirehome.Extensions.Tests
                 return;
             }
 
-
             Assert.Fail($"Excepted {typeof(T).Name} Exception but no Exception was thrown");
         }
-
     }
 }

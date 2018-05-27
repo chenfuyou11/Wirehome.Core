@@ -7,7 +7,6 @@ namespace Wirehome.Core.ComponentModel.Configuration
 {
     public class ComponentDTO
     {
-
         [JsonProperty("Uid")]
         public string Uid { get; set; }
 
@@ -37,6 +36,4 @@ namespace Wirehome.Core.ComponentModel.Configuration
         [JsonProperty("Type")]
         public string Type { get; set; }
     }
-
-
 }

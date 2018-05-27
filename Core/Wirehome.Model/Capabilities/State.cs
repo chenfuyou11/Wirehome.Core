@@ -18,7 +18,5 @@ namespace Wirehome.ComponentModel.Capabilities
         }
 
         public bool IsCommandSupported(Command command) => ((StringListValue)this[StateProperties.SupportedCommands]).Value.Contains(command.Type);
-
     }
-
 }

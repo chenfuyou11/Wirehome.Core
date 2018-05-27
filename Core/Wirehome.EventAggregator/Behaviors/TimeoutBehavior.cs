@@ -4,11 +4,10 @@ using Wirehome.Core.Extensions;
 
 namespace Wirehome.Core.EventAggregator
 {
-
     public class TimeoutBehavior : Behavior
     {
         private readonly TimeSpan _timeout;
-        
+
         public TimeoutBehavior(TimeSpan timeout)
         {
             _timeout = timeout;
@@ -20,5 +19,4 @@ namespace Wirehome.Core.EventAggregator
             return _asyncCommandHandler.HandleAsync<T, R>(message).WhenDone(_timeout, message.CancellationToken);
         }
     }
-
 }

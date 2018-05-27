@@ -380,7 +380,7 @@ namespace Wirehome.Extensions.Tests
             var ts = new CancellationTokenSource();
             ts.Cancel();
 
-            await aggregator.Publish(new TestMessage(), cancellationToken: ts.Token);
+            await aggregator.Publish(new TestMessage(), cancellationToken: ts.Token).ConfigureAwait(false);
         }
 
         [TestMethod]

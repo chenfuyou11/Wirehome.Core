@@ -43,7 +43,7 @@ namespace Wirehome.Core.Services
                     socket.Connect(uri.Host, uri.Port);
                     socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 0);
                     var messageBytes = message.Message.Serialize();
-                    await socket.SendAsync(messageBytes, messageBytes.Length);
+                    await socket.SendAsync(messageBytes, messageBytes.Length).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)

@@ -13,5 +13,4 @@
         public const string TimeOfValue = "TimeOfValue";
         public const string ReadWriteMode = "ReadWriteMode";
     }
-
 }

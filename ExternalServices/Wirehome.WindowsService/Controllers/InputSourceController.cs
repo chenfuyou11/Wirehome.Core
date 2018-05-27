@@ -28,10 +28,9 @@ namespace Wirehome.WindowsService.Controllers
         {
             var device = _audioService.GetAudioDevices(Interop.AudioDeviceKind.Playback, Interop.AudioDeviceState.Active).FirstOrDefault(x => x.ToString() == inputSource.Input);
             if (device == null) throw new System.Exception($"Device {inputSource.Input} was not found oncomputer");
-            
+
             _audioService.SetDefaultAudioDevice(device);
             return Ok();
         }
-
     }
 }

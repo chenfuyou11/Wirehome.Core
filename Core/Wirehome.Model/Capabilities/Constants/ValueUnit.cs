@@ -5,5 +5,4 @@
         public const string Percent = "Percent";
         public const string DegreesCelsius = "DegreesCelsius";
     }
-
 }

@@ -26,7 +26,6 @@ namespace Wirehome.ComponentModel.Components
 
         public void Dispose() => _disposables.Dispose();
 
-
         public virtual Task Initialize()
         {
             Task.Run(HandleCommands, _disposables.Token);
@@ -118,12 +117,12 @@ namespace Wirehome.ComponentModel.Components
 
         private async Task HandleCommands()
         {
-            while (await _commandQueue.OutputAvailableAsync(_disposables.Token))
+            while (await _commandQueue.OutputAvailableAsync(_disposables.Token).ConfigureAwait(false))
             {
-                var command = await _commandQueue.ReceiveAsync(_disposables.Token);
+                var command = await _commandQueue.ReceiveAsync(_disposables.Token).ConfigureAwait(false);
                 try
                 {
-                    var result = await ProcessCommand(command.Command);
+                    var result = await ProcessCommand(command.Command).ConfigureAwait(false);
                     AssertForWrappedTask(result);
                     command.SetResult(result);
                 }
@@ -154,7 +153,7 @@ namespace Wirehome.ComponentModel.Components
         private async Task<Task<object>> QueueJob(Command command)
         {
             var commandJob = new CommandJob<object>(command);
-            var sendResult = await _commandQueue.SendAsync(commandJob);
+            var sendResult = await _commandQueue.SendAsync(commandJob).ConfigureAwait(false);
             return commandJob.Result;
         }
 

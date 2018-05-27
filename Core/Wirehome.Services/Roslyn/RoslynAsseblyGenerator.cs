@@ -29,7 +29,7 @@ namespace Wirehome.Core.Services.Roslyn
 
             return compilationResult.Success ? Result.Ok(path) : Result.Fail<string>(ReadCompilationErrors(compilationResult));
         }
-        
+
 
         private string ReadCompilationErrors(Microsoft.CodeAnalysis.Emit.EmitResult compilationResult)
         {
@@ -57,6 +57,5 @@ namespace Wirehome.Core.Services.Roslyn
 
         private IEnumerable<SyntaxTree> ParseSourceCode(string sourceDir, string filter = "*.cs") =>
         Directory.GetFiles(sourceDir, filter, SearchOption.AllDirectories).Select(file => SyntaxFactory.ParseSyntaxTree(File.ReadAllText(file)));
-
     }
 }

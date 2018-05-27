@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-
 namespace Wirehome.WindowsService.Interop
 {
     [Guid("E2F5BB11-0570-40CA-ACDD-3AA01277DEE8"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -13,5 +12,4 @@ namespace Wirehome.WindowsService.Interop
         [PreserveSig]
         int GetSession(int SessionCount, out IAudioSessionControl2 Session);
     }
-    
 }

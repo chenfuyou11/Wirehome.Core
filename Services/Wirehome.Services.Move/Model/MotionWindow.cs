@@ -23,7 +23,7 @@ namespace Wirehome.Motion.Model
         }
 
         public MotionPoint Start { get; }
-        
+
         public MotionWindow AccumulateVector(MotionPoint mp, Func<MotionPoint, MotionPoint, bool> isProperVectorCheck)
         {
             if (isProperVectorCheck(Start, mp))
@@ -48,6 +48,5 @@ namespace Wirehome.Motion.Model
         }
 
         public override string ToString() => $"{Start} || {string.Join(" | ", _vectors) ?? "<>"}";
-
     }
 }

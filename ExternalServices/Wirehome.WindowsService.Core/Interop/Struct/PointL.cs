@@ -8,5 +8,4 @@ namespace Wirehome.WindowsService.Interop
         public int x;
         public int y;
     }
-    
 }

@@ -34,7 +34,6 @@ namespace Wirehome.ComponentModel.Components
         [Map] private IList<Trigger> _triggers { get; set; } = new List<Trigger>();
         [Map] private Dictionary<string, IValueConverter> _converters { get; set; } = new Dictionary<string, IValueConverter>();
 
-        
 
         public Component(IEventAggregator eventAggregator, ILogService logService, ISchedulerFactory schedulerFactory)
         {
@@ -46,12 +45,11 @@ namespace Wirehome.ComponentModel.Components
         public override async Task Initialize()
         {
             if (!IsEnabled) return;
-            await InitializeAdapters();
-            await InitializeTriggers();
+            await InitializeAdapters().ConfigureAwait(false);
+            await InitializeTriggers().ConfigureAwait(false);
 
-            await base.Initialize();
+            await base.Initialize().ConfigureAwait(false);
         }
-
 
         //TODO Add conditions
         private Task InitializeTriggers()
@@ -63,7 +61,7 @@ namespace Wirehome.ComponentModel.Components
 
             foreach (var trigger in _triggers.Where(x => x.Schedule != null))
             {
-                
+
             }
 
             return Task.CompletedTask;
@@ -77,7 +75,7 @@ namespace Wirehome.ComponentModel.Components
         {
             foreach (var adapter in _adapters)
             {
-                var capabilities = await _eventAggregator.QueryDeviceAsync<DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid));
+                var capabilities = await _eventAggregator.QueryDeviceAsync<DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid)).ConfigureAwait(false);
                 MapCapabilitiesToAdapters(adapter, capabilities.SupportedStates);
                 BuildCapabilityStates(capabilities);
                 MapEventSourcesToAdapters(adapter, capabilities.EventSources);
@@ -87,11 +85,11 @@ namespace Wirehome.ComponentModel.Components
 
         private void BuildCapabilityStates(DiscoveryResponse capabilities) =>
             _capabilities.AddRangeNewOnly(capabilities.SupportedStates.ToDictionary(key => ((StringValue)key[StateProperties.StateName]).ToString(), val => val));
-        
+
 
         private void MapCapabilitiesToAdapters(AdapterReference adapter, State[] states) =>
             states.ForEach(state => _adapterStateMap[state[StateProperties.StateName].ToStringValue()] = adapter);
-        
+
 
         private void MapEventSourcesToAdapters(AdapterReference adapter, IList<EventSource> eventSources) =>
             eventSources.ForEach(es => _eventSources[es[EventProperties.EventType].ToStringValue()] = adapter);
@@ -125,7 +123,7 @@ namespace Wirehome.ComponentModel.Components
             foreach (var state in _capabilities.Values.Where(capability => capability.IsCommandSupported(command)))
             {
                 var adapter = _adapterStateMap[state[StateProperties.StateName].ToString()];
-                await _eventAggregator.PublishDeviceCommnd(adapter.GetDeviceCommand(command));
+                await _eventAggregator.PublishDeviceCommnd(adapter.GetDeviceCommand(command)).ConfigureAwait(false);
             }
 
            return base.UnhandledCommand(command);
@@ -144,7 +142,7 @@ namespace Wirehome.ComponentModel.Components
 
             state.Properties[StateProperties.Value].Value = newValue;
 
-            await _eventAggregator.PublishDeviceEvent(new PropertyChangedEvent(Uid, propertyName, oldValue, newValue));
+            await _eventAggregator.PublishDeviceEvent(new PropertyChangedEvent(Uid, propertyName, oldValue, newValue)).ConfigureAwait(false);
         }
 
         private async Task DeviceTriggerHandler(IMessageEnvelope<Event> deviceEvent)
@@ -152,7 +150,7 @@ namespace Wirehome.ComponentModel.Components
             var trigger = _triggers.FirstOrDefault(t => t.Event.Equals(deviceEvent.Message));
             if (trigger != null)
             {
-                await ExecuteCommand(trigger.Command);
+                await ExecuteCommand(trigger.Command).ConfigureAwait(false);
             }
         }
 

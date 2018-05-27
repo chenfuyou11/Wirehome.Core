@@ -28,14 +28,13 @@ namespace Wirehome.Extensions.Tests
             var properyChangeEvent = new PropertyChangedEvent("HSPE16InputOnly_1", PowerState.StateName, new BooleanValue(false),
                                      new BooleanValue(true), new Dictionary<string, IValue>() { { AdapterProperties.PinNumber, new IntValue(2) } });
 
-            await eventAggregator.PublishDeviceEvent(properyChangeEvent, new string[] { AdapterProperties.PinNumber });
+            await eventAggregator.PublishDeviceEvent(properyChangeEvent, new string[] { AdapterProperties.PinNumber }).ConfigureAwait(false);
 
             //var lamp = configuration.Components.FirstOrDefault(c => c.Uid == "Lamp1");
             //await lamp.ExecuteCommand(new Command { Type = CommandType.TurnOn }).ConfigureAwait(false);
 
             //await Task.Delay(5000);
         }
-
 
         [TestMethod]
         public async Task TestRemoteLamp()
@@ -44,11 +43,10 @@ namespace Wirehome.Extensions.Tests
                                                                        .BuildAndRun()
                                                                        .ConfigureAwait(false);
             var eventAggregator = container.GetInstance<IEventAggregator>();
-            
+
             //TODO
             //var lamp = config.config.Components.FirstOrDefault(c => c.Uid == "RemoteLamp");
             //await lamp.ExecuteCommand(Command.TurnOnCommand).ConfigureAwait(false);
         }
-
     }
 }

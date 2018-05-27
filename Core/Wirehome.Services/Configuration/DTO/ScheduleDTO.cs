@@ -6,7 +6,6 @@ namespace Wirehome.Core.ComponentModel.Configuration
 {
     public class ScheduleDTO
     {
-
         [JsonProperty("Uid")]
         public string Uid { get; set; }
 
@@ -26,6 +25,4 @@ namespace Wirehome.Core.ComponentModel.Configuration
         [JsonProperty("Calendar")]
         public string Calendar { get; set; }
     }
-
-
 }

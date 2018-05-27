@@ -18,6 +18,5 @@ namespace Wirehome.ComponentModel.ValueTypes
         }
 
         public override string ToString() => string.Join(", ", Value);
-        
     }
 }

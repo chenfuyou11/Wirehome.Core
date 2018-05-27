@@ -21,12 +21,10 @@ namespace Wirehome.Extensions.Tests
 
             var component = await controller.ExecuteCommand<Component>(CommandFatory.GetComponentCommand("RemoteLamp")).ConfigureAwait(false);
 
-
             var result = await component.ExecuteCommand<IEnumerable<string>>(CommandFatory.SupportedCapabilitiesCommand).ConfigureAwait(false);
 
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual("PowerState", result.FirstOrDefault());
-
         }
     }
 }

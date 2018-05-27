@@ -49,7 +49,7 @@ namespace Wirehome.Alexa.Model.Power
         [JsonProperty("properties")]
         public IList<Property> Properties { get; set; }
     }
-       
+
 
     public class SimpleEndpoint
     {
@@ -60,8 +60,5 @@ namespace Wirehome.Alexa.Model.Power
         public string EndpointId { get; set; }
     }
 
-    
-
-   
 
 }

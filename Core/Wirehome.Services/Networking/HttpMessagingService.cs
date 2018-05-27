@@ -32,12 +32,12 @@ namespace Wirehome.Core.Services
 
             if (httpMessage.RequestType == "POST")
             {
-                return await SendPostRequest(message);
+                return await SendPostRequest(message).ConfigureAwait(false);
             }
             else
             if (httpMessage.RequestType == "GET")
             {
-                return await SendGetRequest(message);
+                return await SendGetRequest(message).ConfigureAwait(false);
             }
 
             return null;
@@ -48,9 +48,9 @@ namespace Wirehome.Core.Services
             using (var httpClient = new HttpClient())
             {
                 var address = message.Message.MessageAddress();
-                var httpResponse = await httpClient.GetAsync(address);
+                var httpResponse = await httpClient.GetAsync(address).ConfigureAwait(false);
                 httpResponse.EnsureSuccessStatusCode();
-                var responseBody = await httpResponse.Content.ReadAsStringAsync();
+                var responseBody = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 return message.Message.ParseResult(responseBody, message.ResponseType);
             }
@@ -88,9 +88,9 @@ namespace Wirehome.Core.Services
                 {
                     content.Headers.ContentType = new MediaTypeHeaderValue(message.Message.ContentType);
                 }
-                var response = await httpClient.PostAsync(address, content);
+                var response = await httpClient.PostAsync(address, content).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
-                var responseBody = await response.Content.ReadAsStringAsync(Encoding.UTF8);
+                var responseBody = await response.Content.ReadAsStringAsync(Encoding.UTF8).ConfigureAwait(false);
 
                 return message.Message.ParseResult(responseBody, message.ResponseType);
             }

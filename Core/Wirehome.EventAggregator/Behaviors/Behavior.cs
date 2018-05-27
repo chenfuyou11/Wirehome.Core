@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-
 namespace Wirehome.Core.EventAggregator
 {
     public class Behavior : IBehavior
@@ -19,6 +18,5 @@ namespace Wirehome.Core.EventAggregator
         {
             return _asyncCommandHandler.HandleAsync<T, R>(message);
         }
-        
     }
 }

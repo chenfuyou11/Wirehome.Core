@@ -12,7 +12,5 @@ namespace Wirehome.ComponentModel.Capabilities
             this[EventProperties.EventType] = new StringValue(eventType);
             this[EventProperties.EventDirection] = new StringValue(direction);
         }
-        
     }
-
 }

@@ -47,7 +47,5 @@ namespace Wirehome.Core.Services.Logging
         {
             _logService.Publish(severity, _source, message, exception);
         }
-
-        
     }
 }

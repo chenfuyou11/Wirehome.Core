@@ -2,7 +2,6 @@
 
 namespace Wirehome.Alexa.Model.Common
 {
-
     public class SmartHomeRequest
     {
         [JsonProperty("directive")]

@@ -8,7 +8,6 @@ using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Components;
 using Wirehome.ComponentModel.Configuration;
 using Wirehome.Core.EventAggregator;
-using Wirehome.Core.Extensions;
 using Wirehome.Core.Services;
 using Wirehome.Core.Services.DependencyInjection;
 using Wirehome.Core.Services.I2C;
@@ -37,12 +36,12 @@ namespace Wirehome.Model.Core
         {
             try
             {
-                await base.Initialize();
+                await base.Initialize().ConfigureAwait(false);
 
                 RegisterServices();
 
-                await InitializeServices();
-                await InitializeConfiguration();
+                await InitializeServices().ConfigureAwait(false);
+                await InitializeConfiguration().ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -99,20 +98,18 @@ namespace Wirehome.Model.Core
             container.RegisterInstance(container.GetInstance<MapperProvider>().GetMapper(adapterRepo));
         }
 
-
-
         private async Task InitializeConfiguration()
         {
             _homeConfiguration = _confService.ReadConfiguration(_options.ConfigurationPath, _options.AdapterRepository);
 
             foreach(var adapter in _homeConfiguration.Adapters)
             {
-                await adapter.Initialize();
+                await adapter.Initialize().ConfigureAwait(false);
             }
 
             foreach (var component in _homeConfiguration.Components)
             {
-                await component.Initialize();
+                await component.Initialize().ConfigureAwait(false);
             }
         }
 
@@ -125,7 +122,7 @@ namespace Wirehome.Model.Core
                 var service = services.Dequeue();
                 try
                 {
-                    await service.Initialize();
+                    await service.Initialize().ConfigureAwait(false);
                 }
                 catch (Exception exception)
                 {
@@ -140,7 +137,7 @@ namespace Wirehome.Model.Core
         {
             var uid = command.GetPropertyValue(CommandProperties.DeviceUid);
             if (uid.HasNoValue) throw new ArgumentException($"Command GetComponentCommand is missing [{CommandProperties.DeviceUid}] property");
-            
+
             return _homeConfiguration.Components.FirstOrDefault(c => c.Uid == uid.Value.ToStringValue());
         }
     }

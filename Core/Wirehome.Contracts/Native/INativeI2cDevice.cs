@@ -8,5 +8,4 @@ namespace Wirehome.Core.Interface.Native
         NativeI2cTransferResult ReadPartial(byte[] buffer);
         NativeI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer);
     }
-
 }

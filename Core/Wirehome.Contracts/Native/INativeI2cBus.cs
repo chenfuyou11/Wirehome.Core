@@ -5,5 +5,4 @@
         INativeI2cDevice CreateDevice(string deviceId, int slaveAddress);
         string GetBusId();
     }
-
 }

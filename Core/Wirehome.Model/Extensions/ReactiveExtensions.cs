@@ -5,10 +5,8 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
-
 namespace Wirehome.Model.Extensions
 {
-
     public static class ReactiveExtensions
     {
         public static IObservable<TSource> DistinctForTime<TSource>(this IObservable<TSource> source, TimeSpan expirationTime)
@@ -26,7 +24,7 @@ namespace Wirehome.Model.Extensions
             return DistinctForTime(source, expirationTime, comparer, Scheduler.Default);
         }
 
-        public static IObservable<TSource> DistinctForTime<TSource>(this IObservable<TSource> source, TimeSpan expirationTime, 
+        public static IObservable<TSource> DistinctForTime<TSource>(this IObservable<TSource> source, TimeSpan expirationTime,
                                                                     IEqualityComparer<TSource> comparer, IScheduler scheduler)
         {
             return source
@@ -56,8 +54,5 @@ namespace Wirehome.Model.Extensions
         {
             return TimeSpan.FromMilliseconds(ms).Ticks;
         }
-
     }
-
-
 }

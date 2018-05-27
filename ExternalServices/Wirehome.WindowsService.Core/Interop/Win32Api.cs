@@ -41,7 +41,6 @@ namespace Wirehome.WindowsService.Interop
             SdcFlags flags
         );
 
-
         [DllImport("User32.dll")]
         public static extern StatusCode QueryDisplayConfig(
             QueryDisplayFlags flags,
@@ -75,15 +74,12 @@ namespace Wirehome.WindowsService.Interop
             return MarshalStructureAndCall(ref displayConfig, DisplayConfigSetDeviceInfo);
         }
 
-
         [DllImport("User32.dll")]
         private static extern StatusCode DisplayConfigGetDeviceInfo(IntPtr requestPacket);
         public static StatusCode DisplayConfigGetDeviceInfo<T>(ref T displayConfig) where T : IDisplayConfigInfo
         {
             return MarshalStructureAndCall(ref displayConfig, DisplayConfigGetDeviceInfo);
         }
-
-
 
         [DllImport("User32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -102,8 +98,6 @@ namespace Wirehome.WindowsService.Interop
         public const int DMDO_180 = 2;
         public const int DMDO_270 = 3;
 
-
-
         [DllImport("User32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.I4)]
         public static extern int ChangeDisplaySettings(
@@ -111,8 +105,6 @@ namespace Wirehome.WindowsService.Interop
             ref DEVMODE lpDevMode,
             [param: MarshalAs(UnmanagedType.U4)]
             uint dwflags);
-
-
 
         [DllImport("kernel32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -151,7 +143,5 @@ namespace Wirehome.WindowsService.Interop
             Marshal.FreeHGlobal(ptr);
             return returnValue;
         }
-
-
     }
 }

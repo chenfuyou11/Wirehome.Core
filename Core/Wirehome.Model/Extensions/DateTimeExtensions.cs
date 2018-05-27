@@ -21,6 +21,5 @@ namespace Wirehome.Model.Extensions
 
             return time >= from || time <= until;
         }
-
     }
 }

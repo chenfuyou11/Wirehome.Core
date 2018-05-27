@@ -9,7 +9,5 @@ namespace Wirehome.ComponentModel.Capabilities.Constants
         public const string OFF = "OFF";
 
         public static bool ToBinaryState(string powerStringValue) => powerStringValue.Compare(ON) == 0 ? true : false;
-        
     }
-
 }

@@ -37,5 +37,4 @@ namespace Wirehome.Core.Services.DependencyInjection
         private IEnumerable<string> FindAdapterInRepository(string sourceDir, string filter = "*Adapter*.dll") =>
        Directory.GetFiles(sourceDir, filter, SearchOption.AllDirectories);
     }
-    
 }

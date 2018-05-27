@@ -6,12 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-
 namespace Wirehome.Core.Services.Logging
 {
     public sealed class LogService : ILogService
     {
-
         public ILogger CreatePublisher(string source)
         {
             return new LogServicePublisher(source, this);
@@ -29,7 +27,7 @@ namespace Wirehome.Core.Services.Logging
 
         public void Publish(LogEntrySeverity severity, string source, string message, Exception exception)
         {
-           
+
         }
     }
 }

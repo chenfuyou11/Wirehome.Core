@@ -8,6 +8,4 @@ namespace Wirehome.WindowsService.Services
         public int PID { get; set; }
         public IntPtr MainWindowHandle { get; set; }
     }
-
-  
 }

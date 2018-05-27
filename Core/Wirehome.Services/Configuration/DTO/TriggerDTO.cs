@@ -4,10 +4,8 @@ using Wirehome.ComponentModel.Components;
 
 namespace Wirehome.Core.ComponentModel.Configuration
 {
-
     public class TriggerDTO
     {
-
         [JsonProperty("Event")]
         public EventDTO Event { get; set; }
 
@@ -20,6 +18,4 @@ namespace Wirehome.Core.ComponentModel.Configuration
         [JsonProperty("Condition")]
         public ConditionDTO Condition { get; set; }
     }
-
-
 }

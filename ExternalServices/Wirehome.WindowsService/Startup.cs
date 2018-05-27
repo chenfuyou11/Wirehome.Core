@@ -47,7 +47,6 @@ namespace Wirehome.WindowsService
             //loggerFactory.AddDebug();
 
             loggerFactory.AddNLog();
-            app.AddNLogWeb();
 
             app.UseSwaggerUi(typeof(Startup).GetTypeInfo().Assembly); //TODO new SwaggerUiSettings<());
 

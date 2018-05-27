@@ -35,9 +35,9 @@ namespace Wirehome.Extensions.Tests
 
             var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
             var adapter = new TestAdapter("adapter1", adapterServiceFactory);
-            await adapter.Initialize();
+            await adapter.Initialize().ConfigureAwait(false);
 
-            var result = await adapter.ExecuteCommand<DiscoveryResponse>(CommandFatory.DiscoverCapabilitiesCommand);
+            var result = await adapter.ExecuteCommand<DiscoveryResponse>(CommandFatory.DiscoverCapabilitiesCommand).ConfigureAwait(false);
 
             Assert.AreEqual(1, result.SupportedStates.Length);
             Assert.IsInstanceOfType(result.SupportedStates[0], typeof(PowerState));
@@ -51,7 +51,7 @@ namespace Wirehome.Extensions.Tests
                                                                        .ConfigureAwait(false);
             var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
             var adapter = new TestAdapter("adapter1", adapterServiceFactory);
-            await adapter.Initialize();
+            await adapter.Initialize().ConfigureAwait(false);
 
             var taskList = new List<Task>();
 
@@ -60,7 +60,7 @@ namespace Wirehome.Extensions.Tests
                 taskList.Add(Task.Run(() => adapter.ExecuteCommand(CommandFatory.RefreshCommand)));
             }
 
-            await Task.WhenAll(taskList);
+            await Task.WhenAll(taskList).ConfigureAwait(false);
 
             Assert.AreEqual(0, adapter.Counter);
         }
@@ -74,9 +74,9 @@ namespace Wirehome.Extensions.Tests
             var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
             var eventAggregator = container.GetInstance<IEventAggregator>();
             var adapter = new TestAdapter("adapter1", adapterServiceFactory);
-            await adapter.Initialize();
+            await adapter.Initialize().ConfigureAwait(false);
 
-            var result = await eventAggregator.QueryDeviceAsync<DiscoveryResponse>(DeviceCommand.GenerateDiscoverCommand(adapter.Uid));
+            var result = await eventAggregator.QueryDeviceAsync<DiscoveryResponse>(DeviceCommand.GenerateDiscoverCommand(adapter.Uid)).ConfigureAwait(false);
 
             Assert.AreEqual(1, result.SupportedStates.Length);
             Assert.IsInstanceOfType(result.SupportedStates[0], typeof(PowerState));
@@ -92,9 +92,9 @@ namespace Wirehome.Extensions.Tests
             var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
             var eventAggregator = container.GetInstance<IEventAggregator>();
             var adapter = new TestAdapter("adapter1", adapterServiceFactory);
-            await adapter.Initialize();
+            await adapter.Initialize().ConfigureAwait(false);
 
-            var result = await eventAggregator.QueryDeviceAsync<DiscoveryResponse>(DeviceCommand.GenerateDiscoverCommand(adapter.Uid), TimeSpan.FromMilliseconds(20));
+            var result = await eventAggregator.QueryDeviceAsync<DiscoveryResponse>(DeviceCommand.GenerateDiscoverCommand(adapter.Uid), TimeSpan.FromMilliseconds(20)).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -113,8 +113,8 @@ namespace Wirehome.Extensions.Tests
                 var adapterType = asm.GetType("Wirehome.ComponentModel.Adapters.Kodi.KodiAdapterTest");
                 var adapter = Activator.CreateInstance(adapterType, new Object[] { adapterServiceFactory }) as Adapter;
 
-                await adapter.Initialize();
-                var result = await adapter.ExecuteCommand("TestCommand");
+                await adapter.Initialize().ConfigureAwait(false);
+                var result = await adapter.ExecuteCommand("TestCommand").ConfigureAwait(false);
             }
         }
 

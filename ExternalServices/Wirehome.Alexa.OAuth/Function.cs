@@ -27,7 +27,7 @@ namespace Wirehome.Alexa.OAuth
                         Headers = headers
                     };
                 }
-                
+
                 return new LambdaResponse
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -54,7 +54,6 @@ namespace Wirehome.Alexa.OAuth
 
     public class AccessTokenResponse
     {
-
         [JsonProperty("access_token")]
         public string AccessToken { get; set; }
 
@@ -70,7 +69,6 @@ namespace Wirehome.Alexa.OAuth
 
     public class Headers
     {
-
         [JsonProperty("Accept")]
         public string Accept { get; set; }
 
@@ -125,10 +123,9 @@ namespace Wirehome.Alexa.OAuth
         [JsonProperty("X-Forwarded-Proto")]
         public string XForwardedProto { get; set; }
     }
-    
+
     public class Identity
     {
-
         [JsonProperty("cognitoIdentityPoolId")]
         public object CognitoIdentityPoolId { get; set; }
 
@@ -165,7 +162,6 @@ namespace Wirehome.Alexa.OAuth
 
     public class RequestContext
     {
-
         [JsonProperty("requestTime")]
         public string RequestTime { get; set; }
 
@@ -205,7 +201,6 @@ namespace Wirehome.Alexa.OAuth
 
     public class HttpRequest
     {
-
         [JsonProperty("resource")]
         public string Resource { get; set; }
 
@@ -236,6 +231,4 @@ namespace Wirehome.Alexa.OAuth
         [JsonProperty("isBase64Encoded")]
         public bool IsBase64Encoded { get; set; }
     }
-
-
 }

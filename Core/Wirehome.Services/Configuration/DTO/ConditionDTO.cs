@@ -6,7 +6,6 @@ namespace Wirehome.Core.ComponentModel.Configuration
 {
     public class ConditionDTO
     {
-
         [JsonProperty("Uid")]
         public string Uid { get; set; }
 
@@ -23,6 +22,4 @@ namespace Wirehome.Core.ComponentModel.Configuration
         [JsonProperty("Relation")]
         public string Relation { get; set; }
     }
-
-
 }

@@ -19,7 +19,7 @@ namespace Wirehome.WindowsService.Controllers
         {
             return _audioService.GetMasterVolume();
         }
-        
+
         [HttpPost]
         public IActionResult Post([FromBody] VolumePost volume)
         {
@@ -27,6 +27,4 @@ namespace Wirehome.WindowsService.Controllers
             return Ok();
         }
     }
-
-   
 }

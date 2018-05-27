@@ -34,8 +34,6 @@ namespace Wirehome.Motion
         //public HourActivity WorkingDaysAbsenceHours;
     }
 
-   
-   
     public class PolishDayOffProvider : IDayOffProvider
     {
         public bool IsDayOff(DateTime date)
@@ -68,6 +66,4 @@ namespace Wirehome.Motion
     {
         bool IsDayOff(DateTime date);
     }
-
-
 }

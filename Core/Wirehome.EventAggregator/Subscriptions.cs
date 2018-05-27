@@ -150,13 +150,11 @@ namespace Wirehome.Core.EventAggregator
                 if (!subscription.MessageType.IsAssignableFrom(msgTypeInfo)) continue;
 
                 if (!subscription.IsFilterMatch(filter)) continue;
-                
+
                 filteredSubscription.Add(subscription);
             }
 
             return filteredSubscription;
         }
-
-      
     }
 }

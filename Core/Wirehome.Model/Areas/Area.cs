@@ -19,11 +19,6 @@ namespace Wirehome.Core.ComponentModel.Areas
             _components.Add(component);
         }
 
-        public void Test(int xx)
-        {
-            var d = xx;
-        }
-
         public override string ToString() => $"{Uid} with {_components.Count} components";
     }
 }

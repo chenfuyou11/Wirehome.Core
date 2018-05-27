@@ -22,6 +22,4 @@ namespace Wirehome.Core.ComponentModel.Configuration
         [JsonConverter(typeof(PropertyDictionaryConverter))]
         public Dictionary<string, Property> Properties { get; set; }
     }
-
-
 }

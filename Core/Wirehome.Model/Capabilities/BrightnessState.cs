@@ -3,7 +3,6 @@ using Wirehome.ComponentModel.ValueTypes;
 
 namespace Wirehome.ComponentModel.Capabilities
 {
-
     public class BrightnessState : State
     {
         public BrightnessState(StringValue ReadWriteMode = default) : base(ReadWriteMode)
@@ -17,5 +16,4 @@ namespace Wirehome.ComponentModel.Capabilities
             this[StateProperties.ValueUnit] = (StringValue)ValueUnit.Percent;
         }
     }
-
 }

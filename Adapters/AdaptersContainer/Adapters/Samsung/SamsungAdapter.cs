@@ -51,8 +51,8 @@ namespace Wirehome.ComponentModel.Adapters.Samsung
             {
                 Address = _hostname,
                 Code = "KEY_POWEROFF"
-            });
-            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(false));
+            }).ConfigureAwait(false);
+            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(false)).ConfigureAwait(false);
         }
 
         protected Task VolumeUpCommandHandler(Command command)
@@ -79,9 +79,9 @@ namespace Wirehome.ComponentModel.Adapters.Samsung
             {
                 Address = _hostname,
                 Code = "KEY_MUTE"
-            });
+            }).ConfigureAwait(false);
 
-            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(!_mute));
+            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(!_mute)).ConfigureAwait(false);
         }
 
         protected async Task SelectInputCommandHandler(Command message)
@@ -112,9 +112,9 @@ namespace Wirehome.ComponentModel.Adapters.Samsung
             {
                 Address = _hostname,
                 Code = source
-            });
+            }).ConfigureAwait(false);
 
-            _input = await UpdateState(InputSourceState.StateName, _input, inputName);
+            _input = await UpdateState(InputSourceState.StateName, _input, inputName).ConfigureAwait(false);
         }
     }
 }

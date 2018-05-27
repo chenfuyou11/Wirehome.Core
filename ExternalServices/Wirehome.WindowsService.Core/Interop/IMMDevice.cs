@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-
 namespace Wirehome.WindowsService.Interop
 {
     [Guid("D666063F-1587-4E43-81F1-B948E807363F")]
@@ -21,5 +20,4 @@ namespace Wirehome.WindowsService.Interop
         [PreserveSig]
         int GetState(out AudioDeviceState state);
     }
-
 }

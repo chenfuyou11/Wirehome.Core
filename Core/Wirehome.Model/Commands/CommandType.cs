@@ -37,7 +37,7 @@
 
         //Code
         public const string SendCode = nameof(SendCode);
-        
+
 
         // Component
         public const string SupportedCapabilitiesCommand = nameof(SupportedCapabilitiesCommand);
@@ -47,6 +47,5 @@
 
         //Controller
         public const string GetComponentCommand = nameof(GetComponentCommand);
-        
     }
 }

@@ -11,7 +11,6 @@ using Wirehome.Core.Extensions;
 // 3. Filter xxx.yyy.zz
 // 4. Filter key-value
 
-
 //TODO: Add dynamic handlers - types that are not registred as singleton to makeinstance of that type and invoke on publish
 namespace Wirehome.Core.EventAggregator
 {
@@ -42,7 +41,7 @@ namespace Wirehome.Core.EventAggregator
             var subscriber = localSubscriptions.First();
             var invokeChain = BuildBehaviorChain(behaviors, subscriber);
 
-            return await invokeChain.HandleAsync<T, R>(messageEnvelope);
+            return await invokeChain.HandleAsync<T, R>(messageEnvelope).ConfigureAwait(false);
         }
 
         private IAsyncCommandHandler BuildBehaviorChain(BehaviorChain behaviors, IAsyncCommandHandler subscriber)
@@ -50,7 +49,7 @@ namespace Wirehome.Core.EventAggregator
             if(behaviors == null) behaviors = DefaultBehavior();
             return behaviors.Build(subscriber);
         }
- 
+
         public async Task<R> QueryWithResultCheckAsync<T, R>
         (
             T message,
@@ -60,7 +59,7 @@ namespace Wirehome.Core.EventAggregator
             BehaviorChain behaviors = null
         ) where R : class
         {
-            var result = await QueryAsync<T, R>(message, filter, cancellationToken, behaviors);
+            var result = await QueryAsync<T, R>(message, filter, cancellationToken, behaviors).ConfigureAwait(false);
             if (!EqualityComparer<R>.Default.Equals(result, expectedResult))
             {
                 throw new WrongResultException(result, expectedResult);
@@ -111,11 +110,11 @@ namespace Wirehome.Core.EventAggregator
             var publishTask = localSubscriptions.Select(async x =>
             {
                 var invokeChain = BuildBehaviorChain(behaviors, x);
-                var result = await invokeChain.HandleAsync<T, R>(messageEnvelope);
-                await Publish(result);
+                var result = await invokeChain.HandleAsync<T, R>(messageEnvelope).ConfigureAwait(false);
+                await Publish(result).ConfigureAwait(false);
             });
 
-            await publishTask.WhenAll(cancellationToken).Unwrap();
+            await publishTask.WhenAll(cancellationToken).Unwrap().ConfigureAwait(false);
         }
 
         public async Task Publish<T>
@@ -130,7 +129,7 @@ namespace Wirehome.Core.EventAggregator
             var messageEnvelope = new MessageEnvelope<T>(message, cancellationToken);
 
             if (!localSubscriptions.Any()) return;
-            
+
             var result = localSubscriptions.Select(subscription =>
             {
                 var invokeChain = BuildBehaviorChain(behaviors, subscription);
@@ -138,7 +137,7 @@ namespace Wirehome.Core.EventAggregator
             }
             );
 
-            await result.WhenAll(cancellationToken).Unwrap();
+            await result.WhenAll(cancellationToken).Unwrap().ConfigureAwait(false);
         }
 
         public SubscriptionToken SubscribeForAsyncResult<T>(Func<IMessageEnvelope<T>, Task<object>> action, RoutingFilter filter = null)
@@ -190,7 +189,5 @@ namespace Wirehome.Core.EventAggregator
         {
             ClearSubscriptions();
         }
-
-        
     }
 }

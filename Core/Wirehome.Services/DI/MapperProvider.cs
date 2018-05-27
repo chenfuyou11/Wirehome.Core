@@ -18,10 +18,8 @@ namespace Wirehome.Core.Services.DependencyInjection
             var mce = new MapperConfigurationExpression();
             mce.ConstructServicesUsing(_container.GetInstance);
             mce.AddProfile(new WirehomeMappingProfile(adapterRepository));
-            
+
             return new Mapper(new MapperConfiguration(mce), t => _container.GetInstance(t));
         }
     }
-
-
 }

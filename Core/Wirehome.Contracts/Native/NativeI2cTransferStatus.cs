@@ -31,5 +31,4 @@
         //     The transfer failed for an unknown reason.
         UnknownError = 4
     }
-
 }

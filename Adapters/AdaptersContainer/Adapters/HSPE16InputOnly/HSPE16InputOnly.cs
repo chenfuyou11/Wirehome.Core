@@ -18,12 +18,12 @@ namespace Wirehome.ComponentModel.Adapters
             var i2cAddress = new I2CSlaveAddress(address.Value);
             _portExpanderDriver = new MAX7311Driver(i2cAddress, _i2CBusService);
 
-            await base.Initialize();
+            await base.Initialize().ConfigureAwait(false);
 
             byte[] setupAsInputs = { 0x06, 0xFF, 0xFF };
             _i2CBusService.Write(i2cAddress, setupAsInputs);
 
-            await ExecuteCommand(new Command(CommandType.RefreshCommand));
+            await ExecuteCommand(new Command(CommandType.RefreshCommand)).ConfigureAwait(false);
         }
 
         //public HSPE16InputOnlyAdapter(string id, I2CSlaveAddress address, II2CBusService i2CBusService, ILogger log)

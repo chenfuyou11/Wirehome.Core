@@ -1,5 +1,4 @@
 ﻿
-
 using System;
 using System.Threading.Tasks;
 //using Wirehome.ComponentModel.Adapters.Pc;
@@ -71,7 +70,7 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
             //    Message = new ProcessPost { ProcessName = "kodi", Start = true },
             //    Port = 5000
             //});
-            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(true));
+            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(true)).ConfigureAwait(false);
         }
 
         protected async Task TurnOffCommandHandler(Command message)
@@ -83,8 +82,8 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
                 Password = _Password,
                 Port = _port,
                 Method = "Application.Quit"
-            });
-            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(false));
+            }).ConfigureAwait(false);
+            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(false)).ConfigureAwait(false);
         }
 
         protected async Task VolumeUpCommandHandler(Command command)
@@ -99,9 +98,9 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
                 Port = _port,
                 Method = "Application.SetVolume",
                 Parameters = new { volume = (int)volume }
-            });
+            }).ConfigureAwait(false);
 
-            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
+            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume)).ConfigureAwait(false);
         }
 
         protected async Task VolumeDownCommandHandler(Command command)
@@ -116,9 +115,9 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
                 Port = _port,
                 Method = "Application.SetVolume",
                 Parameters = new { volume = (int)volume }
-            });
+            }).ConfigureAwait(false);
 
-            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
+            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume)).ConfigureAwait(false);
         }
 
         protected async Task VolumeSetCommandHandler(Command command)
@@ -132,9 +131,9 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
                 Port = _port,
                 Method = "Application.SetVolume",
                 Parameters = new { volume = volume }
-            });
+            }).ConfigureAwait(false);
 
-            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
+            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume)).ConfigureAwait(false);
         }
 
         protected async Task MuteCommandHandler(Command message)
@@ -147,9 +146,9 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
                 Port = _port,
                 Method = "Application.SetMute",
                 Parameters = new { mute = true }
-            });
+            }).ConfigureAwait(false);
 
-            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(true));
+            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(true)).ConfigureAwait(false);
         }
 
         protected async Task UnmuteCommandHandler(Command message)
@@ -162,9 +161,9 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
                 Port = _port,
                 Method = "Application.SetMute",
                 Parameters = new { mute = false }
-            });
+            }).ConfigureAwait(false);
 
-            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(false));
+            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(false)).ConfigureAwait(false);
         }
 
         protected async Task PlayCommandHandler(Command message)
@@ -180,9 +179,9 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
                 Port = _port,
                 Method = "Player.PlayPause",
                 Parameters = new { playerid = PlayerId.GetValueOrDefault() }
-            });
+            }).ConfigureAwait(false);
 
-            _speed = await UpdateState(PlaybackState.StateName, _speed, new DoubleValue(1.0));
+            _speed = await UpdateState(PlaybackState.StateName, _speed, new DoubleValue(1.0)).ConfigureAwait(false);
         }
 
         protected async Task StopCommandHandler(Command message)
@@ -198,9 +197,9 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
                 Port = _port,
                 Method = "Player.Stop",
                 Parameters = new { playerid = PlayerId.GetValueOrDefault() }
-            });
+            }).ConfigureAwait(false);
 
-            _speed = await UpdateState(PlaybackState.StateName, _speed, new DoubleValue(1.0));
+            _speed = await UpdateState(PlaybackState.StateName, _speed, new DoubleValue(1.0)).ConfigureAwait(false);
         }
     }
 }

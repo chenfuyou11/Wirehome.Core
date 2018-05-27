@@ -13,7 +13,7 @@ namespace Wirehome.ComponentModel.Components
         public const string IsSocket = "is-socket";
         public const string IsRollerShutter = "is-roller-shutter";
     }
-    
+
     public static class AppProperty
     {
         public const string Caption = "app-caption";
@@ -23,6 +23,4 @@ namespace Wirehome.ComponentModel.Components
         public const string Icon = "app-icon";
         public const string IsEnabled = "app-is-enabled";
     }
-
-    
 }

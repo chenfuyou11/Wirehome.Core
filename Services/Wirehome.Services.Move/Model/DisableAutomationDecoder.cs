@@ -33,7 +33,6 @@ namespace Wirehome.Motion.Model
                     _room.DisableAutomation();
                     break;
                 }
-
             }
         }
 

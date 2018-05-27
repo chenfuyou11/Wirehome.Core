@@ -15,7 +15,6 @@ namespace Wirehome.Motion.Model
         {
             Start = startPoint;
             End = endPoint;
-
         }
 
         public MotionVector Confuze(IEnumerable<MotionPoint> confusionPoints)
@@ -34,7 +33,7 @@ namespace Wirehome.Motion.Model
         public bool Contains(MotionPoint p) => Start.Equals(p) || End.Equals(p);
         protected override bool EqualsCore(MotionVector other) => other.Start.Equals(Start) && other.End.Equals(End);
         public bool Equals(MotionVector other) => base.Equals(other);
-        
+
         protected override int GetHashCodeCore()
         {
             unchecked
@@ -71,6 +70,5 @@ namespace Wirehome.Motion.Model
                 return baseFormat;
             }
         }
-
     }
 }

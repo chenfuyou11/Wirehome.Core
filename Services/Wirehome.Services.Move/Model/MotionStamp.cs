@@ -11,7 +11,6 @@ namespace Wirehome.Motion
 
         public override string ToString() => $"{(Time != null ? Time?.Second.ToString() : "?")}:{(Time != null ? Time?.Millisecond.ToString() : "?")}";
 
-        
         public void SetTime(DateTimeOffset time)
         {
             if(Time.HasValue)
@@ -25,5 +24,4 @@ namespace Wirehome.Motion
 
         public void UnConfuze() => CanConfuze = false;
     }
-
 }

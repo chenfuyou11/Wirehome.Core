@@ -79,10 +79,9 @@ namespace Wirehome.WindowsService.Interop
                 var property = this[key];
                 if (property == null || property.IsEmpty)
                     return false;
-                
+
                 value = property.Value;
                 return true;
-
             }
             catch (COMException ex)
             {

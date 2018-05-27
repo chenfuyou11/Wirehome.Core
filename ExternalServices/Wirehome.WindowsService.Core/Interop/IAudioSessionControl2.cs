@@ -50,5 +50,4 @@ namespace Wirehome.WindowsService.Interop
         [PreserveSig]
         int SetDuckingPreference(bool optOut);
     }
-    
 }

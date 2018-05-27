@@ -18,5 +18,4 @@ namespace Wirehome.WindowsService.Interop
         [PreserveSig]
         int GetMute(out bool pbMute);
     }
-    
 }

@@ -20,7 +20,7 @@ namespace Wirehome.Model.Extensions
                 .WithSimpleSchedule(x => x.WithInterval(interval).RepeatForever())
                 .Build();
 
-            await scheduler.ScheduleJob(job, trigger, token);
+            await scheduler.ScheduleJob(job, trigger, token).ConfigureAwait(false);
 
             return job.Key;
         }
@@ -47,7 +47,7 @@ namespace Wirehome.Model.Extensions
                                              .WithSimpleSchedule(x => x.WithInterval(interval).RepeatForever())
                                              .Build();
 
-            await scheduler.ScheduleJob(job, trigger, token);
+            await scheduler.ScheduleJob(job, trigger, token).ConfigureAwait(false);
 
             return job.Key;
         }
@@ -75,7 +75,6 @@ namespace Wirehome.Model.Extensions
 
         //    return job.Key;
         //}
-
 
         public static T GetDataContext<T>(this IJobExecutionContext context) where T : class
         {

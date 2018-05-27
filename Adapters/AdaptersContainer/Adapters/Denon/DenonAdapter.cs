@@ -42,8 +42,8 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         protected async Task RefreshCommandHandler(Command message)
         {
-            _fullState = await _eventAggregator.QueryAsync<DenonStatusMessage, DenonDeviceInfo>(new DenonStatusMessage { Address = _hostName });
-            var mapping = await _eventAggregator.QueryAsync<DenonMappingMessage, DenonDeviceInfo>(new DenonMappingMessage { Address = _hostName });
+            _fullState = await _eventAggregator.QueryAsync<DenonStatusMessage, DenonDeviceInfo>(new DenonStatusMessage { Address = _hostName }).ConfigureAwait(false);
+            var mapping = await _eventAggregator.QueryAsync<DenonMappingMessage, DenonDeviceInfo>(new DenonMappingMessage { Address = _hostName }).ConfigureAwait(false);
             _fullState.FriendlyName = mapping.FriendlyName;
             _fullState.InputMap = mapping.InputMap;
             _surround = _fullState.Surround;
@@ -55,12 +55,12 @@ namespace Wirehome.ComponentModel.Adapters.Denon
             {
                 Address = _hostName,
                 Zone = _zone.ToString()
-            });
+            }).ConfigureAwait(false);
 
-            _input = await UpdateState<StringValue>(InputSourceState.StateName, _input, state.ActiveInput);
-            _volume = await UpdateState<DoubleValue>(VolumeState.StateName, _volume, state.MasterVolume);
-            _mute = await UpdateState<BooleanValue>(MuteState.StateName, _mute, state.Mute);
-            _powerState = await UpdateState<BooleanValue>(PowerState.StateName, _powerState, state.PowerStatus);
+            _input = await UpdateState<StringValue>(InputSourceState.StateName, _input, state.ActiveInput).ConfigureAwait(false);
+            _volume = await UpdateState<DoubleValue>(VolumeState.StateName, _volume, state.MasterVolume).ConfigureAwait(false);
+            _mute = await UpdateState<BooleanValue>(MuteState.StateName, _mute, state.Mute).ConfigureAwait(false);
+            _powerState = await UpdateState<BooleanValue>(PowerState.StateName, _powerState, state.PowerStatus).ConfigureAwait(false);
         }
 
         protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)
@@ -82,8 +82,8 @@ namespace Wirehome.ComponentModel.Adapters.Denon
                 ReturnNode = "Power",
                 Address = _hostName,
                 Zone = _zone.ToString()
-            }, "ON");
-            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(true));
+            }, "ON").ConfigureAwait(false);
+            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(true)).ConfigureAwait(false);
         }
 
         protected async Task TurnOffCommandHandler(Command message)
@@ -95,8 +95,8 @@ namespace Wirehome.ComponentModel.Adapters.Denon
                 ReturnNode = "Power",
                 Address = _hostName,
                 Zone = _zone.ToString()
-            }, "OFF");
-            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(false));
+            }, "OFF").ConfigureAwait(false);
+            _powerState = await UpdateState(PowerState.StateName, _powerState, new BooleanValue(false)).ConfigureAwait(false);
         }
 
         protected async Task VolumeUpCommandHandler(Command command)
@@ -112,9 +112,9 @@ namespace Wirehome.ComponentModel.Adapters.Denon
                 ReturnNode = "MasterVolume",
                 Address = _hostName,
                 Zone = _zone.ToString()
-            });
+            }).ConfigureAwait(false);
 
-            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
+            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume)).ConfigureAwait(false);
         }
 
         protected async Task VolumeDownCommandHandler(Command command)
@@ -129,9 +129,9 @@ namespace Wirehome.ComponentModel.Adapters.Denon
                 ReturnNode = "MasterVolume",
                 Address = _hostName,
                 Zone = _zone.ToString()
-            });
+            }).ConfigureAwait(false);
 
-            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
+            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume)).ConfigureAwait(false);
         }
 
         protected async Task VolumeSetCommandHandler(Command command)
@@ -146,9 +146,9 @@ namespace Wirehome.ComponentModel.Adapters.Denon
                 ReturnNode = "MasterVolume",
                 Address = _hostName,
                 Zone = _zone.ToString()
-            });
+            }).ConfigureAwait(false);
 
-            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume));
+            _volume = await UpdateState(VolumeState.StateName, _volume, new DoubleValue(volume)).ConfigureAwait(false);
         }
 
         private string NormalizeVolume(double volume)
@@ -168,9 +168,9 @@ namespace Wirehome.ComponentModel.Adapters.Denon
                 ReturnNode = "Mute",
                 Address = _hostName,
                 Zone = _zone.ToString()
-            }, "on");
+            }, "on").ConfigureAwait(false);
 
-            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(true));
+            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(true)).ConfigureAwait(false);
         }
 
         protected async Task UnmuteCommandHandler(Command message)
@@ -182,9 +182,9 @@ namespace Wirehome.ComponentModel.Adapters.Denon
                 ReturnNode = "Mute",
                 Address = _hostName,
                 Zone = _zone.ToString()
-            }, "off");
+            }, "off").ConfigureAwait(false);
 
-            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(false));
+            _mute = await UpdateState(MuteState.StateName, _mute, new BooleanValue(false)).ConfigureAwait(false);
         }
 
         protected async Task SelectInputCommandHandler(Command message)
@@ -201,10 +201,10 @@ namespace Wirehome.ComponentModel.Adapters.Denon
                 ReturnNode = "",
                 Zone = "",
                 Address = _hostName
-            }, "");
+            }, "").ConfigureAwait(false);
 
             //TODO Check if this value is ok - confront with pooled state
-            _input = await UpdateState(InputSourceState.StateName, _input, inputName);
+            _input = await UpdateState(InputSourceState.StateName, _input, inputName).ConfigureAwait(false);
         }
 
         protected async Task SelectSurroundModeCommandHandler(Command message)
@@ -222,10 +222,10 @@ namespace Wirehome.ComponentModel.Adapters.Denon
                 ReturnNode = "",
                 Zone = "",
                 Address = _hostName
-            }, "");
+            }, "").ConfigureAwait(false);
 
             //TODO Check if this value is ok - confront with pooled state
-            _surround = await UpdateState(SurroundSoundState.StateName, _surround, surroundMode);
+            _surround = await UpdateState(SurroundSoundState.StateName, _surround, surroundMode).ConfigureAwait(false);
         }
     }
 }

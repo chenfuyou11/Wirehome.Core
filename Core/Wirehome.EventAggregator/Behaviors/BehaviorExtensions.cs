@@ -29,5 +29,4 @@ namespace Wirehome.Core.EventAggregator
             return chain.WithPolicy(new AsyncBehavior());
         }
     }
-
 }

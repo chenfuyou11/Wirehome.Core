@@ -14,5 +14,4 @@ namespace Wirehome.Motion.Model
             WithExpression(() => _motionDescriptor.AreaDescriptor.TurnOffAutomationDisabled ? ConditionState.NotFulfilled : ConditionState.Fulfilled);
         }
     }
-
 }

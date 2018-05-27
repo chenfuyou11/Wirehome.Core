@@ -12,6 +12,5 @@ namespace Wirehome.ComponentModel.Capabilities.Constants
         public const string TemperatureController = "TemperatureController";
         public const string HimadityController = "HimadityController";
         public const string CurrentController = "CurrentController";
-
     }
 }

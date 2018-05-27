@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-
 namespace Wirehome.Core.EventAggregator
 {
     public class BehaviorChain
@@ -17,7 +16,7 @@ namespace Wirehome.Core.EventAggregator
         public IAsyncCommandHandler Build(IAsyncCommandHandler handler, bool orderByPriority = true)
         {
             var nextHandler = handler;
-            
+
             foreach (var policy in _policies.OrderBy(x => orderByPriority ? x.Priority : -1))
             {
                 policy.SetNextNode(nextHandler);
@@ -32,5 +31,4 @@ namespace Wirehome.Core.EventAggregator
             return new BehaviorChain().WithPolicy(behavior);
         }
     }
-
 }

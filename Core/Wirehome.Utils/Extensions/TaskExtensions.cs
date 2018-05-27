@@ -12,7 +12,7 @@ namespace Wirehome.Core.Extensions
         {
             var timeoutTask = Task.Delay(timeout, cancellationToken);
             var workingTask = Task.WhenAll(tasks);
-            var result = await Task.WhenAny(timeoutTask, workingTask);
+            var result = await Task.WhenAny(timeoutTask, workingTask).ConfigureAwait(false);
 
             if (result == timeoutTask)
             {
@@ -35,7 +35,7 @@ namespace Wirehome.Core.Extensions
         {
             var cancellTask = cancellationToken.WhenCanceled();
             var workingTask = Task.WhenAll(tasks);
-            var result = await Task.WhenAny(cancellTask, workingTask);
+            var result = await Task.WhenAny(cancellTask, workingTask).ConfigureAwait(false);
 
             if (result == cancellTask)
             {
@@ -48,7 +48,7 @@ namespace Wirehome.Core.Extensions
         public static async Task<R> WhenAny<R>(this IEnumerable<Task> tasks, TimeSpan timeout, CancellationToken cancellationToken) where R : class
         {
             var timeoutTask = Task.Delay(timeout, cancellationToken);
-            var result = await Task.WhenAny(tasks.ToList().AddChained(timeoutTask));
+            var result = await Task.WhenAny(tasks.ToList().AddChained(timeoutTask)).ConfigureAwait(false);
 
             if (result == timeoutTask)
             {
@@ -70,7 +70,7 @@ namespace Wirehome.Core.Extensions
         public static async Task<R> WhenDone<R>(this Task<R> task, TimeSpan timeout, CancellationToken cancellationToken) where R : class
         {
             var timeoutTask = Task.Delay(timeout, cancellationToken);
-            var result = await Task.WhenAny(new Task[] { task, timeoutTask });
+            var result = await Task.WhenAny(new Task[] { task, timeoutTask }).ConfigureAwait(false);
 
             if (result == timeoutTask)
             {

@@ -2,11 +2,10 @@
 
 namespace Wirehome.Core.EventAggregator
 {
-
     public class RetryBehavior : Behavior
     {
         private int _retryCount;
-        
+
         public RetryBehavior(int retryCount = 3)
         {
             Priority = 40;
@@ -19,11 +18,10 @@ namespace Wirehome.Core.EventAggregator
             {
                 try
                 {
-                    return await _asyncCommandHandler.HandleAsync<T, R>(message);
+                    return await _asyncCommandHandler.HandleAsync<T, R>(message).ConfigureAwait(false);
                 }
                 catch when (_retryCount-- > 0) { }
             }
         }
     }
-
 }

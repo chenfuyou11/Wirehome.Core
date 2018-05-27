@@ -34,5 +34,4 @@ namespace Wirehome.Core.Services.Quartz
             (job as IDisposable)?.Dispose();
         }
     }
-
 }

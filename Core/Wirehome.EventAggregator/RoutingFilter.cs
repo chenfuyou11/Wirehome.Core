@@ -32,5 +32,4 @@ namespace Wirehome.Core.EventAggregator
 
         public static implicit operator RoutingFilter(string routingKey) => new RoutingFilter(routingKey);
     }
-    
 }

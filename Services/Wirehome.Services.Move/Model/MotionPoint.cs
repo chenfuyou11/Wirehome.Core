@@ -4,7 +4,7 @@ using Wirehome.Model.Extensions;
 
 namespace Wirehome.Motion.Model
 {
-    //TODO move to ne version
+    //TODO move to new version
     public class MotionPoint : ValueObject<MotionPoint>, IEquatable<MotionPoint>
     {
         public string Uid { get; }

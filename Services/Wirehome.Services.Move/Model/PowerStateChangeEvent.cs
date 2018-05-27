@@ -16,5 +16,4 @@ namespace Wirehome.Motion.Model
         public bool Value { get;}
         public string EventSource { get; }
     }
-
 }

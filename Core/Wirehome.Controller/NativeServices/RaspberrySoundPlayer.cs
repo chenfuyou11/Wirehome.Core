@@ -29,7 +29,5 @@ namespace Wirehome.Raspberry
             _player.Source = MediaSource.CreateFromUri(new Uri($"ms-appx:///{sound}"));
             _player.Play();
         }
-
-        
     }
 }

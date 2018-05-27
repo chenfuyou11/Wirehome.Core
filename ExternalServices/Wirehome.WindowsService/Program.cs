@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using System.Diagnostics;
+using NLog.Web;
 
 namespace Wirehome.WindowsService
 {
@@ -25,6 +26,7 @@ namespace Wirehome.WindowsService
 
             var host = new WebHostBuilder()
             .UseKestrel()
+            .UseNLog()
             .UseContentRoot(pathToContentRoot)
             .UseIISIntegration()
             .UseStartup<Startup>()

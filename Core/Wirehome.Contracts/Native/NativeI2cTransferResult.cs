@@ -20,5 +20,4 @@
         //     table describes what this value represents for each method.
         public uint BytesTransferred;
     }
-
 }

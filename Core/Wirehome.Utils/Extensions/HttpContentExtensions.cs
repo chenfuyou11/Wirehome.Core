@@ -9,14 +9,14 @@ namespace Wirehome.Core.Extensions
     {
         public static async Task<string> ReadAsStringAsync(this HttpContent content, Encoding encoding)
         {
-            var responseStream = await content.ReadAsStreamAsync();
+            var responseStream = await content.ReadAsStreamAsync().ConfigureAwait(false);
             var responseContent = string.Empty;
 
             if (encoding == null) encoding = content.GetEncoding(Encoding.UTF8);
 
             using (var sr = new StreamReader(responseStream, encoding))
             {
-                responseContent = await sr.ReadToEndAsync();
+                responseContent = await sr.ReadToEndAsync().ConfigureAwait(false);
             }
 
             return responseContent;

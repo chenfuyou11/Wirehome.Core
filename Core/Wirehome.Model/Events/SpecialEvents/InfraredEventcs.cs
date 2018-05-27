@@ -13,6 +13,5 @@ namespace Wirehome.ComponentModel.Events
             this[EventProperties.System] = (IntValue)system;
             this[EventProperties.CommandCode] = (IntValue)commandCode;
         }
-        
     }
 }

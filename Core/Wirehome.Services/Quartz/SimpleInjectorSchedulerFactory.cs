@@ -21,6 +21,4 @@ namespace Wirehome.Core.Services.Quartz
         }
     }
 
-   
-
 }

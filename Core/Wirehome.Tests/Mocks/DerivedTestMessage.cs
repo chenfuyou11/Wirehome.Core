@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace Wirehome.Extensions.Tests
 {
-
     public class DerivedTestMessage : TestMessage
     {
 

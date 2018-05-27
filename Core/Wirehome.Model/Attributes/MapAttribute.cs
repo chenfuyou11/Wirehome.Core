@@ -7,6 +7,4 @@ namespace Wirehome.Core.Services.DependencyInjection
     {
 
     }
-
-
 }

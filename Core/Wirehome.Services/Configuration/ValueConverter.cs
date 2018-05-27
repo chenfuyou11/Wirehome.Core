@@ -19,11 +19,11 @@ namespace Wirehome.Core.ComponentModel.Configuration
             JsonSerializer serializer)
         {
             IDictionary<string, IValueConverter> result = new Dictionary<string, IValueConverter>();
-            
+
             var types = AssemblyHelper.GetProjectAssemblies()
                                       .SelectMany(s => s.GetTypes())
                                       .Where(p => typeof(IValueConverter).IsAssignableFrom(p));
-            
+
             foreach (var property in JObject.Load(reader))
             {
                 var converter = property.Value.Value<string>();
@@ -41,5 +41,4 @@ namespace Wirehome.Core.ComponentModel.Configuration
         public override bool CanConvert(Type objectType) => typeof(IDictionary<string, Property>).IsAssignableFrom(objectType);
         public override bool CanWrite => false;
     }
-
 }

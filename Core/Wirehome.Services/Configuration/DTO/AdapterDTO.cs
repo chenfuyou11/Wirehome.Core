@@ -6,7 +6,6 @@ namespace Wirehome.Core.ComponentModel.Configuration
 {
     public class AdapterDTO
     {
-
         [JsonProperty("Uid")]
         public string Uid { get; set; }
 
@@ -20,6 +19,4 @@ namespace Wirehome.Core.ComponentModel.Configuration
         [JsonProperty("Tags")]
         public IDictionary<string, string> Tags { get; set; }
     }
-
-
 }

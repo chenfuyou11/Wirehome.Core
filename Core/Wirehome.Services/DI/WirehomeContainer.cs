@@ -120,7 +120,7 @@ namespace Wirehome.Core.Services.DependencyInjection
             _container.RegisterInstance(service);
         }
 
-        public void Verify() 
+        public void Verify()
         {
             _container.Verify();
         }

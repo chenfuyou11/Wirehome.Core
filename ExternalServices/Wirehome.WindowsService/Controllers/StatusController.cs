@@ -26,6 +26,4 @@ namespace Wirehome.WindowsService.Controllers
             };
         }
     }
-
-   
 }

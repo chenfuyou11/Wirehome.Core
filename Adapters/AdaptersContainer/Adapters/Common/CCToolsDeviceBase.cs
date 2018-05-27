@@ -29,7 +29,7 @@ namespace Wirehome.ComponentModel.Adapters
         protected readonly ILogger _log;
         protected readonly II2CBusService _i2CBusService;
         protected II2CPortExpanderDriver _portExpanderDriver;
-        
+
         protected CCToolsBaseAdapter(IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory)
         {
             _i2CBusService = adapterServiceFactory.GetI2CService();
@@ -107,7 +107,7 @@ namespace Wirehome.ComponentModel.Adapters
                 var properyChangeEvent = new PropertyChangedEvent(Uid, PowerState.StateName, new BooleanValue(oldPinState),
                                             new BooleanValue(newPinState), new Dictionary<string, IValue>() { { AdapterProperties.PinNumber, new IntValue(i) } });
 
-                await _eventAggregator.PublishDeviceEvent(properyChangeEvent, _requierdProperties);
+                await _eventAggregator.PublishDeviceEvent(properyChangeEvent, _requierdProperties).ConfigureAwait(false);
 
                 _log.Info($"'{Uid}' fetched different state ({oldState.ToBitString()}->{newState.ToBitString()})");
             }

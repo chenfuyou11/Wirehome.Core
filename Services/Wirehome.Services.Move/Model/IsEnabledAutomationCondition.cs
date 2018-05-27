@@ -3,7 +3,6 @@ using Wirehome.Contracts.Conditions;
 
 namespace Wirehome.Motion.Model
 {
-
     public class IsEnabledAutomationCondition : Condition
     {
         private readonly Room _motionDescriptor;
@@ -15,5 +14,4 @@ namespace Wirehome.Motion.Model
             WithExpression(() => _motionDescriptor.AutomationDisabled ? ConditionState.NotFulfilled : ConditionState.Fulfilled);
         }
     }
-
 }

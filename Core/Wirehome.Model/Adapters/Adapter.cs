@@ -31,15 +31,15 @@ namespace Wirehome.ComponentModel.Adapters
         protected async Task<T> UpdateState<T>(string stateName, T oldValue, T newValue) where T : IValue
         {
             if (newValue.Equals(oldValue)) return oldValue;
-            await _eventAggregator.PublishDeviceEvent(new PropertyChangedEvent(Uid, stateName, oldValue, newValue), _requierdProperties);
+            await _eventAggregator.PublishDeviceEvent(new PropertyChangedEvent(Uid, stateName, oldValue, newValue), _requierdProperties).ConfigureAwait(false);
             return newValue;
         }
 
         protected async Task ScheduleDeviceRefresh<T>(TimeSpan interval) where T : IJob
         {
-            var scheduler = await _schedulerFactory.GetScheduler();
-            await scheduler.ScheduleIntervalWithContext<T, Adapter>(interval, this, _disposables.Token);
-            await scheduler.Start(_disposables.Token);
+            var scheduler = await _schedulerFactory.GetScheduler().ConfigureAwait(false);
+            await scheduler.ScheduleIntervalWithContext<T, Adapter>(interval, this, _disposables.Token).ConfigureAwait(false);
+            await scheduler.Start(_disposables.Token).ConfigureAwait(false);
         }
 
         protected override void LogException(Exception ex) => _logger.Error(ex, $"Unhanded adapter {Uid} exception");

@@ -38,12 +38,12 @@ namespace Wirehome.Core.Services
                 using (var socket = new TcpClient())
                 {
                     var uri = new Uri($"tcp://{message.Message.MessageAddress()}");
-                    await socket.ConnectAsync(uri.Host, uri.Port);
+                    await socket.ConnectAsync(uri.Host, uri.Port).ConfigureAwait(false);
                     using (var stream = socket.GetStream())
                     {
                         var messageBytes = message.Message.Serialize();
-                        await stream.WriteAsync(messageBytes, 0, messageBytes.Length, message.CancellationToken);
-                        return await ReadString(stream);
+                        await stream.WriteAsync(messageBytes, 0, messageBytes.Length, message.CancellationToken).ConfigureAwait(false);
+                        return await ReadString(stream).ConfigureAwait(false);
                     }
                 }
             }
@@ -62,7 +62,7 @@ namespace Wirehome.Core.Services
 
             do
             {
-                bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
                 result.AddRange(buffer.Take(bytesRead));
             }
             while (bytesRead == buffer.Length);

@@ -10,7 +10,7 @@ namespace Wirehome.Alexa.Model.Discovery
     {
         [JsonProperty("event")]
         public Event Event { get; set; }
-        
+
         public static DiscoverResponse GenerateResponse(IList<AlexaDevice> devices)
         {
             var endpoints = new List<Endpoint>();
@@ -38,7 +38,7 @@ namespace Wirehome.Alexa.Model.Discovery
                     }).ToList()
             });
             }
-            
+
             return new DiscoverResponse
             {
                 Event = new Event
@@ -73,12 +73,10 @@ namespace Wirehome.Alexa.Model.Discovery
 
             return list;
         }
-            
     }
 
     public class Event
     {
-
         [JsonProperty("header")]
         public Header Header { get; set; }
 
@@ -88,14 +86,12 @@ namespace Wirehome.Alexa.Model.Discovery
 
     public class DiscoveryResponsePayload
     {
-
         [JsonProperty("endpoints")]
         public IList<Endpoint> Endpoints { get; set; }
     }
 
     public class Endpoint
     {
-
         [JsonProperty("endpointId")]
         public string EndpointId { get; set; }
 
@@ -120,7 +116,6 @@ namespace Wirehome.Alexa.Model.Discovery
 
     public class Cookie
     {
-
         [JsonProperty("extraDetail1")]
         public string ExtraDetail1 { get; set; }
 
@@ -136,7 +131,6 @@ namespace Wirehome.Alexa.Model.Discovery
 
     public class Capability
     {
-
         [JsonProperty("type")]
         public string Type { get; set; } = "AlexaInterface";
 
@@ -164,7 +158,6 @@ namespace Wirehome.Alexa.Model.Discovery
 
     public class Properties
     {
-
         [JsonProperty("supported")]
         public IList<Supported> Supported { get; set; }
 
@@ -177,14 +170,12 @@ namespace Wirehome.Alexa.Model.Discovery
 
     public class Supported
     {
-
         [JsonProperty("name")]
         public string Name { get; set; }
     }
-    
+
     public class Resolution
     {
-
         [JsonProperty("width")]
         public int Width { get; set; }
 
@@ -194,7 +185,6 @@ namespace Wirehome.Alexa.Model.Discovery
 
     public class CameraStreamConfiguration
     {
-
         [JsonProperty("protocols")]
         public IList<string> Protocols { get; set; }
 
@@ -210,5 +200,4 @@ namespace Wirehome.Alexa.Model.Discovery
         [JsonProperty("audioCodecs")]
         public IList<string> AudioCodecs { get; set; }
     }
-    
 }

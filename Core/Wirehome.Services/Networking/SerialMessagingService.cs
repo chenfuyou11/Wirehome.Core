@@ -24,7 +24,7 @@ namespace Wirehome.Core.Services
 
         public async Task Initialize()
         {
-            await _serialDevice.Init();
+            await _serialDevice.Init().ConfigureAwait(false);
             _dataReader = _serialDevice.GetBinaryReader();
 
             _disposeContainer.Add(_dataReader);
@@ -42,7 +42,7 @@ namespace Wirehome.Core.Services
             {
                 while (true)
                 {
-                    await ReadAsync(_disposeContainer.Token);
+                    await ReadAsync(_disposeContainer.Token).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -51,7 +51,6 @@ namespace Wirehome.Core.Services
             }
         }
 
-
         private async Task ReadAsync(CancellationToken cancellationToken)
         {
             const uint messageHeaderSize = 2;
@@ -59,18 +58,18 @@ namespace Wirehome.Core.Services
 
             using (var childCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
-                var headerBytesRead = await _dataReader.LoadAsync(messageHeaderSize, childCancellationTokenSource.Token);
+                var headerBytesRead = await _dataReader.LoadAsync(messageHeaderSize, childCancellationTokenSource.Token).ConfigureAwait(false);
                 if (headerBytesRead > 0)
                 {
                     var messageBodySize = _dataReader.ReadByte();
                     var messageType = _dataReader.ReadByte();
 
-                    var bodyBytesReaded = await _dataReader.LoadAsync(messageBodySize, childCancellationTokenSource.Token);
+                    var bodyBytesReaded = await _dataReader.LoadAsync(messageBodySize, childCancellationTokenSource.Token).ConfigureAwait(false);
                     if (bodyBytesReaded > 0)
                     {
                         foreach (var handler in _messageHandlers)
                         {
-                            if(await handler(messageType, messageBodySize, _dataReader))
+                            if(await handler(messageType, messageBodySize, _dataReader).ConfigureAwait(false))
                             {
                                 break;
                             }

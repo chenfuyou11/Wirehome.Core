@@ -66,17 +66,15 @@ namespace Wirehome.Core.Tests.ComponentModel
         {
             _container = container;
 
-            var serial = Mock.Of<ISerialMessagingService>();
-            var i2cServiceBus = Mock.Of<II2CBusService>();
             var logService = Mock.Of<ILogService>();
             var logger = Mock.Of<ILogger>();
             Mock.Get(logService).Setup(x => x.CreatePublisher(It.IsAny<string>())).Returns(logger);
+            container.RegisterInstance(logService);
+            container.RegisterInstance(Mock.Of<ISerialMessagingService>());
 
             container.RegisterSingleton<IEventAggregator, EventAggregator.EventAggregator>();
             container.RegisterSingleton<IConfigurationService, ConfigurationService>();
-            container.RegisterInstance(i2cServiceBus);
-            container.RegisterInstance(logService);
-            container.RegisterInstance(serial);
+            container.RegisterSingleton<II2CBusService, I2CBusService>();
             container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
             container.RegisterSingleton<IHttpMessagingService, HttpMessagingService>();
             //container.RegisterSingleton<ISerialMessagingService, SerialMessagingService>();

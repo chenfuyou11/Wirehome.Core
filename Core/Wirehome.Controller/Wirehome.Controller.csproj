@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{57A56A49-15A4-424D-BA08-CF3AB35FB0C3}</ProjectGuid>
+    <ProjectGuid>{0D5BD54F-68E6-400F-A725-0E22F437E323}</ProjectGuid>
     <OutputType>winmdobj</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Wirehome.Controller</RootNamespace>
@@ -18,7 +18,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <AllowCrossPlatformRetargeting>false</AllowCrossPlatformRetargeting>
-    <PackageCertificateKeyFile>Wirehome.Controller.Dnf_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>Wirehome.Controller_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxPackage>true</AppxPackage>
     <ContainsStartupTask>true</ContainsStartupTask>
   </PropertyGroup>
@@ -32,7 +32,6 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <CodeAnalysisRuleSet>..\Wirehome.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
@@ -45,7 +44,6 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <CodeAnalysisRuleSet>Wirehome.Controller.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -57,7 +55,6 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <CodeAnalysisRuleSet>Wirehome.Controller.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -70,7 +67,6 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <CodeAnalysisRuleSet>Wirehome.Controller.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -82,8 +78,6 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <LangVersion>latest</LangVersion>
-    <CodeAnalysisRuleSet>Wirehome.Controller.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -96,7 +90,6 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <CodeAnalysisRuleSet>Wirehome.Controller.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
@@ -119,7 +112,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="Wirehome.Controller.pfx" />
+    <None Include="Wirehome.Controller_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\Default.rd.xml" />
@@ -147,35 +140,18 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.1.4</Version>
+      <Version>6.2.0-Preview1-26502-02</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Wirehome.Contracts\Wirehome.Contracts.csproj">
-      <Project>{ee5c16af-0acf-4d87-ad5a-d995832ddb6c}</Project>
+    <ProjectReference Include="..\Wirehome.Contracts\Wirehome.Contracts.csproj">
+      <Project>{7e497f7e-36b1-49f3-93a2-d0cd987f1f56}</Project>
       <Name>Wirehome.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Wirehome.EventAggregator\Wirehome.EventAggregator.csproj">
-      <Project>{d24b514d-a412-49af-97a9-a0b08efb7085}</Project>
-      <Name>Wirehome.EventAggregator</Name>
     </ProjectReference>
     <ProjectReference Include="..\Wirehome.Model\Wirehome.Model.csproj">
       <Project>{b46acfce-d828-45af-ae97-8e471e2b155b}</Project>
       <Name>Wirehome.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Wirehome.Services\Wirehome.Services.csproj">
-      <Project>{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}</Project>
-      <Name>Wirehome.Services</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Wirehome.Utils\Wirehome.Utils.csproj">
-      <Project>{6b6fee1d-5366-44d4-b363-b8d1f7900788}</Project>
-      <Name>Wirehome.Utils</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="HTTPnet.Netstandard">
-      <HintPath>C:\Users\dnf\.nuget\packages\httpnet\2.1.0\lib\netstandard1.3\HTTPnet.Netstandard.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '15.0' ">
     <VisualStudioVersion>15.0</VisualStudioVersion>

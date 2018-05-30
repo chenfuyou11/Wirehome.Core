@@ -11,13 +11,13 @@
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="1.10.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Quartz" Version="3.0.4" />
     <PackageReference Include="SimpleInjector" Version="4.3.0" />
     <PackageReference Include="System.Reactive" Version="4.0.0" />
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.9.0-rc1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Quartz\Quartz.csproj" />
     <ProjectReference Include="..\Wirehome.Contracts\Wirehome.Contracts.csproj" />
     <ProjectReference Include="..\Wirehome.EventAggregator\Wirehome.EventAggregator.csproj" />
   </ItemGroup>

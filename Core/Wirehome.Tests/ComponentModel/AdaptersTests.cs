@@ -20,6 +20,7 @@ using Wirehome.Core.Utils;
 using Newtonsoft.Json;
 using System.Runtime.Loader;
 using System.IO;
+using Wirehome.Model.Core;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -105,12 +106,18 @@ namespace Wirehome.Extensions.Tests
                                                                        .ConfigureAwait(false);
             var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
             var roslynGenerator = new RoslynAsseblyGenerator();
-            var assembly = roslynGenerator.GenerateAssembly("adapter.dll", GetAdapterDir(), AssemblyHelper.GetReferencedAssemblies(typeof(Adapter)));
+
+            var modelAssemblies = AssemblyHelper.GetReferencedAssemblies(typeof(Adapter));
+            var servicesAssemblies = AssemblyHelper.GetReferencedAssemblies(typeof(WirehomeController));
+
+            var referencedAssemblies = modelAssemblies.Union(servicesAssemblies).Distinct();
+
+            var assembly = roslynGenerator.GenerateAssembly("adapter.dll", GetAdapterDir(), referencedAssemblies) ;
 
             if (assembly.IsSuccess)
             {
                 Assembly asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(assembly.Value);
-                var adapterType = asm.GetType("Wirehome.ComponentModel.Adapters.Kodi.KodiAdapterTest");
+                var adapterType = asm.GetType("Wirehome.ComponentModel.Adapters.Kodi.KodiAdapter");
                 var adapter = Activator.CreateInstance(adapterType, new Object[] { adapterServiceFactory }) as Adapter;
 
                 await adapter.Initialize().ConfigureAwait(false);
@@ -120,8 +127,7 @@ namespace Wirehome.Extensions.Tests
 
         private string GetAdapterDir()
         {
-            var dir = Directory.GetCurrentDirectory();
-            return Path.Combine(dir.Substring(0, dir.IndexOf("Wirehome.Core.Tests")), @"Adapters\TestAdapter\Kodi");
+            return Path.Combine(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..")), @"Adapters\AdaptersContainer\Adapters\Kodi");
         }
     }
 }

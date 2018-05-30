@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using AutoMapper;
+using AutoMapper.Configuration;
+using Moq;
 using Quartz;
 using Quartz.Spi;
 using System.IO;
@@ -23,14 +25,11 @@ namespace Wirehome.Core.Tests.ComponentModel
 
         private ControllerOptions GetControllerOptions()
         {
-            //@"W:\Projects\HA4IoT\Adapters\AdaptersContainer\bin\Debug\netstandard2.0
-            var adaptersRepo = Path.Combine(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..")), @"Adapters\AdaptersContainer\bin\Debug\netstandard2.0");
-            var options = new ControllerOptions { AdapterRepository = adaptersRepo };
-            options.NativeServicesRegistration = RegisterRaspberryServices;
-            options.BaseServicesRegistration = RegisterContainerServices;
-            options.ConfigurationPath = $@"ComponentModel\SampleConfigs\{_configuration}.json";
-
-            return options;
+            return new ControllerOptions
+            {
+                NativeServicesRegistration = RegisterRaspberryServices,
+                BaseServicesRegistration = RegisterContainerServices
+            };
         }
 
         public ControllerBuilder WithConfiguration(string configuration)
@@ -62,16 +61,28 @@ namespace Wirehome.Core.Tests.ComponentModel
             container.RegisterSingleton(Mock.Of<INativeTimerSerice>());
         }
 
-        private void RegisterContainerServices(IContainer container, string adapterRepo)
+        private void RegisterContainerServices(IContainer container)
         {
             _container = container;
 
             var logService = Mock.Of<ILogService>();
             var logger = Mock.Of<ILogger>();
+            var resourceLocator = Mock.Of<IResourceLocatorService>();
+            
             Mock.Get(logService).Setup(x => x.CreatePublisher(It.IsAny<string>())).Returns(logger);
-            container.RegisterInstance(logService);
-            container.RegisterInstance(Mock.Of<ISerialMessagingService>());
 
+            //@"W:\Projects\HA4IoT\Adapters\AdaptersContainer\bin\Debug\netstandard2.0
+            //var adaptersRepo = Path.Combine(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..")), @"Adapters\AdaptersContainer\bin\Debug\netstandard2.0");
+            var adaptersRepo = Path.Combine(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..")), @"Adapters\AdaptersContainer\Adapters");
+            var configFile = Path.Combine(Directory.GetCurrentDirectory(), $@"ComponentModel\SampleConfigs\{_configuration}.json");
+
+            Mock.Get(resourceLocator).Setup(x => x.GetRepositoyLocation()).Returns(adaptersRepo);
+            Mock.Get(resourceLocator).Setup(x => x.GetConfigurationPath()).Returns(configFile);
+            
+            container.RegisterInstance(logService);
+            container.RegisterInstance(resourceLocator);
+            
+            container.RegisterInstance(Mock.Of<ISerialMessagingService>());
             container.RegisterSingleton<IEventAggregator, EventAggregator.EventAggregator>();
             container.RegisterSingleton<IConfigurationService, ConfigurationService>();
             container.RegisterSingleton<II2CBusService, I2CBusService>();
@@ -84,7 +95,21 @@ namespace Wirehome.Core.Tests.ComponentModel
             container.RegisterSingleton<ISchedulerFactory, SimpleInjectorSchedulerFactory>();
 
             //Auto mapper
-            container.RegisterSingleton(() => container.GetInstance<MapperProvider>().GetMapper(adapterRepo));
+            container.RegisterSingleton(GetMapper);
+        }
+
+        public IMapper GetMapper()
+        {
+            var resourceLocator = _container.GetInstance<IResourceLocatorService>();
+
+            var mce = new MapperConfigurationExpression();
+            mce.ConstructServicesUsing(_container.GetInstance);
+
+            var adaptersRepo = resourceLocator.GetRepositoyLocation();
+            var profile = new WirehomeMappingProfile(adaptersRepo);
+            mce.AddProfile(profile);
+
+            return new Mapper(new MapperConfiguration(mce), t => _container.GetInstance(t));
         }
     }
 }

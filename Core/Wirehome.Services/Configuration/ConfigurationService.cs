@@ -4,33 +4,41 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Loader;
-using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Components;
 using Wirehome.Core.ComponentModel.Areas;
 using Wirehome.Core.ComponentModel.Configuration;
 using Wirehome.Core.Extensions;
 using Wirehome.Core.Services.Logging;
+using Wirehome.Core.Services.Roslyn;
 using Wirehome.Core.Utils;
 
 namespace Wirehome.ComponentModel.Configuration
 {
+
     public class ConfigurationService : IConfigurationService
     {
+
         private readonly IMapper _mapper;
         private readonly IAdapterServiceFactory _adapterServiceFactory;
         private readonly ILogger _logger;
+        private readonly IResourceLocatorService _resourceLocatorService;
 
-        public ConfigurationService(IMapper mapper, IAdapterServiceFactory adapterServiceFactory, ILogService logService)
+        public ConfigurationService(IMapper mapper, IAdapterServiceFactory adapterServiceFactory, ILogService logService, IResourceLocatorService resourceLocatorService)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _adapterServiceFactory = adapterServiceFactory ?? throw new ArgumentNullException(nameof(adapterServiceFactory));
             _logger = logService.CreatePublisher(nameof(ConfigurationService));
+            _resourceLocatorService = resourceLocatorService;
         }
-
-        public WirehomeConfiguration ReadConfiguration(string configPath, string adaptersRepoPath)
+        
+        public WirehomeConfiguration ReadConfiguration()
         {
+            var configPath = _resourceLocatorService.GetConfigurationPath();
+            var adaptersRepoPath = _resourceLocatorService.GetRepositoyLocation();
+
             var rawConfig = File.ReadAllText(configPath);
 
             var result = JsonConvert.DeserializeObject<WirehomeConfigDTO>(rawConfig);
@@ -99,9 +107,12 @@ namespace Wirehome.ComponentModel.Configuration
             var adapters = new List<Adapter>();
             var types = new List<Type>();
 
+            var roslyn = new RoslynAsseblyGenerator();
+            roslyn.CompileAssemblies(adaptersRepoPath);
+
             foreach (var assemblyPath in FindAdapterInRepository(adaptersRepoPath))
             {
-                var adapterTypes = AssemblyHelper.GetAllInherited<Adapter>(AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath));
+                var adapterTypes = AssemblyHelper.GetAllInherited<Adapter>(Assembly.LoadFile(assemblyPath));
 
                 types.AddRange(adapterTypes);
             }

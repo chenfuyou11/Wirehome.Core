@@ -1,8 +1,12 @@
 ﻿using Windows.ApplicationModel.Background;
+using Windows.Devices.Enumeration;
+using Windows.Devices.SerialCommunication;
 using Wirehome.Core.Interface.Native;
 using Wirehome.Core.Services.DependencyInjection;
 using Wirehome.Model.Core;
 using Wirehome.Raspberry;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Wirehome.Controller
 {
@@ -13,21 +17,16 @@ namespace Wirehome.Controller
             var deferral = taskInstance.GetDeferral();
                        
             try
-            {
+            { 
                 await new WirehomeController(GetControllerOptions()).Initialize().ConfigureAwait(false);
             }
-            catch (System.Exception)
+            catch (System.Exception e)
             {
                 deferral.Complete();
             }
         }
 
-        private ControllerOptions GetControllerOptions()
-        {
-            var options = new ControllerOptions { AdapterRepository = @".\Adapters" };
-            options.NativeServicesRegistration = RegisterRaspberryServices;
-            return options;
-        }
+        private ControllerOptions GetControllerOptions() => new ControllerOptions { NativeServicesRegistration = RegisterRaspberryServices };
 
         private void RegisterRaspberryServices(IContainer container)
         {
@@ -39,4 +38,5 @@ namespace Wirehome.Controller
             container.RegisterSingleton<INativeTimerSerice, RaspberryTimerSerice>();
         }
     }
+    
 }

@@ -1,4 +1,6 @@
-﻿using Quartz;
+﻿using AutoMapper;
+using AutoMapper.Configuration;
+using Quartz;
 using Quartz.Spi;
 using System;
 using System.Linq;
@@ -24,8 +26,9 @@ namespace Wirehome.Model.Core
 
         private ILogger _log;
         private IConfigurationService _confService;
+        private IResourceLocatorService _resourceLocator;
         private WirehomeConfiguration _homeConfiguration;
-
+        
         public WirehomeController(ControllerOptions options)
         {
             _container = new WirehomeContainer();
@@ -50,6 +53,8 @@ namespace Wirehome.Model.Core
             }
         }
 
+     
+
         private void RegisterServices()
         {
             _container.RegisterSingleton(() => _container);
@@ -67,6 +72,7 @@ namespace Wirehome.Model.Core
         {
             _log = _container.GetInstance<ILogService>().CreatePublisher(nameof(WirehomeController));
             _confService = _container.GetInstance<IConfigurationService>();
+            _resourceLocator = _container.GetInstance<IResourceLocatorService>();
         }
 
         private void RegisterNativeServices()
@@ -78,16 +84,18 @@ namespace Wirehome.Model.Core
 
         private void RegisterBaseServices()
         {
-            (_options.BaseServicesRegistration ?? RegisterBaseServices).Invoke(_container, _options.AdapterRepository);
+            (_options.BaseServicesRegistration ?? RegisterBaseServices).Invoke(_container);
         }
 
-        private void RegisterBaseServices(IContainer container, string adapterRepo)
+        private void RegisterBaseServices(IContainer container)
         {
             container.RegisterSingleton<IEventAggregator, EventAggregator>();
             container.RegisterSingleton<IConfigurationService, ConfigurationService>();
             container.RegisterSingleton<II2CBusService, I2CBusService>();
             container.RegisterSingleton<ILogService, LogService>();
+            container.RegisterSingleton<IResourceLocatorService, ResourceLocatorService>();
             container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
+            container.RegisterSingleton<ISerialMessagingService, SerialMessagingService>();
 
             //Quartz
             container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();
@@ -95,12 +103,23 @@ namespace Wirehome.Model.Core
             container.RegisterSingleton(() => container.GetInstance<ISchedulerFactory>().GetScheduler().Result);
 
             //Auto mapper
-            container.RegisterInstance(container.GetInstance<MapperProvider>().GetMapper(adapterRepo));
+            container.RegisterSingleton(GetMapper);
+        }
+
+        public IMapper GetMapper()
+        {
+            var mce = new MapperConfigurationExpression();
+            mce.ConstructServicesUsing(_container.GetInstance);
+            _resourceLocator = _container.GetInstance<IResourceLocatorService>();
+            var profile = new WirehomeMappingProfile(_resourceLocator.GetRepositoyLocation());
+            mce.AddProfile(profile);
+
+            return new Mapper(new MapperConfiguration(mce), t => _container.GetInstance(t));
         }
 
         private async Task InitializeConfiguration()
         {
-            _homeConfiguration = _confService.ReadConfiguration(_options.ConfigurationPath, _options.AdapterRepository);
+            _homeConfiguration = _confService.ReadConfiguration();
 
             foreach(var adapter in _homeConfiguration.Adapters)
             {

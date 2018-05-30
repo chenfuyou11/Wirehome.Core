@@ -34,16 +34,14 @@
     <Capability Name="allJoyn" />
     <Capability Name="codeGeneration" />
     <Capability Name="internetClientServer" />
-    <uap3:Capability Name="userNotificationListener" />
     <uap4:Capability Name="userDataTasks" />
-    <uap:Capability Name="userAccountInformation" />
     <iot:Capability Name="lowLevelDevices" />
     <iot:Capability Name="systemManagement" />
-    <uap:Capability Name="sharedUserCertificates" />
-    <uap:Capability Name="removableStorage" />
-    <DeviceCapability Name="bluetooth" />
-    <DeviceCapability Name="gazeInput" />
-    <DeviceCapability Name="webcam" />
-    <DeviceCapability Name="microphone" />
+    <DeviceCapability Name="serialcommunication">
+      <Device Id="any">
+        <Function Type="name:serialPort" />
+      </Device>
+    </DeviceCapability>
+    
   </Capabilities>
 </Package>

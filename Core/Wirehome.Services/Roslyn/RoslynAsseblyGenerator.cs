@@ -9,11 +9,26 @@ using Wirehome.Core.Extensions;
 using System.Net;
 using System.Security;
 using CSharpFunctionalExtensions;
+using Wirehome.Core.Utils;
+using Wirehome.ComponentModel.Adapters;
+using Wirehome.Model.Core;
 
 namespace Wirehome.Core.Services.Roslyn
 {
     public class RoslynAsseblyGenerator
     {
+        public void CompileAssemblies(string sourceDictionary)
+        {
+            var assemblies = new List<Result<string>>();
+            var modelAssemblies = AssemblyHelper.GetReferencedAssemblies(typeof(Adapter));
+            var servicesAssemblies = AssemblyHelper.GetReferencedAssemblies(typeof(WirehomeController));
+
+            foreach (string adapterDirectory in Directory.GetDirectories(sourceDictionary))
+            {
+                GenerateAssembly($"{adapterDirectory}.dll", Path.Combine(sourceDictionary, adapterDirectory), modelAssemblies.Union(servicesAssemblies).Distinct());
+            }
+        }
+
         public Result<string> GenerateAssembly(string assemblyName, string sourceDictionary, IEnumerable<string> dependencies)
         {
             var syntaxTrees = ParseSourceCode(sourceDictionary);

@@ -5,9 +5,7 @@ namespace Wirehome.Core.Services.DependencyInjection
 {
     public class ControllerOptions
     {
-        public string AdapterRepository { get; set; }
-        public string ConfigurationPath { get; set; }
         public Action<IContainer> NativeServicesRegistration { get; set; }
-        public Action<IContainer, string> BaseServicesRegistration { get; set; }
+        public Action<IContainer> BaseServicesRegistration { get; set; }
     }
 }

@@ -144,6 +144,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Quartz\Quartz.csproj">
+      <Project>{f1a4df81-2fb2-4a19-b0f4-fecb173cf9d0}</Project>
+      <Name>Quartz</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Wirehome.Contracts\Wirehome.Contracts.csproj">
       <Project>{7e497f7e-36b1-49f3-93a2-d0cd987f1f56}</Project>
       <Name>Wirehome.Contracts</Name>

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Loader;
+using System.Reflection;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Components;
@@ -25,16 +25,14 @@ namespace Wirehome.Core.Services.DependencyInjection
             CreateMap<EventDTO, Event>();
             CreateMap<AreaDTO, Area>();
 
-            foreach (var assemblyPath in FindAdapterInRepository(adapterRepository))
+            foreach (var assemblyPath in Directory.GetFiles(adapterRepository, "*Adapter*.dll", SearchOption.AllDirectories))
             {
-                foreach (var adapter in AssemblyHelper.GetAllInherited<Adapter>(AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath)))
+                foreach (var adapter in AssemblyHelper.GetAllInherited<Adapter>(Assembly.LoadFile(assemblyPath)))
                 {
                     CreateMap(typeof(AdapterDTO), adapter).ConstructUsingServiceLocator();
                 }
             }
         }
 
-        private IEnumerable<string> FindAdapterInRepository(string sourceDir, string filter = "*Adapter*.dll") =>
-       Directory.GetFiles(sourceDir, filter, SearchOption.AllDirectories);
     }
 }

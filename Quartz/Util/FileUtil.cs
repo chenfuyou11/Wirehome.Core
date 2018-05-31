@@ -68,8 +68,7 @@ namespace Quartz.Util
 #if APPCONTEXT
                     fName = Path.Combine(AppContext.BaseDirectory, fName);
 #else // APPCONTEXT
-                    //TODO
-                    fName = ""; //Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, fName);
+                    fName = null;//Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, fName);
 #endif // APPCONTEXT
                 }
                 catch (SecurityException)

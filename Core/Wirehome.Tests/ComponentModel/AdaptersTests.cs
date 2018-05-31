@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 using System.Runtime.Loader;
 using System.IO;
 using Wirehome.Model.Core;
+using Quartz;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -112,7 +113,7 @@ namespace Wirehome.Extensions.Tests
 
             var referencedAssemblies = modelAssemblies.Union(servicesAssemblies).Distinct();
 
-            var assembly = roslynGenerator.GenerateAssembly("adapter.dll", GetAdapterDir(), referencedAssemblies) ;
+            var assembly = roslynGenerator.GenerateAssembly("adapter.dll", GetAdapterDir(), referencedAssemblies, true) ;
 
             if (assembly.IsSuccess)
             {

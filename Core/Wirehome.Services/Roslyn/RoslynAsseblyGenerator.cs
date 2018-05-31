@@ -12,27 +12,30 @@ using CSharpFunctionalExtensions;
 using Wirehome.Core.Utils;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.Model.Core;
+using Microsoft.CodeAnalysis.Emit;
 
 namespace Wirehome.Core.Services.Roslyn
 {
     public class RoslynAsseblyGenerator
     {
-        public void CompileAssemblies(string sourceDictionary)
+        public void CompileAssemblies(string sourceDictionary, bool generatePdb = false)
         {
             var assemblies = new List<Result<string>>();
             var modelAssemblies = AssemblyHelper.GetReferencedAssemblies(typeof(Adapter));
             var servicesAssemblies = AssemblyHelper.GetReferencedAssemblies(typeof(WirehomeController));
+            var references = modelAssemblies.Union(servicesAssemblies).Distinct();
 
-            foreach (string adapterDirectory in Directory.GetDirectories(sourceDictionary))
+            foreach (string adapterDictionary in Directory.GetDirectories(sourceDictionary))
             {
-                GenerateAssembly($"{adapterDirectory}.dll", Path.Combine(sourceDictionary, adapterDirectory), modelAssemblies.Union(servicesAssemblies).Distinct());
+                GenerateAssembly(Path.GetFileName(adapterDictionary), adapterDictionary, references, generatePdb);
             }
         }
 
-        public Result<string> GenerateAssembly(string assemblyName, string sourceDictionary, IEnumerable<string> dependencies)
+        public Result<string> GenerateAssembly(string adapterName, string sourceDictionary, IEnumerable<string> dependencies, bool generatePdb = false)
         {
             var syntaxTrees = ParseSourceCode(sourceDictionary);
             var references = ParseDependencies(dependencies);
+            var assemblyName = $"{adapterName}.dll";
 
             var compilation = CSharpCompilation.Create(assemblyName)
                                                .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
@@ -40,7 +43,9 @@ namespace Wirehome.Core.Services.Roslyn
                                                .AddSyntaxTrees(syntaxTrees);
 
             var path = Path.Combine(sourceDictionary, assemblyName);
-            var compilationResult = compilation.Emit(path);
+            var pdbPath = generatePdb ? Path.Combine(sourceDictionary, assemblyName) : null;
+
+            var compilationResult = compilation.Emit(path, pdbPath: pdbPath);
 
             return compilationResult.Success ? Result.Ok(path) : Result.Fail<string>(ReadCompilationErrors(compilationResult));
         }

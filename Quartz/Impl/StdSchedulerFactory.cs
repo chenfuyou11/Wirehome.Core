@@ -209,7 +209,7 @@ namespace Quartz.Impl
                 throw initException;
             }
 
-            NameValueCollection props = null;// (NameValueCollection) ConfigurationManager.GetSection(ConfigurationSectionName);
+            var props = (NameValueCollection)null;// ConfigurationManager.GetSection(ConfigurationSectionName);
             string requestedFile = QuartzEnvironment.GetEnvironmentVariable(PropertiesFile);
             string propFileName = !string.IsNullOrWhiteSpace(requestedFile) ? requestedFile : "~/quartz.config";
 
@@ -339,7 +339,6 @@ Please add configuration to your application config file to correctly initialize
             }
         }
 
-        /// <summary>  </summary>
         private async Task<IScheduler> Instantiate()
         {
             if (cfg == null)

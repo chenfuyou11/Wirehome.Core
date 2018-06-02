@@ -26,9 +26,9 @@ namespace Wirehome.ComponentModel.Adapters.Denon
         {
             await base.Initialize().ConfigureAwait(false);
 
-            var _i2cAddress = Properties[AdapterProperties.I2cAddress].Value.ToIntValue();
+            var _i2cAddress = this[AdapterProperties.I2cAddress].ToIntValue();
 
-            foreach(var val in Properties[AdapterProperties.UsedPins].Value.ToStringList())
+            foreach(var val in this[AdapterProperties.UsedPins].ToStringList())
             {
                 _state.Add(IntValue.FromString(val), 0);
             }

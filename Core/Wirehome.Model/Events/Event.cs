@@ -11,7 +11,7 @@ namespace Wirehome.ComponentModel.Events
 
         public bool Equals(Event other)
         {
-            if (other == null || Type.Compare(other.Type) != 0 || !Properties.LeftEqual(other.Properties)) return false;
+            if (other == null || Type.Compare(other.Type) != 0 || !ToProperiesList().LeftEqual(other.ToProperiesList())) return false;
             
             return true;
         }

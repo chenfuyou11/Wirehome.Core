@@ -20,7 +20,7 @@ namespace Wirehome.Controller
             { 
                 await new WirehomeController(GetControllerOptions()).Initialize().ConfigureAwait(false);
             }
-            catch (System.Exception e)
+            catch (System.Exception)
             {
                 deferral.Complete();
             }

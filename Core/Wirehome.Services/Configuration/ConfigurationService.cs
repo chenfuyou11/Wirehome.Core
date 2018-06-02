@@ -7,10 +7,14 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using Wirehome.ComponentModel.Adapters;
+using Wirehome.ComponentModel.Adapters.Denon;
+using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Components;
+using Wirehome.ComponentModel.Events;
 using Wirehome.Core.ComponentModel.Areas;
 using Wirehome.Core.ComponentModel.Configuration;
 using Wirehome.Core.Extensions;
+using Wirehome.Core.Services.DependencyInjection;
 using Wirehome.Core.Services.Logging;
 using Wirehome.Core.Services.Roslyn;
 using Wirehome.Core.Utils;
@@ -25,13 +29,16 @@ namespace Wirehome.ComponentModel.Configuration
         private readonly IAdapterServiceFactory _adapterServiceFactory;
         private readonly ILogger _logger;
         private readonly IResourceLocatorService _resourceLocatorService;
+        private readonly IContainer _container;
 
-        public ConfigurationService(IMapper mapper, IAdapterServiceFactory adapterServiceFactory, ILogService logService, IResourceLocatorService resourceLocatorService)
+        public ConfigurationService(IMapper mapper, IAdapterServiceFactory adapterServiceFactory, ILogService logService, 
+            IResourceLocatorService resourceLocatorService, IContainer container)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _adapterServiceFactory = adapterServiceFactory ?? throw new ArgumentNullException(nameof(adapterServiceFactory));
             _logger = logService.CreatePublisher(nameof(ConfigurationService));
             _resourceLocatorService = resourceLocatorService;
+            _container = container;
         }
         
         public WirehomeConfiguration ReadConfiguration()
@@ -105,25 +112,32 @@ namespace Wirehome.ComponentModel.Configuration
         private IList<Adapter> MapAdapters(IList<AdapterDTO> adapterConfigs, string adaptersRepoPath)
         {
             var adapters = new List<Adapter>();
-            var types = new List<Type>();
-
-            var roslyn = new RoslynAsseblyGenerator();
-            roslyn.CompileAssemblies(adaptersRepoPath);
-
-            foreach (var assemblyPath in FindAdapterInRepository(adaptersRepoPath))
-            {
-                var adapterTypes = AssemblyHelper.GetAllInherited<Adapter>(Assembly.LoadFile(assemblyPath));
-
-                types.AddRange(adapterTypes);
-            }
-
+            var types = new List<Type>(AssemblyHelper.GetAllInherited<Adapter>());
+            
             foreach (var adapterConfig in adapterConfigs)
             {
                 try
                 {
                     var adapterType = types.Find(t => t.Name == adapterConfig.Type);
                     if (adapterType == null) throw new Exception($"Could not find adapter {adapterType}");
-                    var adapter = (Adapter)_mapper.Map(adapterConfig, typeof(AdapterDTO), adapterType);
+
+                    Mapper.Initialize(p => 
+                    {
+                        p.CreateMap(typeof(AdapterDTO), adapterType).ConstructUsingServiceLocator();
+                        p.ShouldMapProperty = propInfo => (propInfo.CanWrite && propInfo.GetGetMethod(true).IsPublic) || propInfo.IsDefined(typeof(MapAttribute), false);
+
+                        p.CreateMap<ComponentDTO, Component>().ConstructUsingServiceLocator();
+                        p.CreateMap<AdapterReferenceDTO, AdapterReference>();
+                        p.CreateMap<TriggerDTO, Trigger>();
+                        p.CreateMap<CommandDTO, Command>();
+                        p.CreateMap<EventDTO, Event>();
+                        p.CreateMap<AreaDTO, Area>();
+                        p.ConstructServicesUsing(_container.GetInstance);
+                    });
+                  
+                    var adapter = (Adapter)Mapper.Map(adapterConfig, typeof(AdapterDTO), adapterType);
+
+                    //var adapter = (Adapter)_mapper.Map(adapterConfig, typeof(AdapterDTO), adapterType);
 
                     adapters.Add(adapter);
                 }
@@ -136,7 +150,7 @@ namespace Wirehome.ComponentModel.Configuration
             return adapters;
         }
 
-        private IEnumerable<string> FindAdapterInRepository(string sourceDir, string filter = "*Adapter*.dll") =>
+        private IEnumerable<string> FindAdapterInRepository(string sourceDir, string filter = "*.dll") =>
         Directory.GetFiles(sourceDir, filter, SearchOption.AllDirectories);
     }
 }

@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Adapters\AdaptersContainer\Wirehome.AdaptersContainer.csproj" />
     <ProjectReference Include="..\..\Quartz\Quartz.csproj" />
     <ProjectReference Include="..\Wirehome.Contracts\Wirehome.Contracts.csproj" />
     <ProjectReference Include="..\Wirehome.Model\Wirehome.Model.csproj" />

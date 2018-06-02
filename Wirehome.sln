@@ -20,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.Utils", "Core\Wire
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.EventAggregator", "Core\Wirehome.EventAggregator\Wirehome.EventAggregator.csproj", "{D24B514D-A412-49AF-97A9-A0B08EFB7085}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdaptersContainer", "Adapters\AdaptersContainer\AdaptersContainer.csproj", "{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.AdaptersContainer", "Adapters\AdaptersContainer\Wirehome.AdaptersContainer.csproj", "{8BF9EAD9-70CD-4FA7-9813-BAFE6E320A7B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wirehome.Services", "Core\Wirehome.Services\Wirehome.Services.csproj", "{E7FC5F80-01BB-49ED-BE73-1D1CD2D859F4}"
 EndProject

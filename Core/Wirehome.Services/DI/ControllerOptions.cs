@@ -7,5 +7,6 @@ namespace Wirehome.Core.Services.DependencyInjection
     {
         public Action<IContainer> NativeServicesRegistration { get; set; }
         public Action<IContainer> BaseServicesRegistration { get; set; }
+        public AdapterMode AdapterMode { get; set; }
     }
 }

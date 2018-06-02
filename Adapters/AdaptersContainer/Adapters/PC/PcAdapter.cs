@@ -35,9 +35,9 @@ namespace Wirehome.ComponentModel.Adapters.Pc
         {
             base.Initialize();
 
-            _hostname = Properties[AdapterProperties.Hostname].Value.ToStringValue();
-            _port = Properties[AdapterProperties.Port].Value.ToIntValue();
-            _mac = Properties[AdapterProperties.MAC].Value.ToStringValue();
+            _hostname = this[AdapterProperties.Hostname].ToStringValue();
+            _port = this[AdapterProperties.Port].ToIntValue();
+            _mac = this[AdapterProperties.MAC].ToStringValue();
             _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpanFromInt();
 
             return ScheduleDeviceRefresh<RefreshStateJob>(_poolInterval);

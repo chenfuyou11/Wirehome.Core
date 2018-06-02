@@ -76,6 +76,8 @@ namespace Wirehome.ComponentModel.Components
             foreach (var adapter in _adapters)
             {
                 var capabilities = await _eventAggregator.QueryDeviceAsync<DiscoveryResponse>(new DeviceCommand(CommandType.DiscoverCapabilities, adapter.Uid)).ConfigureAwait(false);
+                if (capabilities == null) throw new Exception($"Failed to initialize adapter {adapter.Uid} in component {Uid}. There is no response from DiscoveryResponse command");
+
                 MapCapabilitiesToAdapters(adapter, capabilities.SupportedStates);
                 BuildCapabilityStates(capabilities);
                 MapEventSourcesToAdapters(adapter, capabilities.EventSources);
@@ -102,8 +104,8 @@ namespace Wirehome.ComponentModel.Components
             var routerAttributes = new Dictionary<string, string>();
             foreach (var adapterProperty in requierdProperties)
             {
-                if (!adapter.Properties.ContainsKey(adapterProperty)) throw new Exception($"Adapter {adapter.Uid} in component {Uid} missing configuration property {adapterProperty}");
-                routerAttributes.Add(adapterProperty, adapter.Properties[adapterProperty].ToString());
+                if (!adapter.ContainsProperty(adapterProperty)) throw new Exception($"Adapter {adapter.Uid} in component {Uid} missing configuration property {adapterProperty}");
+                routerAttributes.Add(adapterProperty, adapter[adapterProperty].ToString());
             }
             routerAttributes.Add(EventProperties.SourceDeviceUid, adapter.Uid);
 
@@ -119,14 +121,24 @@ namespace Wirehome.ComponentModel.Components
         /// <returns></returns>
         protected override async Task<object> UnhandledCommand(Command command)
         {
-            // TODO use valueconverter before publish and maybe queue?
+            bool handled = false;
+            // TODO use value converter before publish and maybe queue?
             foreach (var state in _capabilities.Values.Where(capability => capability.IsCommandSupported(command)))
             {
                 var adapter = _adapterStateMap[state[StateProperties.StateName].ToString()];
                 await _eventAggregator.PublishDeviceCommnd(adapter.GetDeviceCommand(command)).ConfigureAwait(false);
+
+                handled = true;
             }
 
-           return base.UnhandledCommand(command);
+            if (!handled)
+            {
+                return base.UnhandledCommand(command);
+            }
+            else
+            {
+                return VoidResult.Void;
+            }
         }
 
         private async Task DeviceEventHandler(IMessageEnvelope<Event> deviceEvent)
@@ -135,12 +147,12 @@ namespace Wirehome.ComponentModel.Components
             if (!_capabilities.ContainsKey(propertyName)) return;
 
             var state = _capabilities[propertyName];
-            var oldValue = state.Properties[StateProperties.Value].Value;
+            var oldValue = state[StateProperties.Value];
             var newValue = deviceEvent.Message[EventProperties.NewValue];
 
             if (newValue.Equals(oldValue)) return;
 
-            state.Properties[StateProperties.Value].Value = newValue;
+            state[StateProperties.Value] = newValue;
 
             await _eventAggregator.PublishDeviceEvent(new PropertyChangedEvent(Uid, propertyName, oldValue, newValue)).ConfigureAwait(false);
         }

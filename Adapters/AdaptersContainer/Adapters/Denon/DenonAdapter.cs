@@ -31,10 +31,10 @@ namespace Wirehome.ComponentModel.Adapters.Denon
         {
             await base.Initialize().ConfigureAwait(false);
 
-            _hostName = Properties[AdapterProperties.Hostname].Value.ToStringValue();
+            _hostName = this[AdapterProperties.Hostname].ToStringValue();
             _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpanFromInt();
             //TODO make zone as required parameter
-            _zone = Properties[AdapterProperties.Zone].Value.ToIntValue();
+            _zone = this[AdapterProperties.Zone].ToIntValue();
 
             await ScheduleDeviceRefresh<RefreshLightStateJob>(_poolInterval).ConfigureAwait(false);
             await ExecuteCommand(CommandFatory.RefreshCommand).ConfigureAwait(false);

@@ -3,6 +3,8 @@ using AutoMapper.Configuration;
 using Moq;
 using Quartz;
 using Quartz.Spi;
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters;
@@ -14,6 +16,7 @@ using Wirehome.Core.Services.DependencyInjection;
 using Wirehome.Core.Services.I2C;
 using Wirehome.Core.Services.Logging;
 using Wirehome.Core.Services.Quartz;
+using Wirehome.Core.Services.Roslyn;
 using Wirehome.Model.Core;
 
 namespace Wirehome.Core.Tests.ComponentModel
@@ -22,13 +25,15 @@ namespace Wirehome.Core.Tests.ComponentModel
     {
         private IContainer _container;
         private string _configuration;
+        private string _repositoryPath;
 
         private ControllerOptions GetControllerOptions()
         {
             return new ControllerOptions
             {
                 NativeServicesRegistration = RegisterRaspberryServices,
-                BaseServicesRegistration = RegisterContainerServices
+                BaseServicesRegistration = RegisterContainerServices,
+                AdapterMode = AdapterMode.Compiled
             };
         }
 
@@ -37,7 +42,13 @@ namespace Wirehome.Core.Tests.ComponentModel
             _configuration = configuration;
             return this;
         }
-        
+
+        public ControllerBuilder WithAdapterRepositoryPath(string repositoryPath)
+        {
+            _repositoryPath = repositoryPath;
+            return this;
+        }
+
         public WirehomeController Build()
         {
             return new WirehomeController(GetControllerOptions());
@@ -68,17 +79,19 @@ namespace Wirehome.Core.Tests.ComponentModel
             var logService = Mock.Of<ILogService>();
             var logger = Mock.Of<ILogger>();
             var resourceLocator = Mock.Of<IResourceLocatorService>();
-            
-            Mock.Get(logService).Setup(x => x.CreatePublisher(It.IsAny<string>())).Returns(logger);
 
             //@"W:\Projects\HA4IoT\Adapters\AdaptersContainer\bin\Debug\netstandard2.0
             //var adaptersRepo = Path.Combine(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..")), @"Adapters\AdaptersContainer\bin\Debug\netstandard2.0");
-            var adaptersRepo = Path.Combine(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..")), @"Adapters\AdaptersContainer\Adapters");
+            var adaptersRepo = _repositoryPath ?? Path.Combine(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..")), @"Adapters\AdaptersContainer\Adapters");
             var configFile = Path.Combine(Directory.GetCurrentDirectory(), $@"ComponentModel\SampleConfigs\{_configuration}.json");
-
             Mock.Get(resourceLocator).Setup(x => x.GetRepositoyLocation()).Returns(adaptersRepo);
             Mock.Get(resourceLocator).Setup(x => x.GetConfigurationPath()).Returns(configFile);
             
+
+            Mock.Get(logService).Setup(x => x.CreatePublisher(It.IsAny<string>())).Returns(logger);
+            Mock.Get(logger).Setup(x => x.Error(It.IsAny<string>())).Callback<string>(message => Debug.WriteLine($"Error: {message}"));
+            Mock.Get(logger).Setup(x => x.Error(It.IsAny<Exception>(), It.IsAny<string>())).Callback<Exception, string>((exception, message) => Debug.WriteLine($"Error: {message} | Details: {exception}"));
+
             container.RegisterInstance(logService);
             container.RegisterInstance(resourceLocator);
             
@@ -88,7 +101,7 @@ namespace Wirehome.Core.Tests.ComponentModel
             container.RegisterSingleton<II2CBusService, I2CBusService>();
             container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
             container.RegisterSingleton<IHttpMessagingService, HttpMessagingService>();
-            //container.RegisterSingleton<ISerialMessagingService, SerialMessagingService>();
+            container.RegisterSingleton<IRoslynCompilerService, RoslynCompilerService>();
 
             //Quartz
             container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();

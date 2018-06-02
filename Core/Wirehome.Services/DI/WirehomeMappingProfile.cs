@@ -25,13 +25,13 @@ namespace Wirehome.Core.Services.DependencyInjection
             CreateMap<EventDTO, Event>();
             CreateMap<AreaDTO, Area>();
 
-            foreach (var assemblyPath in Directory.GetFiles(adapterRepository, "*Adapter*.dll", SearchOption.AllDirectories))
-            {
-                foreach (var adapter in AssemblyHelper.GetAllInherited<Adapter>(Assembly.LoadFile(assemblyPath)))
-                {
-                    CreateMap(typeof(AdapterDTO), adapter).ConstructUsingServiceLocator();
-                }
-            }
+            //foreach (var assemblyPath in Directory.GetFiles(adapterRepository, "*Adapter*.dll", SearchOption.AllDirectories))
+            //{
+            //    foreach (var adapter in AssemblyHelper.GetAllInherited<Adapter>(Assembly.LoadFile(assemblyPath)))
+            //    {
+            //        CreateMap(typeof(AdapterDTO), adapter).ConstructUsingServiceLocator();
+            //    }
+            //}
         }
 
     }

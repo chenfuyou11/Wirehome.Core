@@ -39,10 +39,11 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         public override async Task Initialize()
         {
+
             await base.Initialize().ConfigureAwait(false);
 
-            _I2cAddress = Properties[AdapterProperties.I2cAddress].Value.ToIntValue();
-            _pinNumber = Properties[AdapterProperties.PinNumber].Value.ToIntValue();
+            _I2cAddress = this[AdapterProperties.I2cAddress].ToIntValue();
+            _pinNumber = this[AdapterProperties.PinNumber].ToIntValue();
 
             _serialMessagingService.RegisterMessageHandler(SerialHandler);
 

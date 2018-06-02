@@ -134,12 +134,12 @@ namespace Wirehome.Core.Services
 
         public Task Initialize()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

@@ -37,10 +37,10 @@ namespace Wirehome.ComponentModel.Adapters.Kodi
         {
             await base.Initialize().ConfigureAwait(false);
 
-            _hostname = Properties[AdapterProperties.Hostname].Value.ToStringValue();
-            _port = Properties[AdapterProperties.Port].Value.ToIntValue();
-            _userName = Properties[AdapterProperties.UserName].Value.ToStringValue();
-            _Password = Properties[AdapterProperties.Password].Value.ToStringValue();
+            _hostname = this[AdapterProperties.Hostname].ToStringValue();
+            _port = this[AdapterProperties.Port].ToIntValue();
+            _userName = this[AdapterProperties.UserName].ToStringValue();
+            _Password = this[AdapterProperties.Password].ToStringValue();
             _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpanFromInt();
 
              await ScheduleDeviceRefresh<RefreshStateJob>(_poolInterval).ConfigureAwait(false);

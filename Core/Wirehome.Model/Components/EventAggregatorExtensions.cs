@@ -41,7 +41,7 @@ namespace Wirehome.ComponentModel.Extensions
 
         public static Task PublishDeviceEvent<T>(this IEventAggregator eventAggregator, T message, IList<string> routerAttributes) where T : Event
         {
-            var routing = routerAttributes.ToDictionary(k => k, v => message.Properties[v].Value.ToString());
+            var routing = routerAttributes.ToDictionary(k => k, v => message[v].ToString());
 
             routing.Add(EventProperties.SourceDeviceUid, message[EventProperties.SourceDeviceUid].ToString());
             routing.Add(EventProperties.EventType, message.Type);

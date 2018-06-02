@@ -22,6 +22,9 @@ using System.Runtime.Loader;
 using System.IO;
 using Wirehome.Model.Core;
 using Quartz;
+using Wirehome.ComponentModel.Components;
+using Moq;
+using Wirehome.ComponentModel.Configuration;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -102,33 +105,18 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public async Task GenerateAdapter()
         {
-            var (controller, container) = await new ControllerBuilder().WithConfiguration("oneComponentConfiguration")
+            var adaptersRepo = Path.Combine(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..")), "Test");
+
+            var (controller, container) = await new ControllerBuilder()//.WithAdapterRepositoryPath(adaptersRepo)
+                                                                       .WithConfiguration("oneComponentConfiguration")
                                                                        .BuildAndRun()
                                                                        .ConfigureAwait(false);
-            var adapterServiceFactory = container.GetInstance<IAdapterServiceFactory>();
-            var roslynGenerator = new RoslynAsseblyGenerator();
 
-            var modelAssemblies = AssemblyHelper.GetReferencedAssemblies(typeof(Adapter));
-            var servicesAssemblies = AssemblyHelper.GetReferencedAssemblies(typeof(WirehomeController));
+            var component = await controller.ExecuteCommand<Component>(CommandFatory.GetComponentCommand("RemoteLamp")).ConfigureAwait(false);
+            await component.ExecuteCommand(CommandFatory.TurnOnCommand).ConfigureAwait(false);
 
-            var referencedAssemblies = modelAssemblies.Union(servicesAssemblies).Distinct();
-
-            var assembly = roslynGenerator.GenerateAssembly("adapter.dll", GetAdapterDir(), referencedAssemblies, true) ;
-
-            if (assembly.IsSuccess)
-            {
-                Assembly asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(assembly.Value);
-                var adapterType = asm.GetType("Wirehome.ComponentModel.Adapters.Kodi.KodiAdapter");
-                var adapter = Activator.CreateInstance(adapterType, new Object[] { adapterServiceFactory }) as Adapter;
-
-                await adapter.Initialize().ConfigureAwait(false);
-                var result = await adapter.ExecuteCommand("TestCommand").ConfigureAwait(false);
-            }
         }
 
-        private string GetAdapterDir()
-        {
-            return Path.Combine(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..")), @"Adapters\AdaptersContainer\Adapters\Kodi");
-        }
+       
     }
 }

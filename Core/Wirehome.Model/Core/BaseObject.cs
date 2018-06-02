@@ -20,7 +20,7 @@ namespace Wirehome.ComponentModel
         public string Type { get; set; }
         public List<string> Tags { get; private set; } = new List<string>();
         public IObservable<Event> Events => _events.AsObservable();
-        public IReadOnlyDictionary<string, Property> Properties => _properties.AsReadOnly();
+        public IReadOnlyDictionary<string, Property> ToProperiesList() => _properties.AsReadOnly();
 
         public BaseObject() { }
         public BaseObject(params Property[] properties)
@@ -33,9 +33,16 @@ namespace Wirehome.ComponentModel
 
         public IValue this[string propertyName]
         {
-            get => GetPropertyValue(propertyName).Value ?? throw new KeyNotFoundException($"Property {propertyName} not found on component {Uid}");
+            get
+            {
+                var value = GetPropertyValue(propertyName);
+                if (value.HasNoValue) throw new KeyNotFoundException($"Property {propertyName} not found on component {Uid}");
+                return value.Value;
+            }
             set { SetPropertyValue(propertyName, value); }
         }
+
+        public bool ContainsProperty(string propertyName) => _properties.ContainsKey(propertyName);
 
         public virtual Maybe<IValue> GetPropertyValue(string propertyName, IValue defaultValue = null)
         {

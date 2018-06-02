@@ -9,6 +9,7 @@ using System.Threading.Tasks.Dataflow;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.Core;
+using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
 using Wirehome.Model.Extensions;
 
@@ -138,7 +139,7 @@ namespace Wirehome.ComponentModel.Components
 
         private static void AssertForWrappedTask(object result)
         {
-            if (result.GetType().Namespace == "System.Threading.Tasks") throw new Exception("Result from handler wan not unwrapped properly");
+            if (result?.GetType()?.Namespace == "System.Threading.Tasks") throw new Exception("Result from handler wan not unwrapped properly");
         }
 
         public Task<object> ExecuteCommand(Command command)
@@ -165,12 +166,12 @@ namespace Wirehome.ComponentModel.Components
             }
             else if (_asyncCommandHandlers.ContainsKey(command.Type))
             {
-                return _asyncCommandHandlers?[command.Type]?.Invoke(command).Cast<object>(0);
+                return _asyncCommandHandlers?[command.Type]?.Invoke(command).Cast<object>(VoidResult.Void);
             }
             else if (_commandHandlers.ContainsKey(command.Type))
             {
                 _commandHandlers?[command.Type]?.Invoke(command);
-                return Task.FromResult<object>(0);
+                return Task.FromResult<object>(VoidResult.Void);
             }
             else
             {

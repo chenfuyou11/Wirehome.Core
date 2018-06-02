@@ -40,8 +40,8 @@ namespace Wirehome.ComponentModel.Adapters.Sony
         {
             base.Initialize();
 
-            _hostname = Properties[AdapterProperties.Hostname].Value.ToStringValue();
-            _authorisationKey = Properties[AdapterProperties.AuthKey].Value.ToStringValue();
+            _hostname = this[AdapterProperties.Hostname].ToStringValue();
+            _authorisationKey = this[AdapterProperties.AuthKey].ToStringValue();
             _poolInterval = GetPropertyValue(AdapterProperties.PoolInterval, new IntValue(DEFAULT_POOL_INTERVAL)).Value.ToTimeSpanFromInt();
 
             return ScheduleDeviceRefresh<RefreshStateJob>(_poolInterval);

@@ -33,25 +33,25 @@ namespace Wirehome.Conditions.Specialized
 
         public TimeRangeCondition WithStart(TimeSpan start)
         {
-            Properties[ConditionProperiesConstants.StartTime].Value = new TimeSpanValue(start);
+            this[ConditionProperiesConstants.StartTime] = new TimeSpanValue(start);
             return this;
         }
 
         public TimeRangeCondition WithEnd(TimeSpan end)
         {
-            Properties[ConditionProperiesConstants.EndTime].Value = new TimeSpanValue(end);
+            this[ConditionProperiesConstants.EndTime] = new TimeSpanValue(end);
             return this;
         }
 
         public TimeRangeCondition WithStartAdjustment(TimeSpan value)
         {
-            Properties[ConditionProperiesConstants.StartAdjustment].Value = new TimeSpanValue(value);
+            this[ConditionProperiesConstants.StartAdjustment] = new TimeSpanValue(value);
             return this;
         }
 
         public TimeRangeCondition WithEndAdjustment(TimeSpan value)
         {
-            Properties[ConditionProperiesConstants.EndAdjustment].Value = new TimeSpanValue(value);
+            this[ConditionProperiesConstants.EndAdjustment] = new TimeSpanValue(value);
             return this;
         }
 

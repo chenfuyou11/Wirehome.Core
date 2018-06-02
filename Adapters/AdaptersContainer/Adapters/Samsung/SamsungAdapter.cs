@@ -26,7 +26,7 @@ namespace Wirehome.ComponentModel.Adapters.Samsung
         {
             await base.Initialize().ConfigureAwait(false);
 
-            _hostname = Properties[AdapterProperties.Hostname].Value.ToStringValue();
+            _hostname = this[AdapterProperties.Hostname].ToStringValue();
         }
 
         protected DiscoveryResponse DiscoverCapabilitiesHandler(Command message)

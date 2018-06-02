@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using AutoMapper.Configuration;
+using CSharpFunctionalExtensions;
 using Quartz;
 using Quartz.Spi;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Commands;
@@ -15,6 +17,7 @@ using Wirehome.Core.Services.DependencyInjection;
 using Wirehome.Core.Services.I2C;
 using Wirehome.Core.Services.Logging;
 using Wirehome.Core.Services.Quartz;
+using Wirehome.Core.Services.Roslyn;
 using Wirehome.Model.Extensions;
 
 namespace Wirehome.Model.Core
@@ -27,6 +30,7 @@ namespace Wirehome.Model.Core
         private ILogger _log;
         private IConfigurationService _confService;
         private IResourceLocatorService _resourceLocator;
+        private IRoslynCompilerService _roslynCompilerService;
         private WirehomeConfiguration _homeConfiguration;
         
         public WirehomeController(ControllerOptions options)
@@ -42,6 +46,7 @@ namespace Wirehome.Model.Core
                 await base.Initialize().ConfigureAwait(false);
 
                 RegisterServices();
+                LoadDynamicAdapters(_options.AdapterMode);
 
                 await InitializeServices().ConfigureAwait(false);
                 await InitializeConfiguration().ConfigureAwait(false);
@@ -53,7 +58,21 @@ namespace Wirehome.Model.Core
             }
         }
 
-     
+        private void LoadDynamicAdapters(AdapterMode adapterMode)
+        {
+            if (adapterMode == AdapterMode.Compiled)
+            {
+                var result = _roslynCompilerService.CompileAssemblies(_resourceLocator.GetRepositoyLocation());
+                var veryfy = Result.Combine(result.ToArray());
+                if (veryfy.IsFailure) throw new Exception($"Error while compiling adapters: {veryfy.Error}");
+
+                foreach(var adapter in result)
+                {
+                    Assembly.LoadFrom(adapter.Value);
+                }
+            }
+        }
+
 
         private void RegisterServices()
         {
@@ -73,6 +92,7 @@ namespace Wirehome.Model.Core
             _log = _container.GetInstance<ILogService>().CreatePublisher(nameof(WirehomeController));
             _confService = _container.GetInstance<IConfigurationService>();
             _resourceLocator = _container.GetInstance<IResourceLocatorService>();
+            _roslynCompilerService = _container.GetInstance<IRoslynCompilerService>();
         }
 
         private void RegisterNativeServices()
@@ -96,6 +116,7 @@ namespace Wirehome.Model.Core
             container.RegisterSingleton<IResourceLocatorService, ResourceLocatorService>();
             container.RegisterSingleton<IAdapterServiceFactory, AdapterServiceFactory>();
             container.RegisterSingleton<ISerialMessagingService, SerialMessagingService>();
+            container.RegisterSingleton<IRoslynCompilerService, RoslynCompilerService>();
 
             //Quartz
             container.RegisterSingleton<IJobFactory, SimpleInjectorJobFactory>();
@@ -114,6 +135,7 @@ namespace Wirehome.Model.Core
             var profile = new WirehomeMappingProfile(_resourceLocator.GetRepositoyLocation());
             mce.AddProfile(profile);
 
+
             return new Mapper(new MapperConfiguration(mce), t => _container.GetInstance(t));
         }
 
@@ -123,12 +145,28 @@ namespace Wirehome.Model.Core
 
             foreach(var adapter in _homeConfiguration.Adapters)
             {
-                await adapter.Initialize().ConfigureAwait(false);
+                try
+                {
+                    await adapter.Initialize().ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+
+                    _log.Error(e, $"Exception while initialization of adapter {adapter.Uid}");
+                }
             }
 
             foreach (var component in _homeConfiguration.Components)
             {
-                await component.Initialize().ConfigureAwait(false);
+                try
+                {
+                    await component.Initialize().ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+
+                    _log.Error(e, $"Exception while initialization of component {component.Uid}");
+                }
             }
         }
 

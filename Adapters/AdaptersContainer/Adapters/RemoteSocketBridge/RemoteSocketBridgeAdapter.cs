@@ -11,7 +11,6 @@ using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
 using Wirehome.Core.Hardware.RemoteSockets;
-using Wirehome.Core.Interface.Messaging;
 using Wirehome.Core.Interface.Native;
 using Wirehome.Core.Services;
 using Wirehome.Core.Services.I2C;
@@ -58,8 +57,13 @@ namespace Wirehome.ComponentModel.Adapters.Denon
                 var bits = reader.ReadByte();
                 var protocol = reader.ReadByte();
 
-                await _eventAggregator.PublishDeviceEvent(new DipswitchEvent(Uid, DipswitchCode.ParseCode(code))).ConfigureAwait(false);
+                var dipswitchCode = DipswitchCode.ParseCode(code);
 
+                if(dipswitchCode != null)
+                {
+                    await _eventAggregator.PublishDeviceEvent(new DipswitchEvent(Uid, dipswitchCode)).ConfigureAwait(false);
+                }
+                
                 return true;
             }
             return false;

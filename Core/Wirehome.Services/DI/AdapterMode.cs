@@ -7,7 +7,6 @@ namespace Wirehome.Core.Services.DependencyInjection
     public enum AdapterMode
     {
         Embedded,
-        Compiled,
-        Both
+        Compiled
     }
 }

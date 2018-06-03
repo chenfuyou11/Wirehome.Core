@@ -1,23 +1,23 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using System.Linq;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Text;
-using Wirehome.Core.Extensions;
+using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Security;
-using CSharpFunctionalExtensions;
-using Wirehome.Core.Utils;
-using Wirehome.ComponentModel.Adapters;
-using Wirehome.Model.Core;
-using Newtonsoft.Json;
-using Wirehome.Core.ComponentModel.Configuration;
-using System;
-using Wirehome.Model.Extensions;
-using System.Xml.Linq;
+using System.Text;
 using System.Xml;
+using System.Xml.Linq;
+using Wirehome.ComponentModel.Adapters;
+using Wirehome.Core.ComponentModel.Configuration;
+using Wirehome.Core.Extensions;
+using Wirehome.Core.Utils;
+using Wirehome.Model.Core;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.Core.Services.Roslyn
 {
@@ -42,12 +42,12 @@ namespace Wirehome.Core.Services.Roslyn
                 var adapterDescription = JsonConvert.DeserializeObject<AdapterInfoDTO>(File.ReadAllText(adapterInfoPath));
                 var adapterAssembly = Path.Combine(adapterDictionary, $"{adapterDescription.Name}.dll");
                 AssemblyName currentAssembly = null;
-                if(File.Exists(adapterAssembly))
+                if (File.Exists(adapterAssembly))
                 {
                     currentAssembly = AssemblyName.GetAssemblyName(adapterAssembly);
                 }
 
-                if(currentAssembly?.Version.Differ(adapterDescription.Version) ?? true)
+                if (currentAssembly?.Version.Differ(adapterDescription.Version) ?? true)
                 {
                     result.Add(GenerateAssembly(adapterDescription.Name, adapterDescription.Version, adapterDictionary, references,
                                                 adapterDescription.CommonReferences, generatePdb)
@@ -74,10 +74,9 @@ namespace Wirehome.Core.Services.Roslyn
             asmInfo.AppendLine($"[assembly: AssemblyInformationalVersion(\"{version.Major}.{version.Minor}.{version.Build}.0\")]");
 
             return CSharpSyntaxTree.ParseText(asmInfo.ToString(), encoding: Encoding.Default);
-
         }
 
-        private Result<string> GenerateAssembly(string adapterName, Version assemblyVersion, string sourceDictionary, 
+        private Result<string> GenerateAssembly(string adapterName, Version assemblyVersion, string sourceDictionary,
                                                 IEnumerable<string> dependencies, IEnumerable<string> commons, bool generatePdb = false)
         {
             var syntaxTrees = ParseSourceCode(sourceDictionary, commons).ToList();
@@ -95,14 +94,13 @@ namespace Wirehome.Core.Services.Roslyn
 
             var compilationResult = compilation.Emit(path, pdbPath: pdbPath);
 
-            if(!compilationResult.Success && File.Exists(path))
+            if (!compilationResult.Success && File.Exists(path))
             {
                 File.Delete(path);
             }
 
             return compilationResult.Success ? Result.Ok(path) : Result.Fail<string>(ReadCompilationErrors(compilationResult));
         }
-
 
         private string ReadCompilationErrors(Microsoft.CodeAnalysis.Emit.EmitResult compilationResult)
         {
@@ -140,7 +138,7 @@ namespace Wirehome.Core.Services.Roslyn
                                    .Select(file => SyntaxFactory.ParseSyntaxTree(File.ReadAllText(file)))
                                    .ToList();
 
-            foreach(var common in commons)
+            foreach (var common in commons)
             {
                 var commonPath = Path.Combine(Path.Combine(Path.GetDirectoryName(sourceDir), CommonAdapterDirectory), common);
                 sources.Add(SyntaxFactory.ParseSyntaxTree(File.ReadAllText(commonPath)));
@@ -148,6 +146,5 @@ namespace Wirehome.Core.Services.Roslyn
 
             return sources;
         }
-        
     }
 }

@@ -4,6 +4,12 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <Authors>Wirehome</Authors>
+
+    <Company>Wirehome</Company>
+
+    <Product>Wirehome</Product>
   </PropertyGroup>
 
   <ItemGroup>

@@ -16,7 +16,7 @@ namespace Wirehome.Core.Utils
             var applicationNameName = mainAssemblyName.Substring(0, mainAssemblyName.IndexOf("."));
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            var list = assemblies.Where(x => x.FullName.IndexOf(applicationNameName) > -1);
+            var list = assemblies.Where(a => a.GetCustomAttribute<AssemblyProductAttribute>()?.Product?.IndexOf(applicationNameName) > -1);
             if (ignoreTestAssemblies)
             {
                 list = list.Where(x => x.FullName.IndexOf(TestAssembliesName) == -1);

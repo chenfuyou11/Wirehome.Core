@@ -1,4 +1,5 @@
-﻿using Wirehome.Core.Extensions;
+﻿using System.Collections.Generic;
+using Wirehome.Core.Extensions;
 
 namespace Wirehome.ComponentModel.Events
 {
@@ -15,5 +16,7 @@ namespace Wirehome.ComponentModel.Events
             
             return true;
         }
+
+        public virtual IEnumerable<string> RoutingAttributes() => new string[] { };
     }
 }

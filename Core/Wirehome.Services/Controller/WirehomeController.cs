@@ -132,7 +132,7 @@ namespace Wirehome.Model.Core
             var mce = new MapperConfigurationExpression();
             mce.ConstructServicesUsing(_container.GetInstance);
             _resourceLocator = _container.GetInstance<IResourceLocatorService>();
-            var profile = new WirehomeMappingProfile(_resourceLocator.GetRepositoyLocation());
+            var profile = new WirehomeMappingProfile();
             mce.AddProfile(profile);
 
 
@@ -141,7 +141,7 @@ namespace Wirehome.Model.Core
 
         private async Task InitializeConfiguration()
         {
-            _homeConfiguration = _confService.ReadConfiguration();
+            _homeConfiguration = _confService.ReadConfiguration(_options.AdapterMode);
 
             foreach(var adapter in _homeConfiguration.Adapters)
             {

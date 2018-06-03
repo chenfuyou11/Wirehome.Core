@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Wirehome</Authors>
+    <Company>Wirehome</Company>
+    <Product>Wirehome</Product>
   </PropertyGroup>
 
   <ItemGroup>

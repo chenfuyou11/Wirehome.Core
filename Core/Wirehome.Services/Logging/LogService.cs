@@ -17,12 +17,12 @@ namespace Wirehome.Core.Services.Logging
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            
         }
 
         public Task Initialize()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public void Publish(LogEntrySeverity severity, string source, string message, Exception exception)

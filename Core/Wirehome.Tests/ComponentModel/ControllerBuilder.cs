@@ -33,7 +33,7 @@ namespace Wirehome.Core.Tests.ComponentModel
             {
                 NativeServicesRegistration = RegisterRaspberryServices,
                 BaseServicesRegistration = RegisterContainerServices,
-                AdapterMode = AdapterMode.Compiled
+                AdapterMode = AdapterMode.Embedded
             };
         }
 
@@ -113,13 +113,10 @@ namespace Wirehome.Core.Tests.ComponentModel
 
         public IMapper GetMapper()
         {
-            var resourceLocator = _container.GetInstance<IResourceLocatorService>();
-
             var mce = new MapperConfigurationExpression();
             mce.ConstructServicesUsing(_container.GetInstance);
 
-            var adaptersRepo = resourceLocator.GetRepositoyLocation();
-            var profile = new WirehomeMappingProfile(adaptersRepo);
+            var profile = new WirehomeMappingProfile();
             mce.AddProfile(profile);
 
             return new Mapper(new MapperConfiguration(mce), t => _container.GetInstance(t));

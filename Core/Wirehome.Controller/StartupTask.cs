@@ -1,12 +1,8 @@
 ﻿using Windows.ApplicationModel.Background;
-using Windows.Devices.Enumeration;
-using Windows.Devices.SerialCommunication;
 using Wirehome.Core.Interface.Native;
 using Wirehome.Core.Services.DependencyInjection;
 using Wirehome.Model.Core;
 using Wirehome.Raspberry;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Wirehome.Controller
 {
@@ -26,7 +22,11 @@ namespace Wirehome.Controller
             }
         }
 
-        private ControllerOptions GetControllerOptions() => new ControllerOptions { NativeServicesRegistration = RegisterRaspberryServices };
+        private ControllerOptions GetControllerOptions() => new ControllerOptions
+        {
+            NativeServicesRegistration = RegisterRaspberryServices,
+            AdapterMode = AdapterMode.Embedded
+        };
 
         private void RegisterRaspberryServices(IContainer container)
         {

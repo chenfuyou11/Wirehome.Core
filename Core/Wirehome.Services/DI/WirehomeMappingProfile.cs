@@ -14,7 +14,7 @@ namespace Wirehome.Core.Services.DependencyInjection
 {
     public class WirehomeMappingProfile : Profile
     {
-        public WirehomeMappingProfile(string adapterRepository)
+        public WirehomeMappingProfile()
         {
             ShouldMapProperty = propInfo => (propInfo.CanWrite && propInfo.GetGetMethod(true).IsPublic) || propInfo.IsDefined(typeof(MapAttribute), false);
 
@@ -24,15 +24,6 @@ namespace Wirehome.Core.Services.DependencyInjection
             CreateMap<CommandDTO, Command>();
             CreateMap<EventDTO, Event>();
             CreateMap<AreaDTO, Area>();
-
-            //foreach (var assemblyPath in Directory.GetFiles(adapterRepository, "*Adapter*.dll", SearchOption.AllDirectories))
-            //{
-            //    foreach (var adapter in AssemblyHelper.GetAllInherited<Adapter>(Assembly.LoadFile(assemblyPath)))
-            //    {
-            //        CreateMap(typeof(AdapterDTO), adapter).ConstructUsingServiceLocator();
-            //    }
-            //}
         }
-
     }
 }

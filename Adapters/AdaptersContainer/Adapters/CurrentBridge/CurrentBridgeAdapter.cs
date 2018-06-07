@@ -4,7 +4,6 @@ using Wirehome.ComponentModel.Capabilities;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
 using Wirehome.ComponentModel.ValueTypes;
-using Wirehome.Core.Interface.Messaging;
 using Wirehome.Core.Interface.Native;
 using Wirehome.Core.Services;
 using Wirehome.Model.ComponentModel.Capabilities.Constants;
@@ -15,7 +14,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
     public class CurrentBridgeAdapter : Adapter
     {
         private readonly ISerialMessagingService _serialMessagingService;
-        private Dictionary<IntValue, IntValue> _state = new Dictionary<IntValue, IntValue>();
+        private readonly Dictionary<IntValue, IntValue> _state = new Dictionary<IntValue, IntValue>();
 
         public CurrentBridgeAdapter(IAdapterServiceFactory adapterServiceFactory) : base(adapterServiceFactory)
         {
@@ -29,7 +28,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
             var _i2cAddress = this[AdapterProperties.I2cAddress].ToIntValue();
 
-            foreach(var val in this[AdapterProperties.UsedPins].ToStringList())
+            foreach (var val in this[AdapterProperties.UsedPins].ToStringList())
             {
                 _state.Add(IntValue.FromString(val), 0);
             }

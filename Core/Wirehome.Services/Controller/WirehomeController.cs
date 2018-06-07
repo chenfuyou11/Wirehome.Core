@@ -46,6 +46,7 @@ namespace Wirehome.Model.Core
                 await base.Initialize().ConfigureAwait(false);
 
                 RegisterServices();
+
                 LoadDynamicAdapters(_options.AdapterMode);
 
                 await InitializeServices().ConfigureAwait(false);
@@ -60,6 +61,8 @@ namespace Wirehome.Model.Core
 
         private void LoadDynamicAdapters(AdapterMode adapterMode)
         {
+            _log.Info($"Loading adapters in mode: {adapterMode}");
+
             if (adapterMode == AdapterMode.Compiled)
             {
                 var result = _roslynCompilerService.CompileAssemblies(_resourceLocator.GetRepositoyLocation());
@@ -70,6 +73,10 @@ namespace Wirehome.Model.Core
                 {
                     Assembly.LoadFrom(adapter.Value);
                 }
+            }
+            else
+            {
+                _log.Info($"Using only build in adapters");
             }
         }
 
@@ -109,6 +116,8 @@ namespace Wirehome.Model.Core
 
         private void RegisterBaseServices(IContainer container)
         {
+            container.RegisterCollection(_options.Loggers);
+
             container.RegisterSingleton<IEventAggregator, EventAggregator>();
             container.RegisterSingleton<IConfigurationService, ConfigurationService>();
             container.RegisterSingleton<II2CBusService, I2CBusService>();

@@ -37,5 +37,10 @@ namespace Wirehome.Raspberry
 
             return LoggingLevel.Information;
         }
+
+        public void Dispose()
+        {
+            _loggingChannel.Dispose();
+        }
     }
 }

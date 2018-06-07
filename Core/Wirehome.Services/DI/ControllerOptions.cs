@@ -1,5 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
+using Wirehome.Core.Services.Logging;
 
 namespace Wirehome.Core.Services.DependencyInjection
 {
@@ -8,5 +9,6 @@ namespace Wirehome.Core.Services.DependencyInjection
         public Action<IContainer> NativeServicesRegistration { get; set; }
         public Action<IContainer> BaseServicesRegistration { get; set; }
         public AdapterMode AdapterMode { get; set; }
+        public IEnumerable<ILogAdapter> Loggers { get; set; }
     }
 }

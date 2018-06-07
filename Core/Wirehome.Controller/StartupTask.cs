@@ -1,6 +1,8 @@
-﻿using Windows.ApplicationModel.Background;
+﻿using System.Collections.Generic;
+using Windows.ApplicationModel.Background;
 using Wirehome.Core.Interface.Native;
 using Wirehome.Core.Services.DependencyInjection;
+using Wirehome.Core.Services.Logging;
 using Wirehome.Model.Core;
 using Wirehome.Raspberry;
 
@@ -25,7 +27,8 @@ namespace Wirehome.Controller
         private ControllerOptions GetControllerOptions() => new ControllerOptions
         {
             NativeServicesRegistration = RegisterRaspberryServices,
-            AdapterMode = AdapterMode.Embedded
+            AdapterMode = AdapterMode.Embedded,
+            Loggers = new List<ILogAdapter> { new RaspberryLoggingService() }
         };
 
         private void RegisterRaspberryServices(IContainer container)

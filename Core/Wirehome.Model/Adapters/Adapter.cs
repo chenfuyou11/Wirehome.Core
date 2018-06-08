@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel.Components;
 using Wirehome.ComponentModel.Events;
-using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Services.Logging;

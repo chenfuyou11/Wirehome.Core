@@ -1,41 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Quartz;
+using Quartz.Impl.Calendar;
+using System;
 
 namespace Wirehome.Motion
 {
-    public class AbsenceService
+
+
+    public class PolishCalendar : HolidayCalendar
     {
-        private IDayOffProvider _dayOffProvider;
-        //private List<DayDescription> _absences;
-
-        public AbsenceService(IDayOffProvider dayOffProvider)
+        public PolishCalendar()
         {
-            _dayOffProvider = dayOffProvider;
+            Description = "Polish holiday calendar";
         }
 
-        public AbsenceService IncludeDay()
-        {
-            return this;
-        }
-
-        public AbsenceService IncludeWorkingDays()
-        {
-            return this;
-        }
-
-        public AbsenceService ExcludeDay()
-        {
-            return this;
-        }
-
-        //public HourActivity WorkingDaysAbsenceHours;
-    }
-
-    public class PolishDayOffProvider : IDayOffProvider
-    {
         public bool IsDayOff(DateTime date)
         {
             if (date.DayOfWeek == DayOfWeek.Saturday) return true;
@@ -60,10 +37,5 @@ namespace Wirehome.Motion
             if (date.AddDays(-60) == Easter) return true; // Boże Ciało
             return false;
         }
-    }
-
-    public interface IDayOffProvider
-    {
-        bool IsDayOff(DateTime date);
     }
 }

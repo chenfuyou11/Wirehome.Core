@@ -10,7 +10,6 @@ using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
 using Wirehome.ComponentModel.Events;
-using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;

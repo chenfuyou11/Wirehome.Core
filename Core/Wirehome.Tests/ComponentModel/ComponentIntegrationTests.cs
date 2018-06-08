@@ -1,16 +1,14 @@
 ﻿using Microsoft.Reactive.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Capabilities;
-using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Events;
-using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Tests.ComponentModel;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.Extensions.Tests
 {

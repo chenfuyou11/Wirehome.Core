@@ -28,6 +28,7 @@ namespace Wirehome.Controller
         {
             NativeServicesRegistration = RegisterRaspberryServices,
             AdapterMode = AdapterMode.Embedded,
+            // TODO change this to dynamic service load like adapters
             Loggers = new List<ILogAdapter> { new RaspberryLoggingService() }
         };
 

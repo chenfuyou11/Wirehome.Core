@@ -9,7 +9,6 @@ using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
 using Wirehome.ComponentModel.Events;
-using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
@@ -33,7 +32,6 @@ namespace Wirehome.ComponentModel.Components
         [Map] private IList<AdapterReference> _adapters { get; set; } = new List<AdapterReference>();
         [Map] private IList<Trigger> _triggers { get; set; } = new List<Trigger>();
         [Map] private Dictionary<string, IValueConverter> _converters { get; set; } = new Dictionary<string, IValueConverter>();
-
 
         public Component(IEventAggregator eventAggregator, ILogService logService, ISchedulerFactory schedulerFactory)
         {
@@ -61,11 +59,10 @@ namespace Wirehome.ComponentModel.Components
 
             foreach (var trigger in _triggers.Where(x => x.Schedule != null))
             {
-
             }
 
             return Task.CompletedTask;
-           // var scheduler = await _schedulerFactory.GetScheduler();
+            // var scheduler = await _schedulerFactory.GetScheduler();
             //await scheduler.ScheduleIntervalWithContext
             //await scheduler.ScheduleIntervalWithContext<T, Adapter>(interval, this, _disposables.Token);
             //await scheduler.Start(_disposables.Token);
@@ -88,10 +85,8 @@ namespace Wirehome.ComponentModel.Components
         private void BuildCapabilityStates(DiscoveryResponse capabilities) =>
             _capabilities.AddRangeNewOnly(capabilities.SupportedStates.ToDictionary(key => ((StringValue)key[StateProperties.StateName]).ToString(), val => val));
 
-
         private void MapCapabilitiesToAdapters(AdapterReference adapter, State[] states) =>
             states.ForEach(state => _adapterStateMap[state[StateProperties.StateName].ToStringValue()] = adapter);
-
 
         private void MapEventSourcesToAdapters(AdapterReference adapter, IList<EventSource> eventSources) =>
             eventSources.ForEach(es => _eventSources[es[EventProperties.EventType].ToStringValue()] = adapter);

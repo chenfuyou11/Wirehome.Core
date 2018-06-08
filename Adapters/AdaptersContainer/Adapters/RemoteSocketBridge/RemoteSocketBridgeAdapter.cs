@@ -6,7 +6,6 @@ using Wirehome.ComponentModel.Capabilities.Constants;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
 using Wirehome.ComponentModel.Events;
-using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Extensions;
@@ -38,7 +37,6 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         public override async Task Initialize()
         {
-
             await base.Initialize().ConfigureAwait(false);
 
             _I2cAddress = this[AdapterProperties.I2cAddress].ToIntValue();
@@ -51,7 +49,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
         public async Task<bool> SerialHandler(byte messageType, byte messageSize, IBinaryReader reader)
         {
-            if(messageType == 2 && messageSize == 6)
+            if (messageType == 2 && messageSize == 6)
             {
                 var code = reader.ReadUInt32();
                 var bits = reader.ReadByte();
@@ -59,11 +57,11 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
                 var dipswitchCode = DipswitchCode.ParseCode(code);
 
-                if(dipswitchCode != null)
+                if (dipswitchCode != null)
                 {
                     await _eventAggregator.PublishDeviceEvent(new DipswitchEvent(Uid, dipswitchCode)).ConfigureAwait(false);
                 }
-                
+
                 return true;
             }
             return false;
@@ -73,12 +71,12 @@ namespace Wirehome.ComponentModel.Adapters.Denon
         {
             return ExecuteCommand(messageEnvelope.Message);
         }
-        
+
         protected async Task TurnOnCommandHandler(Command message)
         {
             byte[] package = PreparePackage(message, nameof(RemoteSocketCommand.TurnOn), out var dipswitchCode);
-            
-            if(_i2cServiceBus.Write(I2CSlaveAddress.FromValue((byte)_I2cAddress.Value), package).Status == I2CTransferStatus.FullTransfer)
+
+            if (_i2cServiceBus.Write(I2CSlaveAddress.FromValue((byte)_I2cAddress.Value), package).Status == I2CTransferStatus.FullTransfer)
             {
                 await UpdateState(dipswitchCode).ConfigureAwait(false);
             }

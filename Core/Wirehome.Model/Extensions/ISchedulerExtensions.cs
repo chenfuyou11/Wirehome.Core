@@ -26,6 +26,7 @@ namespace Wirehome.Model.Extensions
             return job.Key;
         }
 
+
         public static void AddListner(this IScheduler scheduler, IJobListener listner, JobKey key)
         {
             scheduler.ListenerManager.AddJobListener(listner, KeyMatcher<JobKey>.KeyEquals(key));

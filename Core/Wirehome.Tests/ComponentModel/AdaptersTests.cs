@@ -1,30 +1,18 @@
 ﻿using Microsoft.Reactive.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters;
+using Wirehome.ComponentModel.Capabilities;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
-using Wirehome.ComponentModel.Extensions;
+using Wirehome.ComponentModel.Components;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Tests.ComponentModel;
 using Wirehome.Core.Tests.Mocks;
-using Wirehome.Core.Extensions;
-using Wirehome.ComponentModel.Capabilities;
-using System.Collections.Generic;
-using Wirehome.Core.Services.Roslyn;
-using System.Reflection;
-using System.Globalization;
-using Wirehome.Core.Utils;
-using Newtonsoft.Json;
-using System.Runtime.Loader;
-using System.IO;
-using Wirehome.Model.Core;
-using Quartz;
-using Wirehome.ComponentModel.Components;
-using Moq;
-using Wirehome.ComponentModel.Configuration;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.Extensions.Tests
 {
@@ -114,9 +102,6 @@ namespace Wirehome.Extensions.Tests
 
             var component = await controller.ExecuteCommand<Component>(CommandFatory.GetComponentCommand("RemoteLamp")).ConfigureAwait(false);
             await component.ExecuteCommand(CommandFatory.TurnOnCommand).ConfigureAwait(false);
-
         }
-
-       
     }
 }

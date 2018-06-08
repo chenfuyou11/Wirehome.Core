@@ -5,7 +5,6 @@ using Wirehome.ComponentModel.Capabilities;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
 using Wirehome.ComponentModel.Events;
-using Wirehome.ComponentModel.Extensions;
 using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.Interface.Native;
 using Wirehome.Core.Services;
@@ -40,7 +39,7 @@ namespace Wirehome.ComponentModel.Adapters.Denon
 
             _serialMessagingService.RegisterMessageHandler(SerialHandler);
         }
-        
+
         public async Task<bool> SerialHandler(byte messageType, byte messageSize, IBinaryReader reader)
         {
             if (messageType == 3 && messageSize == 6)

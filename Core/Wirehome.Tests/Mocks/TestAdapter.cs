@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Capabilities;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Commands.Responses;
 using Wirehome.Core.EventAggregator;
-using Wirehome.ComponentModel.Extensions;
-using Wirehome.Core.Extensions;
+using Wirehome.Model.Extensions;
 
 namespace Wirehome.Core.Tests.Mocks
 {

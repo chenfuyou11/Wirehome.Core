@@ -9,6 +9,8 @@ namespace Wirehome.ComponentModel.Commands
         public static Command TurnOffCommand = new Command(CommandType.TurnOffCommand);
         public static Command DiscoverCapabilitiesCommand = new Command(CommandType.DiscoverCapabilities);
         public static Command SupportedCapabilitiesCommand = new Command(CommandType.SupportedCapabilitiesCommand);
+        public static Command GetSunriseCommand = new Command(CommandType.GetSunriseCommand);
+        public static Command GetSunsetCommand = new Command(CommandType.GetSunsetCommand);
 
         public static Command GetComponentCommand(string uid) => new Command(CommandType.GetComponentCommand, new Property(CommandProperties.DeviceUid, new StringValue(uid)));
     }

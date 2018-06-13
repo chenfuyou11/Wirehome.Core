@@ -6,9 +6,7 @@ using System.IO;
 using System.Linq;
 using Wirehome.ComponentModel.Adapters;
 using Wirehome.ComponentModel.Adapters.Kodi;
-using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Components;
-using Wirehome.ComponentModel.Events;
 using Wirehome.Core.ComponentModel.Areas;
 using Wirehome.Core.ComponentModel.Configuration;
 using Wirehome.Core.Extensions;
@@ -26,7 +24,7 @@ namespace Wirehome.ComponentModel.Configuration
         private readonly IResourceLocatorService _resourceLocatorService;
         private readonly IContainer _container;
 
-        public ConfigurationService(IMapper mapper, IAdapterServiceFactory adapterServiceFactory, ILogService logService, 
+        public ConfigurationService(IMapper mapper, IAdapterServiceFactory adapterServiceFactory, ILogService logService,
             IResourceLocatorService resourceLocatorService, IContainer container)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -35,11 +33,11 @@ namespace Wirehome.ComponentModel.Configuration
             _resourceLocatorService = resourceLocatorService;
             _container = container;
         }
-        
+
         public WirehomeConfiguration ReadConfiguration(AdapterMode adapterMode)
         {
             var configPath = _resourceLocatorService.GetConfigurationPath();
-  
+
             var rawConfig = File.ReadAllText(configPath);
 
             var result = JsonConvert.DeserializeObject<WirehomeConfigDTO>(rawConfig);
@@ -117,11 +115,11 @@ namespace Wirehome.ComponentModel.Configuration
 
             Mapper.Initialize(p =>
             {
-                foreach(var adapterType in types)
+                foreach (var adapterType in types)
                 {
                     p.CreateMap(typeof(AdapterDTO), adapterType).ConstructUsingServiceLocator();
                 }
-                
+
                 p.ShouldMapProperty = propInfo => (propInfo.CanWrite && propInfo.GetGetMethod(true).IsPublic) || propInfo.IsDefined(typeof(MapAttribute), false);
                 p.ConstructServicesUsing(_container.GetInstance);
             });
@@ -133,7 +131,7 @@ namespace Wirehome.ComponentModel.Configuration
                     var adapterType = types.Find(t => t.Name == adapterConfig.Type);
                     if (adapterType == null) throw new Exception($"Could not find adapter {adapterType}");
                     var adapter = (Adapter)Mapper.Map(adapterConfig, typeof(AdapterDTO), adapterType);
-                    
+
                     adapters.Add(adapter);
                 }
                 catch (Exception ex)

@@ -47,5 +47,9 @@
 
         //Controller
         public const string GetComponentCommand = nameof(GetComponentCommand);
+
+        //Controller
+        public const string GetSunriseCommand = nameof(GetSunriseCommand);
+        public const string GetSunsetCommand = nameof(GetSunsetCommand);
     }
 }

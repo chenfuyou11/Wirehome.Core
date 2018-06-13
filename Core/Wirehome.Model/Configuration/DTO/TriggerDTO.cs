@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
-using Wirehome.ComponentModel.Components;
+﻿using Newtonsoft.Json;
 
 namespace Wirehome.Core.ComponentModel.Configuration
 {
@@ -12,10 +10,13 @@ namespace Wirehome.Core.ComponentModel.Configuration
         [JsonProperty("Command")]
         public CommandDTO Command { get; set; }
 
+        [JsonProperty("FinishCommand")]
+        public CommandDTO FinishCommand { get; set; }
+
         [JsonProperty("Schedule")]
         public ScheduleDTO Schedule { get; set; }
 
         [JsonProperty("Condition")]
-        public ConditionDTO Condition { get; set; }
+        public ConditionContainerDTO Condition { get; set; }
     }
 }

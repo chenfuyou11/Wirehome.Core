@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Wirehome.Model.Events
+﻿namespace Wirehome.Model.Events
 {
-    public class EventSources
+    public static class EventSources
     {
-        public const string Manual = "Manual";
-        public const string Auto = "Auto";
+        public const string Manual = nameof(Manual);
+        public const string Auto = nameof(Auto);
     }
 }

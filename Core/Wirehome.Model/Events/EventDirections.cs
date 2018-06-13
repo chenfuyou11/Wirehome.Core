@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Wirehome.Model.Events
+﻿namespace Wirehome.Model.Events
 {
-    public class EventDirections
+    public static class EventDirections
     {
-        public const string Sending = "Sending";
-        public const string Recieving = "Recieving";
+        public const string Sending = nameof(Sending);
+        public const string Recieving = nameof(Recieving);
     }
 }

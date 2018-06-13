@@ -95,16 +95,14 @@
               "CronExpression": "0 0/5 * * * ?", // every 5 minutes https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontriggers.html
               "Calendar": "PolishCalendar"
             },
-            "Conditions": [
-              {
-                "Type": "IsNightCondition",
-                "Relation": "AND"
-              },
-              {
-                "Type": "IsNightCondition",
-                "Relation": "AND"
-              }
-            ],
+            "Condition": {
+              "Conditions": [
+                {
+                  "Type": "IsNightCondition"
+                }
+              ]
+              // default is AND for all but we can change it: "DefaultOperator": "OR" or build custom expression "Expression": "C1 and C2"
+            },
             "Command": {
               "Type": "SwitchPowerState"
             }
@@ -127,7 +125,7 @@
           {
             // Add custom c# scheduler
             "Schedule": {
-              "Manual": [
+              "ManualSchedules": [
                 {
                   "Start": "22:22:00",
                   "Finish": "22:23:00"
@@ -150,8 +148,8 @@
           {
             "Uid": "RemoteSocket",
             "Properties": {
-              "System": "AllOn", // AllOff, Switch1, Switch2, Switch3, Switch4, Switch5, AllOn
-              "Unit": "D" // A, B, C, D
+              "System": "AllOn",
+              "Unit": "D"
             }
           }
         ]

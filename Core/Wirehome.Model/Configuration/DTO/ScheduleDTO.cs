@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using Wirehome.ComponentModel;
 
 namespace Wirehome.Core.ComponentModel.Configuration
@@ -24,5 +24,8 @@ namespace Wirehome.Core.ComponentModel.Configuration
 
         [JsonProperty("Calendar")]
         public string Calendar { get; set; }
+
+        [JsonProperty("ManualSchedules")]
+        public IList<ManualScheduleDTO> ManualSchedules { get; set; }
     }
 }

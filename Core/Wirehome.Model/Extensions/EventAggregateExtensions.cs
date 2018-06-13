@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Wirehome.ComponentModel;
 using Wirehome.ComponentModel.Commands;
 using Wirehome.ComponentModel.Events;
+using Wirehome.ComponentModel.ValueTypes;
 using Wirehome.Core.EventAggregator;
 using Wirehome.Core.Services.DependencyInjection;
 
@@ -79,6 +80,13 @@ namespace Wirehome.Model.Extensions
         {
             return eventAggregator.QueryAsync<DeviceCommand, R>(message, new RoutingFilter(message?[CommandProperties.DeviceUid]?.ToString() ?? string.Empty));
         }
+
+        public static async Task<IValue> QueryForValueType(this IEventAggregator eventAggregator, Command message, string property)
+        {
+            return (await eventAggregator.QueryAsync<Command, BaseObject>(message).ConfigureAwait(false))[property];
+        }
+
+        
 
         public static Task<R> QueryDeviceAsync<R>(this IEventAggregator eventAggregator, DeviceCommand message, TimeSpan timeOut) where R : BaseObject
         {

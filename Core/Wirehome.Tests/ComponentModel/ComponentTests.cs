@@ -15,7 +15,7 @@ namespace Wirehome.Extensions.Tests
         [TestMethod]
         public async Task ComponentCommandExecuteShouldGetResult()
         {
-            var (controller, container) = await new ControllerBuilder().WithConfiguration("oneComponentConfiguration")
+            var (controller, container) = await new ControllerBuilder().WithConfiguration("componentConfiguration")
                                                                        .BuildAndRun()
                                                                        .ConfigureAwait(false);
 
